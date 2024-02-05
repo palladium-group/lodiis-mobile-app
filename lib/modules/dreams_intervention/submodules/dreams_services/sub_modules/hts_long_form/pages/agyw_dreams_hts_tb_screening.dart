@@ -87,6 +87,7 @@ class _AgywDreamsHTSTBFormState extends State<AgywDreamsHTSTBForm> {
           widget.htsToTBLinkageValue;
       List<String> hiddenFields = [AgywDreamsHTSTBConstant.htsToTBLinkage];
       String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+      orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           AgywDreamsHTSTBConstant.program,
@@ -192,7 +193,9 @@ class _AgywDreamsHTSTBFormState extends State<AgywDreamsHTSTBForm> {
                                     visible: serviceFormState.isEditableMode,
                                     child: EntryFormSaveButton(
                                       label: isSaving
-                                          ? 'Saving ...'
+                                          ? currentLanguage == 'lesotho'
+                                              ? 'E ntse e boloka...'
+                                              : 'Saving ...'
                                           : currentLanguage == 'lesotho'
                                               ? 'Boloka'
                                               : 'Save',

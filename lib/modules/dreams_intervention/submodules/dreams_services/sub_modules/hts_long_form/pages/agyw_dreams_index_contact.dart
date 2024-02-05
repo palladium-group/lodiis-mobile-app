@@ -177,7 +177,9 @@ class _AgywDreamsIndexContactState extends State<AgywDreamsIndexContact> {
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

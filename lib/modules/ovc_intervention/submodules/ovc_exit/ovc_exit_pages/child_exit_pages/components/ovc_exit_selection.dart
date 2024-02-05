@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/core/components/line_separator.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/child_exit_pages/constants/ovc_exit_case_plan_graduation_readiness_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/child_exit_pages/constants/ovc_exit_case_transfer_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/child_exit_pages/constants/ovc_exit_constant.dart';
+import 'package:provider/provider.dart';
 
 class OvcChildExitSelection extends StatefulWidget {
   final List<String?> programStageIdsWithData;
@@ -19,19 +23,40 @@ class _OvcChildExitSelectionState extends State<OvcChildExitSelection> {
 
   @override
   void initState() {
-    exitTitles = [];
-    Map programStageMap = OvcExitConstant.getOvcExitProgramStageMap();
     super.initState();
-    for (String id in programStageMap.keys.toList()) {
-      if (!widget.programStageIdsWithData.contains(id)) {
-        exitTitles.add(programStageMap[id]);
+    setExitTitles();
+  }
+
+  void setExitTitles() {
+    exitTitles = [];
+    var currentHouseHold =
+        Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+            .currentOvcHousehold;
+    var currentOvc =
+        Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+            .currentOvcHouseholdChild;
+    Map programStageMap = OvcExitConstant.getOvcExitProgramStageMap();
+
+    setState(() {
+      for (String id in programStageMap.keys.toList()) {
+        if (!widget.programStageIdsWithData.contains(id)) {
+          exitTitles.add(programStageMap[id]);
+        }
       }
-    }
-    if (widget.programStageIdsWithData.isEmpty) {
-      setState(() {
+      if (widget.programStageIdsWithData.isEmpty ||
+          widget.programStageIdsWithData
+              .contains(OvcExitConstant.caseClosureKey)) {
         exitTitles.remove(programStageMap[OvcExitConstant.caseClosureKey]);
-      });
-    }
+      }
+      if (currentOvc?.hasExitedProgram == true ||
+          currentHouseHold?.hasExitedProgram == true) {
+        exitTitles.removeWhere((title) => [
+              programStageMap[OvcExitCaseTransferConstant.programStage],
+              programStageMap[
+                  HouseholdGraduationReadinessFormConstant.programStage]
+            ].contains(title));
+      }
+    });
   }
 
   @override

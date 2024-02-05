@@ -40,6 +40,7 @@ class AgywDreamsFamilyPlanningSrhForm extends StatefulWidget {
 class _AgywDreamsFamilyPlanningSrhFormState
     extends State<AgywDreamsFamilyPlanningSrhForm> {
   final String label = 'Family planning/SRH form';
+  final String translatedLabel = 'Foromo ea Thero ea Lelapa/SRH';
   List<FormSection>? formSections;
   List<FormSection>? defaultFormSections;
   bool isFormReady = false;
@@ -81,6 +82,7 @@ class _AgywDreamsFamilyPlanningSrhFormState
     defaultFormSections = DreamsContraceptivesForm.getFormSections(
       firstDate: agyw.createdDate!,
     );
+    mandatoryFields = DreamsContraceptivesForm.getMandatoryField();
     if (agyw.enrollmentOuAccessible!) {
       formSections = defaultFormSections;
     } else {
@@ -96,13 +98,15 @@ class _AgywDreamsFamilyPlanningSrhFormState
         program: AgywDreamsEnrollmentConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields = FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
+      mandatoryFields.addAll(
+        FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        ),
       );
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -152,6 +156,7 @@ class _AgywDreamsFamilyPlanningSrhFormState
         String? eventId = dataObject['eventId'];
         List<String> hiddenFields = [];
         String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+        orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
         try {
           await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
             FamilyPlanningSrhConstant.program,
@@ -251,6 +256,7 @@ class _AgywDreamsFamilyPlanningSrhFormState
                 interventionCardState.currentInterventionProgram;
             return SubPageAppBar(
               label: label,
+              translatedName: translatedLabel,
               activeInterventionProgram: activeInterventionProgram,
             );
           },
@@ -302,7 +308,9 @@ class _AgywDreamsFamilyPlanningSrhFormState
                                     visible: serviceFormState.isEditableMode,
                                     child: EntryFormSaveButton(
                                       label: isSaving
-                                          ? 'Saving ...'
+                                          ? currentLanguage == 'lesotho'
+                                              ? 'E ntse e boloka...'
+                                              : 'Saving ...'
                                           : currentLanguage == 'lesotho'
                                               ? 'Boloka'
                                               : 'Save',

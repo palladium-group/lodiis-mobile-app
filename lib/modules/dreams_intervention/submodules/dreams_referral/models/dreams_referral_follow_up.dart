@@ -14,11 +14,13 @@ class DreamsReferralFollowUp {
     return [
       FormSection(
           name: 'Referral Follow Up',
+          translatedName: 'Ho latela phetiso',
           color: const Color(0xFF737373),
           inputFields: [
             InputField(
               id: 'DPf5mUDoZMy',
               name: 'Follow-up date',
+              translatedName: 'Latsatsi la tlhahlobo e latelang',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: AgywDreamsCommonConstant.defaultColor,
@@ -37,6 +39,7 @@ class DreamsReferralFollowUp {
             InputField(
               id: 'BzkeBAxdEVT',
               name: 'Additional follow up required',
+              translatedName: 'Tlhahiso e eketsehileng ea hlokahala',
               valueType: 'BOOLEAN',
               inputColor: AgywDreamsCommonConstant.defaultColor,
               labelColor: const Color(0xFF737373),
@@ -44,6 +47,7 @@ class DreamsReferralFollowUp {
             InputField(
               id: 'LcG4J82PM4Z',
               name: 'Comments or next steps',
+              translatedName: 'Maikutlo kapa mehato e latelang',
               valueType: 'LONG_TEXT',
               inputColor: AgywDreamsCommonConstant.defaultColor,
               labelColor: const Color(0xFF737373),

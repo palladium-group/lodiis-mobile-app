@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:provider/provider.dart';
 
 class EducationBursarySchoolTopBarSelection extends StatelessWidget {
   final VoidCallback selectSchoolPerformance;
@@ -14,6 +16,9 @@ class EducationBursarySchoolTopBarSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? currentLanguage =
+        Provider.of<LanguageTranslationState>(context, listen: false)
+            .currentLanguage;
     return ClipRRect(
       clipBehavior: Clip.hardEdge,
       borderRadius: const BorderRadius.only(),
@@ -38,7 +43,7 @@ class EducationBursarySchoolTopBarSelection extends StatelessWidget {
                   ),
                   onPressed: selectSchoolAttendance,
                   child: Text(
-                    'Attendance',
+                    currentLanguage == 'lesotho' ? 'Ho ba teng' : 'Attendance',
                     style: const TextStyle().copyWith(
                       fontSize: 14.0,
                       color: !isSchoolPerformanceSelected
@@ -62,7 +67,7 @@ class EducationBursarySchoolTopBarSelection extends StatelessWidget {
                   ),
                   onPressed: selectSchoolPerformance,
                   child: Text(
-                    'Performance',
+                    currentLanguage == 'lesotho' ? "Ts'ebetso" : 'Performance',
                     style: const TextStyle().copyWith(
                       fontSize: 14.0,
                       color: isSchoolPerformanceSelected

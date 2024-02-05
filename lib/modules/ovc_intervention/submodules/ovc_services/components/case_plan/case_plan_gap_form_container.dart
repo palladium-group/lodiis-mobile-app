@@ -115,12 +115,12 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
       ),
     );
     if (isAllMandatoryFilled) {
-      bool hasAtLeasrOnFieldFilled = FormUtil.hasAtLeastOnFieldFilled(
+      bool hasAtLeastOnFieldFilled = FormUtil.hasAtLeastOnFieldFilled(
         hiddenFields: hiddenFields,
         formSections: widget.formSections,
         dataObject: dataObject,
       );
-      if (hasAtLeasrOnFieldFilled) {
+      if (hasAtLeastOnFieldFilled) {
         Navigator.pop(context, dataObject);
       } else {
         AppUtil.showToastMessage(

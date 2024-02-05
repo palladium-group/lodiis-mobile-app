@@ -37,6 +37,7 @@ class EducationBursaryAssessmentFormPage extends StatefulWidget {
 class _EducationBursaryAssessmentFormPageState
     extends State<EducationBursaryAssessmentFormPage> {
   final String label = 'Bursary Assessment Form';
+  final String translatedName = 'Foromo ea Tlhahlobo ea Lihlapiso';
 
   final List<String> mandatoryFields =
       EducationBursaryAssessment.getMandatoryField();
@@ -185,6 +186,7 @@ class _EducationBursaryAssessmentFormPageState
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedName,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },
@@ -197,8 +199,8 @@ class _EducationBursaryAssessmentFormPageState
               horizontal: 13.0,
             ),
             child: !isFormReady
-                ? Column(
-                    children: const [
+                ? const Column(
+                    children: [
                       Center(
                         child: CircularProcessLoader(
                           color: Colors.blueGrey,
@@ -232,7 +234,9 @@ class _EducationBursaryAssessmentFormPageState
                               visible: enrollmentFormState.isEditableMode,
                               child: EntryFormSaveButton(
                                 label: isSaving
-                                    ? 'Saving ...'
+                                    ? currentLanguage == 'lesotho'
+                                        ? 'E ntse e boloka...'
+                                        : 'Saving ...'
                                     : currentLanguage == 'lesotho'
                                         ? 'Boloka'
                                         : 'Save and Continue',

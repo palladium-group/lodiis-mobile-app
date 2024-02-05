@@ -27,8 +27,7 @@ class OvcEnrollementFormSavingContaniner extends StatefulWidget {
       _OvcEnrollementFormSavingContaninerState();
 }
 
-class _OvcEnrollementFormSavingContaninerState
-    extends State<OvcEnrollementFormSavingContaniner> {
+class _OvcEnrollementFormSavingContaninerState extends State<OvcEnrollementFormSavingContaniner> {
   final bool shouldEnroll = true;
   final String trackedEntityInstance = AppUtil.getUid();
   @override
@@ -39,16 +38,14 @@ class _OvcEnrollementFormSavingContaninerState
 
   void _clearFormAutoSaveState(BuildContext context) async {
     String beneficiaryId = "";
-    String formAutoSaveId =
-        "${OvcRoutesConstant.ovcConcentFormPage}_$beneficiaryId";
+    String formAutoSaveId = "${OvcRoutesConstant.ovcConcentFormPage}_$beneficiaryId";
     await FormAutoSaveOfflineService().deleteSavedFormAutoData(formAutoSaveId);
   }
 
   _onInitateSaving() async {
     int maleCount = 0;
     int femaleCount = 0;
-    Map dataObject =
-        Provider.of<EnrollmentFormState>(context, listen: false).formState;
+    Map dataObject = Provider.of<EnrollmentFormState>(context, listen: false).formState;
     dataObject['PN92g65TkVI'] = dataObject['PN92g65TkVI'] ?? 'Active';
     List<String> hiddenFields = [
       BeneficiaryIdentification.beneficiaryId,
@@ -73,24 +70,25 @@ class _OvcEnrollementFormSavingContaninerState
     dataObject.remove('children');
     CurrentUser? user = await UserService().getCurrentUser();
     dataObject[UserAccountReference.implementingPartnerAttribute] =
-        dataObject[UserAccountReference.implementingPartnerAttribute] ??
-            user!.implementingPartner;
+        dataObject[UserAccountReference.implementingPartnerAttribute] ?? user!.implementingPartner;
     dataObject[UserAccountReference.serviceProviderAttribute] =
-        dataObject[UserAccountReference.serviceProviderAttribute] ??
-            user!.username;
+        dataObject[UserAccountReference.serviceProviderAttribute] ?? user!.username;
     if (user!.subImplementingPartner != '') {
       dataObject[UserAccountReference.subImplementingPartnerAttribute] =
           dataObject[UserAccountReference.subImplementingPartnerAttribute] ??
               user.subImplementingPartner;
     }
     String? orgUnit = dataObject['location'];
+    String? enrollment = dataObject['enrollment'];
+    String enrollmentDate = dataObject['enrollmentDate'] ?? '';
+    String incidentDate = dataObject['incidentDate'] ?? enrollmentDate;
     await OvcEnrollmentHouseholdService().savingHouseholdForm(
       dataObject,
       trackedEntityInstance,
       orgUnit,
-      null,
-      null,
-      null,
+      enrollment,
+      enrollmentDate,
+      incidentDate,
       shouldEnroll,
       hiddenFields,
     );
@@ -98,23 +96,19 @@ class _OvcEnrollementFormSavingContaninerState
       trackedEntityInstance,
       orgUnit,
       childMapObjects,
-      null,
-      null,
+      enrollmentDate,
+      incidentDate,
       shouldEnroll,
       hiddenFields,
     );
-    await Provider.of<OvcInterventionListState>(context, listen: false)
-        .onHouseholdAdd();
+    await Provider.of<OvcInterventionListState>(context, listen: false).onHouseholdAdd();
     _clearFormAutoSaveState(context);
     Timer(const Duration(seconds: 1), () {
       if (Navigator.canPop(context)) {
         bool isSesothoLanguage =
-            Provider.of<LanguageTranslationState>(context, listen: false)
-                .isSesothoLanguage;
+            Provider.of<LanguageTranslationState>(context, listen: false).isSesothoLanguage;
         AppUtil.showToastMessage(
-          message: isSesothoLanguage
-              ? 'Fomo e bolokeile'
-              : 'Form has been saved successfully',
+          message: isSesothoLanguage ? 'Fomo e bolokeile' : 'Form has been saved successfully',
           position: ToastGravity.TOP,
         );
         setState(() {});

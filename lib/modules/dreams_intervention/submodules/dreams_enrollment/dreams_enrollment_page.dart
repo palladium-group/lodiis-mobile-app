@@ -16,6 +16,7 @@ import 'package:kb_mobile_app/modules/dreams_intervention/constants/dreams_route
 import 'package:kb_mobile_app/modules/dreams_intervention/submodules/dreams_enrollment/pages/agyw_dreams_consent.dart';
 import 'package:kb_mobile_app/modules/dreams_intervention/submodules/dreams_enrollment/pages/agyw_dreams_for_re_assessment.dart';
 import 'package:provider/provider.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
 class DreamsEnrollmentPage extends StatefulWidget {
   const DreamsEnrollmentPage({Key? key}) : super(key: key);
@@ -26,6 +27,7 @@ class DreamsEnrollmentPage extends StatefulWidget {
 
 class _DreamsEnrollmentPageState extends State<DreamsEnrollmentPage> {
   final String title = 'BENEFICIARY LIST';
+  final String translatedTitle = "Lethathamo la bana ka hara morero";
   final bool canEdit = true;
   final bool canView = true;
   final bool canExpand = true;
@@ -86,85 +88,94 @@ class _DreamsEnrollmentPageState extends State<DreamsEnrollmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DreamsRaAssessmentListState>(
-        builder: (context, dreamsRaAssessmentListState, child) {
-      return Consumer<DreamsInterventionListState>(
-        builder: (context, dreamInterventionListState, child) {
-          return SubModuleHomeContainer(
-            onOpenInfo: () =>
-                onViewBeneficiariesWhoRequireReAssessment(context),
-            hasInfo: dreamsRaAssessmentListState.numberOfDreamsToReAssess > 0,
-            header:
-                '$title : ${dreamInterventionListState.numberOfAgywDreamsBeneficiaries} beneficiaries',
-            showFilter: true,
-            bodyContents: _buildBody(),
-          );
-        },
-      );
-    });
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) =>
+          Consumer<DreamsRaAssessmentListState>(
+              builder: (context, dreamsRaAssessmentListState, child) {
+        return Consumer<DreamsInterventionListState>(
+          builder: (context, dreamInterventionListState, child) {
+            return SubModuleHomeContainer(
+              onOpenInfo: () =>
+                  onViewBeneficiariesWhoRequireReAssessment(context),
+              hasInfo: dreamsRaAssessmentListState.numberOfDreamsToReAssess > 0,
+              header: languageState.currentLanguage == 'lesotho'
+                  ? '$translatedTitle : ${dreamInterventionListState.numberOfAgywDreamsBeneficiaries} Ba unang melemo ka hare ho morero'
+                  : '$title : ${dreamInterventionListState.numberOfAgywDreamsBeneficiaries} beneficiaries',
+              showFilter: true,
+              bodyContents: _buildBody(),
+            );
+          },
+        );
+      }),
+    );
   }
 
   Widget _buildBody() {
-    return Consumer<DreamsInterventionListState>(
-      builder: (context, dreamInterventionListState, child) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            refreshBeneficiaryList(context);
-          },
-          child: CustomPaginatedListView(
-            childBuilder: (context, agywBeneficiary, child) =>
-                DreamsBeneficiaryCard(
-              isAgywEnrollment: true,
-              agywDream: agywBeneficiary,
-              canEdit: canEdit,
-              canExpand: canExpand,
-              beneficiaryName: agywBeneficiary.toString(),
-              canView: canView,
-              isExpanded: agywBeneficiary.id == toggleCardId,
-              onCardToggle: () {
-                onCardToggle(
-                  context,
-                  agywBeneficiary.id,
-                );
-              },
-              cardBody: DreamsBeneficiaryCardBody(
-                agywBeneficiary: agywBeneficiary,
-                canViewServiceCategory: false,
-                isVerticalLayout: agywBeneficiary.id == toggleCardId,
-              ),
-              cardButtonActions: Container(),
-              cardButtonContent: Container(),
-            ),
-            pagingController: dreamInterventionListState.agywPagingController,
-            emptyListWidget: Column(
-              children: [
-                const Center(
-                  child: Text(
-                    'There is no beneficiary list at a moment',
-                  ),
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) =>
+          Consumer<DreamsInterventionListState>(
+        builder: (context, dreamInterventionListState, child) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              refreshBeneficiaryList(context);
+            },
+            child: CustomPaginatedListView(
+              childBuilder: (context, agywBeneficiary, child) =>
+                  DreamsBeneficiaryCard(
+                isAgywEnrollment: true,
+                agywDream: agywBeneficiary,
+                canEdit: canEdit,
+                canExpand: canExpand,
+                beneficiaryName: agywBeneficiary.toString(),
+                canView: canView,
+                isExpanded: agywBeneficiary.id == toggleCardId,
+                onCardToggle: () {
+                  onCardToggle(
+                    context,
+                    agywBeneficiary.id,
+                  );
+                },
+                cardBody: DreamsBeneficiaryCardBody(
+                  agywBeneficiary: agywBeneficiary,
+                  canViewServiceCategory: false,
+                  isVerticalLayout: agywBeneficiary.id == toggleCardId,
                 ),
-                Center(
-                  child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/add-beneficiary.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Colors.blueGrey,
-                        BlendMode.srcIn,
-                      ),
+                cardButtonActions: Container(),
+                cardButtonContent: Container(),
+              ),
+              pagingController: dreamInterventionListState.agywPagingController,
+              emptyListWidget: Column(
+                children: [
+                   Center(
+                    child: Text(
+                      languageState.currentLanguage == 'lesotho'
+                          ? 'Ha hona lethathamo la bana'
+                          : 'There is no beneficiary list at a moment',
                     ),
-                    onPressed: () => onAddAgywBeneficiary(context),
                   ),
-                )
-              ],
-            ),
-            errorWidget: const Center(
-              child: Text(
-                'Error in loading beneficiary list ',
+                  Center(
+                    child: IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/add-beneficiary.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.blueGrey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      onPressed: () => onAddAgywBeneficiary(context),
+                    ),
+                  )
+                ],
+              ),
+              errorWidget: const Center(
+                child: Text(
+                  'Error in loading beneficiary list ',
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

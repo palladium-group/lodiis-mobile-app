@@ -179,6 +179,7 @@ class _EducationLbseLearningOutcomeFormPageState
       String? eventId = dataObject['eventId'];
       List<String> hiddenFields = [];
       String orgUnit = dataObject['location'] ?? lbseBeneficiary.orgUnit;
+      orgUnit = orgUnit.isEmpty ? lbseBeneficiary.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           LbseInterventionConstant.program,
@@ -344,7 +345,9 @@ class _EducationLbseLearningOutcomeFormPageState
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

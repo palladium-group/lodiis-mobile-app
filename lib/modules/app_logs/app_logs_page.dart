@@ -25,7 +25,7 @@ class AppLogsPage extends StatefulWidget {
 
 class _AppLogsState extends State<AppLogsPage> {
   final String label = 'Application Logs';
-  final String translatedLabel = 'Application Logs';
+  final String translatedLabel = "Litaba tse bonts'ang liketsahalo tsohle ka hara LODIIS";
 
   onSearchLogs(BuildContext context, String value) {
     Provider.of<AppLogsState>(context, listen: false).searchAppLogs(value);
@@ -134,7 +134,7 @@ class _AppLogsState extends State<AppLogsPage> {
                                     activeInterventionProgram.countLabelColor,
                               )),
                           pagingController: appLogsState.pagingController,
-                          emptyListWidget: Column(children: const [
+                          emptyListWidget: const Column(children: [
                             Center(
                               child: Text(
                                 'There are no application logs at a moment.',

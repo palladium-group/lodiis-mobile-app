@@ -203,6 +203,7 @@ class NoneAgywEnrollmentPrepScreening {
                   InputField(
                       id: 'uBJeTLcoAKM',
                       name: 'Type of test used',
+                      translatedName: 'Mofuta oa Tlhahlobo',
                       options: [
                         InputFieldOption(code: 'Determine', name: 'Determine'),
                         InputFieldOption(code: 'Unigold', name: 'Unigold'),

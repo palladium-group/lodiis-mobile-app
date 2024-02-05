@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/enrollment_form_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ogac_intervention_list_state/ogac_intervention_list_state.dart';
 import 'package:kb_mobile_app/core/components/paginated_list_view.dart';
 import 'package:kb_mobile_app/core/components/sub_module_home_container.dart';
@@ -19,7 +20,7 @@ class OgacInterventionHome extends StatelessWidget {
   }) : super(key: key);
 
   final String title = 'OGAC List';
-
+  final String translatedTitle = 'Lethathamo la OGAC';
   void onUpdateFormState(
     BuildContext context,
     OgacBeneficiary ogacBeneficiary,
@@ -123,80 +124,88 @@ class OgacInterventionHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<OgacInterventionListState>(
-      builder: (context, dreamInterventionListState, child) {
-        return SubModuleHomeContainer(
-          header:
-              '$title : ${dreamInterventionListState.numberOfOgac} beneficiaries',
-          bodyContents: _buildBody(),
-          showFilter: true,
-        );
-      },
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) =>
+          Consumer<OgacInterventionListState>(
+        builder: (context, dreamInterventionListState, child) {
+          return SubModuleHomeContainer(
+            header: languageState.currentLanguage == 'lesotho'
+                ? '$translatedTitle : ${dreamInterventionListState.numberOfOgac} Ba unang melemo ka hare ho morero'
+                : '$title : ${dreamInterventionListState.numberOfOgac} beneficiaries',
+            bodyContents: _buildBody(),
+            showFilter: true,
+          );
+        },
+      ),
     );
   }
 
   Consumer<OgacInterventionListState> _buildBody() {
     return Consumer<OgacInterventionListState>(
       builder: (context, ogacInterventionListState, child) {
-        return RefreshIndicator(
-          onRefresh: () async =>
-              refreshBeneficiaryList(ogacInterventionListState),
-          child: CustomPaginatedListView(
-            childBuilder: (context, ogacBeneficiary, child) =>
-                OgacBeneficiaryCard(
-              ogacBeneficiary: ogacBeneficiary,
-              onEditBeneficiary: () =>
-                  onEditBeneficiary(context, ogacBeneficiary),
-              onViewBeneficiary: () =>
-                  onViewBeneficiary(context, ogacBeneficiary),
-            ),
-            pagingController: ogacInterventionListState.pagingController,
-            emptyListWidget: Center(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10.0,
-                    ),
-                    child: const Text(
-                      'There is no OGAC beneficiaries enrolled at the moment',
-                    ),
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/add-beneficiary.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Colors.blueGrey,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    onPressed: () => onAddOgacBeneficiary(context),
-                  )
-                ],
+        return Consumer<LanguageTranslationState>(
+          builder: (context, languageState, child) => RefreshIndicator(
+            onRefresh: () async =>
+                refreshBeneficiaryList(ogacInterventionListState),
+            child: CustomPaginatedListView(
+              childBuilder: (context, ogacBeneficiary, child) =>
+                  OgacBeneficiaryCard(
+                ogacBeneficiary: ogacBeneficiary,
+                onEditBeneficiary: () =>
+                    onEditBeneficiary(context, ogacBeneficiary),
+                onViewBeneficiary: () =>
+                    onViewBeneficiary(context, ogacBeneficiary),
               ),
-            ),
-            errorWidget: Center(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10.0,
-                    ),
-                    child: const Text(
-                      'There is no OGAC beneficiaries enrolled at the moment',
-                    ),
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/add-beneficiary.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Colors.blueGrey,
-                        BlendMode.srcIn,
+              pagingController: ogacInterventionListState.pagingController,
+              emptyListWidget: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10.0,
+                      ),
+                      child: Text(
+                        languageState.currentLanguage == 'lesotho'
+                            ? 'Ha hona ba ngolisitsoeng tlasa OGAC hajoale'
+                            : 'There is no OGAC beneficiaries enrolled at the moment',
                       ),
                     ),
-                    onPressed: () => onAddOgacBeneficiary(context),
-                  )
-                ],
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/add-beneficiary.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.blueGrey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      onPressed: () => onAddOgacBeneficiary(context),
+                    )
+                  ],
+                ),
+              ),
+              errorWidget: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10.0,
+                      ),
+                      child: const Text(
+                        'There is no OGAC beneficiaries enrolled at the moment',
+                      ),
+                    ),
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/add-beneficiary.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.blueGrey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      onPressed: () => onAddOgacBeneficiary(context),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:provider/provider.dart';
 
 class EducationBursaryReferralHeader extends StatelessWidget {
   const EducationBursaryReferralHeader({
@@ -43,42 +45,46 @@ class EducationBursaryReferralHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 10.0,
-        horizontal: 15.0,
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  'Referral $referralIndex',
-                  style: const TextStyle().copyWith(
-                    color: valueColor,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w600,
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) => Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 10.0,
+          horizontal: 15.0,
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    languageState.currentLanguage == 'lesotho'
+                        ? 'Phetisetso $referralIndex'
+                        : 'Referral $referralIndex',
+                    style: const TextStyle().copyWith(
+                      color: valueColor,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                child: _getActionButton(
-                  svgIcon: 'assets/icons/expand_icon.svg',
-                  onTap: onView,
+                Container(
+                  child: _getActionButton(
+                    svgIcon: 'assets/icons/expand_icon.svg',
+                    onTap: onView,
+                  ),
                 ),
-              ),
-              Visibility(
-                visible: canEdit,
-                child: _getActionButton(
-                  svgIcon: 'assets/icons/edit-icon.svg',
-                  onTap: onEdit,
-                ),
-              )
-            ],
-          ),
-        ],
+                Visibility(
+                  visible: canEdit,
+                  child: _getActionButton(
+                    svgIcon: 'assets/icons/edit-icon.svg',
+                    onTap: onEdit,
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

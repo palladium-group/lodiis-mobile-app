@@ -77,6 +77,9 @@ class _OvcChildReferralViewState extends State<OvcChildReferralView> {
                             isOvcIntervention: true,
                             isIncomingReferral: widget.isIncomingReferral,
                             beneficiary: currentOvcHouseholdChild.teiData,
+                            enrollmentOuAccessible: currentOvcHouseholdChild
+                                    .enrollmentOuAccessible ==
+                                true,
                             eventData: widget.eventData,
                             isEditableMode: false,
                             referralProgram: OvcChildReferralConstant.program,

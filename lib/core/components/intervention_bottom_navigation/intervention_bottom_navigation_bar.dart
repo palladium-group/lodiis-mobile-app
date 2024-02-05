@@ -141,7 +141,7 @@ class InterventionBottomNavigationBar extends StatelessWidget {
                                               .translatedName!
                                           : interventionBottomNavigation.name!,
                                       style: TextStyle(
-                                        fontSize: 10,
+                                        fontSize: 8.2,
                                         fontWeight: FontWeight.bold,
                                         color:
                                             currentInterventionBottomNavigation

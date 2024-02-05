@@ -59,7 +59,7 @@ class _DataDownloadMessageState extends State<DataDownloadMessage> {
           await Provider.of<ReferralNotificationState>(ctx, listen: false)
               .reloadReferralNotifications();
           Provider.of<SynchronizationState>(ctx, listen: false)
-              .checkingForAvailableBeneficiaryData();
+              .checkingForAvailableBeneficiaryData(context,);
         }
       }
     });

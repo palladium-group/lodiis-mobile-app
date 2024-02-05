@@ -100,13 +100,15 @@ class _AgywDreamsPrepShortFormState extends State<AgywDreamsPrepShortForm> {
         program: AgywDreamsEnrollmentConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields.addAll(FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
-      ));
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+      mandatoryFields.addAll(
+        FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        ),
+      );
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -156,6 +158,7 @@ class _AgywDreamsPrepShortFormState extends State<AgywDreamsPrepShortForm> {
       String? eventId = dataObject['eventId'];
       List<String> hiddenFields = [];
       String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+      orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           PrepIntakeShortFormConstants.program,
@@ -308,7 +311,9 @@ class _AgywDreamsPrepShortFormState extends State<AgywDreamsPrepShortForm> {
                               visible: serviceFormState.isEditableMode,
                               child: EntryFormSaveButton(
                                 label: isSaving
-                                    ? 'Saving ...'
+                                    ? currentLanguage == 'lesotho'
+                                        ? 'E ntse e boloka...'
+                                        : 'Saving ...'
                                     : currentLanguage == 'lesotho'
                                         ? 'Boloka'
                                         : 'Save',

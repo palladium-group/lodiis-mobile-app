@@ -21,9 +21,8 @@ mixin OvcCaseClosureSkipLogic {
     }
     inputFieldIds = inputFieldIds.toSet().toList();
     for (String inputFieldId in inputFieldIds) {
-      if (inputFieldId != 'S6vcaNyPT5a' && inputFieldId != 'D9boflKTCM4') {
-        hiddenFields[inputFieldId] = true;
-      }
+      hiddenFields[inputFieldId] =
+          !['S6vcaNyPT5a', 'D9boflKTCM4', 'eventDate'].contains(inputFieldId);
     }
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';

@@ -146,6 +146,7 @@ class _AgywDreamsPrepShortFormHomePageState
                                   child: events.isEmpty
                                       ? const Text(
                                           "There is no PrEP visit at a moment",
+                                          textAlign: TextAlign.center,
                                         )
                                       : Container(
                                           margin: const EdgeInsets.symmetric(

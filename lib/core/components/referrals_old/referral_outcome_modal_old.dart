@@ -15,15 +15,15 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_referral/o
 import 'package:provider/provider.dart';
 
 class ReferralOutcomeModalOld extends StatefulWidget {
-  const ReferralOutcomeModalOld(
-      {Key? key,
-      required this.themeColor,
-      required this.referralOutcomeFormSections,
-      required this.eventData,
-      required this.hiddenFields,
-      required this.referralToFollowUpLinkage,
-      required this.referralOutcomeMandatoryFields})
-      : super(key: key);
+  const ReferralOutcomeModalOld({
+    Key? key,
+    required this.themeColor,
+    required this.referralOutcomeFormSections,
+    required this.eventData,
+    required this.hiddenFields,
+    required this.referralToFollowUpLinkage,
+    required this.referralOutcomeMandatoryFields,
+  }) : super(key: key);
 
   final Color? themeColor;
   final List<FormSection>? referralOutcomeFormSections;
@@ -46,12 +46,16 @@ class _ReferralOutcomeModalOldState extends State<ReferralOutcomeModalOld> {
   @override
   void initState() {
     super.initState();
-    isFormReady = true;
+    setFormState();
+  }
+
+  void setFormState() {
     for (String id in widget.referralOutcomeMandatoryFields) {
       referralOutcomeMandatoryFieldsObject[id] = true;
     }
     evaluateSkipLogics();
     Timer(const Duration(seconds: 1), () {
+      isFormReady = true;
       setState(() {});
     });
   }
@@ -133,7 +137,7 @@ class _ReferralOutcomeModalOldState extends State<ReferralOutcomeModalOld> {
                     : 'Form has been saved successfully',
                 position: ToastGravity.TOP,
               );
-              Navigator.pop(context);
+              Navigator.popUntil(context, (route) => route.isFirst);
             });
           });
         } catch (e) {
@@ -185,62 +189,73 @@ class _ReferralOutcomeModalOldState extends State<ReferralOutcomeModalOld> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-      child: Consumer<ServiceFormState>(
-        builder: (context, serviceFormState, child) {
-          return Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(
-                  top: 10.0,
-                  left: 13.0,
-                  right: 13.0,
+    return Consumer<LanguageTranslationState>(
+        builder: (context, languageTranslationState, child) {
+      String currentLanguage = languageTranslationState.currentLanguage;
+
+      return ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        child: Consumer<ServiceFormState>(
+          builder: (context, serviceFormState, child) {
+            return Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(
+                    top: 10.0,
+                    left: 13.0,
+                    right: 13.0,
+                  ),
+                  child: EntryFormContainer(
+                    hiddenSections: serviceFormState.hiddenSections,
+                    hiddenFields: serviceFormState.hiddenFields,
+                    elevation: 0.0,
+                    formSections: widget.referralOutcomeFormSections,
+                    mandatoryFieldObject: referralOutcomeMandatoryFieldsObject,
+                    unFilledMandatoryFields: unFilledMandatoryFields,
+                    dataObject: serviceFormState.formState,
+                    isEditableMode: serviceFormState.isEditableMode,
+                    onInputValueChange: onInputValueChange,
+                  ),
                 ),
-                child: EntryFormContainer(
-                  hiddenSections: serviceFormState.hiddenSections,
-                  hiddenFields: serviceFormState.hiddenFields,
-                  elevation: 0.0,
-                  formSections: widget.referralOutcomeFormSections,
-                  mandatoryFieldObject: referralOutcomeMandatoryFieldsObject,
-                  unFilledMandatoryFields: unFilledMandatoryFields,
-                  dataObject: serviceFormState.formState,
-                  isEditableMode: serviceFormState.isEditableMode,
-                  onInputValueChange: onInputValueChange,
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: widget.themeColor,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () => isSaving
-                            ? null
-                            : onSaveForm(
-                                context,
-                                serviceFormState.formState,
-                                widget.eventData,
-                              ),
-                        child: Text(
-                          isSaving ? 'SAVING OUTCOME ...' : 'SAVE OUTCOME',
-                          style: const TextStyle().copyWith(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFFFAFAFA),
+                Container(
+                  decoration: BoxDecoration(
+                    color: widget.themeColor,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => isSaving
+                              ? null
+                              : onSaveForm(
+                                  context,
+                                  serviceFormState.formState,
+                                  widget.eventData,
+                                ),
+                          child: Text(
+                            isSaving
+                                ? currentLanguage == 'lesotho'
+                                    ? 'E ntse e boloka sephetho ...'
+                                    : 'SAVING OUTCOME ...'
+                                : currentLanguage == 'lesotho'
+                                    ? 'Boloka sephetho'
+                                    : 'SAVE OUTCOME',
+                            style: const TextStyle().copyWith(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFFFAFAFA),
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          );
-        },
-      ),
-    );
+                      )
+                    ],
+                  ),
+                )
+              ],
+            );
+          },
+        ),
+      );
+    });
   }
 }

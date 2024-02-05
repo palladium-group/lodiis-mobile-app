@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_enrollment/constants/ovc_intervention_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 
 class OvcEnrollmentConsent {
   static List<String> getMandatoryField() {
     return [
       'location',
+      'enrollmentDate',
       'OVaqHW5kimy',
       'JCI4nxcE4N6',
       'XVRQaLDDSpx',
@@ -23,17 +24,31 @@ class OvcEnrollmentConsent {
     return [
       FormSection(name: '', color: const Color(0xFF737373), inputFields: [
         InputField(
-            id: 'location',
-            name: 'Location',
-            translatedName: 'Sebaka',
-            valueType: 'ORGANISATION_UNIT',
-            allowedSelectedLevels: [
-                AppHierarchyReference.communityLevel,
-                AppHierarchyReference.facilityLevel
-              ],
-            filteredPrograms: [OvcInterventionConstant.program],
-            inputColor: const Color(0xFF4B9F46),
-            labelColor: const Color(0xFF737373)),
+          id: 'location',
+          name: 'Location',
+          translatedName: 'Sebaka',
+          valueType: 'ORGANISATION_UNIT',
+          allowedSelectedLevels: [
+            AppHierarchyReference.communityLevel,
+            AppHierarchyReference.facilityLevel
+          ],
+          filteredPrograms: [
+            OvcInterventionConstant.ovcProgramprogram,
+            OvcInterventionConstant.caregiverProgram,
+          ],
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF737373),
+        ),
+        InputField(
+          id: 'enrollmentDate',
+          isReadOnly: false,
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF737373),
+          name: 'Date of Enrollment to Program',
+          translatedName: "Letsatsi leo lelapa le keneng ka hara morero",
+          valueType: 'DATE',
+          allowFuturePeriod: false,
+        ),
         InputField(
             id: 'OVaqHW5kimy',
             name:

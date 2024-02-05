@@ -9,11 +9,8 @@ class OvchouseHoldAssessmentSkipLogic {
   static Map hiddenSections = {};
   static Map hiddenInputFieldOptions = {};
 
-  static Future evaluateSkipLogics(
-    BuildContext context,
-    List<FormSection> formSections,
-    Map dataObject,
-  ) async {
+  static Future evaluateSkipLogics(BuildContext context,
+      List<FormSection> formSections, Map dataObject, String? hivStatus) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
@@ -66,9 +63,14 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'AccHyrWqhI0' && value != '1') {
         hiddenFields['w6xeZ47TwwI'] = true;
       }
-      if (inputFieldId == 'BvNaiaoxc6w' && value != 'true') {
-        hiddenFields['Uv26fX0HQvO'] = true;
-        hiddenFields['T4grVrCVDkk'] = true;
+      if (inputFieldId == 'BvNaiaoxc6w') {
+        if (hivStatus != null) {
+          dataObject[inputFieldId] = 'true';
+        } else if (hivStatus == null) {
+          hiddenFields['Uv26fX0HQvO'] = true;
+          hiddenFields['T4grVrCVDkk'] = true;
+          dataObject[inputFieldId] = 'false';
+        }
       }
       if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
         hiddenFields['ubin7MjQ5OI'] = true;
@@ -98,35 +100,54 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['RWcOcPqBnFj'] = true;
       }
 
-      if (inputFieldId == 'T4grVrCVDkk' && value != 'true') {
-        hiddenFields['vNeOE9abQBB'] = true;
+      if (inputFieldId == 'T4grVrCVDkk') {
+        if (hivStatus != null) {
+          dataObject[inputFieldId] = "true";
+        } else {
+          hiddenFields['vNeOE9abQBB'] = true;
+        }
       }
 
-      if (inputFieldId == 'vNeOE9abQBB' && value != 'Positive') {
-        hiddenFields['blod3xZ2dPP'] = true;
-        hiddenFields['ubin7MjQ5OI'] = true;
-        hiddenFields['Icb6vUJXVDX'] = true;
+      if (inputFieldId == 'vNeOE9abQBB') {
+        if (hivStatus != null) {
+          dataObject[inputFieldId] = hivStatus;
+          if (dataObject[inputFieldId] != 'Positive') {
+            hiddenFields['blod3xZ2dPP'] = true;
+            hiddenFields['ubin7MjQ5OI'] = true;
+            hiddenFields['Icb6vUJXVDX'] = true;
+          }
+        }
       }
 
-      if (inputFieldId == 'vNeOE9abQBB' && value == 'Negative') {
-        hiddenFields['sLyfb45aLkl'] = true;
-        hiddenFields['aRNGDZcwWmS'] = true;
-        hiddenFields['KgLtXquRot3'] = true;
-        hiddenFields['why_choose_this_facility'] = true;
-        hiddenFields['WKT65kLT9AT'] = true;
-        hiddenFields['QgWzwLkRjul'] = true;
-        hiddenFields['I4M6NLNMbG3'] = true;
-        hiddenFields['FqLADURlSw6'] = true;
-        hiddenFields['NlWEhu1onQW'] = true;
-        hiddenFields['aUZ2HTFvI4A'] = true;
-        hiddenFields['WUwcEkmhaan'] = true;
-        hiddenFields['beztnfLGhxi'] = true;
+      if (inputFieldId == 'vNeOE9abQBB') {
+        if (hivStatus != null) {
+          dataObject[inputFieldId] = hivStatus;
+          if (dataObject[inputFieldId] == 'Negative') {
+            hiddenFields['sLyfb45aLkl'] = true;
+            hiddenFields['aRNGDZcwWmS'] = true;
+            hiddenFields['KgLtXquRot3'] = true;
+            hiddenFields['why_choose_this_facility'] = true;
+            hiddenFields['WKT65kLT9AT'] = true;
+            hiddenFields['QgWzwLkRjul'] = true;
+            hiddenFields['I4M6NLNMbG3'] = true;
+            hiddenFields['FqLADURlSw6'] = true;
+            hiddenFields['NlWEhu1onQW'] = true;
+            hiddenFields['aUZ2HTFvI4A'] = true;
+            hiddenFields['WUwcEkmhaan'] = true;
+            hiddenFields['beztnfLGhxi'] = true;
+          }
+        }
       }
 
-      if (inputFieldId == 'vNeOE9abQBB' && value == 'Positive') {
-        dynamic onArtToTreatHiv = dataObject['blod3xZ2dPP'] ?? '';
-        if ('$onArtToTreatHiv' == '0') {
-          hiddenFields['Icb6vUJXVDX'] = true;
+      if (inputFieldId == 'vNeOE9abQBB') {
+        if (hivStatus != null) {
+          dataObject[inputFieldId] = hivStatus;
+          if (dataObject[inputFieldId] == 'Positive') {
+            dynamic onArtToTreatHiv = dataObject['blod3xZ2dPP'] ?? '';
+            if ('$onArtToTreatHiv' == '0') {
+              hiddenFields['Icb6vUJXVDX'] = true;
+            }
+          }
         }
       }
 

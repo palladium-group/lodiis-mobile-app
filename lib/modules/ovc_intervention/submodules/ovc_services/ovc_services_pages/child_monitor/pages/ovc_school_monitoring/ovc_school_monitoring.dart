@@ -29,9 +29,11 @@ class _OvcSchoolMonitoringState extends State<OvcSchoolMonitoring> {
     Provider.of<ServiceFormState>(context, listen: false)
         .updateFormEditabilityState(isEditableMode: true);
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const OvcSchoolMonitoringForm()));
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OvcSchoolMonitoringForm(),
+      ),
+    );
   }
 
   void updateFormStateData(BuildContext context, Events eventData) {
@@ -39,6 +41,8 @@ class _OvcSchoolMonitoringState extends State<OvcSchoolMonitoring> {
         .setFormFieldState('eventDate', eventData.eventDate);
     Provider.of<ServiceFormState>(context, listen: false)
         .setFormFieldState('eventId', eventData.event);
+    Provider.of<ServiceFormState>(context, listen: false)
+        .setFormFieldState('location', eventData.orgUnit);
     for (Map dataValue in eventData.dataValues) {
       if (dataValue['value'] != '') {
         Provider.of<ServiceFormState>(context, listen: false)
@@ -56,9 +60,11 @@ class _OvcSchoolMonitoringState extends State<OvcSchoolMonitoring> {
     Provider.of<ServiceFormState>(context, listen: false)
         .updateFormEditabilityState(isEditableMode: isEditableMode);
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const OvcSchoolMonitoringForm()));
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OvcSchoolMonitoringForm(),
+      ),
+    );
   }
 
   void onViewSchoolMonitoring(
@@ -70,9 +76,11 @@ class _OvcSchoolMonitoringState extends State<OvcSchoolMonitoring> {
     Provider.of<ServiceFormState>(context, listen: false)
         .updateFormEditabilityState(isEditableMode: isEditableMode);
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const OvcSchoolMonitoringForm()));
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OvcSchoolMonitoringForm(),
+      ),
+    );
   }
 
   @override
@@ -119,11 +127,14 @@ class _OvcSchoolMonitoringState extends State<OvcSchoolMonitoring> {
                     var currentOvcHouseholdChild =
                         ovcHouseholdCurrentSelectionState
                             .currentOvcHouseholdChild!;
+                    var currentOvcHousehold =
+                        ovcHouseholdCurrentSelectionState.currentOvcHousehold!;
                     return Consumer<LanguageTranslationState>(
                       builder: (context, languageTranslationState, child) =>
                           Visibility(
                         visible:
-                            currentOvcHouseholdChild.enrollmentOuAccessible!,
+                            currentOvcHouseholdChild.hasExitedProgram != true &&
+                                currentOvcHousehold.hasExitedProgram != true,
                         child: EntryFormSaveButton(
                           label: languageTranslationState.isSesothoLanguage
                               ? "KENYA TLHOKOMELO"

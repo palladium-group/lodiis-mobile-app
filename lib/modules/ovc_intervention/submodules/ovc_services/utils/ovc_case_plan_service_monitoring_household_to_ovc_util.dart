@@ -12,37 +12,33 @@ class OvcCasePlanServiceMonitoringHouseholdToOvcUtil {
     required List<OvcHouseholdChild> childrens,
     required Map dataObject,
     required String domainId,
+    required String orgUnit,
+    required String eventDate,
   }) async {
     try {
-      List<FormSection> formSections =
-          OvcServicesOngoingMonitoring.getFormSections()
-              .where((formSection) => formSection.id == domainId)
-              .toList();
-      Map<String, dynamic> sanitizedDataObjects =
-          getSanitizedCaregiverDataObjects(
-              dataObject: dataObject, domainId: domainId);
-      if (sanitizedDataObjects.isNotEmpty) {
-        String casePlanDate = dataObject['casePlanDate'] ?? '';
-        String casePlanGapToMonitoringLinkage =
-            dataObject[OvcCasePlanConstant.casePlanGapToMonitoringLinkage] ??
-                '';
-        for (OvcHouseholdChild child in childrens) {
-          Map<String, dynamic> dataObject =
-              await getChildServiceProvisionObject(casePlanDate, child,
-                  casePlanGapToMonitoringLinkage, sanitizedDataObjects);
-          if (dataObject.isNotEmpty) {
-            await TrackedEntityInstanceUtil
-                .savingTrackedEntityInstanceEventData(
-              OvcChildCasePlanConstant.program,
-              OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage,
-              child.orgUnit,
-              formSections,
-              dataObject,
-              dataObject['eventDate'],
-              child.id,
-              dataObject['eventId'],
-              [OvcCasePlanConstant.casePlanGapToMonitoringLinkage],
-            );
+      List<FormSection> formSections = OvcServicesOngoingMonitoring.getFormSections()
+          .where((formSection) => formSection.id == domainId)
+          .toList();
+      String casePlanDate = dataObject['casePlanDate'] ?? '';
+      String casePlanGapToMonitoringLinkage =
+          dataObject[OvcCasePlanConstant.casePlanGapToMonitoringLinkage] ?? '';
+      for (OvcHouseholdChild child in childrens) {
+        Map<String, dynamic> sanitizedDataObjects = getSanitizedCaregiverDataObjects(
+            dataObject: dataObject, domainId: domainId, child: child);
+        if (sanitizedDataObjects.isNotEmpty) {
+          Map<String, dynamic> childDataObject = await getChildServiceProvisionObject(
+              casePlanDate, child, casePlanGapToMonitoringLinkage, sanitizedDataObjects);
+          if (childDataObject.isNotEmpty) {
+            await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+                OvcChildCasePlanConstant.program,
+                OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage,
+                orgUnit,
+                formSections,
+                dataObject,
+                eventDate,
+                child.id,
+                dataObject['eventId'],
+                [OvcCasePlanConstant.casePlanGapToMonitoringLinkage]);
           }
         }
       }
@@ -58,14 +54,12 @@ class OvcCasePlanServiceMonitoringHouseholdToOvcUtil {
     Map<String, dynamic> sanitizedDataObjects,
   ) async {
     Map<String, dynamic> dataObject = {};
-    List<CasePlanGapServiceMonitoringEvent> gapServiceProvisions =
-        await OvcCasePlanService().getCasePlanServiceMonitoringEvents(
+    List<CasePlanGapServiceMonitoringEvent> gapServiceProvisions = await OvcCasePlanService()
+        .getCasePlanServiceMonitoringEvents(
             date: casePlanDate,
-            programStageId: OvcChildCasePlanConstant
-                .casePlanGapServiceMonitoringProgramStage,
+            programStageId: OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage,
             teiId: child.id!,
-            casePlanGapToServiceMonitoringLinkage:
-                casePlanGapToServiceMonitoringLinkage);
+            casePlanGapToServiceMonitoringLinkage: casePlanGapToServiceMonitoringLinkage);
     if (gapServiceProvisions.isNotEmpty) {
       dataObject = gapServiceProvisions.first.toDataObject();
     }
@@ -76,11 +70,16 @@ class OvcCasePlanServiceMonitoringHouseholdToOvcUtil {
   static Map<String, dynamic> getSanitizedCaregiverDataObjects({
     required Map dataObject,
     required String domainId,
+    required OvcHouseholdChild child,
   }) {
     Map<String, dynamic> sanitizedDataObjects = {};
-    List<String> validFields = OvcChildCasePlanConstant
-            .domainToAutopopuledCasePlanServiceMonitoring[domainId] ??
-        [];
+    int age = int.tryParse(child.age ?? '') ?? 0;
+    Map domainConfig =
+        OvcChildCasePlanConstant.domainToAutopopuledCasePlanServiceMonitoring[domainId] ?? {};
+    List<String> validFields = OvcChildCasePlanConstant.getValidIdForAutoPopulatingServiceData(
+      domainConfig: domainConfig,
+      age: age,
+    );
     for (String key in dataObject.keys) {
       if (validFields.contains(key)) {
         sanitizedDataObjects[key] = dataObject[key];

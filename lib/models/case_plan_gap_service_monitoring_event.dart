@@ -14,6 +14,8 @@ class CasePlanGapServiceMonitoringEvent {
     this.casePlanGapToServiceMonitoringLinkage,
   });
 
+  bool get canCurrentUserEdit => eventData?.enrollmentOuAccessible == true;
+
   Map<String, dynamic> toDataObject() {
     Map<String, dynamic> dataObject = {
       "eventId": id,

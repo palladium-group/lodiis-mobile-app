@@ -48,6 +48,8 @@ class _OvcHouseholdGraduationState extends State<OvcHouseholdGraduation> {
           .setFormFieldState('eventDate', graduation.eventDate);
       Provider.of<ServiceFormState>(context, listen: false)
           .setFormFieldState('eventId', graduation.event);
+      Provider.of<ServiceFormState>(context, listen: false)
+          .setFormFieldState('location', graduation.orgUnit);
       for (Map dataValue in graduation.dataValues) {
         if (dataValue['value'] != '') {
           Provider.of<ServiceFormState>(context, listen: false)
@@ -157,6 +159,10 @@ class _OvcHouseholdGraduationState extends State<OvcHouseholdGraduation> {
                                         child:
                                             OvcHouseholdGraduationListContainer(
                                           programStageIds: programStageIds,
+                                          hasBeneficiaryExited:
+                                              currentOvcHousehold
+                                                      ?.hasExitedProgram ==
+                                                  true,
                                           onEditHouseholdAchievement:
                                               (Events graduation) =>
                                                   onEditHouseholdAchievement(
@@ -175,8 +181,9 @@ class _OvcHouseholdGraduationState extends State<OvcHouseholdGraduation> {
                                       ),
                                       Visibility(
                                         visible: !isLoading &&
-                                            currentOvcHousehold!
-                                                .enrollmentOuAccessible!,
+                                            currentOvcHousehold
+                                                    ?.hasExitedProgram !=
+                                                true,
                                         child: EntryFormSaveButton(
                                           label: currentLanguage == 'lesotho'
                                               ? 'Graduation e ncha'

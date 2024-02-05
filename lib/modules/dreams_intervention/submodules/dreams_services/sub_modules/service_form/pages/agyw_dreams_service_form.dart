@@ -45,6 +45,7 @@ class AgywDreamsServiceForm extends StatefulWidget {
 
 class _AgywDreamsServiceFormState extends State<AgywDreamsServiceForm> {
   final String label = 'Service Form';
+  final String translatedLabel = 'Foromo ea Tšebeletso';
   final String sessionNumberInputField = 'vL6NpUA0rIU';
   final String typeOfIntervention = 'Eug4BXDFLym';
   List<FormSection>? formSections;
@@ -103,13 +104,15 @@ class _AgywDreamsServiceFormState extends State<AgywDreamsServiceForm> {
         program: AgywDreamsEnrollmentConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields.addAll(FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
-      ));
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+      mandatoryFields.addAll(
+        FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        ),
+      );
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -210,6 +213,7 @@ class _AgywDreamsServiceFormState extends State<AgywDreamsServiceForm> {
               'eventSessions'
             ];
             String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+            orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
             try {
               await TrackedEntityInstanceUtil
                   .savingTrackedEntityInstanceEventData(
@@ -332,6 +336,7 @@ class _AgywDreamsServiceFormState extends State<AgywDreamsServiceForm> {
                 interventionCardState.currentInterventionProgram;
             return SubPageAppBar(
               label: label,
+              translatedName: translatedLabel,
               activeInterventionProgram: activeInterventionProgram,
             );
           },
@@ -385,7 +390,9 @@ class _AgywDreamsServiceFormState extends State<AgywDreamsServiceForm> {
                                     visible: serviceFormState.isEditableMode,
                                     child: EntryFormSaveButton(
                                       label: isSaving
-                                          ? 'Saving ...'
+                                          ? currentLanguage == 'lesotho'
+                                              ? 'E ntse e boloka...'
+                                              : 'Saving ...'
                                           : currentLanguage == 'lesotho'
                                               ? 'Boloka'
                                               : 'Save',

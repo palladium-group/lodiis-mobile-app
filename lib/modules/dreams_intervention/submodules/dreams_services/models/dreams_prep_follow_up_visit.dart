@@ -13,14 +13,19 @@ class DreamsPrepFollowUpVisit {
     return [
       FormSection(
           name: 'Visit Type',
+          translatedName: 'Mofuta oa ketelo',
           color: const Color(0xFF737373),
           inputFields: [
             InputField(
               id: 'oIrEIqHBvJ5',
               name: 'Select visit type',
+              translatedName: 'Khetha mofuta oa ketelo',
               valueType: 'TEXT',
               options: [
-                InputFieldOption(code: 'Normal Visit', name: 'Normal Visit'),
+                InputFieldOption(
+                    code: 'Normal Visit',
+                    name: 'Normal Visit',
+                    translatedName: 'Ketelo e Tloaelehileng'),
                 InputFieldOption(code: 'Case Transfer', name: 'Case Transfer'),
                 InputFieldOption(code: 'Stopping PrEP', name: 'Stopping PrEP')
               ],
@@ -42,6 +47,7 @@ class DreamsPrepFollowUpVisit {
             InputField(
                 id: 'gCvMVscBNfk',
                 name: 'Weight',
+                translatedName: "Boima ba 'mele",
                 valueType: 'NUMBER',
                 suffixLabel: 'Kg',
                 inputColor: const Color(0xFF258DCC),
@@ -69,6 +75,7 @@ class DreamsPrepFollowUpVisit {
             InputField(
                 id: 'm0G5RLlWR9W',
                 name: 'Date of test',
+                translatedName: 'Letsatsi la tlhahlobo',
                 valueType: 'DATE',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373)),
@@ -105,13 +112,16 @@ class DreamsPrepFollowUpVisit {
                 labelColor: const Color(0xFF737373),
                 options: [
                   InputFieldOption(
-                      code: 'Treated for STI', name: 'Treated for STI'),
+                      code: 'Treated for STI',
+                      name: 'Treated for STI',
+                      translatedName: 'Alafuoe bakeng sa mafu a likobo'),
                   InputFieldOption(
                       code: 'Not treated for STI', name: 'Not treated for STI')
                 ]),
             InputField(
                 id: 'sdgj99xGuv3',
                 name: 'Number of condoms provided',
+                translatedName: 'Palo ea likhohlopo tse fanoeng',
                 valueType: 'NUMBER',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373)),
@@ -175,6 +185,7 @@ class DreamsPrepFollowUpVisit {
             InputField(
                 id: 'jjz5PgokIho',
                 name: 'Date of next visit',
+                translatedName: 'Letsatsi la ketelo e latelang',
                 disablePastPeriod: true,
                 allowFuturePeriod: true,
                 valueType: 'DATE',
@@ -189,6 +200,7 @@ class DreamsPrepFollowUpVisit {
             InputField(
                 id: 'MelgOQY7mDx',
                 name: 'Transfer date',
+                translatedName: 'Letsatsi la phetisetso',
                 valueType: 'DATE',
                 allowFuturePeriod: true,
                 inputColor: const Color(0xFF258DCC),

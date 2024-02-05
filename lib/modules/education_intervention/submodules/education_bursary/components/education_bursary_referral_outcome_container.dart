@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/line_separator.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
@@ -57,6 +58,9 @@ class EducationBursaryReferralOutComeContainer extends StatelessWidget {
     Events? eventData,
   ) async {
     updateFormState(context, isEditableMode, eventData);
+    String currentLanguage =
+        Provider.of<LanguageTranslationState>(context, listen: false)
+            .currentLanguage;
     Provider.of<ServiceFormState>(context, listen: false).setFormFieldState(
         BursaryInterventionConstant
             .clubAttendanceReferralToReferralOutcomeLinkage,
@@ -77,7 +81,9 @@ class EducationBursaryReferralOutComeContainer extends StatelessWidget {
       context,
       modal,
       true,
-      title: 'Referral Outcome',
+      title: currentLanguage == 'lesotho'
+          ? 'Sephetho sa phetisetso'
+          : 'Referral Outcome',
     );
   }
 
@@ -188,105 +194,114 @@ class EducationBursaryReferralOutComeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> programStageIds = [
-      BursaryInterventionConstant.clubAttendanceReferralOutcomeProgamStage
-    ];
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageTranslationState, child) {
+        String currentLanguage = languageTranslationState.currentLanguage;
 
-    return Consumer<ServiceEventDataState>(
-        builder: (context, serviceEventDataState, child) {
-      bool isLoading = serviceEventDataState.isLoading;
-      Map<String?, List<Events>> eventListByProgramStage =
-          serviceEventDataState.eventListByProgramStage;
-      List<Events> events = TrackedEntityInstanceUtil
-          .getAllEventListFromServiceDataStateByProgramStages(
-              eventListByProgramStage, programStageIds);
-      List<BursaryReferralOutcomeEvent> referralOutcomeEvents = events
-          .map((Events eventData) =>
-              BursaryReferralOutcomeEvent().fromTeiModel(eventData))
-          .toList()
-          .where((BursaryReferralOutcomeEvent referralOutcomeEvent) =>
-              referralOutcomeEvent.referralToReferralOutcomeLinkage ==
-              bursaryReferral.referralToReferralOutcomeLinkage)
-          .toList();
-      bool shouldAddOutcome = referralOutcomeEvents.isEmpty;
-      return isLoading
-          ? const CircularProcessLoader(
-              color: Colors.blueGrey,
-            )
-          : Column(
-              children: [
-                Visibility(
-                  visible: shouldAddOutcome &&
-                      bursaryReferral.enrollmentOuAccessible!,
-                  child: LineSeparator(
-                    color: const Color(0xFF009688).withOpacity(0.3),
-                  ),
-                ),
-                Container(
-                  child: shouldAddOutcome
-                      ? Visibility(
-                          visible: bursaryReferral.enrollmentOuAccessible!,
-                          child: _getActionButton(
-                            backgroundColor:
-                                const Color(0xFF009688).withOpacity(0.1),
-                            label: 'ADD OUTCOME',
-                            labelColor: const Color(0xFF009688),
-                            onTap: () => onAddingOutcome(context),
-                          ))
-                      : Container(
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 15.0,
-                            horizontal: 15.0,
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(0xFFB2B7B9),
+        List<String> programStageIds = [
+          BursaryInterventionConstant.clubAttendanceReferralOutcomeProgamStage
+        ];
+
+        return Consumer<ServiceEventDataState>(
+            builder: (context, serviceEventDataState, child) {
+          bool isLoading = serviceEventDataState.isLoading;
+          Map<String?, List<Events>> eventListByProgramStage =
+              serviceEventDataState.eventListByProgramStage;
+          List<Events> events = TrackedEntityInstanceUtil
+              .getAllEventListFromServiceDataStateByProgramStages(
+                  eventListByProgramStage, programStageIds);
+          List<BursaryReferralOutcomeEvent> referralOutcomeEvents = events
+              .map((Events eventData) =>
+                  BursaryReferralOutcomeEvent().fromTeiModel(eventData))
+              .toList()
+              .where((BursaryReferralOutcomeEvent referralOutcomeEvent) =>
+                  referralOutcomeEvent.referralToReferralOutcomeLinkage ==
+                  bursaryReferral.referralToReferralOutcomeLinkage)
+              .toList();
+          bool shouldAddOutcome = referralOutcomeEvents.isEmpty;
+          return isLoading
+              ? const CircularProcessLoader(
+                  color: Colors.blueGrey,
+                )
+              : Column(
+                  children: [
+                    Visibility(
+                      visible: shouldAddOutcome &&
+                          bursaryReferral.enrollmentOuAccessible!,
+                      child: LineSeparator(
+                        color: const Color(0xFF009688).withOpacity(0.3),
+                      ),
+                    ),
+                    Container(
+                      child: shouldAddOutcome
+                          ? Visibility(
+                              visible: bursaryReferral.enrollmentOuAccessible!,
+                              child: _getActionButton(
+                                backgroundColor:
+                                    const Color(0xFF009688).withOpacity(0.1),
+                                label: currentLanguage == 'lesotho'
+                                    ? 'kenya Sephetho'
+                                    : 'ADD OUTCOME',
+                                labelColor: const Color(0xFF009688),
+                                onTap: () => onAddingOutcome(context),
+                              ))
+                          : Container(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 15.0,
+                                horizontal: 15.0,
                               ),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: Column(
-                              children: referralOutcomeEvents
-                                  .map(
-                                    (BursaryReferralOutcomeEvent
-                                            referralOutcomeEvent) =>
-                                        Column(
-                                      children: [
-                                        EducationBursaryReferralOutcomeCard(
-                                          referralOutcomeEvent:
-                                              referralOutcomeEvent,
-                                          onEditReferralOutcome: () =>
-                                              onEditOutcome(context,
-                                                  referralOutcomeEvent),
-                                        ),
-                                        EdcucationBursaryReferralOutcomeFollowUpContainer(
-                                          referralOutcomeEvent:
-                                              referralOutcomeEvent,
-                                          isFollowingUpNeeded:
-                                              referralOutcomeEvent
-                                                  .isRequireFollowUp!,
-                                          onAddOutComeFollowingUp: () =>
-                                              onAddOutComeFollowingUp(context,
-                                                  referralOutcomeEvent),
-                                          editAddOutComeFollowingUp:
-                                              (BursaryReferralOutcomeFollowUpEvent
-                                                      referralOutcomeFollowUpEvent) =>
-                                                  onEditOutComeFollowingUp(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(0xFFB2B7B9),
+                                  ),
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                child: Column(
+                                  children: referralOutcomeEvents
+                                      .map(
+                                        (BursaryReferralOutcomeEvent
+                                                referralOutcomeEvent) =>
+                                            Column(
+                                          children: [
+                                            EducationBursaryReferralOutcomeCard(
+                                              referralOutcomeEvent:
+                                                  referralOutcomeEvent,
+                                              onEditReferralOutcome: () =>
+                                                  onEditOutcome(context,
+                                                      referralOutcomeEvent),
+                                            ),
+                                            EdcucationBursaryReferralOutcomeFollowUpContainer(
+                                              referralOutcomeEvent:
+                                                  referralOutcomeEvent,
+                                              isFollowingUpNeeded:
+                                                  referralOutcomeEvent
+                                                      .isRequireFollowUp!,
+                                              onAddOutComeFollowingUp: () =>
+                                                  onAddOutComeFollowingUp(
                                                       context,
-                                                      referralOutcomeEvent,
-                                                      referralOutcomeFollowUpEvent
-                                                          .eventData!),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                  .toList(),
+                                                      referralOutcomeEvent),
+                                              editAddOutComeFollowingUp:
+                                                  (BursaryReferralOutcomeFollowUpEvent
+                                                          referralOutcomeFollowUpEvent) =>
+                                                      onEditOutComeFollowingUp(
+                                                          context,
+                                                          referralOutcomeEvent,
+                                                          referralOutcomeFollowUpEvent
+                                                              .eventData!),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                ),
-              ],
-            );
-    });
+                    ),
+                  ],
+                );
+        });
+      },
+    );
   }
 }

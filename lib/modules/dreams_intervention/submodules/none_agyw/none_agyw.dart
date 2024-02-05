@@ -18,6 +18,7 @@ import 'package:kb_mobile_app/modules/dreams_intervention/submodules/none_agyw/c
 import 'package:kb_mobile_app/modules/dreams_intervention/submodules/none_agyw/pages/non_agyw_dreams_hts_consent_form.dart';
 import 'package:kb_mobile_app/modules/dreams_intervention/submodules/none_agyw/sub_pages/none_agyw_prep/none_agyw_prep.dart';
 import 'package:provider/provider.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
 class NoneAgyw extends StatefulWidget {
   const NoneAgyw({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class NoneAgyw extends StatefulWidget {
 
 class _NoneAgywState extends State<NoneAgyw> {
   final String title = 'BENEFICIARY LIST';
+  final String translatedTitle = "Lethathamo la bana ka hara morero";
   final bool canEdit = true;
   final bool canView = true;
   final bool canExpand = true;
@@ -87,109 +89,121 @@ class _NoneAgywState extends State<NoneAgyw> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DreamsInterventionListState>(
-      builder: (context, dreamInterventionListState, child) {
-        return SubModuleHomeContainer(
-          header:
-              '$title : ${dreamInterventionListState.numberOfNoneAgywDreamsBeneficiaries} beneficiaries',
-          bodyContents: _buildBody(),
-        );
-      },
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) =>
+          Consumer<DreamsInterventionListState>(
+        builder: (context, dreamInterventionListState, child) {
+          return SubModuleHomeContainer(
+            header: languageState.currentLanguage == 'lesotho'
+                ? '$translatedTitle : ${dreamInterventionListState.numberOfNoneAgywDreamsBeneficiaries} Ba unang melemo ka hare ho morero'
+                : '$title : ${dreamInterventionListState.numberOfNoneAgywDreamsBeneficiaries} beneficiaries',
+            bodyContents: _buildBody(),
+          );
+        },
+      ),
     );
   }
 
   Widget _buildBody() {
-    return Consumer<DreamsInterventionListState>(
-        builder: (context, dreamInterventionListState, child) {
-      return RefreshIndicator(
-        onRefresh: () async =>
-            refreshBeneficiaryList(dreamInterventionListState),
-        child: CustomPaginatedListView(
-          emptyListWidget: Center(
-            child: Column(
-              children: [
-                const Text(
-                  'There is no beneficiary list at a moment',
-                ),
-                IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/add-beneficiary.svg',
-                    colorFilter: const ColorFilter.mode(
-                      Colors.blueGrey,
-                      BlendMode.srcIn,
-                    ),
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) =>
+          Consumer<DreamsInterventionListState>(
+              builder: (context, dreamInterventionListState, child) {
+        return RefreshIndicator(
+          onRefresh: () async =>
+              refreshBeneficiaryList(dreamInterventionListState),
+          child: CustomPaginatedListView(
+            emptyListWidget: Center(
+              child: Column(
+                children: [
+                  Text(
+                    languageState.currentLanguage == 'lesotho'
+                        ? 'Ha hona lethathamo la bana'
+                        : 'There is no beneficiary list at a moment',
                   ),
-                  onPressed: () => onAddNoneAgywBeneficiary(context),
-                )
-              ],
-            ),
-          ),
-          errorWidget: const Center(
-            child: Text(
-              'There is no beneficiary list at a moment',
-            ),
-          ),
-          pagingController: dreamInterventionListState.nonAgywPagingController,
-          childBuilder: (context, agywBeneficiary, child) {
-            List dataObject =
-                agywBeneficiary.trackedEntityInstanceData.attributes;
-            List filteredDataObject = dataObject
-                .where((element) =>
-                    element['attribute'] ==
-                    NonAgywDreamsHTSConstant.hivResultStatus)
-                .toList();
-            bool isBeneficiaryHIVNegative = false;
-            if (filteredDataObject.isNotEmpty) {
-              isBeneficiaryHIVNegative =
-                  filteredDataObject.first['value'] == 'Negative';
-            }
-            return DreamsBeneficiaryCard(
-              isAgywEnrollment: false,
-              agywDream: agywBeneficiary,
-              canEdit: canEdit,
-              canExpand: canExpand,
-              beneficiaryName: agywBeneficiary.toString(),
-              canView: canView,
-              isExpanded: agywBeneficiary.id == toggleCardId,
-              onCardToggle: () {
-                onCardToggle(
-                  context,
-                  agywBeneficiary.id,
-                );
-              },
-              cardBody: DreamsBeneficiaryCardBody(
-                agywBeneficiary: agywBeneficiary,
-                canViewServiceCategory: false,
-                isVerticalLayout: agywBeneficiary.id == toggleCardId,
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/add-beneficiary.svg',
+                      colorFilter: const ColorFilter.mode(
+                        Colors.blueGrey,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    onPressed: () => onAddNoneAgywBeneficiary(context),
+                  )
+                ],
               ),
-              cardButtonActions: isBeneficiaryHIVNegative
-                  ? Column(
-                      children: [
-                        const LineSeparator(
-                          color: Color(0xFFE9F4FA),
-                        ),
-                        MaterialButton(
-                          onPressed: () => onOpenPrep(
-                            context,
-                            agywBeneficiary,
+            ),
+            errorWidget: Center(
+              child: Text(
+                languageState.currentLanguage == 'lesotho'
+                    ? 'Ha hona lethathamo la bana'
+                    : 'There is no beneficiary list at a moment',
+              ),
+            ),
+            pagingController:
+                dreamInterventionListState.nonAgywPagingController,
+            childBuilder: (context, agywBeneficiary, child) {
+              List dataObject =
+                  agywBeneficiary.trackedEntityInstanceData.attributes;
+              List filteredDataObject = dataObject
+                  .where((element) =>
+                      element['attribute'] ==
+                      NonAgywDreamsHTSConstant.hivResultStatus)
+                  .toList();
+              bool isBeneficiaryHIVNegative = false;
+              if (filteredDataObject.isNotEmpty) {
+                isBeneficiaryHIVNegative =
+                    filteredDataObject.first['value'] == 'Negative';
+              }
+              return DreamsBeneficiaryCard(
+                isAgywEnrollment: false,
+                agywDream: agywBeneficiary,
+                canEdit: canEdit,
+                canExpand: canExpand,
+                beneficiaryName: agywBeneficiary.toString(),
+                canView: canView,
+                isExpanded: agywBeneficiary.id == toggleCardId,
+                onCardToggle: () {
+                  onCardToggle(
+                    context,
+                    agywBeneficiary.id,
+                  );
+                },
+                cardBody: DreamsBeneficiaryCardBody(
+                  agywBeneficiary: agywBeneficiary,
+                  canViewServiceCategory: false,
+                  isVerticalLayout: agywBeneficiary.id == toggleCardId,
+                ),
+                cardButtonActions: isBeneficiaryHIVNegative
+                    ? Column(
+                        children: [
+                          const LineSeparator(
+                            color: Color(0xFFE9F4FA),
                           ),
-                          child: Text(
-                            'PREP',
-                            style: const TextStyle().copyWith(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.normal,
-                              color: const Color(0xFF1F8ECE),
+                          MaterialButton(
+                            onPressed: () => onOpenPrep(
+                              context,
+                              agywBeneficiary,
                             ),
-                          ),
-                        )
-                      ],
-                    )
-                  : Container(),
-              cardButtonContent: Container(),
-            );
-          },
-        ),
-      );
-    });
+                            child: Text(
+                              'PREP',
+                              style: const TextStyle().copyWith(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.normal,
+                                color: const Color(0xFF1F8ECE),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    : Container(),
+                cardButtonContent: Container(),
+              );
+            },
+          ),
+        );
+      }),
+    );
   }
 }

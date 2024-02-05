@@ -40,6 +40,7 @@ class EducationBursaryReferralFormPage extends StatefulWidget {
 class _EducationBursaryReferralFormPageState
     extends State<EducationBursaryReferralFormPage> {
   final String label = 'Referral Form';
+  final String translatedLabel = 'Foromo ea phetisetso';
   List<FormSection>? formSections;
   List<FormSection>? defaultFormSections;
   List<String> mandatoryFields =
@@ -142,6 +143,7 @@ class _EducationBursaryReferralFormPageState
         referralToReferralOutcomeLinkage
       ];
       String orgUnit = dataObject['location'] ?? lbseBeneficiary.orgUnit;
+      orgUnit = orgUnit.isEmpty ? lbseBeneficiary.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           BursaryInterventionConstant.program,
@@ -250,6 +252,7 @@ class _EducationBursaryReferralFormPageState
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedLabel,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },
@@ -308,7 +311,9 @@ class _EducationBursaryReferralFormPageState
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

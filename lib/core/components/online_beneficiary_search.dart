@@ -117,6 +117,9 @@ class _OnlineBeneficiarySearchState extends State<OnlineBeneficiarySearch> {
   }
 
   Future<void> onBeneficiarySearch(BuildContext context, String program) async {
+    String currentLanguage =
+        Provider.of<LanguageTranslationState>(context, listen: false)
+            .currentLanguage;
     FocusScope.of(context).requestFocus(FocusNode());
     List<OnlineBeneficiarySearchResult> searchedTeis = [];
     updateSearchResults();
@@ -128,8 +131,9 @@ class _OnlineBeneficiarySearchState extends State<OnlineBeneficiarySearch> {
       List<String> searchablePrograms =
           getSearchableProgramsByUserAccess(context, program);
       if (searchablePrograms.isEmpty) {
-        updateSearchResultMessage(
-            'You do not have searching access to this intervention');
+        updateSearchResultMessage(currentLanguage == 'lesotho'
+            ? "Ha u na tokelo ea ho batla lits'ebeletsong tsena"
+            : 'You do not have searching access to this intervention');
         return;
       }
 
@@ -209,9 +213,12 @@ class _OnlineBeneficiarySearchState extends State<OnlineBeneficiarySearch> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0),
-                                  child: const Text(
-                                    'Online Beneficiary Search',
-                                    style: TextStyle(
+                                  child: Text(
+                                    languageTranslationState.currentLanguage ==
+                                            'lesotho'
+                                        ? 'Batla ngoana ka hare ho marang-rang'
+                                        : 'Online Beneficiary Search',
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16.0),
                                   ),
@@ -241,7 +248,11 @@ class _OnlineBeneficiarySearchState extends State<OnlineBeneficiarySearch> {
                                               }
                                           },
                                           child: Text(
-                                            'Search',
+                                            languageTranslationState
+                                                        .currentLanguage ==
+                                                    'lesotho'
+                                                ? "Batla"
+                                                : "Search",
                                             style: TextStyle(
                                                 color: canSearch()
                                                     ? primaryColor

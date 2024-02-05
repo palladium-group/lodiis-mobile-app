@@ -118,7 +118,6 @@ class _OvcServicesPageState extends State<OvcServicesPage> {
   }
 
   Widget _buildBody(String? currentLanguage) {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Consumer<OvcInterventionListState>(
       builder: (context, ovcListState, child) => RefreshIndicator(
         onRefresh: () async => refreshBeneficiaryList(ovcListState),
@@ -143,80 +142,87 @@ class _OvcServicesPageState extends State<OvcServicesPage> {
                       bottomLeft: Radius.circular(12.0),
                       bottomRight: Radius.circular(12.0),
                     ),
-              child: Container(
+              child: SizedBox(
                   height: 50.0,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Color(0XFFF6FAF6),
-                  ),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    itemExtent:
-                        screenWidth > 320 ? (screenWidth * 0.95) / 4 : null,
-                    shrinkWrap: true,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextButton(
-                          onPressed: () => onOpenHouseholdAssess(
-                            context,
-                            ovcHousehold,
-                          ),
-                          child: Text(
-                            'ASSESS',
-                            style: const TextStyle().copyWith(
-                              fontSize: 12.0,
-                              color: const Color(0xFF4B9F46),
-                              fontWeight: FontWeight.w500,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0XFFF6FAF6),
+                    ),
+                    child: Center(
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextButton(
+                              onPressed: () => onOpenHouseholdAssess(
+                                context,
+                                ovcHousehold,
+                              ),
+                              child: Text(
+                                currentLanguage == 'lesotho'
+                                    ? 'HLAHLOBA'
+                                    : 'ASSESS',
+                                style: const TextStyle().copyWith(
+                                  fontSize: 12.0,
+                                  color: const Color(0xFF4B9F46),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => onOpenHouseholdCasePlan(
-                          context,
-                          ovcHousehold,
-                        ),
-                        child: Text(
-                          'PLAN',
-                          style: const TextStyle().copyWith(
-                            fontSize: 12.0,
-                            color: const Color(0xFF4B9F46),
-                            fontWeight: FontWeight.w500,
+                          TextButton(
+                            onPressed: () => onOpenHouseholdCasePlan(
+                              context,
+                              ovcHousehold,
+                            ),
+                            child: Text(
+                              currentLanguage == 'lesotho' ? 'MORALO' : 'PLAN',
+                              style: const TextStyle().copyWith(
+                                fontSize: 12.0,
+                                color: const Color(0xFF4B9F46),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => onOpenHouseholdService(
-                          context,
-                          ovcHousehold,
-                        ),
-                        child: Text(
-                          currentLanguage == 'lesotho'
-                              ? 'Litsebeletso'.toUpperCase()
-                              : 'SERVICES',
-                          style: const TextStyle().copyWith(
-                            fontSize: 12.0,
-                            color: const Color(0xFF4B9F46),
-                            fontWeight: FontWeight.w500,
+                          TextButton(
+                            onPressed: () => onOpenHouseholdService(
+                              context,
+                              ovcHousehold,
+                            ),
+                            child: Text(
+                              currentLanguage == 'lesotho'
+                                  ? 'Litsebeletso'.toUpperCase()
+                                  : 'SERVICES',
+                              style: const TextStyle().copyWith(
+                                fontSize: 12.0,
+                                color: const Color(0xFF4B9F46),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => onOpenHouseholdMonitor(
-                          context,
-                          ovcHousehold,
-                        ),
-                        child: Text(
-                          'MONITOR',
-                          style: const TextStyle().copyWith(
-                            fontSize: 12.0,
-                            color: const Color(0xFF4B9F46),
-                            fontWeight: FontWeight.w500,
+                          TextButton(
+                            onPressed: () => onOpenHouseholdMonitor(
+                              context,
+                              ovcHousehold,
+                            ),
+                            child: Text(
+                              currentLanguage == 'lesotho'
+                                  ? 'Etsa tlhahlobo e hlophisitsoeng'
+                                      .toUpperCase()
+                                  : 'MONITOR',
+                              style: const TextStyle().copyWith(
+                                fontSize: 12.0,
+                                color: const Color(0xFF4B9F46),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   )),
             ),
             cardButtonContent: OvcHouseholdCardButtonContent(

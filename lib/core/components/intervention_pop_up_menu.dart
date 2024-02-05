@@ -42,6 +42,8 @@ class InterventionPopUpMenu extends StatelessWidget {
                     return InterventionPopActionMenu(
                         id: interventionProgram.id,
                         name: 'Switch to ${interventionProgram.shortName}',
+                        translatedName:
+                            'Fetolela ho ${interventionProgram.shortName}',
                         color: interventionProgram.primaryColor,
                         fontWeight: FontWeight.bold);
                   },
@@ -59,8 +61,8 @@ class InterventionPopUpMenu extends StatelessWidget {
                             },
                             child: Column(
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                Wrap(
+                                  // mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
                                       margin: const EdgeInsets.symmetric(
@@ -71,6 +73,7 @@ class InterventionPopUpMenu extends StatelessWidget {
                                                 popUpMenu.translatedName != null
                                             ? popUpMenu.translatedName!
                                             : popUpMenu.name!,
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: popUpMenu.color,
                                             fontSize: 14.0,

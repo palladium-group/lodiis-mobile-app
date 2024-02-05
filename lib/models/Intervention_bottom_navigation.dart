@@ -18,11 +18,13 @@ class InterventionBottomNavigation {
     InterventionBottomNavigation(
       id: 'lbse',
       name: 'LBSE',
+      translatedName: 'LBSE',
       svgIcon: 'assets/icons/lbse-navigation-icon.svg',
     ),
     InterventionBottomNavigation(
       id: 'bursary',
       name: 'Bursary',
+      translatedName: 'Lihlapiso',
       svgIcon: 'assets/icons/bursary-navigation-icon.svg',
     ),
     InterventionBottomNavigation(
@@ -40,31 +42,37 @@ class InterventionBottomNavigation {
     InterventionBottomNavigation(
       id: 'referral',
       name: 'Referral',
+      translatedName: 'Phetisetso',
       svgIcon: 'assets/icons/referral-navigation-icon.svg',
     ),
     InterventionBottomNavigation(
       id: 'outGoingReferral',
       name: 'Outgoing Referral',
+      translatedName: 'Phetisetso e tsoelang',
       svgIcon: 'assets/icons/out-going-referral-navigation-icon.svg',
     ),
     InterventionBottomNavigation(
       id: 'incomingReferral',
       name: 'Incoming Referral',
+      translatedName: 'Phetisetso e kenang',
       svgIcon: 'assets/icons/incoming-referral-navigation-icon.svg',
     ),
     InterventionBottomNavigation(
       id: 'exit',
       name: 'Exit',
+      translatedName: 'Etsoa',
       svgIcon: 'assets/icons/exit-navigation-icon.svg',
     ),
     InterventionBottomNavigation(
       id: 'noneAgyw',
       name: 'KB PrEP',
+      translatedName: 'KB PrEP',
       svgIcon: 'assets/icons/none-agyw-navigation-icon.svg',
     ),
     InterventionBottomNavigation(
       id: 'records',
       name: 'Records',
+      translatedName: 'Litlaleho',
       svgIcon: 'assets/icons/records-navigation-icon.svg',
     ),
   ];

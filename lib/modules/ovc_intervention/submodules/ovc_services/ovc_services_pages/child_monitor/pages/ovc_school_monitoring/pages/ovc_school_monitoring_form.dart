@@ -11,6 +11,7 @@ import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
 import 'package:kb_mobile_app/core/components/sup_page_body.dart';
+import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
@@ -19,6 +20,7 @@ import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_child_info_top_header.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_school_monitoring.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_monitor/pages/ovc_school_monitoring/constants/ovc_school_monitoring_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_monitor/pages/ovc_school_monitoring/skip_logics/ovc_child_school_monitoring_skip_logic.dart';
@@ -33,21 +35,63 @@ class OvcSchoolMonitoringForm extends StatefulWidget {
 }
 
 class _OvcSchoolMonitoringFormState extends State<OvcSchoolMonitoringForm> {
+  String? currentLanguage;
   final String label = 'Child school performance monitoring tool';
+  final String translatedName =
+      'Sesebelisoa sa ho lekola tšebetso ea Sekolo sa Bana';
   List<FormSection>? formSections;
   bool isFormReady = false;
   bool isSaving = false;
+  Map mandatoryFieldObject = {};
+  List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
 
   @override
   void initState() {
     super.initState();
-    formSections = OvcSchoolMonitoring.getFormSections();
+    setFormSections();
     Timer(const Duration(seconds: 1), () {
       setState(() {
         isFormReady = true;
         evaluateSkipLogics();
       });
     });
+  }
+
+  void setFormSections() {
+    var currentOvc =
+        Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+            .currentOvcHouseholdChild;
+    var defaultFormSections = OvcSchoolMonitoring.getFormSections(
+        enrollmentDate: currentOvc?.createdDate ?? '');
+    if (currentOvc?.enrollmentOuAccessible == true) {
+      formSections = defaultFormSections;
+    } else {
+      FormSection serviceProvisionForm =
+          AppUtil.getServiceProvisionLocationSection(
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+              sectionLabelColor: const Color(0xFF4B9F46),
+              allowedSelectedLevels: [
+                AppHierarchyReference.communityLevel,
+              ],
+              program: OvcInterventionConstant.ovcProgramprogram,
+              formlabel: 'Service Monitoring Location');
+      formSections = [
+        serviceProvisionForm,
+        ...defaultFormSections,
+      ];
+      mandatoryFields = [
+        ...mandatoryFields,
+        ...FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        )
+      ];
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
+    }
   }
 
   evaluateSkipLogics() {
@@ -76,54 +120,78 @@ class _OvcSchoolMonitoringFormState extends State<OvcSchoolMonitoringForm> {
     Map dataObject,
     OvcHouseholdChild? currentOvcHouseholdChild,
   ) async {
-    if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
-      setState(() {
-        isSaving = true;
-      });
-      String? eventDate = dataObject['eventDate'];
-      String? eventId = dataObject['eventId'];
-      try {
-        await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcSchoolMonitoringConstant.program,
-            OvcSchoolMonitoringConstant.programStage,
-            currentOvcHouseholdChild!.orgUnit,
-            formSections!,
-            dataObject,
-            eventDate,
-            currentOvcHouseholdChild.id,
-            eventId,
-            null);
-        Provider.of<ServiceEventDataState>(context, listen: false)
-            .resetServiceEventDataState(currentOvcHouseholdChild.id);
-        Timer(const Duration(seconds: 1), () {
-          setState(() {
-            isSaving = false;
-          });
-          String? currentLanguage =
-              Provider.of<LanguageTranslationState>(context, listen: false)
-                  .currentLanguage;
-          AppUtil.showToastMessage(
-            message: currentLanguage == 'lesotho'
-                ? 'Fomo e bolokeile'
-                : 'Form has been saved successfully',
-            position: ToastGravity.TOP,
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    if (hadAllMandatoryFilled) {
+      if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
+        setState(() {
+          isSaving = true;
+        });
+        String? eventDate = dataObject['eventDate'];
+        String? eventId = dataObject['eventId'];
+        List<String> hiddenFields = [];
+        String orgUnit =
+            dataObject['location'] ?? currentOvcHouseholdChild?.orgUnit ?? '';
+        try {
+          await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+                  OvcSchoolMonitoringConstant.program,
+                  OvcSchoolMonitoringConstant.programStage,
+                  orgUnit,
+                  formSections!,
+                  dataObject,
+                  eventDate,
+                  currentOvcHouseholdChild?.id,
+                  eventId,
+                  hiddenFields)
+              .then(
+            (_) {
+              Provider.of<ServiceEventDataState>(context, listen: false)
+                  .resetServiceEventDataState(currentOvcHouseholdChild?.id);
+              Timer(const Duration(seconds: 1), () {
+                setState(() {
+                  isSaving = false;
+                });
+                String? currentLanguage = Provider.of<LanguageTranslationState>(
+                        context,
+                        listen: false)
+                    .currentLanguage;
+                AppUtil.showToastMessage(
+                  message: currentLanguage == 'lesotho'
+                      ? 'Fomo e bolokeile'
+                      : 'Form has been saved successfully',
+                  position: ToastGravity.TOP,
+                );
+                Navigator.pop(context);
+              });
+            },
           );
-          Navigator.pop(context);
-        });
-      } catch (e) {
-        Timer(const Duration(seconds: 1), () {
-          setState(() {
-            isSaving = false;
-            AppUtil.showToastMessage(
-                message: e.toString(), position: ToastGravity.BOTTOM);
-            Navigator.pop(context);
+        } catch (e) {
+          Timer(const Duration(seconds: 1), () {
+            setState(() {
+              isSaving = false;
+              AppUtil.showToastMessage(
+                  message: e.toString(), position: ToastGravity.BOTTOM);
+              Navigator.pop(context);
+            });
           });
-        });
+        }
+      } else {
+        AppUtil.showToastMessage(
+            message: 'Please fill at least one form field',
+            position: ToastGravity.TOP);
       }
     } else {
       AppUtil.showToastMessage(
-          message: 'Please fill at least one form field',
-          position: ToastGravity.TOP);
+        message: 'Please fill all mandatory field',
+      );
     }
   }
 
@@ -138,6 +206,7 @@ class _OvcSchoolMonitoringFormState extends State<OvcSchoolMonitoringForm> {
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedName,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },
@@ -177,7 +246,8 @@ class _OvcSchoolMonitoringFormState extends State<OvcSchoolMonitoringForm> {
                                           hiddenFields:
                                               serviceFormState.hiddenFields,
                                           formSections: formSections,
-                                          mandatoryFieldObject: const {},
+                                          mandatoryFieldObject:
+                                              mandatoryFieldObject,
                                           dataObject:
                                               serviceFormState.formState,
                                           isEditableMode:
@@ -191,7 +261,9 @@ class _OvcSchoolMonitoringFormState extends State<OvcSchoolMonitoringForm> {
                                             serviceFormState.isEditableMode,
                                         child: EntryFormSaveButton(
                                           label: isSaving
-                                              ? 'Saving ...'
+                                              ? currentLanguage == 'lesotho'
+                                                  ? 'E ntse e boloka...'
+                                                  : 'Saving ...'
                                               : currentLanguage == 'lesotho'
                                                   ? 'Boloka'
                                                   : 'Save',

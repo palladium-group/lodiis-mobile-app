@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/models/pp_prev_beneficiary.dart';
+import 'package:provider/provider.dart';
 
 class PpPrevBeneficiaryCardActionButtons extends StatelessWidget {
   const PpPrevBeneficiaryCardActionButtons({
@@ -19,78 +21,41 @@ class PpPrevBeneficiaryCardActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     var beneficiaryAge = int.parse(ppPrevBeneficiary.age ?? '');
     var beneficiarySex = ppPrevBeneficiary.sex;
-    return SizedBox(
-      height: 50.0,
-      child: Center(
-        child: ListView(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          children: [
-            InkWell(
-              onTap: onOpenServiceForm!,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 5.0,
-                ),
-                margin: const EdgeInsets.symmetric(
-                  vertical: 5.0,
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Services',
-                      style: const TextStyle().copyWith(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.normal,
-                        color: const Color(0xFF9B2BAE),
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) => SizedBox(
+        height: 50.0,
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            children: [
+              InkWell(
+                onTap: onOpenServiceForm!,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5.0,
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 5.0,
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Services',
+                        style: const TextStyle().copyWith(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.normal,
+                          color: const Color(0xFF9B2BAE),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            InkWell(
-              onTap: onOpenReferralForm!,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 5.0,
-                ),
-                margin: const EdgeInsets.symmetric(
-                  vertical: 5.0,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      width: 1,
-                      color: const Color(0xFF9B2BAE).withOpacity(0.4),
-                    ),
-                  ),
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Referrals',
-                      style: const TextStyle().copyWith(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.normal,
-                        color: const Color(0xFF9B2BAE),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Visibility(
-              visible: beneficiarySex == 'Male' &&
-                  beneficiaryAge >= 20 &&
-                  beneficiaryAge <= 49,
-              child: InkWell(
-                onTap: () {
-                  onOpenGenderNormsForm!();
-                },
+              InkWell(
+                onTap: onOpenReferralForm!,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 5.0,
@@ -110,7 +75,9 @@ class PpPrevBeneficiaryCardActionButtons extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Gender Norms',
+                        languageState.currentLanguage == 'lesotho'
+                            ? 'Liphetisetso'
+                            : 'Referrals',
                         style: const TextStyle().copyWith(
                           fontSize: 14.0,
                           fontWeight: FontWeight.normal,
@@ -121,8 +88,49 @@ class PpPrevBeneficiaryCardActionButtons extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          ],
+              Visibility(
+                visible: beneficiarySex == 'Male' &&
+                    beneficiaryAge >= 20 &&
+                    beneficiaryAge <= 49,
+                child: InkWell(
+                  onTap: () {
+                    onOpenGenderNormsForm!();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5.0,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        left: BorderSide(
+                          width: 1,
+                          color: const Color(0xFF9B2BAE).withOpacity(0.4),
+                        ),
+                      ),
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          languageState.currentLanguage == 'lesotho'
+                              ? 'Melao/litloahelo tsa tekano ea boleng'
+                              : 'Gender Norms',
+                          style: const TextStyle().copyWith(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.normal,
+                            color: const Color(0xFF9B2BAE),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

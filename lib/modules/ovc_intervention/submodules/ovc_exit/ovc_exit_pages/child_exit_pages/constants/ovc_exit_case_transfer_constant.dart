@@ -1,4 +1,3 @@
-class OvcExitInformationConstant {
-  static String program = 'em38qztTI8s';
+class OvcExitCaseTransferConstant {
   static String programStage = 'sFpMZtePzOy';
 }

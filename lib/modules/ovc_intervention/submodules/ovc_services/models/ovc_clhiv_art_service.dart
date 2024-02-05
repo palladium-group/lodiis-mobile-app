@@ -9,6 +9,15 @@ class OvcClhivArtService {
     return [
       'Yu00G1uhiYN',
       'RIpmBgYc0ZN',
+      'uVmlqLmHYpD',
+      'JgNSiXuArwl',
+      'wEKBn2SdrmA',
+      'FLI5NLYCqH9',
+      'QkoJ1afnMMK',
+      'IwM9O0a78QD',
+      'WKdeD28Oyn7',
+      'LaeDyUWYcoN',
+      'YxJQ58njlLM',
     ];
   }
 
@@ -22,6 +31,7 @@ class OvcClhivArtService {
           InputField(
             id: 'Yu00G1uhiYN',
             name: 'Name of FBSW',
+            translatedName: 'Lebetso la mosebeletsi oa sechaba',
             isReadOnly: true,
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
@@ -52,6 +62,7 @@ class OvcClhivArtService {
             id: 'wEKBn2SdrmA',
             name: 'CLHIV ART CARD Facility Obtaining ART',
             valueType: 'ORGANISATION_UNIT',
+            showCountryLevelTree: true,
             allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
@@ -73,9 +84,24 @@ class OvcClhivArtService {
           InputField(
             id: 'IwM9O0a78QD',
             name: 'CLHIV ART CARD: VL Results',
-            valueType: 'NUMBER',
+            valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
+            sortOptions: false,
+            options: [
+              InputFieldOption(
+                code: '<50 Copies',
+                name: '<50 Copies (suppressed and undetectable)',
+              ),
+              InputFieldOption(
+                code: '51 - 999 Copies',
+                name: '51 - 999 Copies (suppressed and detectable) ',
+              ),
+              InputFieldOption(
+                code: '>=1000 Copies',
+                name: '≥1000 Copies (unsuppressed and detectable)',
+              ),
+            ],
           ),
           InputField(
             id: 'WKdeD28Oyn7',
@@ -90,29 +116,33 @@ class OvcClhivArtService {
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
+            sortOptions: false,
             options: [
               InputFieldOption(
-                code: 'No',
-                name: 'No',
-                translatedName: 'Che',
+                  code: '<3 Months',
+                  name: '<3 Months',
+                  translatedName: 'Likhoeli tse 3'),
+              InputFieldOption(
+                code: '3-5 Months',
+                name: '3-5 Months',
               ),
               InputFieldOption(
-                code: '3 Months',
-                name: '3 Months',
-              ),
-              InputFieldOption(
-                code: '6 Months',
-                name: '6 Months',
-              ),
-              InputFieldOption(
-                code: 'Other (Specify)',
-                name: 'Other (Specify)',
-              )
+                  code: '>=6 Months',
+                  name: '≥6 Months',
+                  translatedName: 'Likhoeli tse 6'),
             ],
+          ),
+          InputField(
+            id: 'yWE2jEJxMdB',
+            name: 'Reason not on MMD',
+            valueType: 'TEXT',
+            inputColor: const Color(0xFF4B9F46),
+            labelColor: const Color(0xFF1A3518),
           ),
           InputField(
             id: 'YxJQ58njlLM',
             name: 'Specify Other',
+            translatedName: 'Hlalosa tse ling',
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),

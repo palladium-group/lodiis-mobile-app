@@ -1,12 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
+import 'package:kb_mobile_app/core/utils/app_util.dart';
+import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 
 class OvcExitCaseTransfer {
+  static List<String> getMandatoryFields() {
+    return FormUtil.getAllFormSectionInpiutFields(
+      getFormSections(
+        firstDate: '',
+      ),
+    );
+  }
+
   static List<FormSection> getFormSections({
     required String firstDate,
   }) {
     return [
+      AppUtil.getServiceProvisionEventDateSection(
+        inputColor: const Color(0xFF4A9F46),
+        labelColor: const Color(0xFF1A3518),
+        sectionLabelColor: const Color(0xFF0D3A16),
+        formSectionLabel: 'Case Transfer Info',
+        inputFieldLabel: 'Case Transfer On',
+        firstDate: firstDate,
+      ),
+      FormSection(
+        name: '',
+        color: const Color(0xFF1B3519),
+        inputFields: [
+          InputField(
+            id: 'Uou4yDFVQcH',
+            allowFuturePeriod: true,
+            name: 'Case Transfer Location',
+            allowedSelectedLevels: [
+              AppHierarchyReference.communityLevel,
+              AppHierarchyReference.facilityLevel
+            ],
+            valueType: 'ORGANISATION_UNIT',
+            inputColor: const Color(0xFF4B9F46),
+            labelColor: const Color(0xFF737373),
+          ),
+        ],
+      ),
       FormSection(
           name: 'Case Transfer Plan',
           color: const Color(0xFF1B3519),

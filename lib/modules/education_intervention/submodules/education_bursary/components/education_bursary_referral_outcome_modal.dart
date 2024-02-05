@@ -158,6 +158,7 @@ class _EducationBursaryReferralOutcomeModalState
         referralOutcomeToReferralOutComeFollowingUpLinkage
       ];
       String orgUnit = dataObject['location'] ?? bursaryBeneficiary?.orgUnit;
+      orgUnit = orgUnit.isEmpty ? bursaryBeneficiary?.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           BursaryInterventionConstant.program,
@@ -274,9 +275,11 @@ class _EducationBursaryReferralOutcomeModalState
                                   ),
                                   child: Text(
                                     isSaving
-                                        ? 'SAVING OUTCOME ...'
+                                        ? currentLanguage == 'lesotho'
+                                            ? 'E ntse e boloka sephetho ...'
+                                            : 'SAVING OUTCOME ...'
                                         : currentLanguage == 'lesotho'
-                                            ? 'SAVE OUTCOME'
+                                            ? 'Boloka sephetho'
                                             : 'SAVE OUTCOME',
                                     style: const TextStyle().copyWith(
                                       color: const Color(0xFFFAFAFA),

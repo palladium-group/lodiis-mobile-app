@@ -74,149 +74,162 @@ class _AgywDreamForReAssessmentState extends State<AgywDreamForReAssessment> {
 
   @override
   Widget build(BuildContext context) {
-    return makeFilterDismissible(
-        child: DraggableScrollableSheet(
-            initialChildSize: 0.8,
-            minChildSize: 0.25,
-            maxChildSize: 0.9,
-            builder: (BuildContext context, ScrollController scrollController) {
-              return Consumer<LanguageTranslationState>(
-                  builder: (context, languageTranslationState, child) {
-                return Consumer<InterventionCardState>(
-                    builder: (context, interventionCardState, child) {
-                  var lineColor = interventionCardState
-                      .currentInterventionProgram.countLabelColor;
-                  var backgroundColor = interventionCardState
-                      .currentInterventionProgram.background;
-                  var primary = interventionCardState
-                      .currentInterventionProgram.primaryColor;
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) => makeFilterDismissible(
+          child: DraggableScrollableSheet(
+              initialChildSize: 0.8,
+              minChildSize: 0.25,
+              maxChildSize: 0.9,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Consumer<LanguageTranslationState>(
+                    builder: (context, languageTranslationState, child) {
+                  return Consumer<InterventionCardState>(
+                      builder: (context, interventionCardState, child) {
+                    var lineColor = interventionCardState
+                        .currentInterventionProgram.countLabelColor;
+                    var backgroundColor = interventionCardState
+                        .currentInterventionProgram.background;
+                    var primary = interventionCardState
+                        .currentInterventionProgram.primaryColor;
 
-                  return Container(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(20)),
-                        color: Color.alphaBlend(
-                            backgroundColor ?? Colors.white, Colors.white)),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 8,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Text(
-                                    'AGYW DREAMS Beneficiaries for Re-assessment',
-                                    style: TextStyle(
-                                        color: primary,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16.0),
+                    return Container(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20)),
+                          color: Color.alphaBlend(
+                              backgroundColor ?? Colors.white, Colors.white)),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 8,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Text(
+                                      languageState.currentLanguage == 'lesotho'
+                                          ? 'AGYW DREAMS bajalefa bakeng sa tekolo botja'
+                                          : 'AGYW DREAMS Beneficiaries for Re-assessment',
+                                      style: TextStyle(
+                                          color: primary,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16.0),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        LineSeparator(color: lineColor!),
-                        SearchInput(
-                          onSearch: (String searchedValue) =>
-                              onSearchBeneficiary(
-                            context,
-                            searchedValue,
+                          LineSeparator(color: lineColor!),
+                          SearchInput(
+                            onSearch: (String searchedValue) =>
+                                onSearchBeneficiary(
+                              context,
+                              searchedValue,
+                            ),
                           ),
-                        ),
-                        Flexible(
-                          child: Consumer<DreamsRaAssessmentListState>(
-                            builder:
-                                (context, dreamsRaAssessmentListState, child) {
-                              return RefreshIndicator(
-                                onRefresh: () async {
-                                  dreamsRaAssessmentListState
-                                      .refreshBeneficiariesNumber();
-                                },
-                                child: CustomPaginatedListView(
-                                  childBuilder:
-                                      (context, agywBeneficiary, child) =>
-                                          DreamsBeneficiaryCard(
-                                    isAgywEnrollment: true,
-                                    agywDream: agywBeneficiary,
-                                    canEdit: canEdit,
-                                    canExpand: canExpand,
-                                    beneficiaryName: agywBeneficiary.toString(),
-                                    canView: canView,
-                                    isExpanded:
-                                        agywBeneficiary.id == toggleCardId,
-                                    onCardToggle: () {
-                                      onCardToggle(
-                                        context,
-                                        agywBeneficiary.id,
-                                      );
-                                    },
-                                    cardBody: DreamsBeneficiaryCardBody(
-                                      agywBeneficiary: agywBeneficiary,
-                                      canViewServiceCategory: false,
-                                      isVerticalLayout:
+                          Flexible(
+                            child: Consumer<DreamsRaAssessmentListState>(
+                              builder: (context, dreamsRaAssessmentListState,
+                                  child) {
+                                return RefreshIndicator(
+                                  onRefresh: () async {
+                                    dreamsRaAssessmentListState
+                                        .refreshBeneficiariesNumber();
+                                  },
+                                  child: CustomPaginatedListView(
+                                    childBuilder:
+                                        (context, agywBeneficiary, child) =>
+                                            DreamsBeneficiaryCard(
+                                      isAgywEnrollment: true,
+                                      agywDream: agywBeneficiary,
+                                      canEdit: canEdit,
+                                      canExpand: canExpand,
+                                      beneficiaryName:
+                                          agywBeneficiary.toString(),
+                                      canView: canView,
+                                      isExpanded:
                                           agywBeneficiary.id == toggleCardId,
-                                    ),
-                                    cardButtonActions: Column(
-                                      children: [
-                                        const LineSeparator(
-                                          color: Color(0xFFE9F4FA),
-                                        ),
-                                        MaterialButton(
-                                          onPressed: () => onReAssess(
-                                            context,
-                                            agywBeneficiary,
+                                      onCardToggle: () {
+                                        onCardToggle(
+                                          context,
+                                          agywBeneficiary.id,
+                                        );
+                                      },
+                                      cardBody: DreamsBeneficiaryCardBody(
+                                        agywBeneficiary: agywBeneficiary,
+                                        canViewServiceCategory: false,
+                                        isVerticalLayout:
+                                            agywBeneficiary.id == toggleCardId,
+                                      ),
+                                      cardButtonActions: Column(
+                                        children: [
+                                          const LineSeparator(
+                                            color: Color(0xFFE9F4FA),
                                           ),
-                                          child: Text(
-                                            'RE-ASSESS',
-                                            style: const TextStyle().copyWith(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: AgywDreamsCommonConstant
-                                                  .defaultColor,
+                                          MaterialButton(
+                                            onPressed: () => onReAssess(
+                                              context,
+                                              agywBeneficiary,
                                             ),
+                                            child: Text(
+                                              languageState.currentLanguage ==
+                                                      'lesotho'
+                                                  ? 'Lekola bocha'
+                                                  : 'RE-ASSESS',
+                                              style: const TextStyle().copyWith(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: AgywDreamsCommonConstant
+                                                    .defaultColor,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      cardButtonContent: Container(),
+                                    ),
+                                    pagingController:
+                                        dreamsRaAssessmentListState
+                                            .pagingController,
+                                    emptyListWidget: Column(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            languageState.currentLanguage ==
+                                                    'lesotho'
+                                                ? 'Ha hona lethathamo la bana'
+                                                : 'There is no beneficiary list at a moment',
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
-                                    cardButtonContent: Container(),
-                                  ),
-                                  pagingController: dreamsRaAssessmentListState
-                                      .pagingController,
-                                  emptyListWidget: const Column(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          'There is no beneficiary list at a moment',
-                                        ),
+                                    errorWidget: const Center(
+                                      child: Text(
+                                        'Error in loading beneficiary list ',
                                       ),
-                                    ],
-                                  ),
-                                  errorWidget: const Center(
-                                    child: Text(
-                                      'Error in loading beneficiary list ',
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                bottom:
-                                    MediaQuery.of(context).viewInsets.bottom))
-                      ],
-                    ),
-                  );
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom))
+                        ],
+                      ),
+                    );
+                  });
                 });
-              });
-            }));
+              })),
+    );
   }
 }

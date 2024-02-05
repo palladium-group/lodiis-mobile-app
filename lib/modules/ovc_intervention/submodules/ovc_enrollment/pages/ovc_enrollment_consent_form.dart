@@ -35,6 +35,7 @@ class OvcEnrollmentConsentForm extends StatefulWidget {
 class _OvcEnrollmentConsentFormState extends State<OvcEnrollmentConsentForm> {
   List<FormSection>? formSections;
   final String label = 'Consent Form';
+  final String translatedName = 'Foromo ea boitlamo';
   final List<String> consentFields = OvcEnrollmentConstant.getConsentFields();
   final List<String> mandatoryFields = OvcEnrollmentConsent.getMandatoryField();
   final Map mandatoryFieldObject = {};
@@ -142,6 +143,7 @@ class _OvcEnrollmentConsentFormState extends State<OvcEnrollmentConsentForm> {
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedName,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },
@@ -154,8 +156,8 @@ class _OvcEnrollmentConsentFormState extends State<OvcEnrollmentConsentForm> {
               horizontal: 13.0,
             ),
             child: !isFormReady
-                ? Column(
-                    children: const [
+                ? const Column(
+                    children: [
                       Center(
                         child: CircularProcessLoader(
                           color: Colors.blueGrey,

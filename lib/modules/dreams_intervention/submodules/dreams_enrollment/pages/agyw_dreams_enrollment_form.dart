@@ -39,6 +39,7 @@ class AgywDreamsEnrollmentForm extends StatefulWidget {
 class _AgywDreamsEnrollmentFormState extends State<AgywDreamsEnrollmentForm> {
   List<FormSection>? formSections;
   final String label = 'DREAMS Enrollment Form';
+  final String translatedLabel = 'Foromo ea ngoliso ea DREAMS';
   final List<String> mandatoryFields =
       AgywEnrollmentFormSection.getMandatoryField();
   final Map mandatoryFieldObject = {};
@@ -218,6 +219,7 @@ class _AgywDreamsEnrollmentFormState extends State<AgywDreamsEnrollmentForm> {
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedLabel,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },
@@ -265,7 +267,9 @@ class _AgywDreamsEnrollmentFormState extends State<AgywDreamsEnrollmentForm> {
                             ),
                             EntryFormSaveButton(
                               label: isSaving
-                                  ? 'Saving ...'
+                                  ? currentLanguage == 'lesotho'
+                                      ? 'E ntse e boloka...'
+                                      : 'Saving ...'
                                   : currentLanguage == 'lesotho'
                                       ? 'Boloka'
                                       : 'Save',

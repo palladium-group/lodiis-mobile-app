@@ -8,6 +8,7 @@ import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/app_semantic_version.dart';
 
 class AppInfoState with ChangeNotifier {
+  String? _serverUrl;
   String? _currentAppName;
   String? _currentAppVersion;
   String? _currentAppId;
@@ -16,6 +17,7 @@ class AppInfoState with ChangeNotifier {
   bool? _showWarningToAppUpdate;
   bool? _shouldUpdateTheApp;
 
+  String get serverUrl => _serverUrl ?? '';
   String get currentAppName => _currentAppName ?? '';
   bool get showWarningToAppUpdate => _showWarningToAppUpdate ?? false;
   bool get shouldUpdateTheApp => _shouldUpdateTheApp ?? false;
@@ -28,6 +30,12 @@ class AppInfoState with ChangeNotifier {
     _currentAppId = AppInfoReference.androidId;
     _currentAppName = AppInfoReference.currentAppName;
     _currentAppVersion = AppInfoReference.currentAppVersion;
+    _serverUrl = Uri.https(
+      AppInfoReference.baseUrl,
+      [AppInfoReference.subBaseUrl]
+          .where((String url) => url.isNotEmpty)
+          .join("/"),
+    ).toString();
     try {
       _newVersion = NewVersionPlus(
         androidId: AppInfoReference.androidId,

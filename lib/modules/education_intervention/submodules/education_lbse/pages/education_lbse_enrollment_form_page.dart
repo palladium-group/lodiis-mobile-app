@@ -39,6 +39,7 @@ class EducationLbseEnrollmentFormPage extends StatefulWidget {
 class _EducationLbseEnrollmentFormPageState
     extends State<EducationLbseEnrollmentFormPage> {
   final String label = 'LBSE Enrollment Form';
+  final String translatedName = 'Foromo ea ngoliso ea LBSE';
   final List<String> mandatoryFields =
       EducationLbseEnrollmentForm.getMandatoryField();
   final Map mandatoryFieldObject = {};
@@ -213,6 +214,7 @@ class _EducationLbseEnrollmentFormPageState
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedName,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },
@@ -225,8 +227,8 @@ class _EducationLbseEnrollmentFormPageState
               horizontal: 13.0,
             ),
             child: !isFormReady
-                ? Column(
-                    children: const [
+                ? const Column(
+                    children: [
                       Center(
                         child: CircularProcessLoader(
                           color: Colors.blueGrey,
@@ -260,7 +262,9 @@ class _EducationLbseEnrollmentFormPageState
                               visible: enrollmentFormState.isEditableMode,
                               child: EntryFormSaveButton(
                                 label: isSaving
-                                    ? 'Saving ...'
+                                    ? currentLanguage == 'lesotho'
+                                        ? 'E ntse e boloka...'
+                                        : 'Saving ...'
                                     : currentLanguage == 'lesotho'
                                         ? 'Boloka'
                                         : 'Save',

@@ -7,6 +7,7 @@ import 'package:kb_mobile_app/models/input_field_option.dart';
 class OvcEnrollmentChild {
   static List<String> getMandatoryField() {
     return [
+      'enrollmentDate',
       'iS9mAp3jDaU',
       'WTZ7GLTrE8Q',
       'rSP9c21JsfC',
@@ -49,7 +50,10 @@ class OvcEnrollmentChild {
     ];
   }
 
-  static List<FormSection> getFormSections() {
+  static List<FormSection> getFormSections({
+    required bool isEnrolmentDateEditable,
+    required String enrollmentDate,
+  }) {
     return [
       FormSection(
         name: '',
@@ -62,6 +66,15 @@ class OvcEnrollmentChild {
             color: const Color(0xFF4B9F46),
             inputFields: [
               InputField(
+                id: 'enrollmentDate',
+                isReadOnly: !isEnrolmentDateEditable,
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373),
+                name: 'Date of Enrollment to Program',
+                translatedName: "Letsatsi leo lelapa le keneng ka hara morero",
+                valueType: 'DATE',
+              ),
+              InputField(
                 id: 'iS9mAp3jDaU',
                 name: 'Relationship to Caregiver',
                 translatedName: 'Kamano ea ngoana le mohlokomeli',
@@ -70,9 +83,13 @@ class OvcEnrollmentChild {
                 valueType: 'TEXT',
                 options: [
                   InputFieldOption(
-                      code: 'Biological mother', name: 'Biological mother'),
+                      code: 'Biological mother',
+                      name: 'Biological mother',
+                      translatedName: 'Mè ea u tsoalang'),
                   InputFieldOption(
-                      code: 'Biological father', name: 'Biological father'),
+                      code: 'Biological father',
+                      name: 'Biological father',
+                      translatedName: 'Ntate ea u tsoalang'),
                   InputFieldOption(
                     code: 'Aunt/Uncle',
                     name: 'Aunt/Uncle',
@@ -159,6 +176,7 @@ class OvcEnrollmentChild {
                 valueType: 'DATE',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF737373),
+                lastDate: enrollmentDate,
                 maxAgeInYear: 17,
                 numberOfMonth: 11,
                 minAgeInYear: 0,
@@ -208,7 +226,7 @@ class OvcEnrollmentChild {
               InputField(
                 id: 'iQdwzVfZdml',
                 name: 'Type of school',
-                translatedName: 'Mofuta oa sekolo',
+                translatedName: 'Mofutoa oa Sekolo',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF737373),
@@ -326,7 +344,10 @@ class OvcEnrollmentChild {
                       code: 'Unknown',
                       name: 'Unknown',
                       translatedName: 'Tse sa tsejoeng'),
-                  InputFieldOption(code: 'No Response', name: 'No Response'),
+                  InputFieldOption(
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha ho Karabo'),
                 ],
               ),
               InputField(
@@ -406,7 +427,10 @@ class OvcEnrollmentChild {
                 renderAsRadio: true,
                 options: [
                   InputFieldOption(code: 'New', name: 'New'),
-                  InputFieldOption(code: 'Re-enrolled', name: 'Re-enrolled')
+                  InputFieldOption(
+                      code: 'Re-enrolled',
+                      name: 'Re-enrolled',
+                      translatedName: 'Ngoliso phetho')
                 ],
               ),
               InputField(
@@ -436,9 +460,12 @@ class OvcEnrollmentChild {
               inputColor: const Color(0xFFFE7503),
               labelColor: const Color(0xFF737373),
               options: [
-                InputFieldOption(code: 'Yes', name: 'Yes'),
-                InputFieldOption(code: 'No', name: 'No'),
-                InputFieldOption(code: "Don't Know", name: "Don't Know"),
+                InputFieldOption(code: 'Yes', name: 'Yes', translatedName: 'E'),
+                InputFieldOption(code: 'No', name: 'No', translatedName: 'Che'),
+                InputFieldOption(
+                    code: "Don't Know",
+                    name: "Don't Know",
+                    translatedName: 'Ha ke tsebe'),
               ]),
           InputField(
             id: 'ZPf4iCd2aw3',
@@ -507,7 +534,10 @@ class OvcEnrollmentChild {
                   code: 'Unknown',
                   name: 'Unknown',
                   translatedName: 'Tse sa tsejoeng'),
-              InputFieldOption(code: 'No Response', name: 'No Response'),
+              InputFieldOption(
+                  code: 'No Response',
+                  name: 'No Response',
+                  translatedName: 'Ha ho Karabo'),
             ],
           ),
           InputField(
@@ -561,9 +591,12 @@ class OvcEnrollmentChild {
               inputColor: const Color(0xFFFE7503),
               labelColor: const Color(0xFF737373),
               options: [
-                InputFieldOption(code: 'Yes', name: 'Yes'),
-                InputFieldOption(code: 'No', name: 'No'),
-                InputFieldOption(code: "Don't Know", name: "Don't Know"),
+                InputFieldOption(code: 'Yes', name: 'Yes', translatedName: 'E'),
+                InputFieldOption(code: 'No', name: 'No', translatedName: 'Che'),
+                InputFieldOption(
+                    code: "Don't Know",
+                    name: "Don't Know",
+                    translatedName: 'Ha ke tsebe'),
               ]),
           InputField(
             id: 'd3HviODv676',
@@ -632,7 +665,10 @@ class OvcEnrollmentChild {
                   code: 'Unknown',
                   name: 'Unknown',
                   translatedName: 'Tse sa tsejoeng'),
-              InputFieldOption(code: 'No Response', name: 'No Response'),
+              InputFieldOption(
+                  code: 'No Response',
+                  name: 'No Response',
+                  translatedName: 'Ha ho Karabo'),
             ],
           ),
           InputField(
@@ -807,7 +843,7 @@ class OvcEnrollmentChild {
           InputField(
             id: 'GM2mJDlGZin',
             name: 'Specify other type of action taken',
-            translatedName: "Hlakisa mofuta o mong oa bohato bo ileng ba nkoa",
+            translatedName: "Hlalosa mofuta o mong oa ts'ebetso e entsoeng",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'TEXT',

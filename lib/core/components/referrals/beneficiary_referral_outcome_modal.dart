@@ -81,7 +81,7 @@ class _BeneficiaryReferralOutcomeModalState
         program: widget.referralEvent.eventData!.program!,
         labelColor: const Color(0xFF737373),
         sectionLabelColor: const Color(0xFF737373),
-        formlabel: 'Referral Completion Location',
+        formlabel: 'Referral Follow Up Location',
       );
       formSections = [serviceProvisionForm, ...widget.formSections];
       for (String id in FormUtil.getFormFieldIds(

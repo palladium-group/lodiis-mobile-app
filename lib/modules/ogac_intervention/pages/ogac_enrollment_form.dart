@@ -37,6 +37,7 @@ class OgacEnrollmentForm extends StatefulWidget {
 
 class _OgacEnrollmentFormState extends State<OgacEnrollmentForm> {
   final String label = 'OGAC Enrollment Form';
+  final String translatedName = 'Foromo ea ngoliso ea OGAC';
   final List<String> mandatoryFields =
       OgacInterventionFormSection.getMandatoryField();
   final Map mandatoryFieldObject = {};
@@ -213,6 +214,7 @@ class _OgacEnrollmentFormState extends State<OgacEnrollmentForm> {
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedName,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },
@@ -223,8 +225,8 @@ class _OgacEnrollmentFormState extends State<OgacEnrollmentForm> {
             margin:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 13.0),
             child: !isFormReady
-                ? Column(
-                    children: const [
+                ? const Column(
+                    children: [
                       Center(
                         child: CircularProcessLoader(
                           color: Colors.blueGrey,
@@ -256,7 +258,9 @@ class _OgacEnrollmentFormState extends State<OgacEnrollmentForm> {
                               visible: enrollmentFormState.isEditableMode,
                               child: EntryFormSaveButton(
                                 label: isSaving
-                                    ? 'Saving ...'
+                                    ? currentLanguage == 'lesotho'
+                                        ? 'E ntse e boloka...'
+                                        : 'Saving ...'
                                     : currentLanguage == 'lesotho'
                                         ? 'Boloka'
                                         : 'Save',

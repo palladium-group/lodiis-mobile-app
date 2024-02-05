@@ -143,21 +143,21 @@ class EducationBursaryEnrollmentForm {
             labelColor: const Color(0xFF737373),
             options: [
               InputFieldOption(
-                code: 'Grade 8',
-                name: 'Grade 8',
-              ),
+                  code: 'Grade 8',
+                  name: 'Grade 8',
+                  translatedName: 'Sehlopha sa 8'),
               InputFieldOption(
-                code: 'Grade 9',
-                name: 'Grade 9',
-              ),
+                  code: 'Grade 9',
+                  name: 'Grade 9',
+                  translatedName: 'Sehlopha sa 9'),
               InputFieldOption(
-                code: 'Grade 10',
-                name: 'Grade 10',
-              ),
+                  code: 'Grade 10',
+                  name: 'Grade 10',
+                  translatedName: 'Sehlopha sa 10'),
               InputFieldOption(
-                code: 'Grade 11',
-                name: 'Grade 11',
-              ),
+                  code: 'Grade 11',
+                  name: 'Grade 11',
+                  translatedName: 'Sehlopha sa 11'),
             ],
           ),
         ],

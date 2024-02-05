@@ -80,8 +80,9 @@ class _DreamsEnrollmentNotEligibleState
         String? currentLanguage = languageTranslationState.currentLanguage;
         return Consumer<DreamsInterventionListState>(
           builder: (context, ovcInterventionListState, child) {
-            String header =
-                '${'AGYW/DREAMS Eligible but not Enrolled '.toUpperCase()}: ${ovcInterventionListState.numberOfEnrolledNotEligibleParticipant}';
+            String header = currentLanguage == 'lesotho'
+                ? '${'Bana ba AGYW/DREAMS ba nang le monyetla empa basa ngolisoa'.toUpperCase()}: ${ovcInterventionListState.numberOfEnrolledNotEligibleParticipant}'
+                : '${'AGYW/DREAMS Eligible but not Enrolled '.toUpperCase()}: ${ovcInterventionListState.numberOfEnrolledNotEligibleParticipant}';
             return SubModuleHomeContainer(
               header: header,
               bodyContents: _buildBody(currentLanguage),
@@ -105,9 +106,11 @@ class _DreamsEnrollmentNotEligibleState
               right: 13.0,
               left: 13.0,
             ),
-            child: const Center(
+            child: Center(
               child: Text(
-                'There is no AGYW/DREAMS Eligible but not Enroll participants at moment',
+                currentLanguage == 'lesotho'
+                    ? 'Ha hona bana ba AGYW/DREAMS ba nang le monyetla empa basa ngolisoa hajoale'
+                    : 'There is no AGYW/DREAMS Eligible but not Enroll participants at moment',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -132,9 +135,11 @@ class _DreamsEnrollmentNotEligibleState
                 left: 13.0,
               ),
               child: Column(
-                children: const [
+                children: [
                   Text(
-                    'There is no AGYW/DREAMS Eligible but not Enroll  participants at moment',
+                    currentLanguage == 'lesotho'
+                        ? 'Ha hona bana ba AGYW/DREAMS ba nang le monyetla empa basa ngolisoa hajoale'
+                        : 'There is no AGYW/DREAMS Eligible but not Enroll participants at moment',
                     textAlign: TextAlign.center,
                   )
                 ],

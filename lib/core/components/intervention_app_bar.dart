@@ -198,6 +198,12 @@ class _InterventionAppBarState extends State<InterventionAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      actionsIconTheme: const IconThemeData().copyWith(
+        color: Colors.white,
+      ),
+      iconTheme: const IconThemeData().copyWith(
+        color: Colors.white,
+      ),
       backgroundColor: widget.activeInterventionProgram.primaryColor,
       title: Row(
         children: [
@@ -367,6 +373,7 @@ class _InterventionAppBarState extends State<InterventionAppBar> {
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     controller: widget.tabController,
                     unselectedLabelColor: Colors.white.withOpacity(0.3),
+                    labelColor: Colors.white,
                     indicatorColor: Colors.white,
                     tabs: widget.tabs
                         .map((tab) => Tab(

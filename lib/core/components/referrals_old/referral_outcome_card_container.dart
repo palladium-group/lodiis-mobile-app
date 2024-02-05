@@ -18,6 +18,7 @@ class ReferralOutComeCardContainer extends StatelessWidget {
     required this.referralProgram,
     required this.isOvcIntervention,
     required this.isIncomingReferral,
+    required this.enrollmentOuAccessible,
     this.isHouseholdReferral = false,
   }) : super(key: key);
 
@@ -28,6 +29,7 @@ class ReferralOutComeCardContainer extends StatelessWidget {
   final String referralToFollowUpLinkage;
   final String referralProgram;
   final bool isOvcIntervention;
+  final bool enrollmentOuAccessible;
   final bool isHouseholdReferral;
   final bool isIncomingReferral;
 
@@ -52,6 +54,7 @@ class ReferralOutComeCardContainer extends StatelessWidget {
                 ? ReferralOutComeCard(
                     isIncomingReferral: isIncomingReferral,
                     isOvcIntervention: isOvcIntervention,
+                    enrollmentOuAccessible: enrollmentOuAccessible,
                     beneficiary: beneficiary,
                     eventData: eventData,
                     referralProgram: referralProgram,

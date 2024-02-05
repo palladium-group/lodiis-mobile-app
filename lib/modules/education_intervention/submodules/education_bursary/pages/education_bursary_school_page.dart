@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/education_intervention_state/education_intervention_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/intervention_bottom_navigation/intervention_bottom_navigation_bar_container.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
@@ -34,8 +35,16 @@ class _EducationBursarySchoolPageState
 
   @override
   Widget build(BuildContext context) {
-    String schoolAttendanceLabel = 'School Attendance';
-    String schoolPerformanceLabel = 'Student Performance Tracking';
+    String? currentLanguage =
+        Provider.of<LanguageTranslationState>(context, listen: false)
+            .currentLanguage;
+    String schoolAttendanceLabel = currentLanguage == 'lesotho'
+        ? 'Ho ba teng sekolong'
+        : 'School Attendance';
+    String schoolPerformanceLabel = currentLanguage == 'lesotho'
+        ? "Ts'alomorao ea ts'ebetso ea sekolo"
+        : 'Student Performance Tracking';
+
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(

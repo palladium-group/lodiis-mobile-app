@@ -18,9 +18,10 @@ class _OvcRecordsPageState extends State<OvcRecordsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: TabBarView(
-      controller: widget.tabsController,
-      children: widget.tabsVieItems.map((Widget tab) => tab).toList(),
-    ));
+      body: TabBarView(
+        controller: widget.tabsController,
+        children: widget.tabsVieItems.map((Widget tab) => tab).toList(),
+      ),
+    );
   }
 }

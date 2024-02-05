@@ -21,14 +21,17 @@ class InterventionPopActionMenu {
       InterventionPopActionMenu(
         id: 'logout',
         name: 'Logout',
+        translatedName: 'Tsoa'
       ),
       InterventionPopActionMenu(
         id: 'about',
         name: 'About App',
+        translatedName: 'Mabapi le App'
       ),
       InterventionPopActionMenu(
         id: 'sync',
         name: 'Sync',
+        translatedName: 'Sync'
       ),
       InterventionPopActionMenu(
         id: 'language_setting',
@@ -38,6 +41,7 @@ class InterventionPopActionMenu {
       InterventionPopActionMenu(
         id: 'application_logs',
         name: 'Application Logs',
+        translatedName: "Litaba tse bonts'ang liketsahalo tsohle ka hara LODIIS"
       ),
     ];
   }

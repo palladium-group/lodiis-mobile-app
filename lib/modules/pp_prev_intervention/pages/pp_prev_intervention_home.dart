@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/modules/pp_prev_intervention/pages/pp_prev_referral/pp_prev_intervention_referral_home.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,7 @@ class PpPrevInterventionHome extends StatelessWidget {
   const PpPrevInterventionHome({Key? key}) : super(key: key);
 
   final String title = 'PP PREV List';
-
+  final String translatedTitle = 'Lethathamo la PP Prev';
   void onUpdateFormState(
     BuildContext context,
     PpPrevBeneficiary ppPrevBeneficiary,
@@ -175,81 +176,88 @@ class PpPrevInterventionHome extends StatelessWidget {
   Consumer<PpPrevInterventionState> _buildBody() {
     return Consumer<PpPrevInterventionState>(
       builder: (context, ppPrevInterventionState, child) {
-        return RefreshIndicator(
-          onRefresh: () async =>
-              refreshBeneficiaryList(ppPrevInterventionState),
-          child: CustomPaginatedListView(
-            childBuilder: (context, ppPrevBeneficiary, child) =>
-                PpPrevBeneficiaryCard(
-              ppPrevBeneficiary: ppPrevBeneficiary,
-              onEditBeneficiary: () => onEditBeneficiary(
-                context,
-                ppPrevBeneficiary,
+        return Consumer<LanguageTranslationState>(
+          builder: (context, languageState, child) => RefreshIndicator(
+            onRefresh: () async =>
+                refreshBeneficiaryList(ppPrevInterventionState),
+            child: CustomPaginatedListView(
+              childBuilder: (context, ppPrevBeneficiary, child) =>
+                  PpPrevBeneficiaryCard(
+                ppPrevBeneficiary: ppPrevBeneficiary,
+                onEditBeneficiary: () => onEditBeneficiary(
+                  context,
+                  ppPrevBeneficiary,
+                ),
+                onViewBeneficiary: () => onViewBeneficiary(
+                  context,
+                  ppPrevBeneficiary,
+                ),
+                onOpenBeneficiaryServices: () => onOpenBeneficiaryServices(
+                  context,
+                  ppPrevBeneficiary,
+                ),
+                onOpenBeneficiaryGenderNorms: () =>
+                    onOpenBeneficiaryGenderNorms(
+                  context,
+                  ppPrevBeneficiary,
+                ),
+                onOpenBeneficiaryReferrals: () => onOpenBeneficiaryReferrals(
+                  context,
+                  ppPrevBeneficiary,
+                ),
               ),
-              onViewBeneficiary: () => onViewBeneficiary(
-                context,
-                ppPrevBeneficiary,
-              ),
-              onOpenBeneficiaryServices: () => onOpenBeneficiaryServices(
-                context,
-                ppPrevBeneficiary,
-              ),
-              onOpenBeneficiaryGenderNorms: () => onOpenBeneficiaryGenderNorms(
-                context,
-                ppPrevBeneficiary,
-              ),
-              onOpenBeneficiaryReferrals: () => onOpenBeneficiaryReferrals(
-                context,
-                ppPrevBeneficiary,
-              ),
-            ),
-            pagingController: ppPrevInterventionState.pagingController!,
-            emptyListWidget: Center(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10.0,
-                    ),
-                    child: const Text(
-                      'There is no PP PREV beneficiaries enrolled at the moment',
-                    ),
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/add-beneficiary.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Colors.blueGrey,
-                        BlendMode.srcIn,
+              pagingController: ppPrevInterventionState.pagingController!,
+              emptyListWidget: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10.0,
+                      ),
+                      child: Text(
+                        languageState.currentLanguage == 'lesotho'
+                            ? 'Ha hona ba ngolisitsoeng tlasa PP Prev hajoale'
+                            : 'There is no PP PREV beneficiaries enrolled at the moment',
                       ),
                     ),
-                    onPressed: () => onAddPpPrevBeneficiary(context),
-                  )
-                ],
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/add-beneficiary.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.blueGrey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      onPressed: () => onAddPpPrevBeneficiary(context),
+                    )
+                  ],
+                ),
               ),
-            ),
-            errorWidget: Center(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10.0,
-                    ),
-                    child: const Text(
-                      'There is no PP PREV beneficiaries enrolled at the moment',
-                    ),
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/add-beneficiary.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Colors.blueGrey,
-                        BlendMode.srcIn,
+              errorWidget: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10.0,
+                      ),
+                      child: Text(
+                        languageState.currentLanguage == 'lesotho'
+                            ? 'Ha hona ba ngolisitsoeng tlasa PP Prev hajoale'
+                            : 'There is no PP PREV beneficiaries enrolled at the moment',
                       ),
                     ),
-                    onPressed: () => onAddPpPrevBeneficiary(context),
-                  )
-                ],
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/add-beneficiary.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.blueGrey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      onPressed: () => onAddPpPrevBeneficiary(context),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -260,15 +268,19 @@ class PpPrevInterventionHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PpPrevInterventionState>(
-      builder: (context, ppPrevInterventionState, child) {
-        return SubModuleHomeContainer(
-          header:
-              '$title : ${ppPrevInterventionState.numberOfPpPrev} beneficiaries',
-          showFilter: true,
-          bodyContents: _buildBody(),
-        );
-      },
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) =>
+          Consumer<PpPrevInterventionState>(
+        builder: (context, ppPrevInterventionState, child) {
+          return SubModuleHomeContainer(
+            header: languageState.currentLanguage == 'lesotho'
+                ? '$translatedTitle : ${ppPrevInterventionState.numberOfPpPrev} Ba unang melemo ka hare ho morero'
+                : '$title : ${ppPrevInterventionState.numberOfPpPrev} beneficiaries',
+            showFilter: true,
+            bodyContents: _buildBody(),
+          );
+        },
+      ),
     );
   }
 }

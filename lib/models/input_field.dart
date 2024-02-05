@@ -29,45 +29,48 @@ class InputField {
   List<InputFieldOption>? options;
   bool? hasSubInputField;
   bool? hasLabelOnly;
+  bool? sortOptions;
   InputField? subInputField;
   List<int>? allowedSelectedLevels;
   Pattern? regExpValidation;
   int? limitingNumericLength;
   List<String>? filteredPrograms;
 
-  InputField(
-      {required this.id,
-      required this.name,
-      required this.valueType,
-      this.hasSubInputField,
-      this.description,
-      this.inputColor,
-      this.labelColor,
-      this.background,
-      this.renderAsRadio,
-      this.isReadOnly,
-      this.options,
-      this.subInputField,
-      this.allowedSelectedLevels,
-      this.allowFuturePeriod,
-      this.disablePastPeriod,
-      this.translatedName,
-      this.translatedDescription,
-      this.hint,
-      this.translatedHint,
-      this.maxAgeInYear,
-      this.minAgeInYear,
-      this.numberOfMonth,
-      this.firstDate,
-      this.lastDate,
-      this.suffixLabel,
-      this.filteredPrograms,
-      this.hasError,
-      this.shouldUserCustomAgeLimit,
-      this.showCountryLevelTree,
-      this.hasLabelOnly,
-      this.regExpValidation,
-      this.limitingNumericLength}) {
+  InputField({
+    required this.id,
+    required this.name,
+    required this.valueType,
+    this.hasSubInputField,
+    this.description,
+    this.inputColor,
+    this.labelColor,
+    this.background,
+    this.renderAsRadio,
+    this.isReadOnly,
+    this.options,
+    this.subInputField,
+    this.allowedSelectedLevels,
+    this.allowFuturePeriod,
+    this.disablePastPeriod,
+    this.translatedName,
+    this.translatedDescription,
+    this.hint,
+    this.translatedHint,
+    this.maxAgeInYear,
+    this.minAgeInYear,
+    this.numberOfMonth,
+    this.firstDate,
+    this.lastDate,
+    this.suffixLabel,
+    this.filteredPrograms,
+    this.hasError,
+    this.shouldUserCustomAgeLimit,
+    this.showCountryLevelTree,
+    this.hasLabelOnly,
+    this.regExpValidation,
+    this.limitingNumericLength,
+    this.sortOptions = true,
+  }) {
     showCountryLevelTree = showCountryLevelTree ?? false;
     hasLabelOnly = hasLabelOnly ?? false;
     allowedSelectedLevels = allowedSelectedLevels ?? [];

@@ -55,8 +55,12 @@ class BioDataIndexContacts {
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(code: 'Male', name: 'Male'),
-                  InputFieldOption(code: 'Female', name: 'Female')
+                  InputFieldOption(
+                      code: 'Male', name: 'Male', translatedName: 'Botona'),
+                  InputFieldOption(
+                      code: 'Female',
+                      name: 'Female',
+                      translatedName: "Bots'ehali")
                 ]),
             InputField(
               id: 'mkyHnxwr6QL',
@@ -84,7 +88,10 @@ class BioDataIndexContacts {
                       code: 'Unknown',
                       name: 'Unknown',
                       translatedName: 'Tse sa tsejoeng'),
-                  InputFieldOption(code: 'No Response', name: 'No Response')
+                  InputFieldOption(
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha ho Karabo')
                 ]),
           ]),
     ];

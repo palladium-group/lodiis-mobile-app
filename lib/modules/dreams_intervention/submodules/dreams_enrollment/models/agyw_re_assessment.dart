@@ -49,17 +49,19 @@ class AgywReAssessment {
       FormSection(
         id: 'dxIpJ7vavw9',
         name: 'Demographic Information',
+        translatedName: 'Litaba tsa Boitsebiso ba motho',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(
             id: 'memberOf',
             name: 'Have you Been a member of',
+            translatedName: 'Na u bile setho sa',
             valueType: 'CHECK_BOX',
             options: [
               InputFieldOption(
-                code: 'q1jZgkwYAM9',
-                name: 'DREAMS intervention',
-              ),
+                  code: 'q1jZgkwYAM9',
+                  name: 'DREAMS intervention',
+                  translatedName: "Lits'ebeletso tsa DREAMS"),
               InputFieldOption(
                 code: 'mIUXayg4hsq',
                 name: 'Social Assets building Intervention',
@@ -121,6 +123,7 @@ class AgywReAssessment {
       FormSection(
         id: 'dFTGCWSQDd2',
         name: 'Household Information',
+        translatedName: 'Boitsebiso ba lelapa',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(
@@ -153,13 +156,13 @@ class AgywReAssessment {
             valueType: 'TEXT',
             options: [
               InputFieldOption(
-                code: 'Biological mother',
-                name: 'Biological mother',
-              ),
+                  code: 'Biological mother',
+                  name: 'Biological mother',
+                  translatedName: 'Mè ea u tsoalang'),
               InputFieldOption(
-                code: 'Biological father',
-                name: 'Biological father',
-              ),
+                  code: 'Biological father',
+                  name: 'Biological father',
+                  translatedName: 'Ntate ea u tsoalang'),
               InputFieldOption(
                 code: 'Aunt/Uncle',
                 name: 'Aunt/Uncle',
@@ -518,6 +521,7 @@ class AgywReAssessment {
           InputField(
             id: 'cv8RKCPOOAo',
             name: 'Which one you are enrolled in?',
+            translatedName: 'O ngolisitse ho efe?',
             valueType: 'TEXT',
             options: [
               InputFieldOption(
@@ -526,9 +530,9 @@ class AgywReAssessment {
                 translatedName: 'Sekolo se tloaelehileng',
               ),
               InputFieldOption(
-                code: 'Vocational Training',
-                name: 'Vocational Training',
-              ),
+                  code: 'Vocational Training',
+                  name: 'Vocational Training',
+                  translatedName: 'Koetliso ea mosebetsi oa matsoho'),
             ],
             inputColor: const Color(0xFF258DCC),
             labelColor: const Color(0xFF737373),
@@ -642,6 +646,7 @@ class AgywReAssessment {
       FormSection(
         id: 'VXNq6q3vHH8',
         name: 'Enrollment Criteria',
+        translatedName: 'Mekhoa ea ho Ngolisa',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(
@@ -720,6 +725,7 @@ class AgywReAssessment {
       FormSection(
         id: 'RqpY6SQhRs2',
         name: 'Enrollment Instructions',
+        translatedName: 'Litaelo tsa ho Ngolisa',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(
@@ -752,6 +758,7 @@ class AgywReAssessment {
       FormSection(
         id: 'JD1OLCJ8FMU',
         name: 'Enrollment Instructions - Enrollment Form',
+        translatedName: 'Litaelo tsa ho Ngolisa - Foromo ea ngoliso',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(
@@ -1203,6 +1210,7 @@ class AgywReAssessment {
           InputField(
             id: 'gk71zb8ha9r',
             name: 'Type of school',
+            translatedName: 'Mofutoa oa Sekolo',
             valueType: 'TEXT',
             inputColor: const Color(0xFF258DCC),
             labelColor: const Color(0xFF737373),
@@ -1403,7 +1411,7 @@ class AgywReAssessment {
               InputFieldOption(
                   code: 'Pregnancy',
                   name: 'Pregnancy',
-                  translatedName: 'Ke mokhachane'),
+                  translatedName: 'Boimana'),
               InputFieldOption(
                   code: 'Peer pressure',
                   name: 'Peer pressure',
@@ -1411,7 +1419,7 @@ class AgywReAssessment {
               InputFieldOption(
                   code: 'Not interested',
                   name: 'Not interested',
-                  translatedName: 'Ha ke na tjantjello/thahasello'),
+                  translatedName: 'Ha ke Thahaselle'),
               InputFieldOption(
                   code: 'Awaiting to join secondary',
                   name: 'Awaiting to join secondary',

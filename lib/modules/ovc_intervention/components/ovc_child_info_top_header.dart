@@ -102,8 +102,8 @@ class OvcChildInfoTopHeader extends StatelessWidget {
 
   Container _getChildStatusRow({
     required String status,
+    required String key,
   }) {
-    String key = 'Status';
     double fontSize = 13.0;
     Color keyColor = const Color(0xFF92A791);
 
@@ -210,7 +210,7 @@ class OvcChildInfoTopHeader extends StatelessWidget {
                           _getOvcChildInfoDetailsWidget(
                             currentLanguage: currentLanguage,
                             key: currentLanguage == 'lesotho'
-                                ? 'HIV Status'
+                                ? 'Boemo ba HIV'
                                 : 'HIV Status',
                             value: currentOvcHouseholdChild.hivStatus ?? "",
                             keyColor: const Color(0xFF92A791),
@@ -249,6 +249,9 @@ class OvcChildInfoTopHeader extends StatelessWidget {
                             fontSize: 12.0,
                           ),
                           _getChildStatusRow(
+                              key: currentLanguage == 'lesotho'
+                                  ? 'Boemo'
+                                  : 'Status',
                               status: currentOvcHouseholdChild.ovcStatus ?? ''),
                         ],
                       ),

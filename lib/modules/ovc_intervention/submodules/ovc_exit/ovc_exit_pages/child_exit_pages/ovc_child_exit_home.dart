@@ -18,6 +18,7 @@ import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_child_info_top_header.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_routes_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/child_exit_pages/constants/ovc_exit_case_closure_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/child_exit_pages/constants/ovc_exit_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/child_exit_pages/pages/ovc_exit_case_closure_form.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/child_exit_pages/pages/ovc_exit_case_transfer_form.dart';
@@ -118,6 +119,8 @@ class _OvcChildExitHomeState extends State<OvcChildExitHome> {
         .setFormFieldState('eventDate', eventData.eventDate);
     Provider.of<ServiceFormState>(context, listen: false)
         .setFormFieldState('eventId', eventData.event);
+    Provider.of<ServiceFormState>(context, listen: false)
+        .setFormFieldState('location', eventData.orgUnit);
     for (Map dataValue in eventData.dataValues) {
       if (dataValue['value'] != '') {
         Provider.of<ServiceFormState>(context, listen: false)
@@ -187,50 +190,67 @@ class _OvcChildExitHomeState extends State<OvcChildExitHome> {
                   ? const CircularProcessLoader(
                       color: Colors.blueGrey,
                     )
-                  : Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 10.0),
-                          child: events.isEmpty
-                              ? const Center(
-                                  child: Text(
-                                      'There is no any exit details at moment'),
-                                )
-                              : Column(
-                                  children: events
-                                      .map(
-                                        (Events eventData) => OvcExitListCard(
-                                          eventData: eventData,
-                                          programStageMap: programStageMap,
-                                          onEditExit: () {
-                                            String? exitResponse =
-                                                programStageMap[
-                                                    eventData.programStage];
-                                            onEditExit(context, exitResponse,
-                                                eventData);
-                                          },
-                                          onViewExit: () {
-                                            String? exitResponse =
-                                                programStageMap[
-                                                    eventData.programStage];
-                                            onViewExit(context, exitResponse,
-                                                eventData);
-                                          },
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                        ),
-                        Consumer<OvcHouseholdCurrentSelectionState>(builder:
-                            (context, ovcHouseholdCurrentSelectionState,
-                                child) {
-                          var currentOvcHouseholdChild =
-                              ovcHouseholdCurrentSelectionState
-                                  .currentOvcHouseholdChild!;
-                          return Visibility(
+                  : Consumer<OvcHouseholdCurrentSelectionState>(builder:
+                      (context, ovcHouseholdCurrentSelectionState, child) {
+                      var currentOvcHouseholdChild =
+                          ovcHouseholdCurrentSelectionState
+                              .currentOvcHouseholdChild!;
+
+                      var currentOvcHousehold =
+                          ovcHouseholdCurrentSelectionState
+                              .currentOvcHousehold!;
+
+                      List<String?> programStageIdsWithData = events
+                          .map((Events event) => event.programStage)
+                          .toList();
+                      return Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 10.0),
+                            child: events.isEmpty
+                                ? const Center(
+                                    child: Text(
+                                        'There is no any exit details at moment'),
+                                  )
+                                : Column(
+                                    children: events
+                                        .map(
+                                          (Events eventData) => OvcExitListCard(
+                                            eventData: eventData,
+                                            programStageMap: programStageMap,
+                                            onEditExit: () {
+                                              String? exitResponse =
+                                                  programStageMap[
+                                                      eventData.programStage];
+                                              onEditExit(context, exitResponse,
+                                                  eventData);
+                                            },
+                                            onViewExit: () {
+                                              String? exitResponse =
+                                                  programStageMap[
+                                                      eventData.programStage];
+                                              onViewExit(context, exitResponse,
+                                                  eventData);
+                                            },
+                                            canEditExit:
+                                                currentOvcHouseholdChild
+                                                            .hasExitedProgram !=
+                                                        true &&
+                                                    currentOvcHousehold
+                                                            .hasExitedProgram !=
+                                                        true,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                          ),
+                          Visibility(
                             visible: shouldAllowAddNewButton &&
-                                currentOvcHouseholdChild
-                                    .enrollmentOuAccessible!,
+                                !programStageIdsWithData.contains(
+                                    OvcExitCaseClosureConstant.programStage) &&
+                                currentOvcHousehold.hasExitedProgram != true &&
+                                currentOvcHouseholdChild.hasExitedProgram !=
+                                    true,
                             child: EntryFormSaveButton(
                               label: 'ADD',
                               labelColor: Colors.white,
@@ -241,10 +261,10 @@ class _OvcChildExitHomeState extends State<OvcChildExitHome> {
                                 events,
                               ),
                             ),
-                          );
-                        }),
-                      ],
-                    );
+                          ),
+                        ],
+                      );
+                    });
             },
           ),
         ]),

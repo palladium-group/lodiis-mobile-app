@@ -22,6 +22,7 @@ class DreamsServiceTBScreeningInfo {
         InputField(
           id: 'uRsImCXXDXe',
           name: 'HIV Status',
+          translatedName: 'Boemo ba HIV',
           valueType: 'TEXT',
           inputColor: const Color(0xFF1F8ECE),
           labelColor: const Color(0xFF737373),

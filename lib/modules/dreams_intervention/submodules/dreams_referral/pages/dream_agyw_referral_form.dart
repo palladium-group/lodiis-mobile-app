@@ -172,6 +172,7 @@ class _DreamsAgywAddReferralFormState extends State<DreamsAgywAddReferralForm> {
       String? eventDate = dataObject['eventDate'];
       String? eventId = dataObject['eventId'];
       String orgUnit = dataObject['location'] ?? currentAgywDream!.orgUnit;
+      orgUnit = orgUnit.isEmpty ? currentAgywDream!.orgUnit ?? '' : orgUnit;
       dataObject[DreamsAgywReferralConstant.referralToFollowUpLinkage] =
           dataObject[DreamsAgywReferralConstant.referralToFollowUpLinkage] ??
               AppUtil.getUid();
@@ -377,7 +378,9 @@ class _DreamsAgywAddReferralFormState extends State<DreamsAgywAddReferralForm> {
                                   ),
                                   EntryFormSaveButton(
                                     label: isSaving
-                                        ? 'Saving ...'
+                                        ? currentLanguage == 'lesotho'
+                                            ? 'E ntse e boloka...'
+                                            : 'Saving ...'
                                         : currentLanguage == 'lesotho'
                                             ? 'Boloka'
                                             : 'Save',

@@ -20,8 +20,15 @@ class OvcChildMonitor extends StatefulWidget {
 }
 
 class _OvcChildMonitorState extends State<OvcChildMonitor> {
+  String? currentLanguage;
   final String label = 'Child Monitoring tool';
+  final String translatedNamed = 'Sesebelisoa sa ho Lekola Bana';
   bool isSchoolMonitoringSelected = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void onSelectSchoolMonitoring(context) {
     isSchoolMonitoringSelected = true;
@@ -44,6 +51,7 @@ class _OvcChildMonitorState extends State<OvcChildMonitor> {
                 interventionCardState.currentInterventionProgram;
             return SubPageAppBar(
               label: label,
+              translatedName: translatedNamed,
               activeInterventionProgram: activeInterventionProgram,
             );
           },

@@ -164,7 +164,10 @@ class _ReferralDetailedCardState extends State<ReferralDetailedCard> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Referral ${widget.referralIndex.toString()}',
+                              languageTranslationState.currentLanguage == 'lesotho'
+                                          ?'Phetisetso ${widget.referralIndex.toString()}'
+                                          :'Referral ${widget.referralIndex.toString()}',
+                                
                                 style: const TextStyle().copyWith(
                                   color: widget.titleColor,
                                   fontWeight: FontWeight.w700,

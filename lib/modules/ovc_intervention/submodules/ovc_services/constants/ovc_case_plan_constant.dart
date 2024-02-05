@@ -1,6 +1,6 @@
-import 'package:kb_mobile_app/models/events.dart';
-
 class OvcCasePlanConstant {
+  static const String casePlanEventDateSectionId = 'casePlanEventDateId';
+  static const String casePlanLocatinSectionId = 'casePlanLocationId';
   static const String casePlanToGapLinkage = 'ajqTV28fydL';
   static const String casePlanGapToMonitoringLinkage = 'H7BMnqZEqGN';
   static const String casePlanGapToServiceProvisionLinkage = 'tDWIRBsuwsB';
@@ -8,206 +8,150 @@ class OvcCasePlanConstant {
   static const String casePlanFirstGoal = 'ADc3clrQRl4';
   static const String casePlansSecondGoal = 'efNgDIqhlNs';
   static const String houseHoldCategorizationDataElement = 'aEJnSplwvsw';
-  static const String householdCategorizationSection =
-      'house_hold_categorization';
+  static const String householdCategorizationSection = 'house_hold_categorization';
   static const List<String> paralegalServices = [
     'AaqeRcyjbyS', // VAC Legal messaging case plan
     'QDFZ03HbjGj', // VAC Legal messaging service provision
     'x3FxC6Bw139', // VAC Legal messaging service monitoring
   ];
+
   static const List<String> casePlanServiceProvisionResults = [
-    'gwwUOs6yt6C',
-    'gV77yUM8NK8',
-    'qL9c5r7c6kK',
-    'FRWCmEerPic',
-    'xTO562B5g53',
-    'lpTVK3t1Ahk',
-    'kcoDiGNXWpA',
-    'fgDPoYtifQI',
-    'cbqS6IoSbwI',
-    'lEkrLOFmLrH',
-    'BYu8pI5kGXF',
-    'JnqldNamliR',
-    'YFgrURiwirq',
-    'HzI5X2yHef6',
-    'eqhzeRBMftZ',
-    'ESIjwQ9S6Ic',
-    'r8wPQAog7PJ',
-    'UKczyQWCB0L',
-    'KkqMjxjAR7g',
-    'mRoO7kgpgVg',
-    'GNQ3gDA2CTI',
-    'gSp9bgPW52L',
-    'mY7GqOTKtsQ',
-    'zK7kMYpgPQn',
-    'tnspdPfpuXm',
-    'QnFYeBNZlbf',
-    'KvLYMr8F4vg',
-    'AnnOS2m6LZK',
-    'kcoDiGNXWpA',
-    'fgDPoYtifQI',
-    'cbqS6IoSbwI',
-    'RNKOtUtLT4c',
-    'GImA3HB9YK5',
-    'Fj2RbXsb8Yj',
-    'rMtSykWZ4HB',
-    'cuy4Ai7mBbA',
-    'ysDSdiL7wNx',
-    'vj0R7ySdigX',
-    'JlRnllAlSk0',
-    'UZJ9vqIabAY',
-    'gfKsz88uxtg',
-    'aGChpBlIzcd',
-    'LcIB5EL3IjT',
-    'EYhFIkTpUS3',
-    'IiKUlAeSIE3',
-    'hg2bpp1HqwU',
-    'fvgPnlOD7e9',
-    'MeMaUvt3O8j',
-    'WQlWXUmYjI2',
-    'Zc0M1jsbfyA',
-    'TSx4O9Tf5v2',
-    'QDFZ03HbjGj'
+    "y8ToqnbVz1o",
+    "JnqldNamliR",
+    "otd2tndsE4Z",
+    "YFgrURiwirq",
+    "RIpmBgYc0ZN",
+    "GNQ3gDA2CTI",
+    "mRoO7kgpgVg",
+    "tnspdPfpuXm",
+    "zK7kMYpgPQn",
+    "UKczyQWCB0L",
+    "KkqMjxjAR7g",
+    "DoU7AeHDsUs",
+    "QnFYeBNZlbf",
+    "FRWCmEerPic",
+    "gV77yUM8NK8",
+    "qL9c5r7c6kK",
+    "ESIjwQ9S6Ic",
+    "gSp9bgPW52L",
+    "r8wPQAog7PJ",
+    "mY7GqOTKtsQ",
+    "eqhzeRBMftZ",
+    "lEkrLOFmLrH",
+    "xTO562B5g53",
+    "AnnOS2m6LZK",
+    "lpTVK3t1Ahk",
+    "KvLYMr8F4vg",
+    "RNKOtUtLT4c",
+    "rMtSykWZ4HB",
+    "QDFZ03HbjGj",
+    "gfKsz88uxtg",
+    "ysDSdiL7wNx",
+    "GImA3HB9YK5",
+    "gwwUOs6yt6C",
+    "aGChpBlIzcd",
+    "vj0R7ySdigX",
+    "JlRnllAlSk0",
+    "UZJ9vqIabAY",
+    "LcIB5EL3IjT",
+    "hg2bpp1HqwU",
+    "fvgPnlOD7e9",
+    "WQlWXUmYjI2",
+    "Zc0M1jsbfyA",
+    "MeMaUvt3O8j"
   ];
+
   static const List<String> casePlanServiceProvisionReasons = [
-    'W5lbgijaXA6',
-    'sxlVgySosg3',
-    'i9icxSZ8HCf',
-    'y8ToqnbVz1o',
-    'AStxMCkJhi5',
-    'GISFLEttRtU',
-    'itTgPQ0OrMU',
-    'wZLjymsKsuj',
-    'Jxlug5I3kdu',
-    'YSsfKXdIRLG',
-    'aDOvfQ1wdIX',
-    'pSkl6ibruvU',
-    'kBivIQr6mrW',
-    'g2X9vUL2d9m',
-    'eXh6Gag1uwp',
-    'xdI5atw8DC4',
-    'TN5r1EFmHWz',
-    'xECpX8Vt1rT',
-    'Z6VwHVRIh48',
-    'TNmg7uRUWgC',
-    'KpUgwivl5Cr',
-    'EB3JPVqMdb4',
-    'IFggJCXLYPD',
-    'EPwDypaz61A',
-    'OMhFxj6SYhM',
-    'h10Iktl4KKR',
-    'XUoqvbk0uVH',
-    'tmi1jtKYZs0',
-    'ONC3bpjq525',
-    'U8h0daQzXXk',
-    'iz4CvIFovsF',
-    'cb773khL7XB',
-    'WVsVwfErZ7V',
-    'VlReEXXH1WN',
-    'sD0zbIksKTY',
-    'Riyr0nniCVo',
-    'yuwtSD8EyoY',
-    'KppYygPZ8BL',
-    'CxREUNzKxHB',
-    'QCbFgssCzeF',
-    'rJaHpLnWvfg',
-    'p77CBdxxtHI',
-    'KpUgwivl5Cr',
-    'TNmg7uRUWgC',
-    'Z6VwHVRIh48',
-    'QnfPxpJvb1D',
-    'hMdC0CMKSGn',
-    'w4EYZpbtUV8',
-    'SODPuEmHEGV',
-    'JFlnkaXlXm5',
-    'KWk8waoLO7N',
-    'aG42nUguLLW'
+    "dwhnvU5m667",
+    "sxlVgySosg3",
+    "dwhnvU5m667",
+    "i9icxSZ8HCf",
+    "QpE5qR1cQ6T",
+    "aDOvfQ1wdIX",
+    "YSsfKXdIRLG",
+    "eXh6Gag1uwp",
+    "g2X9vUL2d9m",
+    "wZLjymsKsuj",
+    "Jxlug5I3kdu",
+    "Op6ws25fWWQ",
+    "xdI5atw8DC4",
+    "IiIVDSKX8yk",
+    "JFlnkaXlXm5",
+    "SODPuEmHEGV",
+    "GISFLEttRtU",
+    "pSkl6ibruvU",
+    "itTgPQ0OrMU",
+    "kBivIQr6mrW",
+    "AStxMCkJhi5",
+    "p77CBdxxtHI",
+    "hMdC0CMKSGn",
+    "xECpX8Vt1rT",
+    "HGpA4kx5jLQ",
+    "TN5r1EFmHWz",
+    "GImA3HB9YK5",
+    "OMhFxj6SYhM",
+    "KWk8waoLO7N",
+    "iz4CvIFovsF",
+    "XUoqvbk0uVH",
+    "IFggJCXLYPD",
+    "aG42nUguLLW",
+    "cb773khL7XB",
+    "tmi1jtKYZs0",
+    "ONC3bpjq525",
+    "U8h0daQzXXk",
+    "WVsVwfErZ7V",
+    "Riyr0nniCVo",
+    "yuwtSD8EyoY",
+    "CxREUNzKxHB",
+    "QCbFgssCzeF",
+    "KppYygPZ8BL"
   ];
+
   static const List<String> casPlanServiceGaps = [
-    "XoSPWmpWXCy",
-    "JSQ3xP1NhuN",
-    "ylSjcj6cv42",
-    "AxtahhoHcXV",
-    "dTFLFtUUeEK",
-    "EaJTFrklMo5",
-    "Hvq9oisH7Gt",
-    "qTf8VSoojJ2",
-    "DQxqyncQtwm",
-    "e6NV2ZAzFEh",
-    "WrjNxZBVHCL",
-    "WdZ3PnW5yV6",
-    "hS7aONLz2cq",
-    "ksc7ov3MihX",
     "cx4xBY4jZXM",
-    "hJUuQ648wVF",
-    "BJrrrqQqwQO",
-    "LswSBpMoG5C",
-    "AwWKp6KmqgY",
+    "XoSPWmpWXCy",
+    "pbcXNnAuzfh",
+    "ylSjcj6cv42",
+    "d8vFkGjiux4",
     "HKCv7lkLexo",
-    "d2vXxEPeCq7",
+    "BJrrrqQqwQO",
+    "hJUuQ648wVF",
+    "AwWKp6KmqgY",
+    "JSQ3xP1NhuN",
     "x4yAqv4z2Xv",
     "AM9oJCOHM7f",
-    "gCKoJgBFdob",
     "uvJV4WGc5ct",
+    "EaJTFrklMo5",
+    "DQxqyncQtwm",
+    "Hvq9oisH7Gt",
+    "qTf8VSoojJ2",
+    "EaJTFrklMo5",
+    "d2vXxEPeCq7",
+    "LswSBpMoG5C",
+    "dTFLFtUUeEK",
+    "gCKoJgBFdob",
+    "AxtahhoHcXV",
+    "WrjNxZBVHCL",
+    "e6NV2ZAzFEh",
     "yPP7lkomNfK",
     "kvF996ugmMl",
     "uQiyym8SEvd",
-    "WiPTQhWLVU1",
-    "neF08iYV9Os",
-    "PoxYSqq8Hgz",
     "aPmPhwm8Zln",
     "AaqeRcyjbyS",
+    "WdZ3PnW5yV6",
     "Ccp4Odlh3BE",
-    "Cb8qzfdrg7d",
+    "WiPTQhWLVU1",
+    "PoxYSqq8Hgz",
+    "hS7aONLz2cq",
+    "GO3Ojp1UEX7",
+    "exHDkX1gPiC",
+    "yf6KmY3Rm5I",
     "X47zxNAqMv0",
     "qraZh4n14S4",
     "q2N7p3UbvSF",
     "NcMANzhhphO",
-    "TdReJf2LTXA"
+    "Cb8qzfdrg7d",
+    "TdReJf2LTXA",
+    "HsxFZOuV4oZ",
   ];
-  static Map getMappedCasePlanWithGapsByDomain(
-    List<Events> casePlanEvents,
-    List<Events> casePlanGapsEvents,
-  ) {
-    Map sanitizedDataObject = {};
-    List<Map> mappedCasePlanGaps =
-        OvcCasePlanConstant.getMappedCasePlanGaps(casePlanGapsEvents)
-            as List<Map<dynamic, dynamic>>;
-    for (Events casePlanEvent in casePlanEvents) {
-      Map data = OvcCasePlanConstant.getMappedEventObject(casePlanEvent);
-      String casePlanToGapLinkageValue =
-          data[OvcCasePlanConstant.casePlanToGapLinkage] ??
-              'casePlanToGapLinkage';
-      data['gaps'] = mappedCasePlanGaps
-          .where((Map data) =>
-              casePlanToGapLinkageValue.trim() != '' &&
-              data.containsValue(casePlanToGapLinkageValue))
-          .toList();
-      if (data.containsKey(OvcCasePlanConstant.casePlanDomainType)) {
-        sanitizedDataObject[data[OvcCasePlanConstant.casePlanDomainType]] =
-            data;
-      }
-    }
-    return sanitizedDataObject;
-  }
-
-  static List getMappedCasePlanGaps(
-    List<Events> casePlanGapsEvents,
-  ) {
-    return casePlanGapsEvents
-        .map((Events eventData) => getMappedEventObject(eventData))
-        .toList();
-  }
-
-  static Map getMappedEventObject(Events eventData) {
-    Map map = {};
-    map['eventDate'] = eventData.eventDate;
-    map['eventId'] = eventData.event;
-    for (Map dataValue in eventData.dataValues) {
-      if ('${dataValue['value']}'.trim() != '') {
-        map[dataValue['dataElement']] = dataValue['value'];
-      }
-    }
-    return map;
-  }
 }

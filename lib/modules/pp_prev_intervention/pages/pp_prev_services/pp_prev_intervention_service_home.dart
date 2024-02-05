@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/pp_prev_intervention_state/pp_prev_intervention_current_selection_state.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
@@ -113,84 +114,95 @@ class PpPrevInterventionServiceHome extends StatelessWidget {
           ),
         ),
         body: SubPageBody(
-          body: Consumer<PpPrevInterventionCurrentSelectionState>(
-            builder: (context, dreamBeneficiarySelectionState, child) {
-              return Consumer<ServiceEventDataState>(
-                builder: (context, serviceEventDataState, child) {
-                  PpPrevBeneficiary? ppPrevBeneficiary =
-                      dreamBeneficiarySelectionState.currentPpPrev;
-                  bool isLoading = serviceEventDataState.isLoading;
-                  Map<String?, List<Events>> eventListByProgramStage =
-                      serviceEventDataState.eventListByProgramStage;
-                  List<Events> events = TrackedEntityInstanceUtil
-                      .getAllEventListFromServiceDataStateByProgramStages(
-                          eventListByProgramStage, programStageIds,
-                          shouldSortByDate: true);
-                  int serviceIndex = events.length + 1;
-                  return Column(
-                    children: [
-                      PpPrevBeneficiaryTopHeader(
-                        ppPrevBeneficiary: ppPrevBeneficiary!,
-                      ),
-                      Container(
-                        child: isLoading
-                            ? const CircularProcessLoader(
-                                color: Colors.blueGrey,
-                              )
-                            : Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 10.0,
+          body: Consumer<LanguageTranslationState>(
+            builder: (context, languageState, child) =>
+                Consumer<PpPrevInterventionCurrentSelectionState>(
+              builder: (context, dreamBeneficiarySelectionState, child) {
+                return Consumer<ServiceEventDataState>(
+                  builder: (context, serviceEventDataState, child) {
+                    PpPrevBeneficiary? ppPrevBeneficiary =
+                        dreamBeneficiarySelectionState.currentPpPrev;
+                    bool isLoading = serviceEventDataState.isLoading;
+                    Map<String?, List<Events>> eventListByProgramStage =
+                        serviceEventDataState.eventListByProgramStage;
+                    List<Events> events = TrackedEntityInstanceUtil
+                        .getAllEventListFromServiceDataStateByProgramStages(
+                            eventListByProgramStage, programStageIds,
+                            shouldSortByDate: true);
+                    int serviceIndex = events.length + 1;
+                    return Column(
+                      children: [
+                        PpPrevBeneficiaryTopHeader(
+                          ppPrevBeneficiary: ppPrevBeneficiary!,
+                        ),
+                        Container(
+                          child: isLoading
+                              ? const CircularProcessLoader(
+                                  color: Colors.blueGrey,
+                                )
+                              : Column(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 10.0,
+                                      ),
+                                      child: events.isEmpty
+                                          ? Text(
+                                              languageState.currentLanguage ==
+                                                      'lesotho'
+                                                  ? 'Ha ho na Litšebeletso hajoale'
+                                                  : 'There is no Services at a moment',
+                                            )
+                                          : Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 5.0,
+                                                horizontal: 13.0,
+                                              ),
+                                              child: Column(
+                                                children: events
+                                                    .map((Events eventData) {
+                                                  serviceIndex--;
+                                                  return PpPrevServiceVisitCard(
+                                                    eventData: eventData,
+                                                    visitName:
+                                                        "Service $serviceIndex",
+                                                    onEdit: () =>
+                                                        onEditPpPrevService(
+                                                            context,
+                                                            ppPrevBeneficiary,
+                                                            eventData),
+                                                    onView: () =>
+                                                        onViewPpPrevService(
+                                                            context,
+                                                            ppPrevBeneficiary,
+                                                            eventData),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
                                     ),
-                                    child: events.isEmpty
-                                        ? const Text(
-                                            'There is no Services at a moment',
-                                          )
-                                        : Container(
-                                            margin: const EdgeInsets.symmetric(
-                                              vertical: 5.0,
-                                              horizontal: 13.0,
-                                            ),
-                                            child: Column(
-                                              children: events
-                                                  .map((Events eventData) {
-                                                serviceIndex--;
-                                                return PpPrevServiceVisitCard(
-                                                  eventData: eventData,
-                                                  visitName:
-                                                      "Service $serviceIndex",
-                                                  onEdit: () =>
-                                                      onEditPpPrevService(
-                                                          context,
-                                                          ppPrevBeneficiary,
-                                                          eventData),
-                                                  onView: () =>
-                                                      onViewPpPrevService(
-                                                          context,
-                                                          ppPrevBeneficiary,
-                                                          eventData),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-                                  ),
-                                  EntryFormSaveButton(
-                                    label: 'ADD Service',
-                                    labelColor: Colors.white,
-                                    buttonColor: const Color(0xFF9B2BAE),
-                                    fontSize: 15.0,
-                                    onPressButton: () => onAddNewPpPrevService(
-                                        context, ppPrevBeneficiary),
-                                  )
-                                ],
-                              ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+                                    EntryFormSaveButton(
+                                      label: languageState.currentLanguage ==
+                                              'lesotho'
+                                          ? 'TLATSA TŠEBELETSO'
+                                          : 'ADD Service',
+                                      labelColor: Colors.white,
+                                      buttonColor: const Color(0xFF9B2BAE),
+                                      fontSize: 15.0,
+                                      onPressButton: () =>
+                                          onAddNewPpPrevService(
+                                              context, ppPrevBeneficiary),
+                                    )
+                                  ],
+                                ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),

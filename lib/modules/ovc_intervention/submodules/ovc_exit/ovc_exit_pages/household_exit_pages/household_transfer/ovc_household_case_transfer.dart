@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
@@ -10,6 +11,7 @@ import 'package:kb_mobile_app/core/components/intervention_bottom_navigation/int
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
 import 'package:kb_mobile_app/core/components/sup_page_body.dart';
+import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
 import 'package:kb_mobile_app/core/constants/program_status.dart';
 import 'package:kb_mobile_app/core/services/form_auto_save_offline_service.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
@@ -20,6 +22,7 @@ import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_household_top_header.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_routes_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/services/ovc_enrollment_household_service.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/models/ovc_exit_case_transfer.dart';
@@ -45,16 +48,14 @@ class _OvcHouseholdCaseTransferState extends State<OvcHouseholdCaseTransfer> {
   bool isSaving = false;
   List<FormSection>? formSections;
   bool isFormReady = false;
+  Map mandatoryFieldObject = {};
+  List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
 
   @override
   void initState() {
     super.initState();
     setFromSection();
-    Timer(const Duration(seconds: 1), () {
-      setState(() {
-        isFormReady = true;
-      });
-    });
   }
 
   setFromSection() {
@@ -64,6 +65,33 @@ class _OvcHouseholdCaseTransferState extends State<OvcHouseholdCaseTransfer> {
     formSections = OvcExitCaseTransfer.getFormSections(
       firstDate: household!.createdDate!,
     );
+    mandatoryFields = [
+      'eventDate',
+      ...OvcExitCaseTransfer.getMandatoryFields()
+    ];
+    formSections = household.enrollmentOuAccessible!
+        ? formSections
+        : [
+            AppUtil.getServiceProvisionLocationSection(
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+              sectionLabelColor: const Color(0xFF1A3518),
+              formlabel: 'Location',
+              allowedSelectedLevels: [
+                AppHierarchyReference.communityLevel,
+              ],
+              program: OvcInterventionConstant.caregiverProgram,
+            ),
+            ...formSections ?? []
+          ];
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
+    }
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        isFormReady = true;
+      });
+    });
   }
 
   void clearFormAutoSaveState(
@@ -78,36 +106,51 @@ class _OvcHouseholdCaseTransferState extends State<OvcHouseholdCaseTransfer> {
     Map dataObject,
     OvcHousehold? currentOvcHousehold,
   ) async {
-    if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    if (hadAllMandatoryFilled) {
       setState(() {
         isSaving = true;
       });
       String? eventDate = dataObject['eventDate'];
       String? eventId = dataObject['eventId'];
       String programStatusId = 'PN92g65TkVI';
+      String orgUnit =
+          dataObject['location'] ?? currentOvcHousehold?.orgUnit ?? '';
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-          OvcHouseholdCaseTransferConstant.program,
+          OvcInterventionConstant.caregiverProgram,
           OvcHouseholdCaseTransferConstant.programStage,
-          currentOvcHousehold!.orgUnit,
+          orgUnit,
           formSections!,
           dataObject,
           eventDate,
-          currentOvcHousehold.id,
+          currentOvcHousehold?.id ?? '',
           eventId,
           null,
         );
         await OvcEnrollmentHouseholdService().updateHouseholdStatus(
-            trackedEntityInstance: currentOvcHousehold.id,
-            orgUnit: currentOvcHousehold.orgUnit,
-            dataObject: {programStatusId: ProgramStatus.transferred},
-            inputFieldIds: [programStatusId]);
+          trackedEntityInstance: currentOvcHousehold?.id ?? '',
+          orgUnit: orgUnit,
+          dataObject: {
+            programStatusId: ProgramStatus.transferred,
+          },
+          inputFieldIds: [programStatusId],
+        );
         Provider.of<OvcInterventionListState>(context, listen: false)
             .refreshOvcList();
         Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
             .refetchCurrentHousehold();
         Provider.of<ServiceEventDataState>(context, listen: false)
-            .resetServiceEventDataState(currentOvcHousehold.id);
+            .resetServiceEventDataState(currentOvcHousehold?.id ?? '');
         Timer(const Duration(seconds: 1), () {
           setState(() {
             isSaving = false;
@@ -122,7 +165,7 @@ class _OvcHouseholdCaseTransferState extends State<OvcHouseholdCaseTransfer> {
             position: ToastGravity.TOP,
           );
           clearFormAutoSaveState(
-              context, currentOvcHousehold.id, eventId ?? '');
+              context, currentOvcHousehold?.id ?? '', eventId ?? '');
           Navigator.pop(context);
         });
       } catch (e) {
@@ -138,8 +181,19 @@ class _OvcHouseholdCaseTransferState extends State<OvcHouseholdCaseTransfer> {
         });
       }
     } else {
+      unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+        mandatoryFields,
+        dataObject,
+        hiddenFields:
+            Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+        checkBoxInputFields: FormUtil.getInputFieldByValueType(
+          valueType: 'CHECK_BOX',
+          formSections: formSections ?? [],
+        ),
+      );
+      setState(() {});
       AppUtil.showToastMessage(
-        message: 'Please fill at least one form field',
+        message: 'Please fill all mandatory field',
         position: ToastGravity.TOP,
       );
     }
@@ -166,6 +220,7 @@ class _OvcHouseholdCaseTransferState extends State<OvcHouseholdCaseTransfer> {
           builder: (context, ovcHouseholdCurrentSelectionState, child) {
             OvcHousehold? currentOvcHousehold =
                 ovcHouseholdCurrentSelectionState.currentOvcHousehold;
+
             return Column(
               children: [
                 OvcHouseholdInfoTopHeader(
@@ -184,17 +239,29 @@ class _OvcHouseholdCaseTransferState extends State<OvcHouseholdCaseTransfer> {
                         ? const CircularProcessLoader(
                             color: Colors.blueGrey,
                           )
-                        : OvcHouseholdExitFormContainer(
-                            event: event,
-                            isSaving: isSaving,
-                            exitType: 'transfer',
-                            formSections: formSections,
-                            onSaveForm: (dataObject) => onSaveForm(
-                              context,
-                              dataObject,
-                              currentOvcHousehold,
-                            ),
-                          );
+                        : currentOvcHousehold?.hasExitedProgram == true &&
+                                event == null
+                            ? Container(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 13.0),
+                                child: const Text(
+                                    'There is no Transfer at a moment. The household has exited the program',
+                                    textAlign: TextAlign.center),
+                              )
+                            : OvcHouseholdExitFormContainer(
+                                event: event,
+                                isSaving: isSaving,
+                                exitType: 'transfer',
+                                mandatoryFieldObject: mandatoryFieldObject,
+                                unFilledMandatoryFields:
+                                    unFilledMandatoryFields,
+                                formSections: formSections,
+                                onSaveForm: (dataObject) => onSaveForm(
+                                  context,
+                                  dataObject,
+                                  currentOvcHousehold,
+                                ),
+                              );
                   },
                 )
               ],

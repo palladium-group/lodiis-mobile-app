@@ -148,11 +148,9 @@ class _OvcChildServiceHomeState extends State<OvcChildServiceHome> {
                               shrinkWrap: true,
                               children: ovcChildServiceHomeCards
                                   .where((ovcChildServiceCard) =>
-                                      // Condition to display CLHIV ART Card service only for HIV Positive children
                                       ovcChildServiceCard.id != 'clhiv_art' ||
                                       (ovcChildServiceCard.id == 'clhiv_art' &&
-                                          currentOvcSelection?.hivStatus ==
-                                              'Positive'))
+                                          currentOvcSelection!.isClHiv))
                                   .map(
                                 (OvcChildServiceHomeConstant
                                     ovcChildServiceHomeCard) {

@@ -3,6 +3,7 @@ import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 
 class OvcHousehold {
   String? id;
@@ -27,6 +28,7 @@ class OvcHousehold {
   bool? enrollmentOuAccessible;
   bool? primaryChildExist;
   bool? primaryChildHasExited;
+  bool? hasExitedProgram;
   List<OvcHouseholdChild>? children;
   Map? dataObject;
   TrackedEntityInstance? teiData;
@@ -56,6 +58,7 @@ class OvcHousehold {
     this.teiData,
     this.primaryChildExist,
     this.primaryChildHasExited,
+    this.hasExitedProgram,
     this.dataObject,
   });
 
@@ -81,6 +84,7 @@ class OvcHousehold {
       'RB8Wx75hGa4',
       'qZP982qpSPS',
       'oSKX8fFQdWc',
+      OvcInterventionConstant.programStatus,
       BeneficiaryIdentification.householdCategorization,
       UserAccountReference.implementingPartnerAttribute,
       BeneficiaryIdentification.primaryUIC,
@@ -129,6 +133,7 @@ class OvcHousehold {
       children: children,
       teiData: tei,
       dataObject: data,
+      hasExitedProgram: data[OvcInterventionConstant.programStatus] == 'Exit',
     );
   }
 

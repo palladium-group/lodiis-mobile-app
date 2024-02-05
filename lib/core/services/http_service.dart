@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
 
 class HttpService {
-  static const String baseUrl = 'lsis-ovc-dreams.org';
   final String? username;
   final String? password;
   String? basicAuth;
@@ -14,7 +14,10 @@ class HttpService {
   }
 
   Uri getApiUrl(String url, {Map<String, dynamic>? queryParameters}) {
-    return Uri.https(baseUrl, 'kbtraining/$url', queryParameters);
+    String subUrl = [AppInfoReference.subBaseUrl, url]
+        .where((String urlString) => urlString.isNotEmpty)
+        .join("/");
+    return Uri.https(AppInfoReference.baseUrl, subUrl, queryParameters);
   }
 
   Future<http.Response> httpPost(
@@ -91,6 +94,6 @@ class HttpService {
 
   @override
   String toString() {
-    return '$baseUrl => $username : $password';
+    return '${AppInfoReference.baseUrl} => $username : $password';
   }
 }

@@ -51,6 +51,7 @@ class OvcChildCasePlanGraduationSkipLogic {
       } else if (inputFieldId == 'zPggDcmT4zt' && value != 'true') {
         hiddenFields['UxPgBn3JRBQ'] = true;
       } else if (inputFieldId == 'fffETOzhGsU' && value != 'true') {
+        hiddenFields['LyCBmMgAW4P'] = true;
         hiddenFields['wGeVdyVO5hE'] = true;
       } else if (inputFieldId == 'hiv_risks') {
         var options = OvcGraduationReadinessForm.getInputFieldOptions(
@@ -102,19 +103,19 @@ class OvcChildCasePlanGraduationSkipLogic {
       } else if (inputFieldId == 'ApextZUIUcC') {
       }
       // for Benchmark 4
-      else if (inputFieldId == 'XxioqueCXcn') {
+      else if (inputFieldId == 'so1Hnb8K09j') {
         bool isBenchmarkMet = '${dataObject["htotfutRcVF"]}' == 'true' &&
             '${dataObject["F7HWBfHN6tQ"]}' == 'true';
         assignInputFieldValue(context, inputFieldId, '$isBenchmarkMet');
       } // for Benchmark 5
-      else if (inputFieldId == 'OcbE9kN8Dcp') {
+      else if (inputFieldId == 'XxioqueCXcn') {
         bool isBenchmarkMet = ('${dataObject["zPggDcmT4zt"]}' == 'true' &&
                 '${dataObject["UxPgBn3JRBQ"]}' == 'true') ||
             ('${dataObject["fffETOzhGsU"]}' == 'true' &&
                 '${dataObject["wGeVdyVO5hE"]}' == 'Negative');
         assignInputFieldValue(context, inputFieldId, '$isBenchmarkMet');
       } // for Benchmark 6
-      else if (inputFieldId == 'YdqDLYSE4qr') {
+      else if (inputFieldId == 'wW0grvww5Iz') {
         bool isBenchmarkMet = '${dataObject["PkvK39frchD"]}' == 'true' &&
             '${dataObject["RVGFbzbEGmY"]}' == 'true' &&
             '${dataObject["HzUAxTw1nZs"]}' == 'true';

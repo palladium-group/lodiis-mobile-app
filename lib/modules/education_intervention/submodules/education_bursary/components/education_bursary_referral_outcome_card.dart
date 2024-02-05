@@ -110,7 +110,7 @@ class EducationBursaryReferralOutcomeCard extends StatelessWidget {
                         vertical: 7.0,
                       ),
                       child: Text(
-                        currentLanguage == 'lesotho' ? 'Outcome' : 'Outcome',
+                        currentLanguage == 'lesotho' ? 'Sephetho' : 'Outcome',
                         style: const TextStyle().copyWith(
                           color: const Color(0xFFB2B7B9),
                         ),
@@ -158,7 +158,7 @@ class EducationBursaryReferralOutcomeCard extends StatelessWidget {
                     labelColor: labelColor,
                     valueColor: valueColor,
                     label: currentLanguage == 'lesotho'
-                        ? 'Date service was provided'
+                        ? "Letsatsi leo ts'ebeletso e fanoeng ka lona"
                         : 'Date service was provided',
                     value: referralOutcomeEvent.dateOfServiceProvided,
                   ),
@@ -166,7 +166,7 @@ class EducationBursaryReferralOutcomeCard extends StatelessWidget {
                     labelColor: labelColor,
                     valueColor: valueColor,
                     label: currentLanguage == 'lesotho'
-                        ? 'Comments or next steps'
+                        ? 'Maikutlo kapa mehato e latelang'
                         : 'Comments or next steps',
                     value: referralOutcomeEvent.comments,
                   ),

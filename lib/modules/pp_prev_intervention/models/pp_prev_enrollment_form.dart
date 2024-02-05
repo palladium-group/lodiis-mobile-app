@@ -14,7 +14,14 @@ class PpPrevEnrollmentForm {
       "qZP982qpSPS",
       "vIX4GTSCX4P",
       "RB8Wx75hGa4",
-      "m9WYpQhuIu4"
+      "agg0eUd8Wwo",
+      "ZxXscC5W9qb",
+      'muAZsONb53n',
+      'fSQY2z3L0lp',
+      'qCEK4EQvSbL',
+      'hZxlBQQlYLP',
+      'F2OyvIDdUFG',
+      'rAFWYJuAxTS',
     ];
   }
 
@@ -22,6 +29,7 @@ class PpPrevEnrollmentForm {
     return [
       FormSection(
         name: "Enrollment Form",
+        translatedName: 'Foromo ea ngoliso',
         color: const Color(0xFF9B2BAE),
         inputFields: [
           InputField(
@@ -108,27 +116,11 @@ class PpPrevEnrollmentForm {
             inputColor: const Color(0xFF9B2BAE),
             labelColor: const Color(0xFF737373),
           ),
-          InputField(
-            id: 'm9WYpQhuIu4',
-            name: 'Beneficiary Status',
-            valueType: 'TEXT',
-            inputColor: const Color(0xFF9B2BAE),
-            labelColor: const Color(0xFF737373),
-            options: [
-              InputFieldOption(
-                code: "Active",
-                name: "Active",
-              ),
-              InputFieldOption(
-                code: "NewEnrollee",
-                name: "New Enrollee",
-              ),
-            ],
-          ),
         ],
       ),
       FormSection(
         name: "HIV Screening Questions",
+        translatedName: 'Lipotso tsa Tlhahlobo ea HIV',
         color: const Color(0xFF9B2BAE),
         inputFields: [
           InputField(
@@ -142,7 +134,7 @@ class PpPrevEnrollmentForm {
           InputField(
             id: 'ZxXscC5W9qb',
             name: 'When was the last test?',
-            translatedName: 'Fana ka khoeli le selemo sa tlhatlhobo?',
+            translatedName: 'Teko ea ho qetela e ne e le neng',
             valueType: 'DATE',
             inputColor: const Color(0xFF9B2BAE),
             labelColor: const Color(0xFF737373),

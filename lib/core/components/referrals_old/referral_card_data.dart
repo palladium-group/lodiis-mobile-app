@@ -73,11 +73,11 @@ class ReferralCardData extends StatelessWidget {
           value: referralDataCard.serviceMode!,
         ),
         _getReferralCardDataWidget(
-          key: 'Category',
+          key: currentLanguage == 'lesotho' ? 'Sehlopha' : 'Category',
           value: referralDataCard.category!,
         ),
         _getReferralCardDataWidget(
-          key: 'Referred to',
+          key: currentLanguage == 'lesotho' ? 'Phetisetso ho' : 'Referred to',
           value: referralDataCard.location!,
         ),
         _getReferralCardDataWidget(
@@ -94,7 +94,7 @@ class ReferralCardData extends StatelessWidget {
           value: referralDataCard.type!,
         ),
         _getReferralCardDataWidget(
-          key: 'Status',
+          key: currentLanguage == 'lesotho' ? 'Boemo' : 'Status',
           value: referralDataCard.status!,
         ),
       ],

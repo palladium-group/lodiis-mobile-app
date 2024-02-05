@@ -13,15 +13,15 @@ import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/models/tei_relationship.dart';
 import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_enrollment/constants/ovc_enrollement_none_participation_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_enrollment/constants/ovc_enrollment_consent_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_enrollment/models/ovc_enrollment_household.dart';
 
 class OvcEnrollmentHouseholdService {
-  final String program = 'BNsDaCclOiu';
-  final String trackedEntityType = 'XZIKX0bA8WN';
-  final List<FormSection> formSections =
-      OvcEnrollmentHousehold.getFormSections();
+  final List<FormSection> formSections = OvcEnrollmentHousehold.getFormSections(
+    isEnrolmentDateEditable: true,
+  );
   final List<String> hiddenFields = OvcEnrollmentHousehold.getHiddenField();
   final List<String> consentFields = OvcEnrollmentConstant.getConsentFields();
 
@@ -43,7 +43,7 @@ class OvcEnrollmentHouseholdService {
     TrackedEntityInstance trackedEntityInstanceData =
         await FormUtil.geTrackedEntityInstanceEnrollmentPayLoad(
             trackedEntityInstance,
-            trackedEntityType,
+            OvcInterventionConstant.trackedEntityType,
             orgUnit,
             inputFieldIds,
             dataObject,
@@ -56,7 +56,7 @@ class OvcEnrollmentHouseholdService {
           enrollmentDate,
           incidentDate,
           orgUnit,
-          program,
+          OvcInterventionConstant.caregiverProgram,
           trackedEntityInstance,
           dataObject);
       await FormUtil.savingEnrollment(enrollmentData);
@@ -72,7 +72,7 @@ class OvcEnrollmentHouseholdService {
     TrackedEntityInstance trackedEntityInstanceData =
         await FormUtil.geTrackedEntityInstanceEnrollmentPayLoad(
       trackedEntityInstance,
-      trackedEntityType,
+      OvcInterventionConstant.trackedEntityType,
       orgUnit,
       inputFieldIds ?? [],
       dataObject,
@@ -165,7 +165,7 @@ class OvcEnrollmentHouseholdService {
     List<TrackedEntityInstance> allTrackedEntityInstanceList = [];
     try {
       List<Enrollment> enrollments = await EnrollmentOfflineProvider()
-          .getEnrollmentsByProgram(program,
+          .getEnrollmentsByProgram(OvcInterventionConstant.caregiverProgram,
               page: page, searchedAttributes: searchedAttributes);
       allTrackedEntityInstanceList =
           await TrackedEntityInstanceOfflineProvider()
@@ -261,7 +261,8 @@ class OvcEnrollmentHouseholdService {
   }
 
   Future<int> getHouseholdCount() async {
-    return await EnrollmentOfflineProvider().getEnrollmentsCount(program);
+    return await EnrollmentOfflineProvider()
+        .getEnrollmentsCount(OvcInterventionConstant.caregiverProgram);
   }
 
   Future<int> getNoneParticipationCount() async {

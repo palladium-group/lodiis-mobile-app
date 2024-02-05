@@ -143,7 +143,9 @@ class _AgywDreamsANCState extends State<AgywDreamsANC> {
                                   ),
                                   child: events.isEmpty
                                       ? const Text(
-                                          'There is no ANC at a moment')
+                                          'There is no ANC at a moment',
+                                          textAlign: TextAlign.center,
+                                        )
                                       : Container(
                                           margin: const EdgeInsets.symmetric(
                                             vertical: 5.0,

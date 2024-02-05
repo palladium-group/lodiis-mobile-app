@@ -8,11 +8,8 @@ class OvcChildWellBeingAssessmentSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
 
-  static Future evaluateSkipLogics(
-    BuildContext context,
-    List<FormSection> formSections,
-    Map dataObject,
-  ) async {
+  static Future evaluateSkipLogics(BuildContext context,
+      List<FormSection> formSections, Map dataObject, String? hivStatus) async {
     hiddenFields.clear();
     hiddenSections.clear();
 
@@ -162,8 +159,13 @@ class OvcChildWellBeingAssessmentSkipLogic {
       String value = '${dataObject[inputFieldId]}';
       bool isFieldHidden = hiddenFields[inputFieldId] ?? false;
 
-      if (inputFieldId == 'puLHlflNeg6' && value != 'false') {
-        hiddenFields['ef1ixon3YBh'] = true;
+      if (inputFieldId == 'puLHlflNeg6') {
+        if (hivStatus != null) {
+          dataObject[inputFieldId] = 'true';
+          hiddenFields['ef1ixon3YBh'] = true;
+        } else if (hivStatus == null) {
+          dataObject[inputFieldId] = 'false';
+        }
       }
 
       if (inputFieldId == 'sHUjPZTqpy2' && value != 'Yes') {
@@ -377,13 +379,16 @@ class OvcChildWellBeingAssessmentSkipLogic {
 
         //Domain Health
 
-        //Domain Health
-        if (inputFieldId == 'puLHlflNeg6' && value != 'true') {
+        if (inputFieldId == 'puLHlflNeg6' &&
+            dataObject[inputFieldId] == 'false') {
           hiddenFields['eSJhbqT1NQb'] = true;
         }
-        if (inputFieldId == 'eSJhbqT1NQb' && value != 'Positive') {
+
+        if (inputFieldId == 'eSJhbqT1NQb' && hivStatus != null) {
+          dataObject[inputFieldId] = hivStatus;
           hiddenFields['sHUjPZTqpy2'] = true;
         }
+
         if (inputFieldId == 'iZGQ4iWkWNu' && value != 'false') {
           hiddenFields['EYb2XmgHt58'] = true;
           hiddenFields['RAlqa0C6PN7'] = true;

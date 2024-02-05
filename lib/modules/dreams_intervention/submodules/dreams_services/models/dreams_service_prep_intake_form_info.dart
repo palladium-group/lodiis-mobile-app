@@ -81,8 +81,12 @@ class DreamsServicePrepIntakeInfo {
                 labelColor: const Color(0xFF737373),
                 name: 'Current gender',
                 options: [
-                  InputFieldOption(code: 'Male', name: 'Male'),
-                  InputFieldOption(code: 'Female', name: 'Female'),
+                  InputFieldOption(
+                      code: 'Male', name: 'Male', translatedName: 'Botona'),
+                  InputFieldOption(
+                      code: 'Female',
+                      name: 'Female',
+                      translatedName: "Bots'ehali"),
                   InputFieldOption(
                       code: 'Transgender (male to female)',
                       name: 'Transgender (male to female)'),
@@ -138,9 +142,14 @@ class DreamsServicePrepIntakeInfo {
                 inputColor: const Color(0xFF1F8ECE),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(code: 'Yes', name: 'Yes'),
-                  InputFieldOption(code: 'No', name: 'No'),
-                  InputFieldOption(code: "Don't Know", name: "Don't Know"),
+                  InputFieldOption(
+                      code: 'Yes', name: 'Yes', translatedName: 'E'),
+                  InputFieldOption(
+                      code: 'No', name: 'No', translatedName: 'Che'),
+                  InputFieldOption(
+                      code: "Don't Know",
+                      name: "Don't Know",
+                      translatedName: 'Ha ke tsebe'),
                 ],
                 name:
                     'Have you had sex without a condom with someone living with HIV who is not on treatment',
@@ -156,9 +165,14 @@ class DreamsServicePrepIntakeInfo {
                 inputColor: const Color(0xFF1F8ECE),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(code: 'Yes', name: 'Yes'),
-                  InputFieldOption(code: 'No', name: 'No'),
-                  InputFieldOption(code: "Don't Know", name: "Don't Know"),
+                  InputFieldOption(
+                      code: 'Yes', name: 'Yes', translatedName: 'E'),
+                  InputFieldOption(
+                      code: 'No', name: 'No', translatedName: 'Che'),
+                  InputFieldOption(
+                      code: "Don't Know",
+                      name: "Don't Know",
+                      translatedName: 'Ha ke tsebe'),
                 ],
                 name:
                     'Have you had condom-less sex or other high risk HIV exposure in the past 2  6 weeks',
@@ -170,9 +184,14 @@ class DreamsServicePrepIntakeInfo {
                 description:
                     'If reporting sex without a condom in the past 2 to 6 weeks and  has flu-like symptoms, an acute HIV infection might be suspected and further investigation is required; \n DO NOT offer PrEP or PEP and conduct further HIV testingIf a more sensitive test e.g. \n DNA PCR is available with results available within 2 weeks conduct the more sensitive test.If more sensitive test e.g. \n DNA PCR is not available, ask the client to come back after 4 weeks for repeat rapid HIV test.',
                 options: [
-                  InputFieldOption(code: 'Yes', name: 'Yes'),
-                  InputFieldOption(code: 'No', name: 'No'),
-                  InputFieldOption(code: "Don't Know", name: "Don't Know"),
+                  InputFieldOption(
+                      code: 'Yes', name: 'Yes', translatedName: 'E'),
+                  InputFieldOption(
+                      code: 'No', name: 'No', translatedName: 'Che'),
+                  InputFieldOption(
+                      code: "Don't Know",
+                      name: "Don't Know",
+                      translatedName: 'Ha ke tsebe'),
                 ],
                 name:
                     'Have you had a cold or flu, runny nose, fatigue, malaise, headache, sore throat, mouth sores, lymphadenopathy, skin rash, myalgia( muscle pain), arthralgia(joint pain)',
@@ -235,6 +254,7 @@ class DreamsServicePrepIntakeInfo {
                 inputColor: const Color(0xFF1F8ECE),
                 labelColor: const Color(0xFF737373),
                 name: 'Type of test used',
+                translatedName: 'Mofuta oa Tlhahlobo',
                 options: [
                   InputFieldOption(code: 'Determine', name: 'Determine'),
                   InputFieldOption(code: 'Unigold', name: 'Unigold'),

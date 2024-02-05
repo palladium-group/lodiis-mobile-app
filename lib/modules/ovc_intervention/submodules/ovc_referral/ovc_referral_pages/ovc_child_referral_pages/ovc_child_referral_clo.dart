@@ -9,6 +9,7 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
 import 'package:kb_mobile_app/models/events.dart';
 import 'package:kb_mobile_app/models/form_auto_save.dart';
+import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/core/components/referrals_old/referral_card_summary.dart';
@@ -99,6 +100,8 @@ class _OvcChildCLOReferralState extends State<OvcChildCLOReferral> {
           builder: (context, serviceEventDataState, child) {
             OvcHouseholdChild? currentOvcHouseholdChild =
                 ovcHouseholdCurrentSelectionState.currentOvcHouseholdChild;
+            OvcHousehold? currentOvcHousehold =
+                ovcHouseholdCurrentSelectionState.currentOvcHousehold;
             bool isLoading = serviceEventDataState.isLoading;
             Map<String?, List<Events>> eventListByProgramStage =
                 serviceEventDataState.eventListByProgramStage;
@@ -137,6 +140,12 @@ class _OvcChildCLOReferralState extends State<OvcChildCLOReferral> {
                                             ),
                                             child: ReferralCardSummary(
                                               isCLOReferral: true,
+                                              canManageReferral: currentOvcHousehold
+                                                          ?.hasExitedProgram !=
+                                                      true &&
+                                                  currentOvcHouseholdChild!
+                                                          .hasExitedProgram !=
+                                                      true,
                                               isOutgoingCLOReferral: eventData
                                                           .programStage ==
                                                       OvcChildCLOReferralConstant
@@ -177,7 +186,11 @@ class _OvcChildCLOReferralState extends State<OvcChildCLOReferral> {
                             ),
                             Visibility(
                               visible: currentOvcHouseholdChild!
-                                  .enrollmentOuAccessible!,
+                                      .enrollmentOuAccessible! &&
+                                  currentOvcHousehold?.hasExitedProgram !=
+                                      true &&
+                                  currentOvcHouseholdChild.hasExitedProgram !=
+                                      true,
                               child: EntryFormSaveButton(
                                 label: 'ADD CLO REFERRAL',
                                 labelColor: Colors.white,

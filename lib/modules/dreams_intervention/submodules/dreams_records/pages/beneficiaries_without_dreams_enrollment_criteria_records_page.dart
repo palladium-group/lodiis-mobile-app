@@ -79,8 +79,9 @@ class _BeneficiariesWithoutDreamsEnrollmentCriteriaRecordsPageState
         String? currentLanguage = languageTranslationState.currentLanguage;
         return Consumer<DreamsInterventionListState>(
           builder: (context, dreamsInterventionListState, child) {
-            String header =
-                '${'Beneficiaries without Enrollment criteria'.toUpperCase()}: ${dreamsInterventionListState.numberOfBeneficiariesWithoutAgywDreamsCriteria}';
+            String header = currentLanguage == 'lesotho'
+                ? '${'Bana ba senang mekhoa ea ho ngolisa'.toUpperCase()}: ${dreamsInterventionListState.numberOfBeneficiariesWithoutAgywDreamsCriteria}'
+                : '${'Beneficiaries without Enrollment criteria'.toUpperCase()}: ${dreamsInterventionListState.numberOfBeneficiariesWithoutAgywDreamsCriteria}';
             return SubModuleHomeContainer(
               header: header,
               bodyContents: _buildBody(currentLanguage),
@@ -105,8 +106,10 @@ class _BeneficiariesWithoutDreamsEnrollmentCriteriaRecordsPageState
               right: 13.0,
               left: 13.0,
             ),
-            child: const Text(
-              'There is no beneficiaries without AGYW/DREAMS enrollment criteria at moment',
+            child: Text(
+              currentLanguage == 'lesotho'
+                  ? 'Ha hona bana ba senang mekhoa ea ho ngolisa hajoale'
+                  : 'There is no beneficiaries without AGYW/DREAMS enrollment criteria at moment',
               textAlign: TextAlign.center,
             ),
           ),
@@ -130,8 +133,10 @@ class _BeneficiariesWithoutDreamsEnrollmentCriteriaRecordsPageState
                     right: 13.0,
                     left: 13.0,
                   ),
-                  child: const Text(
-                    'There is no beneficiaries without AGYW/DREAMS enrollment criteria at moment',
+                  child: Text(
+                    currentLanguage == 'lesotho'
+                        ? 'Ha hona bana ba senang mekhoa ea ho ngolisa hajoale'
+                        : 'There is no beneficiaries without AGYW/DREAMS enrollment criteria at moment',
                     textAlign: TextAlign.center,
                   ),
                 )

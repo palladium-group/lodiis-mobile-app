@@ -33,6 +33,7 @@ class EducationBursaryAttendanceForm {
     return [
       FormSection(
         name: 'Attendance',
+        translatedName: 'Ho ba teng',
         color: const Color(0xFF009688),
         inputFields: [
           InputField(
@@ -59,8 +60,14 @@ class EducationBursaryAttendanceForm {
               inputColor: const Color(0xFF009688),
               labelColor: const Color(0xFF737373),
               options: [
-                InputFieldOption(code: 'Face to face', name: 'Face to face'),
-                InputFieldOption(code: 'Virtual', name: 'Virtual'),
+                InputFieldOption(
+                    code: 'Face to face',
+                    name: 'Face to face',
+                    translatedName: 'Sefahleho sefahleho'),
+                InputFieldOption(
+                    code: 'Virtual',
+                    name: 'Virtual',
+                    translatedName: 'Ka marangrang'),
               ]),
           InputField(
             id: 'EokvDGvXkOk',

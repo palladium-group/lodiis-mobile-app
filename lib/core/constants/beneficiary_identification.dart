@@ -13,7 +13,7 @@ class BeneficiaryIdentification {
   static const int maxNumberToReserve = 100;
   static const String householdCategorization = 'uetInX0KTfc';
 
-  String getBenificiaryId(
+  String getBeneficiaryId(
     OrganisationUnit organisationUnit,
     Map dataObject,
     String? beneficiaryIndex,

@@ -18,6 +18,7 @@ class AgywWithoutEnrollmentCriteria {
     return [
       FormSection(
         name: 'Demographic Information',
+        translatedName: 'Litaba tsa Boitsebiso ba motho',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(

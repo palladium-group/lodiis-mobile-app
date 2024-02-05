@@ -64,8 +64,9 @@ class _OvcServiceSubPageChildViewState
                       .casePlanGapServiceProvisionProgramStage,
                   casePlanMonitoringProgramStage: OvcChildCasePlanConstant
                       .casePlanGapServiceMonitoringProgramStage,
+                  enrollmentDate: currentOvcHouseholdChild!.createdDate!,
                   enrollmentOuAccessible:
-                      currentOvcHouseholdChild!.enrollmentOuAccessible!,
+                      currentOvcHouseholdChild.enrollmentOuAccessible!,
                   isHouseholdCasePlan: false,
                   isOnCasePlanPage: false,
                   isOnCasePlanServiceMonitoring: false,

@@ -37,7 +37,8 @@ class OfflineDbProvider {
     "ALTER TABLE enrollment ADD shouldReAssess TEXT DEFAULT ''",
 
     // Migrations to resolve the miss-added household categorization attribute for Caregiver/Household program
-    "UPDATE tracked_entity_instance_attribute SET value = '' WHERE attribute = '${BeneficiaryIdentification.householdCategorization}' AND value = '{}'"
+    "UPDATE tracked_entity_instance_attribute SET value = '' WHERE attribute = '${BeneficiaryIdentification.householdCategorization}' AND value = '{}'",
+    "DELETE FROM tracked_entity_instance_attribute WHERE attribute = 'enrollmentDate'",
   ];
   Future<Database?> get db async {
     if (_db != null) {

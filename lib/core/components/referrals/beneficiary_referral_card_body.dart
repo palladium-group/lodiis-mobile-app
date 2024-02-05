@@ -81,11 +81,13 @@ class BeneficiaryReferralCardBody extends StatelessWidget {
                 value: referralEvent.serviceMode!,
               ),
               _getReferralDetails(
-                key: 'Category',
+                key: currentLanguage == 'lesotho' ? 'Sehlopha' : 'Category',
                 value: referralEvent.category!,
               ),
               _getReferralDetails(
-                key: 'Referred to',
+                key: currentLanguage == 'lesotho'
+                    ? 'Phetisetso ho'
+                    : 'Referred to',
                 value: referralEvent.location!,
               ),
               _getReferralDetails(
@@ -102,7 +104,7 @@ class BeneficiaryReferralCardBody extends StatelessWidget {
                 value: referralEvent.type!,
               ),
               _getReferralDetails(
-                key: 'Status',
+                key: currentLanguage == 'lesotho' ? 'Boemo' : 'Status',
                 value: referralEvent.status!,
               ),
             ],

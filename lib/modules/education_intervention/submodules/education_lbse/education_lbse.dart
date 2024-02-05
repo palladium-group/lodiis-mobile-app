@@ -26,6 +26,7 @@ class EducationLbse extends StatefulWidget {
 
 class _EducationLbseState extends State<EducationLbse> {
   final String title = 'LBSE List';
+  final String translatedTitle = 'Lethathamo la LBSE';
   final bool canEdit = true;
   final bool canView = true;
   final bool canExpand = true;
@@ -154,6 +155,9 @@ class _EducationLbseState extends State<EducationLbse> {
   }
 
   Center _getEmptyListContainer(BuildContext context) {
+    String? currentLanguage =
+        Provider.of<LanguageTranslationState>(context, listen: false)
+            .currentLanguage;
     return Center(
       child: Column(
         children: [
@@ -161,8 +165,10 @@ class _EducationLbseState extends State<EducationLbse> {
             margin: const EdgeInsets.only(
               top: 10.0,
             ),
-            child: const Text(
-              'There is no LBSE beneficiaries enrolled at the moment',
+            child: Text(
+              currentLanguage == 'lesotho'
+                  ? 'Ha ho na bana ba LBSE ba ngolisitseng hajoale'
+                  : 'There is no LBSE beneficiaries enrolled at the moment',
             ),
           ),
           IconButton(
@@ -231,10 +237,10 @@ class _EducationLbseState extends State<EducationLbse> {
                 ? '$maleCount Botona  $femaleCount Botsehali'
                 : '$maleCount Male  $femaleCount Female';
             return SubModuleHomeContainer(
-              header: '$title : $sexCountLabel',
+              header:  isSesotho ? '$translatedTitle : $sexCountLabel' : '$title : $sexCountLabel',
               bodyContents: _buildBody(),
               showFilter: true,
-            );
+            ); 
           },
         );
       },

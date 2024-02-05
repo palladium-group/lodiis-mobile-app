@@ -8,6 +8,7 @@ import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_household_top_header.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_home_container.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_household_assessment_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 import 'package:provider/provider.dart';
 
@@ -42,6 +43,9 @@ class OvcHouseholdCasePlanHome extends StatelessWidget {
                   currentOvcHousehold: currentOvcHousehold,
                 ),
                 CasePlanHomeContainer(
+                  assessmentProgramStages: const [
+                    OvcHouseholdAssessmentConstant.programStage,
+                  ],
                   casePlanProgram: OvcHouseholdCasePlanConstant.program,
                   casePlanProgramStage:
                       OvcHouseholdCasePlanConstant.casePlanProgramStage,
@@ -51,8 +55,9 @@ class OvcHouseholdCasePlanHome extends StatelessWidget {
                       .casePlanGapServiceProvisionProgramStage,
                   casePlanMonitoringProgramStage: OvcHouseholdCasePlanConstant
                       .casePlanGapServiceMonitoringProgramStage,
+                  enrollmentDate: currentOvcHousehold!.createdDate!,
                   enrollmentOuAccessible:
-                      currentOvcHousehold!.enrollmentOuAccessible!,
+                      currentOvcHousehold.enrollmentOuAccessible!,
                   isHouseholdCasePlan: true,
                   isOnCasePlanPage: true,
                   isOnCasePlanServiceMonitoring: false,

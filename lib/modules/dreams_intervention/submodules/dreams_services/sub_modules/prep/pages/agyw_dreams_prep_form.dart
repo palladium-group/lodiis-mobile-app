@@ -99,9 +99,9 @@ class _AgywDreamsPrepFormPageState extends State<AgywDreamsPrepFormPage> {
         [serviceProvisionForm],
         includeLocationId: true,
       ));
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -150,6 +150,7 @@ class _AgywDreamsPrepFormPageState extends State<AgywDreamsPrepFormPage> {
       String? eventId = dataObject['eventId'];
       List<String> hiddenFields = [];
       String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+      orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           PrepIntakeConstant.program,
@@ -307,7 +308,9 @@ class _AgywDreamsPrepFormPageState extends State<AgywDreamsPrepFormPage> {
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

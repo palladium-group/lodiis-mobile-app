@@ -64,7 +64,7 @@ class _AgywDreamsPEPState extends State<AgywDreamsPEP> {
 
   void onEditPrep(
       BuildContext context, Events eventData, AgywDream agywDream) async {
-    FormUtil.updateServiceFormState(context, false, eventData);
+    FormUtil.updateServiceFormState(context, true, eventData);
     String? beneficiaryId = agywDream.id;
     String eventId = eventData.event!;
     String formAutoSaveId =
@@ -87,7 +87,7 @@ class _AgywDreamsPEPState extends State<AgywDreamsPEP> {
   }
 
   void onViewPrep(BuildContext context, Events eventData) {
-    FormUtil.updateServiceFormState(context, true, eventData);
+    FormUtil.updateServiceFormState(context, false, eventData);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -147,7 +147,9 @@ class _AgywDreamsPEPState extends State<AgywDreamsPEP> {
                                   ),
                                   child: events.isEmpty
                                       ? const Text(
-                                          'There is no PEP Visits at a moment')
+                                          'There is no PEP Visits at a moment',
+                                          textAlign: TextAlign.center,
+                                        )
                                       : Container(
                                           margin: const EdgeInsets.symmetric(
                                             vertical: 5.0,

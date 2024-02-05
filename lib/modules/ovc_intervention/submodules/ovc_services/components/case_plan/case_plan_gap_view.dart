@@ -14,7 +14,7 @@ class CasePlanGapView extends StatelessWidget {
   const CasePlanGapView({
     Key? key,
     required this.casePlanGapObjects,
-    required this.hasEditAccess,
+    required this.hasEditAccessToCasePlan,
     required this.isEditableMode,
     required this.isHouseholdCasePlan,
     required this.domainId,
@@ -26,7 +26,7 @@ class CasePlanGapView extends StatelessWidget {
 
   final List casePlanGapObjects;
   final bool isHouseholdCasePlan;
-  final bool hasEditAccess;
+  final bool hasEditAccessToCasePlan;
   final bool isEditableMode;
   final bool isOnCasePlanServiceProvision;
   final bool isOnCasePlanServiceMonitoring;
@@ -98,7 +98,7 @@ class CasePlanGapView extends StatelessWidget {
                               ),
                             ),
                             Visibility(
-                              visible: hasEditAccess &&
+                              visible: hasEditAccessToCasePlan &&
                                   isEditableMode &&
                                   !(isOnCasePlanServiceMonitoring ||
                                       isOnCasePlanServiceProvision),

@@ -43,18 +43,21 @@ class EducationBeneficiaryBottonAction extends StatelessWidget {
             children: [
               EducationBeneficiaryButton(
                 label: 'LEARNING OUTCOME',
+                translatedLabel: 'SEPHETHO SA BOITHUTO',
                 isVisible: isLbseLearningOutcomeVisible,
                 hasSplitBorder: false,
                 onTap: onOpenLbseLearningOutcome,
               ),
               EducationBeneficiaryButton(
                 label: 'SCHOOL',
+                translatedLabel: 'SEKOLO',
                 isVisible: isBursarySchoolVisible,
                 hasSplitBorder: isBursaryClubVisible,
                 onTap: onOpenBursarySchool,
               ),
               EducationBeneficiaryButton(
                 label: 'CLUB',
+                translatedLabel: "SEHLOTS'OANA",
                 isVisible: isBursaryClubVisible,
                 hasSplitBorder: isBursaryClubReferralVisible,
                 onTap: onOpenBursaryClub,

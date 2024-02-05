@@ -15,6 +15,7 @@ class SelectInputField extends StatefulWidget {
     required this.currentLanguage,
     required this.hiddenInputFieldOptions,
     this.renderAsRadio,
+    this.sortOptions,
   }) : super(key: key);
 
   final Color? color;
@@ -23,6 +24,7 @@ class SelectInputField extends StatefulWidget {
   final dynamic selectedOption;
   final Function onInputValueChange;
   final bool? renderAsRadio;
+  final bool? sortOptions;
   final String? currentLanguage;
   final Map hiddenInputFieldOptions;
 
@@ -86,9 +88,11 @@ class _SelectInputFieldState extends State<SelectInputField> {
           )
         : SelectionOptionContainer(
             selectedOption: _selectedOption,
-            options: _options
-              ?..sort((firstOption, secondOption) =>
-                  firstOption.name.compareTo(secondOption.name)),
+            options: widget.sortOptions != true
+                ? _options ?? []
+                : (_options
+                  ?..sort((firstOption, secondOption) =>
+                      firstOption.name.compareTo(secondOption.name))),
             onValueChange: onValueChange,
             color: widget.color,
             isReadOnly: widget.isReadOnly,

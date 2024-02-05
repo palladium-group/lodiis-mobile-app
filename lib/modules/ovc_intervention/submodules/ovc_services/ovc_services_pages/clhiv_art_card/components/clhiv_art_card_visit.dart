@@ -88,7 +88,7 @@ class ClhivArtCardVisit extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: eventData.enrollmentOuAccessible!,
+                    visible: editDisabled != true,
                     child: Container(
                       margin: const EdgeInsets.symmetric(
                         horizontal: 5.0,

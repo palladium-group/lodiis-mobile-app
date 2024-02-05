@@ -164,7 +164,7 @@ class _PpPrevInterventionReferralFormState
         String? eventId = dataObject['eventId'];
         List<String> hiddenFields = [];
         String orgUnit = dataObject['location'] ?? ppPrevBeneficiary.orgUnit;
-
+        orgUnit = orgUnit.isEmpty ? ppPrevBeneficiary.orgUnit ?? '' : orgUnit;
         try {
           await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
             PpPrevInterventionConstant.program,
@@ -289,7 +289,9 @@ class _PpPrevInterventionReferralFormState
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

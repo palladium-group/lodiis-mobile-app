@@ -50,6 +50,7 @@ class EducationLbseEnrollmentForm {
       ),
       FormSection(
         name: 'School information',
+        translatedName: 'Litaba tsa sekolo',
         color: const Color(0xFF009688),
         inputFields: [
           InputField(
@@ -69,13 +70,11 @@ class EducationLbseEnrollmentForm {
             labelColor: const Color(0xFF737373),
             options: [
               InputFieldOption(
-                code: 'Primary',
-                name: 'Primary',
-              ),
+                  code: 'Primary', name: 'Primary', translatedName: 'Mathomo'),
               InputFieldOption(
-                code: 'Post primary',
-                name: 'Post primary',
-              ),
+                  code: 'Post primary',
+                  name: 'Post primary',
+                  translatedName: 'Tse latelang tsa matomo'),
             ],
           ),
           InputField(
@@ -87,37 +86,37 @@ class EducationLbseEnrollmentForm {
             labelColor: const Color(0xFF737373),
             options: [
               InputFieldOption(
-                code: 'Grade 4',
-                name: 'Grade 4',
-              ),
+                  code: 'Grade 4',
+                  name: 'Grade 4',
+                  translatedName: 'Sehlopha sa 4'),
               InputFieldOption(
-                code: 'Grade 5',
-                name: 'Grade 5',
-              ),
+                  code: 'Grade 5',
+                  name: 'Grade 5',
+                  translatedName: 'Sehlopha sa 5'),
               InputFieldOption(
-                code: 'Grade 6',
-                name: 'Grade 6',
-              ),
+                  code: 'Grade 6',
+                  name: 'Grade 6',
+                  translatedName: 'Sehlopha sa 6'),
               InputFieldOption(
-                code: 'Grade 7',
-                name: 'Grade 7',
-              ),
+                  code: 'Grade 7',
+                  name: 'Grade 7',
+                  translatedName: 'Sehlopha sa 7'),
               InputFieldOption(
-                code: 'Grade 8',
-                name: 'Grade 8',
-              ),
+                  code: 'Grade 8',
+                  name: 'Grade 8',
+                  translatedName: 'Sehlopha sa 8'),
               InputFieldOption(
-                code: 'Grade 9',
-                name: 'Grade 9',
-              ),
+                  code: 'Grade 9',
+                  name: 'Grade 9',
+                  translatedName: 'Sehlopha sa 9'),
               InputFieldOption(
-                code: 'Grade 10',
-                name: 'Grade 10',
-              ),
+                  code: 'Grade 10',
+                  name: 'Grade 10',
+                  translatedName: 'Sehlopha sa 10'),
               InputFieldOption(
-                code: 'Grade 11',
-                name: 'Grade 11',
-              ),
+                  code: 'Grade 11',
+                  name: 'Grade 11',
+                  translatedName: 'Sehlopha sa 11'),
             ],
           ),
           InputField(
@@ -203,6 +202,8 @@ class EducationLbseEnrollmentForm {
           InputField(
             id: 'jCtTXW1Ig6P',
             name: 'National ID/Passport number',
+            translatedName:
+                'Nomoro ea karete ea boitsebiso ea naha/nomo ea pasa',
             valueType: 'TEXT',
             inputColor: const Color(0xFF009688),
             labelColor: const Color(0xFF737373),

@@ -13,11 +13,13 @@ class EducationLbseLearningOutcomeForm {
     return [
       FormSection(
         name: 'Learning Outcome',
+        translatedName: 'Sephetho sa boithuto',
         color: const Color(0xFF009688),
         inputFields: [
           InputField(
             id: LbseInterventionConstant.serviceProvider,
             name: "Name of Service Provider",
+            translatedName: "Lebitso la Mofani oa lits'ebeletso",
             isReadOnly: true,
             valueType: 'TEXT',
             inputColor: const Color(0xFF009688),
@@ -32,29 +34,30 @@ class EducationLbseLearningOutcomeForm {
             labelColor: const Color(0xFF737373),
             options: [
               InputFieldOption(
-                code: 'Theme 1',
-                name: 'Knowing oneself and relating with others',
-              ),
+                  code: 'Theme 1',
+                  name: 'Knowing oneself and relating with others',
+                  translatedName: 'Ho itseba le ho sebelisana le ba bang'),
               InputFieldOption(
-                code: 'Theme 2',
-                name: 'Human rights and child protection',
-              ),
+                  code: 'Theme 2',
+                  name: 'Human rights and child protection',
+                  translatedName: 'Litokelo tsa botho le tšireletso ea bana'),
               InputFieldOption(
-                code: 'Theme 3',
-                name: 'Gender norms and gender equality',
-              ),
+                  code: 'Theme 3',
+                  name: 'Gender norms and gender equality',
+                  translatedName: 'Litloaelo tsa bong le tekano ea bong'),
               InputFieldOption(
-                code: 'Theme 4',
-                name: 'Sexual and Reproductive Health',
-              ),
+                  code: 'Theme 4',
+                  name: 'Sexual and Reproductive Health',
+                  translatedName: 'Bophelo bo botle ba thobalano le ho beleha'),
               InputFieldOption(
-                code: 'Theme 5',
-                name: 'HIV and AIDS and STIs',
-              ),
+                  code: 'Theme 5',
+                  name: 'HIV and AIDS and STIs',
+                  translatedName: 'HIV le AIDS le mafu a likobo'),
               InputFieldOption(
-                code: 'Theme 6',
-                name: 'Drugs, Substance and alcohol abuse',
-              ),
+                  code: 'Theme 6',
+                  name: 'Drugs, Substance and alcohol abuse',
+                  translatedName:
+                      'Lithethefatsi, tlhekefetso ea lithethefatsi le joala'),
             ],
           ),
           InputField(
@@ -164,13 +167,13 @@ class EducationLbseLearningOutcomeForm {
             labelColor: const Color(0xFF737373),
             options: [
               InputFieldOption(
-                code: 'Face to face',
-                name: 'Face to face',
-              ),
+                  code: 'Face to face',
+                  name: 'Face to face',
+                  translatedName: 'Sefahleho sefahleho'),
               InputFieldOption(
-                code: 'Virtual',
-                name: 'Virtual',
-              )
+                  code: 'Virtual',
+                  name: 'Virtual',
+                  translatedName: 'Ka marangrang')
             ],
           ),
           InputField(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/device_connectivity_state/device_connectivity_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/login_form_state/login_form_state.dart';
 import 'package:kb_mobile_app/app_state/referral_notification_state/referral_notification_state.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
@@ -86,7 +87,10 @@ class _LoginFormState extends State<LoginForm> {
     if (!isLoginProcessActive && status) {
       loginFormState.setHasLoginErrorStatus(false);
       loginFormState.setIsLoginProcessActive(true);
-      loginFormState.setCurrentLoginProcessMessage('Authenticating user...');
+      loginFormState.setCurrentLoginProcessMessage(
+          widget.currentLanguage == 'lesotho'
+              ? 'E netefatsa hore mosebelisi ke ea nang le tokelo '
+              : 'Authenticating user...');
       if (isOnline!) {
         await onlineAuthentication(
           username: currentUser!.username!.trim(),
@@ -151,11 +155,15 @@ class _LoginFormState extends State<LoginForm> {
           );
           await setCurrentUserAccess(user, userAccessConfigurations);
           loginFormState.setCurrentLoginProcessMessage(
-              "Saving user's assigned locations...");
+              widget.currentLanguage == 'lesotho'
+                  ? 'Basebelise ba polokelo ba abetsoeng sebaka'
+                  : "Saving user's assigned locations...");
           await OrganisationUnitService()
               .discoveringOrgananisationUnitsFromTheServer();
           loginFormState.setCurrentLoginProcessMessage(
-              "Saving assigned access for interventions...");
+              widget.currentLanguage == 'lesotho'
+                  ? 'Polokelo e abetsoeng phihlelo ba keng sa ho kena lipakeng.'
+                  : "Saving assigned access for interventions...");
           for (dynamic program in user.programs ?? []) {
             await ProgramService()
                 .discoverProgramOrganisationUnitsFromTheServer("$program");
@@ -170,7 +178,9 @@ class _LoginFormState extends State<LoginForm> {
         await UserService().setCurrentUser(user);
         redirectToInterventionPage(user);
       } else {
-        String message = 'Incorrect username or password';
+        String message = widget.currentLanguage == 'lesotho'
+            ? 'Lebitso la mosebelisi kapa nomoro ea lekunutu e fosahetseng'
+            : 'Incorrect username or password';
         resetLoginFormState(
           toastMessage: message,
           showErrorOnInputFields: true,
@@ -227,66 +237,27 @@ class _LoginFormState extends State<LoginForm> {
     Color activeInputColor = const Color(0xFF4B9F46);
     Color inActiveInputColor = const Color(0xFFD2E7D1);
     return SingleChildScrollView(
-      child: Consumer<LoginFormState>(
-        builder: (context, loginFormState, child) {
-          String activeInput = loginFormState.activeInput;
-          bool hasLoginFormError = loginFormState.hasLoginFormError;
-          bool isLoginProcessActive = loginFormState.isLoginProcessActive;
-          bool isPasswordVisible = loginFormState.isPasswordVisible;
-          return currentUser == null
-              ? CircularProcessLoader(
-                  color: CustomColor.defaultSecondaryColor,
-                  size: 2.0,
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'Username',
-                          style: !hasLoginFormError
-                              ? LoginPageStyles.formLabelStyle
-                              : LoginPageStyles.formLabelStyle.copyWith(
-                                  color: Colors.redAccent,
-                                ),
-                        )
-                      ],
-                    ),
-                    TextFormField(
-                      controller: usernameController,
-                      onTap: () => updateInputActiveStatus('username'),
-                      onChanged: (value) =>
-                          onFieldValueChanges(value, 'username'),
-                      onFieldSubmitted: (value) =>
-                          onFieldSubmitted(value, 'username'),
-                      readOnly: isLoginProcessActive,
-                      autocorrect: false,
-                      style: LoginPageStyles.formInputValueStyle,
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: const FormFieldInputIcon(
-                          backGroundColor: Color(0xFFEDF5EC),
-                          svgIcon: 'assets/icons/login-user-input.svg',
-                        ),
-                        prefixIconConstraints:
-                            LoginPageStyles.loginBoxConstraints,
-                      ),
-                    ),
-                    LineSeparator(
-                      color: activeInput == 'username'
-                          ? activeInputColor
-                          : inActiveInputColor,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 10.0,
-                      ),
-                      child: Row(
+      child: Consumer<LanguageTranslationState>(
+        builder: (context, languageState, child) => Consumer<LoginFormState>(
+          builder: (context, loginFormState, child) {
+            String activeInput = loginFormState.activeInput;
+            bool hasLoginFormError = loginFormState.hasLoginFormError;
+            bool isLoginProcessActive = loginFormState.isLoginProcessActive;
+            bool isPasswordVisible = loginFormState.isPasswordVisible;
+            return currentUser == null
+                ? CircularProcessLoader(
+                    color: CustomColor.defaultSecondaryColor,
+                    size: 2.0,
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
                           Text(
-                            'Password',
+                            languageState.currentLanguage == 'lesotho'
+                                ? 'Lebitso la mosebelisi'
+                                : 'Username',
                             style: !hasLoginFormError
                                 ? LoginPageStyles.formLabelStyle
                                 : LoginPageStyles.formLabelStyle.copyWith(
@@ -295,60 +266,105 @@ class _LoginFormState extends State<LoginForm> {
                           )
                         ],
                       ),
-                    ),
-                    TextFormField(
-                      controller: passwordController,
-                      onTap: () => updateInputActiveStatus('password'),
-                      onChanged: (value) =>
-                          onFieldValueChanges(value, 'password'),
-                      onFieldSubmitted: (value) =>
-                          onFieldSubmitted(value, 'password'),
-                      obscureText: !isPasswordVisible,
-                      autocorrect: false,
-                      style: LoginPageStyles.formInputValueStyle,
-                      readOnly: isLoginProcessActive,
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                        hintStyle: const TextStyle(
-                          fontSize: 15,
-                        ),
-                        border: InputBorder.none,
-                        prefixIcon: const FormFieldInputIcon(
-                          backGroundColor: Color(0xFFEDF5EC),
-                          svgIcon: 'assets/icons/login-lock.svg',
-                        ),
-                        prefixIconConstraints:
-                            LoginPageStyles.loginBoxConstraints,
-                        suffixIcon: GestureDetector(
-                          onTap: () => updatePasswordVisibilityStatus(
-                            !isPasswordVisible,
+                      TextFormField(
+                        controller: usernameController,
+                        onTap: () => updateInputActiveStatus('username'),
+                        onChanged: (value) =>
+                            onFieldValueChanges(value, 'username'),
+                        onFieldSubmitted: (value) =>
+                            onFieldSubmitted(value, 'username'),
+                        readOnly: isLoginProcessActive,
+                        autocorrect: false,
+                        style: LoginPageStyles.formInputValueStyle,
+                        textInputAction: TextInputAction.done,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: const FormFieldInputIcon(
+                            backGroundColor: Color(0xFFEDF5EC),
+                            svgIcon: 'assets/icons/login-user-input.svg',
                           ),
-                          child: FormFieldInputIcon(
-                            backGroundColor: const Color(0xFFFFFFFF),
-                            svgIcon: isPasswordVisible
-                                ? 'assets/icons/login-close-eye.svg'
-                                : 'assets/icons/login-open-eye.svg', // show and hide password icon
-                          ),
+                          prefixIconConstraints:
+                              LoginPageStyles.loginBoxConstraints,
                         ),
-                        suffixIconConstraints:
-                            LoginPageStyles.loginBoxConstraints,
                       ),
-                    ),
-                    LineSeparator(
-                      color: activeInput == 'password'
-                          ? activeInputColor
-                          : inActiveInputColor,
-                    ),
-                    LoginButton(
-                      currentLanguage: widget.currentLanguage,
-                      isLoginProcessActive: isLoginProcessActive,
-                      onLogin: () => onLogin(
-                        isLoginProcessActive,
+                      LineSeparator(
+                        color: activeInput == 'username'
+                            ? activeInputColor
+                            : inActiveInputColor,
                       ),
-                    )
-                  ],
-                );
-        },
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 10.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              languageState.currentLanguage == 'lesotho'
+                                  ? 'Nomoro/lentsoe la lekunutu'
+                                  : 'Password',
+                              style: !hasLoginFormError
+                                  ? LoginPageStyles.formLabelStyle
+                                  : LoginPageStyles.formLabelStyle.copyWith(
+                                      color: Colors.redAccent,
+                                    ),
+                            )
+                          ],
+                        ),
+                      ),
+                      TextFormField(
+                        controller: passwordController,
+                        onTap: () => updateInputActiveStatus('password'),
+                        onChanged: (value) =>
+                            onFieldValueChanges(value, 'password'),
+                        onFieldSubmitted: (value) =>
+                            onFieldSubmitted(value, 'password'),
+                        obscureText: !isPasswordVisible,
+                        autocorrect: false,
+                        style: LoginPageStyles.formInputValueStyle,
+                        readOnly: isLoginProcessActive,
+                        textInputAction: TextInputAction.done,
+                        decoration: InputDecoration(
+                          hintStyle: const TextStyle(
+                            fontSize: 15,
+                          ),
+                          border: InputBorder.none,
+                          prefixIcon: const FormFieldInputIcon(
+                            backGroundColor: Color(0xFFEDF5EC),
+                            svgIcon: 'assets/icons/login-lock.svg',
+                          ),
+                          prefixIconConstraints:
+                              LoginPageStyles.loginBoxConstraints,
+                          suffixIcon: GestureDetector(
+                            onTap: () => updatePasswordVisibilityStatus(
+                              !isPasswordVisible,
+                            ),
+                            child: FormFieldInputIcon(
+                              backGroundColor: const Color(0xFFFFFFFF),
+                              svgIcon: isPasswordVisible
+                                  ? 'assets/icons/login-close-eye.svg'
+                                  : 'assets/icons/login-open-eye.svg', // show and hide password icon
+                            ),
+                          ),
+                          suffixIconConstraints:
+                              LoginPageStyles.loginBoxConstraints,
+                        ),
+                      ),
+                      LineSeparator(
+                        color: activeInput == 'password'
+                            ? activeInputColor
+                            : inActiveInputColor,
+                      ),
+                      LoginButton(
+                        currentLanguage: widget.currentLanguage,
+                        isLoginProcessActive: isLoginProcessActive,
+                        onLogin: () => onLogin(
+                          isLoginProcessActive,
+                        ),
+                      )
+                    ],
+                  );
+          },
+        ),
       ),
     );
   }

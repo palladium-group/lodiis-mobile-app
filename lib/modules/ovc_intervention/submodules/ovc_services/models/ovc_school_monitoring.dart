@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/input_field_option.dart';
 
 class OvcSchoolMonitoring {
-  static List<FormSection> getFormSections() {
+  static List<FormSection> getFormSections({
+    required String enrollmentDate,
+  }) {
     return [
+      AppUtil.getServiceProvisionEventDateSection(
+        inputColor: const Color(0xFF4A9F46),
+        labelColor: const Color(0xFF1A3518),
+        sectionLabelColor: const Color(0xFF4A9F46),
+        formSectionLabel: 'School Monitoring Date',
+        inputFieldLabel: 'School Monitoring On',
+        firstDate: enrollmentDate,
+      ),
       FormSection(
           name: 'DOMAIN SCHOOLED',
           translatedName: 'TSA SEKOLO',
@@ -94,9 +105,16 @@ class OvcSchoolMonitoring {
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(code: 'Better', name: 'Better'),
-                  InputFieldOption(code: 'Same', name: 'Same'),
-                  InputFieldOption(code: 'Worse', name: 'Worse')
+                  InputFieldOption(
+                      code: 'Better', name: 'Better', translatedName: 'Betere'),
+                  InputFieldOption(
+                      code: 'Same',
+                      name: 'Same',
+                      translatedName: "E ts'oanang"),
+                  InputFieldOption(
+                      code: 'Worse',
+                      name: 'Worse',
+                      translatedName: 'E mpe le ho feta')
                 ]),
             InputField(
                 id: 'iBanzhFYlRN',
@@ -115,10 +133,19 @@ class OvcSchoolMonitoring {
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(code: 'Passed', name: 'Passed'),
-                  InputFieldOption(code: 'Failed', name: 'Failed'),
                   InputFieldOption(
-                      code: 'Did not write exams', name: 'Did not write exams')
+                      code: 'Passed',
+                      name: 'Passed',
+                      translatedName: 'O pasitse'),
+                  InputFieldOption(
+                    code: 'Failed',
+                    name: 'Failed',
+                    translatedName: 'Ha atleha',
+                  ),
+                  InputFieldOption(
+                      code: 'Did not write exams',
+                      name: 'Did not write exams',
+                      translatedName: 'Ha a ngola litlhahlobo')
                 ]),
             InputField(
                 id: 'zpykd7zvLsC',

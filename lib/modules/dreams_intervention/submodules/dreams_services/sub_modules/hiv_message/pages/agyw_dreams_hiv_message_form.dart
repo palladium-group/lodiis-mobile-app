@@ -40,6 +40,7 @@ class AgywDreamHIVMessageForm extends StatefulWidget {
 
 class _AgywDreamHIVMessageFormState extends State<AgywDreamHIVMessageForm> {
   final String label = 'HIV Risk Assessment form';
+  final String translatedLabel = 'Foromo ea Tlhahlobo ea Kotsi ea HIV';
   List<FormSection>? formSections;
   List<FormSection>? defaultFormSections;
   bool isFormReady = false;
@@ -81,6 +82,7 @@ class _AgywDreamHIVMessageFormState extends State<AgywDreamHIVMessageForm> {
     defaultFormSections = DreamsMsgHivInfo.getFormSections(
       firstDate: agyw.createdDate!,
     );
+    mandatoryFields = DreamsMsgHivInfo.getMandatoryFields();
     if (agyw.enrollmentOuAccessible!) {
       formSections = defaultFormSections;
     } else {
@@ -96,13 +98,15 @@ class _AgywDreamHIVMessageFormState extends State<AgywDreamHIVMessageForm> {
         program: AgywDreamsEnrollmentConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields = FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
+      mandatoryFields.addAll(
+        FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        ),
       );
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -152,6 +156,7 @@ class _AgywDreamHIVMessageFormState extends State<AgywDreamHIVMessageForm> {
         String? eventId = dataObject['eventId'];
         List<String> hiddenFields = [];
         String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+        orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
         try {
           await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
             HIVMessageConstant.program,
@@ -304,7 +309,9 @@ class _AgywDreamHIVMessageFormState extends State<AgywDreamHIVMessageForm> {
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

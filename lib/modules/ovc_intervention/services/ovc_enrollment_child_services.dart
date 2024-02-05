@@ -8,13 +8,12 @@ import 'package:kb_mobile_app/models/enrollment.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/tei_relationship.dart';
 import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_enrollment/models/ovc_enrollment_child.dart';
 
 class OvcEnrollmentChildService {
-  final String program = 'em38qztTI8s';
-  final String trackedEntityType = 'XZIKX0bA8WN';
-  final String relationshipType = 'UVV4IIKD73V';
-  final List<FormSection> formSections = OvcEnrollmentChild.getFormSections();
+  final List<FormSection> formSections = OvcEnrollmentChild.getFormSections(
+      isEnrolmentDateEditable: true, enrollmentDate: '');
 
   Future updateOvcStatus({
     String? trackedEntityInstance,
@@ -25,13 +24,12 @@ class OvcEnrollmentChildService {
     List<String> inputFieldIds = [programStatusId];
     TrackedEntityInstance trackedEntityInstanceData =
         await FormUtil.geTrackedEntityInstanceEnrollmentPayLoad(
-      trackedEntityInstance,
-      trackedEntityType,
-      orgUnit,
-      inputFieldIds,
-      dataObject,
-      hasBeneficiaryId: false,
-    );
+            trackedEntityInstance,
+            OvcInterventionConstant.trackedEntityType,
+            orgUnit,
+            inputFieldIds,
+            dataObject,
+            hasBeneficiaryId: false);
     await FormUtil.savingTrackedEntityInstance(trackedEntityInstanceData);
   }
 
@@ -73,7 +71,7 @@ class OvcEnrollmentChildService {
       TrackedEntityInstance trackedEntityInstanceData =
           await FormUtil.geTrackedEntityInstanceEnrollmentPayLoad(
         trackedEntityInstance,
-        trackedEntityType,
+        OvcInterventionConstant.trackedEntityType,
         orgUnit,
         inputFieldIds,
         dataObject,
@@ -86,7 +84,7 @@ class OvcEnrollmentChildService {
           enrollmentDate,
           incidentDate,
           orgUnit,
-          program,
+          OvcInterventionConstant.ovcProgramprogram,
           trackedEntityInstance,
           dataObject,
         );
@@ -95,12 +93,15 @@ class OvcEnrollmentChildService {
     }
     for (String childTeiReference in childTeiReferences) {
       TeiRelationship teiRelationshipData = FormUtil.getTeiRelationshipPayload(
-          relationshipType, parentTrackedEntityInstance, childTeiReference);
+          OvcInterventionConstant.relationshipType,
+          parentTrackedEntityInstance,
+          childTeiReference);
       await FormUtil.savingTeiRelationship(teiRelationshipData);
     }
   }
 
   Future<int> getOvcCount() async {
-    return await EnrollmentOfflineProvider().getEnrollmentsCount(program);
+    return await EnrollmentOfflineProvider()
+        .getEnrollmentsCount(OvcInterventionConstant.ovcProgramprogram);
   }
 }

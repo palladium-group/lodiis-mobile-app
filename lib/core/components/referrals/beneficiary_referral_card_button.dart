@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
 class BeneficiaryReferralCardButton extends StatelessWidget {
   const BeneficiaryReferralCardButton({
@@ -33,39 +35,45 @@ class BeneficiaryReferralCardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: themeColor.withOpacity(0.08),
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) => Container(
+        margin: const EdgeInsets.symmetric(),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(12.0),
+            bottomRight: Radius.circular(12.0),
           ),
-          child: Row(
-            children: [
-              _getButtonContainer(
-                label: 'VIEW',
-                onTap: onView,
-              ),
-              Container(
-                height: 20.0,
-                decoration: BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      color: themeColor.withOpacity(0.3),
-                      width: 1.0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: themeColor.withOpacity(0.08),
+            ),
+            child: Row(
+              children: [
+                _getButtonContainer(
+                  label: languageState.currentLanguage == 'lesotho'
+                      ? 'SHEBA'
+                      : 'VIEW',
+                  onTap: onView,
+                ),
+                Container(
+                  height: 20.0,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: themeColor.withOpacity(0.3),
+                        width: 1.0,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              _getButtonContainer(
-                label: 'MANAGE',
-                onTap: onManage,
-              ),
-            ],
+                _getButtonContainer(
+                  label: languageState.currentLanguage == 'lesotho'
+                      ? 'LAOLA'
+                      : 'MANAGE',
+                  onTap: onManage,
+                ),
+              ],
+            ),
           ),
         ),
       ),

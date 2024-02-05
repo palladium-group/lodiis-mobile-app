@@ -136,6 +136,7 @@ class NonAgywHTSClientInformation {
           ]),
       FormSection(
           name: 'Client Information',
+          translatedName: 'Boitsebiso',
           color: const Color(0xFF737373),
           inputFields: [
             InputField(
@@ -218,18 +219,21 @@ class NonAgywHTSClientInformation {
             InputField(
                 id: 'qvXYyTK9h2m',
                 name: 'Have you ever had an HIV test before',
+                translatedName: 'Na u kile ua etsa tlhahlobo ea HIV pele',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'ZxXscC5W9qb',
                 name: 'When was the last test',
+                translatedName: 'Teko ea ho qetela e ne e le neng',
                 valueType: 'DATE',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'ECSlqcSEB9D',
                 name: 'Type of final test',
+                translatedName: 'Mofuta oa teko ea ho qetela',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373),
@@ -240,6 +244,7 @@ class NonAgywHTSClientInformation {
             InputField(
                 id: 'z50tGzpCAow',
                 name: 'Results of the last test were',
+                translatedName: 'Liphetho tsa tlhahlobo ea ho qetela li bile',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373),
@@ -257,6 +262,7 @@ class NonAgywHTSClientInformation {
           ]),
       FormSection(
           name: 'Risk assessment',
+          translatedName: 'Tlhahlobo ea kotsi',
           color: const Color(0xFF737373),
           inputFields: [
             InputField(
@@ -268,12 +274,15 @@ class NonAgywHTSClientInformation {
             InputField(
                 id: 'RXS4fNXVKMl',
                 name: 'Do you know your partners HIV status',
+                translatedName:
+                    'Na u tseba boemo ba molekane oa hau ba hau ba HIV',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'LZFhD0N9Zj5',
                 name: "What's your partner HIV status",
+                translatedName: 'Boemo ba molekane oa hau ba HIV ke bofe',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373),
@@ -290,23 +299,33 @@ class NonAgywHTSClientInformation {
                       code: 'Unknown',
                       name: 'Unknown',
                       translatedName: 'Tse sa tsejoeng'),
-                  InputFieldOption(code: 'No Response', name: 'No Response')
+                  InputFieldOption(
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha ho Karabo')
                 ]),
             InputField(
                 id: 'VlLCik7OLHI',
                 name: 'Are you?',
+                translatedName: 'Na u?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(code: 'Circumsized', name: 'Circumsized'),
+                  InputFieldOption(
+                      code: 'Circumsized',
+                      name: 'Circumsized',
+                      translatedName: 'tlositse letlalo la botona'),
                   InputFieldOption(
                       code: 'Genital sores or discharge',
-                      name: 'Genital sores or discharge')
+                      name: 'Genital sores or discharge',
+                      translatedName: 'Seso kapa matheba a setho sa botona')
                 ]),
             InputField(
                 id: 'BCg2ITfVDXl',
                 name: 'Number of sexual partners in last 12  months',
+                translatedName:
+                    "Palo ea balekane ba thobalano likhoeling tse 12 tse fetileng",
                 valueType: 'INTEGER_ZERO_OR_POSITIVE',
                 inputColor: const Color(0xFF258DCC),
                 labelColor: const Color(0xFF737373)),
@@ -367,6 +386,7 @@ class NonAgywHTSClientInformation {
           ]),
       FormSection(
           name: 'Vulnerabilities',
+          translatedName: 'Bofokoli',
           color: const Color(0xFF737373),
           inputFields: [
             InputField(
@@ -387,6 +407,7 @@ class NonAgywHTSClientInformation {
             InputField(
                 id: 'aBtb3bWMhBS',
                 name: 'Regular Condom Use',
+                translatedName: 'Tšebeliso ea Likhohlopo Kamehla',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF258DCC),
                 isReadOnly: false,
@@ -516,7 +537,10 @@ class NonAgywHTSClientInformation {
               labelColor: const Color(0xFF737373),
               options: [
                 InputFieldOption(code: 'None', name: 'None'),
-                InputFieldOption(code: 'Primary', name: 'Primary'),
+                InputFieldOption(
+                    code: 'Primary',
+                    name: 'Primary',
+                    translatedName: 'Mathomo'),
                 InputFieldOption(
                     code: 'Secondary school', name: 'Secondary school'),
                 InputFieldOption(code: 'High school', name: 'High school'),

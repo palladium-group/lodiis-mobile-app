@@ -180,6 +180,7 @@ class _EducationBursaryAttendanceFormPageState
             : BursaryInterventionConstant.clubsAttendanceProgramStage;
         String program = BursaryInterventionConstant.program;
         String orgUnit = dataObject['location'] ?? bursaryBeneficiary.orgUnit;
+        orgUnit = orgUnit.isEmpty ? bursaryBeneficiary.orgUnit ?? '' : orgUnit;
         try {
           await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
             program,
@@ -375,7 +376,9 @@ class _EducationBursaryAttendanceFormPageState
                                             serviceFormState.isEditableMode,
                                         child: EntryFormSaveButton(
                                           label: isSaving
-                                              ? 'Saving ...'
+                                              ? currentLanguage == 'lesotho'
+                                                  ? 'E ntse e boloka...'
+                                                  : 'Saving ...'
                                               : currentLanguage == 'lesotho'
                                                   ? 'Boloka'
                                                   : 'Save',

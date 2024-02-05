@@ -64,6 +64,8 @@ class _OvcEnrollmentHouseholdViewEditContainerState
   }
 
   void _setFormMetadata() {
+    bool isEnrolmentDateEditable =
+        Provider.of<EnrollmentFormState>(context, listen: false).isEditableMode;
     mandatoryFields = widget.onViewHouseholdForm
         ? [
             ...OvcEnrollmentConsent.getMandatoryField(),
@@ -76,9 +78,13 @@ class _OvcEnrollmentHouseholdViewEditContainerState
     formSections = formSections = widget.onViewHouseholdForm
         ? [
             ...OvcEnrollmentConsent.getFormSections(),
-            ...OvcEnrollmentHousehold.getFormSections()
+            ...OvcEnrollmentHousehold.getFormSections(
+              isEnrolmentDateEditable: isEnrolmentDateEditable,
+            )
           ]
-        : OvcEnrollmentHousehold.getFormSections();
+        : OvcEnrollmentHousehold.getFormSections(
+            isEnrolmentDateEditable: isEnrolmentDateEditable,
+          );
     Timer(const Duration(milliseconds: 200), () {
       _isFormReady = true;
       setState(() {});
@@ -133,6 +139,16 @@ class _OvcEnrollmentHouseholdViewEditContainerState
   }
 
   void onInputValueChange(String id, dynamic value) {
+    if (id == 'enrollmentDate') {
+      Map dataObject =
+          Provider.of<EnrollmentFormState>(context, listen: false).formState;
+      String previousEnrollmentDate = dataObject['enrollmentDate'] ?? '';
+      if (previousEnrollmentDate != value) {
+        String dobId = 'qZP982qpSPS';
+        Provider.of<EnrollmentFormState>(context, listen: false)
+            .setFormFieldState(dobId, '');
+      }
+    }
     Provider.of<EnrollmentFormState>(context, listen: false)
         .setFormFieldState(id, value);
     _evaluateSkipLogics();
@@ -161,7 +177,7 @@ class _OvcEnrollmentHouseholdViewEditContainerState
       String orgUnit = dataObject['orgUnit'] ?? '';
       String enrollment = dataObject['enrollment'] ?? '';
       String enrollmentDate = dataObject['enrollmentDate'] ?? '';
-      String incidentDate = dataObject['incidentDate'] ?? '';
+      String incidentDate = dataObject['incidentDate'] ?? enrollmentDate;
       List<String> hiddenFields = [
         BeneficiaryIdentification.beneficiaryId,
         BeneficiaryIdentification.beneficiaryIndex,
@@ -269,6 +285,7 @@ class _OvcEnrollmentHouseholdViewEditContainerState
     return SafeArea(
       child: Consumer<LanguageTranslationState>(
         builder: (context, languageTranslationState, child) {
+          String currentLanguage = languageTranslationState.currentLanguage;
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(65.0),
@@ -293,8 +310,8 @@ class _OvcEnrollmentHouseholdViewEditContainerState
                 ),
                 child: Container(
                   child: !_isFormReady
-                      ? Column(
-                          children: const [
+                      ? const Column(
+                          children: [
                             Center(
                               child: CircularProcessLoader(
                                 color: Colors.blueGrey,
@@ -303,43 +320,53 @@ class _OvcEnrollmentHouseholdViewEditContainerState
                           ],
                         )
                       : Consumer<EnrollmentFormState>(
-                          builder: (context, enrollmentFormState, child) =>
-                              Column(
-                            children: [
-                              EntryFormContainer(
-                                lastUpdatedId:
-                                    enrollmentFormState.lastUpdatedFieldId,
-                                formSections: formSections,
-                                mandatoryFieldObject: mandatoryFieldObject,
-                                hiddenFields: enrollmentFormState.hiddenFields,
-                                hiddenSections:
-                                    enrollmentFormState.hiddenSections,
-                                isEditableMode:
-                                    enrollmentFormState.isEditableMode,
-                                dataObject: enrollmentFormState.formState,
-                                onInputValueChange: onInputValueChange,
-                                unFilledMandatoryFields:
-                                    unFilledMandatoryFields,
-                              ),
-                              Visibility(
-                                visible: enrollmentFormState.isEditableMode,
-                                child: EntryFormSaveButton(
-                                  label: _isSaving
-                                      ? 'Saving Household ...'
-                                      : 'Save Household',
-                                  labelColor: Colors.white,
-                                  buttonColor: const Color(0xFF4B9F46),
-                                  fontSize: 15.0,
-                                  onPressButton: () => _isSaving
-                                      ? null
-                                      : onSaveForm(
-                                          enrollmentFormState.formState,
-                                          enrollmentFormState.hiddenFields,
+                          builder: (context, enrollmentFormState, child) {
+                            return Column(
+                              children: [
+                                EntryFormContainer(
+                                  lastUpdatedId:
+                                      enrollmentFormState.lastUpdatedFieldId,
+                                  formSections: widget.onViewHouseholdForm
+                                      ? formSections
+                                      : OvcEnrollmentHousehold.getFormSections(
+                                          isEnrolmentDateEditable: true,
                                         ),
+                                  mandatoryFieldObject: mandatoryFieldObject,
+                                  hiddenFields:
+                                      enrollmentFormState.hiddenFields,
+                                  hiddenSections:
+                                      enrollmentFormState.hiddenSections,
+                                  isEditableMode:
+                                      enrollmentFormState.isEditableMode,
+                                  dataObject: enrollmentFormState.formState,
+                                  onInputValueChange: onInputValueChange,
+                                  unFilledMandatoryFields:
+                                      unFilledMandatoryFields,
                                 ),
-                              )
-                            ],
-                          ),
+                                Visibility(
+                                  visible: enrollmentFormState.isEditableMode,
+                                  child: EntryFormSaveButton(
+                                    label: _isSaving
+                                        ? currentLanguage == 'lesotho'
+                                            ? 'E ntse e boloka lelapa ...'
+                                            : 'Saving Household ...'
+                                        : currentLanguage == 'lesotho'
+                                            ? 'Boloka lelapa'
+                                            : 'Save Household',
+                                    labelColor: Colors.white,
+                                    buttonColor: const Color(0xFF4B9F46),
+                                    fontSize: 15.0,
+                                    onPressButton: () => _isSaving
+                                        ? null
+                                        : onSaveForm(
+                                            enrollmentFormState.formState,
+                                            enrollmentFormState.hiddenFields,
+                                          ),
+                                  ),
+                                )
+                              ],
+                            );
+                          },
                         ),
                 ),
               ),

@@ -42,15 +42,15 @@ class _PpPrevInterventionGenderNormsFormState
   final String label = "PP Prev Gender Norms Form";
   final String sessionNumberInputField = 'vL6NpUA0rIU';
   final List<String> offeredServices = [
-    "fkYHRd1KrWO",
+    "IOW7iC5ZuRQ",
   ];
+  List<String> mandatoryFields = PpPrevGenderNormsForm.getMandatoryField();
+  final Map mandatoryFieldObject = {};
 
   List<FormSection>? formSections;
   List<FormSection>? defaultFormSections;
   bool isFormReady = false;
   bool isSaving = false;
-  Map mandatoryFieldObject = {};
-  List<String> mandatoryFields = [];
   List unFilledMandatoryFields = [];
 
   @override
@@ -76,7 +76,6 @@ class _PpPrevInterventionGenderNormsFormState
         formSections: formSections ?? [],
       ),
     );
-    setState(() {});
   }
 
   setFormSections() {
@@ -99,13 +98,16 @@ class _PpPrevInterventionGenderNormsFormState
         program: PpPrevInterventionConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields = FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
-      );
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+      mandatoryFields = [
+        ...mandatoryFields,
+        ...FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        )
+      ];
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -224,7 +226,20 @@ class _PpPrevInterventionGenderNormsFormState
         bool sessionExists = offeredServices.any((String service) =>
             PpPrevGenderNormsFormSkipLogic
                 .evaluateSkipLogicBySessionReoccurrence(dataObject, service));
-        if (sessionExists) {
+
+        bool allowedNumberOfSessions = offeredServices.any((String service) =>
+            PpPrevGenderNormsFormSkipLogic.evaluateSkipLogicBySessions(
+              dataObject,
+              service,
+            ));
+
+        if (!allowedNumberOfSessions) {
+          AppUtil.showToastMessage(
+            message:
+                "Sessions ${dataObject[sessionNumberInputField]} is not valid for the offered Service!",
+            position: ToastGravity.BOTTOM,
+          );
+        } else if (sessionExists) {
           AppUtil.showToastMessage(
             message:
                 "Sessions ${dataObject[sessionNumberInputField]} already exists for this service!",
@@ -237,6 +252,7 @@ class _PpPrevInterventionGenderNormsFormState
           String? eventId = dataObject['eventId'];
           List<String> hiddenFields = [];
           String orgUnit = dataObject['location'] ?? ppPrevBeneficiary.orgUnit;
+          orgUnit = orgUnit.isEmpty ? ppPrevBeneficiary.orgUnit ?? '' : orgUnit;
           try {
             await TrackedEntityInstanceUtil
                 .savingTrackedEntityInstanceEventData(
@@ -365,7 +381,9 @@ class _PpPrevInterventionGenderNormsFormState
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

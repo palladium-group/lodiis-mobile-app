@@ -12,6 +12,7 @@ import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
 import 'package:kb_mobile_app/core/components/sup_page_body.dart';
+import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
 import 'package:kb_mobile_app/core/services/form_auto_save_offline_service.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
@@ -22,6 +23,7 @@ import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_household_top_header.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_routes_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_referral/models/ovc_referral.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_referral/ovc_referral_pages/ovc_house_referral_pages/constants/ovc_household_referral_constant.dart';
@@ -38,18 +40,50 @@ class OvcHouseholdAddReferralForm extends StatefulWidget {
 
 class _OvcHouseholdAddReferralFormState
     extends State<OvcHouseholdAddReferralForm> {
-  //final String label = 'Household Referral Form';
-  List<FormSection>? formSections;
+  List<FormSection> formSections = [];
+  List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
+  Map mandatoryFieldObject = {};
   bool isFormReady = false;
   bool isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    formSections = OvcReferral.getFormSections();
+    setFormSections();
+  }
+
+  void setFormSections() {
+    mandatoryFieldObject.clear();
+    OvcHousehold? household =
+        Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+            .currentOvcHousehold;
+    mandatoryFields = OvcReferral.getMandatoryFields();
+    formSections = OvcReferral.getFormSections(
+      enrollmentDate: household?.createdDate ?? '',
+    );
+    if (household?.enrollmentOuAccessible != true) {
+      formSections = [
+        AppUtil.getServiceProvisionLocationSection(
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF1A3518),
+          sectionLabelColor: const Color(0xFF1A3518),
+          formlabel: 'Referral Location',
+          allowedSelectedLevels: [
+            AppHierarchyReference.communityLevel,
+          ],
+          program: OvcInterventionConstant.caregiverProgram,
+        ),
+        ...formSections
+      ];
+      mandatoryFields.add('location');
+    }
+    for (String field in mandatoryFields) {
+      mandatoryFieldObject[field] = true;
+    }
     Timer(const Duration(seconds: 1), () {
+      isFormReady = true;
       setState(() {
-        isFormReady = true;
         evaluateSkipLogics();
       });
     });
@@ -63,7 +97,7 @@ class _OvcHouseholdAddReferralFormState
             Provider.of<ServiceFormState>(context, listen: false).formState;
         await OvcHouseholdReferralSkipLogic.evaluateSkipLogics(
           context,
-          formSections!,
+          formSections,
           dataObject,
         );
       },
@@ -122,62 +156,102 @@ class _OvcHouseholdAddReferralFormState
   void onSaveForm(
     BuildContext context,
     Map dataObject,
+    Map hiddenFieldsObject,
     OvcHousehold? currentOvcHousehold,
   ) async {
-    if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
-      setState(() {
+    unFilledMandatoryFields = [];
+    bool hasAtLeasrOnFieldFilled = FormUtil.hasAtLeastOnFieldFilled(
+      hiddenFields: hiddenFieldsObject,
+      formSections: formSections,
+      dataObject: dataObject,
+    );
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+      mandatoryFields,
+      dataObject,
+      hiddenFields: hiddenFieldsObject,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections,
+      ),
+    );
+    if (hadAllMandatoryFilled) {
+      if (hasAtLeasrOnFieldFilled) {
         isSaving = true;
-      });
-      String? eventDate = dataObject['eventDate'];
-      String? eventId = dataObject['eventId'];
-      dataObject[OvcHouseholdReferralConstant.referralToFollowUpLinkage] =
-          dataObject[OvcHouseholdReferralConstant.referralToFollowUpLinkage] ??
-              AppUtil.getUid();
-      List<String> hiddenFields = [
-        OvcHouseholdReferralConstant.referralToFollowUpLinkage
-      ];
-      try {
-        await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcHouseholdReferralConstant.program,
-            OvcHouseholdReferralConstant.referralStage,
-            currentOvcHousehold!.orgUnit,
-            formSections!,
-            dataObject,
-            eventDate,
-            currentOvcHousehold.id,
-            eventId,
-            hiddenFields);
-        Provider.of<ServiceEventDataState>(context, listen: false)
-            .resetServiceEventDataState(currentOvcHousehold.id);
-        Timer(const Duration(seconds: 1), () {
-          setState(() {
-            isSaving = true;
-          });
-          String? currentLanguage =
-              Provider.of<LanguageTranslationState>(context, listen: false)
-                  .currentLanguage;
-          AppUtil.showToastMessage(
-            message: currentLanguage == 'lesotho'
-                ? 'Fomo e bolokeile'
-                : 'Form has been saved successfully',
-            position: ToastGravity.TOP,
+        setState(() {});
+        String? eventDate = dataObject['eventDate'];
+        String? eventId = dataObject['eventId'];
+        String orgUnit =
+            dataObject['location'] ?? currentOvcHousehold?.orgUnit ?? '';
+        dataObject[OvcHouseholdReferralConstant.referralToFollowUpLinkage] =
+            dataObject[
+                    OvcHouseholdReferralConstant.referralToFollowUpLinkage] ??
+                AppUtil.getUid();
+        List<String> hiddenFields = [
+          OvcHouseholdReferralConstant.referralToFollowUpLinkage
+        ];
+        try {
+          await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+              OvcHouseholdReferralConstant.program,
+              OvcHouseholdReferralConstant.referralStage,
+              orgUnit,
+              formSections,
+              dataObject,
+              eventDate,
+              currentOvcHousehold?.id,
+              eventId,
+              hiddenFields);
+          Provider.of<ServiceEventDataState>(context, listen: false)
+              .resetServiceEventDataState(currentOvcHousehold?.id);
+          Timer(
+            const Duration(seconds: 1),
+            () {
+              isSaving = false;
+              String? currentLanguage =
+                  Provider.of<LanguageTranslationState>(context, listen: false)
+                      .currentLanguage;
+              AppUtil.showToastMessage(
+                message: currentLanguage == 'lesotho'
+                    ? 'Fomo e bolokeile'
+                    : 'Form has been saved successfully',
+                position: ToastGravity.TOP,
+              );
+              clearFormAutoSaveState(
+                  context, currentOvcHousehold?.id, eventId ?? '');
+              setState(() {});
+              Navigator.pop(context);
+            },
           );
-          clearFormAutoSaveState(
-              context, currentOvcHousehold.id, eventId ?? '');
-          Navigator.pop(context);
-        });
-      } catch (e) {
-        Timer(const Duration(seconds: 1), () {
-          setState(() {
-            AppUtil.showToastMessage(
-                message: e.toString(), position: ToastGravity.BOTTOM);
-          });
-        });
+        } catch (e) {
+          Timer(
+            const Duration(seconds: 1),
+            () {
+              setState(() {
+                AppUtil.showToastMessage(
+                    message: e.toString(), position: ToastGravity.BOTTOM);
+              });
+            },
+          );
+        }
+      } else {
+        AppUtil.showToastMessage(
+          message: 'Please fill at least one field',
+        );
       }
     } else {
+      unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+        mandatoryFields,
+        dataObject,
+        hiddenFields:
+            Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+        checkBoxInputFields: FormUtil.getInputFieldByValueType(
+          valueType: 'CHECK_BOX',
+          formSections: formSections,
+        ),
+      );
+      setState(() {});
       AppUtil.showToastMessage(
-          message: 'Please fill at least one form field',
-          position: ToastGravity.TOP);
+        message: 'Please fill all mandatory fields',
+      );
     }
   }
 
@@ -239,16 +313,21 @@ class _OvcHouseholdAddReferralFormState
                                       hiddenInputFieldOptions: serviceFormState
                                           .hiddenInputFieldOptions,
                                       formSections: formSections,
-                                      mandatoryFieldObject: const {},
+                                      mandatoryFieldObject:
+                                          mandatoryFieldObject,
                                       isEditableMode:
                                           serviceFormState.isEditableMode,
                                       dataObject: serviceFormState.formState,
                                       onInputValueChange: onInputValueChange,
+                                      unFilledMandatoryFields:
+                                          unFilledMandatoryFields,
                                     ),
                                   ),
                                   EntryFormSaveButton(
                                     label: isSaving
-                                        ? 'Saving ...'
+                                        ? currentLanguage == 'lesotho'
+                                            ? 'E ntse e boloka...'
+                                            : 'Saving ...'
                                         : currentLanguage == 'lesotho'
                                             ? 'Boloka'
                                             : 'Save',
@@ -258,6 +337,7 @@ class _OvcHouseholdAddReferralFormState
                                     onPressButton: () => onSaveForm(
                                       context,
                                       serviceFormState.formState,
+                                      serviceFormState.hiddenFields,
                                       currentOvcHousehold,
                                     ),
                                   )

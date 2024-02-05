@@ -10,6 +10,7 @@ import 'package:kb_mobile_app/core/components/intervention_bottom_navigation/int
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
 import 'package:kb_mobile_app/core/components/sup_page_body.dart';
+import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
 import 'package:kb_mobile_app/core/services/form_auto_save_offline_service.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
@@ -19,6 +20,7 @@ import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_household_top_header.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_routes_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/models/ovc_exit_case_closure.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_exit_pages/household_exit_pages/component/ovc_household_exit_form_container.dart';
@@ -54,11 +56,6 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
   void initState() {
     super.initState();
     setFromSection();
-    Timer(const Duration(seconds: 1), () {
-      setState(() {
-        isFormReady = true;
-      });
-    });
   }
 
   setFromSection() {
@@ -68,6 +65,26 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
     formSections = OvcExitCaseClosure.getFormSections(
       firstDate: household!.createdDate!,
     );
+    formSections = household.enrollmentOuAccessible == true
+        ? formSections
+        : [
+            AppUtil.getServiceProvisionLocationSection(
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+              formlabel: 'Location',
+              sectionLabelColor: const Color(0xFF1A3518),
+              allowedSelectedLevels: [
+                AppHierarchyReference.communityLevel,
+              ],
+              program: OvcInterventionConstant.caregiverProgram,
+            ),
+            ...formSections ?? []
+          ];
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        isFormReady = true;
+      });
+    });
   }
 
   void clearFormAutoSaveState(
@@ -83,25 +100,26 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
     OvcHousehold? currentOvcHousehold,
   ) async {
     if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
-      setState(() {
-        isSaving = true;
-      });
+      isSaving = true;
+      setState(() {});
       String? eventDate = dataObject['eventDate'];
       String? eventId = dataObject['eventId'];
+      String orgUnit =
+          dataObject['location'] ?? currentOvcHousehold?.orgUnit ?? '';
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-          OvcHouseholdCaseClosureConstant.program,
+          OvcInterventionConstant.caregiverProgram,
           OvcHouseholdCaseClosureConstant.programStage,
-          currentOvcHousehold!.orgUnit,
+          orgUnit,
           formSections!,
           dataObject,
           eventDate,
-          currentOvcHousehold.id,
+          currentOvcHousehold?.id ?? '',
           eventId,
           null,
         );
         Provider.of<ServiceEventDataState>(context, listen: false)
-            .resetServiceEventDataState(currentOvcHousehold.id);
+            .resetServiceEventDataState(currentOvcHousehold?.id ?? '');
         Timer(const Duration(seconds: 1), () {
           setState(() {
             isSaving = false;
@@ -116,19 +134,18 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
             position: ToastGravity.TOP,
           );
           clearFormAutoSaveState(
-              context, currentOvcHousehold.id, eventId ?? '');
+              context, currentOvcHousehold?.id ?? '', eventId ?? '');
           Navigator.pop(context);
         });
       } catch (e) {
         Timer(const Duration(seconds: 1), () {
-          setState(() {
-            isSaving = false;
-            AppUtil.showToastMessage(
-              message: e.toString(),
-              position: ToastGravity.BOTTOM,
-            );
-            Navigator.pop(context);
-          });
+          isSaving = false;
+          AppUtil.showToastMessage(
+            message: e.toString(),
+            position: ToastGravity.BOTTOM,
+          );
+          Navigator.pop(context);
+          setState(() {});
         });
       }
     } else {

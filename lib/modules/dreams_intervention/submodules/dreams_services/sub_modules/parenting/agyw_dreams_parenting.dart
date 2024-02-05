@@ -147,7 +147,9 @@ class _AgywDreamsParentingState extends State<AgywDreamsParenting> {
                                   ),
                                   child: events.isEmpty
                                       ? const Text(
-                                          'There is no Parenting (Preg & Breastfeeding) at a moment')
+                                          'There is no Parenting (Preg & Breastfeeding) at a moment',
+                                          textAlign: TextAlign.center,
+                                        )
                                       : Container(
                                           margin: const EdgeInsets.symmetric(
                                             vertical: 5.0,

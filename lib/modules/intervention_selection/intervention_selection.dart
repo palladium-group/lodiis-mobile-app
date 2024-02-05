@@ -49,7 +49,7 @@ class _InterventionSelectionState extends State<InterventionSelection> {
 
   updateDataStateLoadingStatus() async {
     try {
-      await UserService().setCurrentUserMetadatadataSyncStatus("false");
+      await UserService().setCurrentUserMetadataSyncStatus("false");
       await ReservedAttributeValueService().generateReservedAttributeValues();
       Provider.of<OvcInterventionListState>(context, listen: false)
           .refreshOvcNumber();

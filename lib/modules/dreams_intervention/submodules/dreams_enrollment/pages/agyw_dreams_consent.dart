@@ -40,6 +40,7 @@ class AgywDreamsConsentForm extends StatefulWidget {
 class _AgywEnrollmentConsentFormState extends State<AgywDreamsConsentForm> {
   List<FormSection>? formSections;
   final String label = 'Consent Form';
+  final String translatedName = 'Foromo ea boitlamo';
   final List<String> mandatoryFields =
       AgywEnrollmentConcent.getMandatoryField();
   final Map mandatoryFieldObject = {};
@@ -185,6 +186,7 @@ class _AgywEnrollmentConsentFormState extends State<AgywDreamsConsentForm> {
                   interventionCardState.currentInterventionProgram;
               return SubPageAppBar(
                 label: label,
+                translatedName: translatedName,
                 activeInterventionProgram: activeInterventionProgram,
               );
             },

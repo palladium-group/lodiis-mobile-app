@@ -105,9 +105,11 @@ class _DreamsNoneParticipationRecordsPageState
               right: 13.0,
               left: 13.0,
             ),
-            child: const Center(
+            child: Center(
               child: Text(
-                'There is no AGYW/DREAMS none participants at moment',
+                currentLanguage == 'lesotho'
+                    ? 'Ha hona eo seng karalo ea AGYW/DREAMS ha joale'
+                    : 'There is no AGYW/DREAMS none participants at moment',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -130,10 +132,12 @@ class _DreamsNoneParticipationRecordsPageState
                 right: 13.0,
                 left: 13.0,
               ),
-              child: const Column(
+              child:  Column(
                 children: [
                   Text(
-                    'There is no AGYW/DREAMS none participants at moment',
+                    currentLanguage == 'lesotho'
+                        ? 'Ha hona eo seng karalo ea AGYW/DREAMS ha joale'
+                        : 'There is no AGYW/DREAMS none participants at moment',
                     textAlign: TextAlign.center,
                   )
                 ],

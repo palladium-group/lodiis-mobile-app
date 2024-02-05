@@ -11,88 +11,90 @@ class OgacBeneficiaryCardBody extends StatelessWidget {
 
   final OgacBeneficiary ogacBeneficiary;
 
-  Container _getRowBeneficiaryData({
-    required String key,
-    required String value,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 5.0,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              key,
-              style: const TextStyle().copyWith(
-                color: const Color(0xFF651900).withOpacity(0.4),
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
+  Widget _getRowBeneficiaryData(
+      {required String key, required String value, String? translatedKey}) {
+    return Consumer<LanguageTranslationState>(
+        builder: (context, languageTranslationState, child) {
+      String? currentLanguage = languageTranslationState.currentLanguage;
+      return Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 5.0,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                currentLanguage == 'lesotho' ? translatedKey ?? key : key,
+                style: const TextStyle().copyWith(
+                  color: const Color(0xFF651900).withOpacity(0.4),
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              value,
-              style: const TextStyle().copyWith(
-                color: const Color(0xFF651900).withOpacity(0.8),
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              flex: 2,
+              child: Text(
+                value,
+                style: const TextStyle().copyWith(
+                  color: const Color(0xFF651900).withOpacity(0.8),
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          )
-        ],
-      ),
-    );
+            )
+          ],
+        ),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageTranslationState>(
-      builder: (context, languageTranslationState, child) {
-        String? currentLanguage = languageTranslationState.currentLanguage;
-        return Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 10.0,
-            horizontal: 15.0,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 10.0,
+        horizontal: 15.0,
+      ),
+      child: Column(
+        children: [
+          _getRowBeneficiaryData(
+            key: 'Beneficiary Id',
+            translatedKey: 'Nomoro ea boitsebiso ea ngoana',
+            value: ogacBeneficiary.beneficiaryId!,
           ),
-          child: Column(
-            children: [
-              _getRowBeneficiaryData(
-                key: 'Beneficiary Id',
-                value: ogacBeneficiary.beneficiaryId!,
-              ),
-              _getRowBeneficiaryData(
-                key: currentLanguage == 'lesotho' ? 'Lilemo' : 'Age',
-                value: ogacBeneficiary.age!,
-              ),
-              _getRowBeneficiaryData(
-                key: currentLanguage == 'lesotho' ? 'Boleng' : 'Sex',
-                value: ogacBeneficiary.sex!,
-              ),
-              _getRowBeneficiaryData(
-                key: currentLanguage == 'lesotho'
-                    ? 'Nomoro ea mohala'
-                    : 'Phone number',
-                value: ogacBeneficiary.phoneNumber!,
-              ),
-              _getRowBeneficiaryData(
-                key: currentLanguage == 'lesotho' ? 'Sebaka' : 'Location',
-                value: ogacBeneficiary.location!,
-              ),
-              _getRowBeneficiaryData(
-                key: currentLanguage == 'lesotho' ? 'Motse' : 'Village',
-                value: ogacBeneficiary.village!,
-              ),
-              _getRowBeneficiaryData(
-                key: 'Created on',
-                value: ogacBeneficiary.beneficiaryId!,
-              ),
-            ],
+          _getRowBeneficiaryData(
+            key: 'Age',
+            translatedKey: 'Lilemo',
+            value: ogacBeneficiary.age!,
           ),
-        );
-      },
+          _getRowBeneficiaryData(
+            key: 'Sex',
+            translatedKey: 'Boleng',
+            value: ogacBeneficiary.sex!,
+          ),
+          _getRowBeneficiaryData(
+            key: 'Phone number',
+            translatedKey: 'Nomoro ea mohala',
+            value: ogacBeneficiary.phoneNumber!,
+          ),
+          _getRowBeneficiaryData(
+            key: 'Location',
+            translatedKey: 'Sebaka',
+            value: ogacBeneficiary.location!,
+          ),
+          _getRowBeneficiaryData(
+            key: 'Village',
+            translatedKey: 'Motse',
+            value: ogacBeneficiary.village!,
+          ),
+          _getRowBeneficiaryData(
+            key: 'Created on',
+            translatedKey: 'O kentsoe ka letsatsi la',
+            value: ogacBeneficiary.beneficiaryId!,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -41,7 +41,7 @@ class OvcCasePlanService {
   }
 
   Future<List<CasePlanGapServiceProvisionEvent>>
-      getCasePlanServiveProvisonEvents(
+      getCasePlanServiceProvisonEvents(
           {required String date,
           required String programStageId,
           required String teiId,

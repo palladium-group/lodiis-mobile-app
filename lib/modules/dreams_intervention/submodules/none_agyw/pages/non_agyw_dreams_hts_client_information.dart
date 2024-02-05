@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/enrollment_form_state.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/intervention_bottom_navigation/intervention_bottom_navigation_bar_container.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.dart';
@@ -141,75 +142,86 @@ class _NonAgywDreamsHTSClientInformationState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(65.0),
-        child: Consumer<InterventionCardState>(
-          builder: (context, interventionCardState, child) {
-            InterventionCard activeInterventionProgram =
-                interventionCardState.currentInterventionProgram;
-            return SubPageAppBar(
-              label: label,
-              activeInterventionProgram: activeInterventionProgram,
-            );
-          },
-        ),
-      ),
-      body: SubPageBody(
-        body: Consumer<EnrollmentFormState>(
-          builder: (context, enrollmentFormState, child) {
-            return Column(
-              children: [
-                !isFormReady
-                    ? const CircularProcessLoader(
-                        color: Colors.blueGrey,
-                      )
-                    : Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                              top: 10.0,
-                              left: 13.0,
-                              right: 13.0,
-                            ),
-                            child: EntryFormContainer(
-                              formSections: formSections,
-                              hiddenFields: enrollmentFormState.hiddenFields,
-                              hiddenSections:
-                                  enrollmentFormState.hiddenSections,
-                              hiddenInputFieldOptions:
-                                  enrollmentFormState.hiddenInputFieldOptions,
-                              mandatoryFieldObject: mandatoryFieldsObject,
-                              isEditableMode:
-                                  enrollmentFormState.isEditableMode,
-                              dataObject: enrollmentFormState.formState,
-                              onInputValueChange: onInputValueChange,
-                              unFilledMandatoryFields: unFilledMandatoryFields,
-                            ),
-                          ),
-                          Visibility(
-                            visible: enrollmentFormState.isEditableMode,
-                            child: EntryFormSaveButton(
-                              label:
-                                  isSaving ? 'Saving ...' : 'Save and Continue',
-                              labelColor: Colors.white,
-                              buttonColor: const Color(0xFF258DCC),
-                              fontSize: 15.0,
-                              onPressButton: () => onSaveForm(
-                                context,
-                                enrollmentFormState.formState,
-                                enrollmentFormState.hiddenFields,
-                              ),
-                            ),
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageTranslationState, child) {
+        String currentLanguage = languageTranslationState.currentLanguage;
+
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(65.0),
+            child: Consumer<InterventionCardState>(
+              builder: (context, interventionCardState, child) {
+                InterventionCard activeInterventionProgram =
+                    interventionCardState.currentInterventionProgram;
+                return SubPageAppBar(
+                  label: label,
+                  activeInterventionProgram: activeInterventionProgram,
+                );
+              },
+            ),
+          ),
+          body: SubPageBody(
+            body: Consumer<EnrollmentFormState>(
+              builder: (context, enrollmentFormState, child) {
+                return Column(
+                  children: [
+                    !isFormReady
+                        ? const CircularProcessLoader(
+                            color: Colors.blueGrey,
                           )
-                        ],
-                      )
-              ],
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: const InterventionBottomNavigationBarContainer(),
+                        : Column(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  left: 13.0,
+                                  right: 13.0,
+                                ),
+                                child: EntryFormContainer(
+                                  formSections: formSections,
+                                  hiddenFields:
+                                      enrollmentFormState.hiddenFields,
+                                  hiddenSections:
+                                      enrollmentFormState.hiddenSections,
+                                  hiddenInputFieldOptions: enrollmentFormState
+                                      .hiddenInputFieldOptions,
+                                  mandatoryFieldObject: mandatoryFieldsObject,
+                                  isEditableMode:
+                                      enrollmentFormState.isEditableMode,
+                                  dataObject: enrollmentFormState.formState,
+                                  onInputValueChange: onInputValueChange,
+                                  unFilledMandatoryFields:
+                                      unFilledMandatoryFields,
+                                ),
+                              ),
+                              Visibility(
+                                visible: enrollmentFormState.isEditableMode,
+                                child: EntryFormSaveButton(
+                                  label: isSaving
+                                      ? currentLanguage == 'lesotho'
+                                          ? 'E ntse e boloka...'
+                                          : 'Saving ...'
+                                      : 'Save and Continue',
+                                  labelColor: Colors.white,
+                                  buttonColor: const Color(0xFF258DCC),
+                                  fontSize: 15.0,
+                                  onPressButton: () => onSaveForm(
+                                    context,
+                                    enrollmentFormState.formState,
+                                    enrollmentFormState.hiddenFields,
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                  ],
+                );
+              },
+            ),
+          ),
+          bottomNavigationBar: const InterventionBottomNavigationBarContainer(),
+        );
+      },
     );
   }
 }

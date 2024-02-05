@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
@@ -10,9 +11,9 @@ class OvcGraduationReadinessForm {
       "DXmPLZhKQVp": 'wE7and4EnCR',
       "R4OiU8dHKDe": 'R71zksHtVNn',
       "A5NBGrJWy1z": 'rPSpAEnnVS4',
-      "ceYTaM00pTh": 'XxioqueCXcn',
-      "P90kJechZJT": 'OcbE9kN8Dcp',
-      "AScHzfI40br": 'YdqDLYSE4qr',
+      "ceYTaM00pTh": 'so1Hnb8K09j',
+      "P90kJechZJT": 'XxioqueCXcn',
+      "AScHzfI40br": 'wW0grvww5Iz',
     };
   }
 
@@ -31,6 +32,14 @@ class OvcGraduationReadinessForm {
     required String firstDate,
   }) {
     return [
+      AppUtil.getServiceProvisionEventDateSection(
+        inputColor: const Color(0xFF4A9F46),
+        labelColor: const Color(0xFF1A3518),
+        sectionLabelColor: const Color(0xFF4A9F46),
+        formSectionLabel: 'Case Plan Graduation Date',
+        inputFieldLabel: 'Case Plan Graduation On',
+        firstDate: firstDate,
+      ),
       FormSection(
         id: "DXmPLZhKQVp",
         name: 'Benchmark 1: Known HIV status',
@@ -63,7 +72,6 @@ class OvcGraduationReadinessForm {
           ),
         ],
       ),
-      // TODO see how to classify this as per instructions of the documents
       FormSection(
         id: 'R4OiU8dHKDe',
         name: 'Benchmark 2: Adherent / Virally suppressed',
@@ -114,26 +122,30 @@ class OvcGraduationReadinessForm {
               id: 'hiv_risks',
               name:
                   'Can you tell me how a young person your age living in your community might become infected with HIV?',
+              translatedName:
+                  'A na u ka mpolella hore na mocha oa lilemo tsa hau ea lulang motseng oa heno a ka tšoaetsoa HIV joang?',
               valueType: 'CHECK_BOX',
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
               options: [
                 InputFieldOption(
-                  code: 'Yk4nznsVVME',
-                  name: 'Early sex (starting sex young)',
-                ),
+                    code: 'Yk4nznsVVME',
+                    name: 'Early sex (starting sex young)',
+                    translatedName:
+                        'Thobalano ea kapele (ho qala thobalano le sa le banyenyane)'),
                 InputFieldOption(
-                  code: 'SgnvNELORR5',
-                  name: 'Sex without a condom',
-                ),
+                    code: 'SgnvNELORR5',
+                    name: 'Sex without a condom',
+                    translatedName: 'Thobalano ntle le khohlopo'),
                 InputFieldOption(
                   code: 'RfunopzHoeR',
                   name: 'Sex with an older partner',
                 ),
                 InputFieldOption(
-                  code: 'jWYwiTRNvoF',
-                  name: 'Being sexually abused or raped',
-                ),
+                    code: 'jWYwiTRNvoF',
+                    name: 'Being sexually abused or raped',
+                    translatedName:
+                        'Ho hlekefetsoa ka thobalano kapa ho betoa'),
                 InputFieldOption(
                   code: 'z2COmFwfABt',
                   name: 'Sex with multiple partners',
@@ -228,7 +240,7 @@ class OvcGraduationReadinessForm {
             labelColor: const Color(0xFF737373),
           ),
           InputField(
-            id: 'XxioqueCXcn',
+            id: 'so1Hnb8K09j',
             name: 'Has Benchmark 4 been met for this beneficiary? ',
             valueType: 'BOOLEAN',
             isReadOnly: true,
@@ -268,6 +280,26 @@ class OvcGraduationReadinessForm {
             labelColor: const Color(0xFF737373),
           ),
           InputField(
+              id: 'LyCBmMgAW4P',
+              name: '5.4 At what age was the infant tested?',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+              options: [
+                InputFieldOption(
+                  code: "six weeks",
+                  name: "Six weeks",
+                ),
+                InputFieldOption(
+                  code: "six months",
+                  name: "Six months",
+                ),
+                InputFieldOption(
+                  code: "eighteen months",
+                  name: "Eighteen months",
+                ),
+              ]),
+          InputField(
               id: 'wGeVdyVO5hE',
               name:
                   'If the infant has been tested for HIV, what is the Child HIV status?',
@@ -285,7 +317,7 @@ class OvcGraduationReadinessForm {
                 ),
               ]),
           InputField(
-            id: 'OcbE9kN8Dcp',
+            id: 'XxioqueCXcn',
             name: 'Has Benchmark 5 been met for this household?',
             valueType: 'BOOLEAN',
             isReadOnly: true,
@@ -325,7 +357,7 @@ class OvcGraduationReadinessForm {
             labelColor: const Color(0xFF737373),
           ),
           InputField(
-            id: 'YdqDLYSE4qr',
+            id: 'wW0grvww5Iz',
             name: 'Has Benchmark 6 been met? ',
             valueType: 'BOOLEAN',
             isReadOnly: true,

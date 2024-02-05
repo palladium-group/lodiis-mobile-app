@@ -33,6 +33,7 @@ class OgacInterventionFormSection {
           InputField(
             id: 'BelCZxo1ge9',
             name: 'Date of Service',
+            translatedName: 'Letsatsi la Tshebeletso',
             valueType: 'DATE',
             inputColor: const Color(0xFFF05A2A),
             labelColor: const Color(0xFF737373),
@@ -40,6 +41,7 @@ class OgacInterventionFormSection {
           InputField(
             id: 'E5SBpSCOV7p',
             name: 'Referral to Comprehensive Services',
+            translatedName: 'Phetisetso ho Litšebeletso tse Pharalletseng',
             valueType: 'TEXT',
             inputColor: const Color(0xFFF05A2A),
             labelColor: const Color(0xFF737373),
@@ -59,6 +61,7 @@ class OgacInterventionFormSection {
     return [
       FormSection(
         name: 'Location details',
+        translatedName: 'Lintlha tsa sebaka',
         color: const Color(0xFFF05A2A),
         inputFields: [
           InputField(
@@ -86,6 +89,7 @@ class OgacInterventionFormSection {
       ),
       FormSection(
         name: 'Profile Details',
+        translatedName: 'Lintlha tsa Profaele',
         color: const Color(0xFFF05A2A),
         inputFields: [
           InputField(

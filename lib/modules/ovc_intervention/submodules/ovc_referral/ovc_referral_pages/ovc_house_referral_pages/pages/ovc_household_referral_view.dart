@@ -79,6 +79,9 @@ class _OvcHouseholdReferralViewState extends State<OvcHouseholdReferralView> {
                           ReferralOutComeCard(
                             isIncomingReferral: widget.isIncomingReferral,
                             isOvcIntervention: true,
+                            enrollmentOuAccessible:
+                                currentOvcHousehold.enrollmentOuAccessible ==
+                                    true,
                             beneficiary: currentOvcHousehold.teiData,
                             eventData: widget.eventData,
                             isEditableMode: false,

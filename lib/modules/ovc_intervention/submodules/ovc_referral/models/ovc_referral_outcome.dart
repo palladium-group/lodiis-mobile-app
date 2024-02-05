@@ -13,6 +13,7 @@ class OvcReferralOutCome {
     return [
       FormSection(
           name: 'Referral Outcome',
+          translatedName: 'Sephetho sa phetisetso',
           color: const Color(0xFF1B3519),
           inputFields: [
             InputField(
@@ -28,6 +29,7 @@ class OvcReferralOutCome {
             InputField(
               id: 'lvT9gfpHIlT',
               name: 'Date service was provided',
+              translatedName: 'Ho fanoe ka tšebeletso ea letsatsi',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF4B9F46),
@@ -45,6 +47,7 @@ class OvcReferralOutCome {
               allowFuturePeriod: true,
               disablePastPeriod: true,
               name: 'Follow-up date',
+              translatedName: 'Latsatsi la tlhahlobo e latelang',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF4B9F46),
@@ -68,6 +71,7 @@ class OvcReferralOutCome {
             InputField(
               id: 'LcG4J82PM4Z',
               name: 'Comments or next steps',
+              translatedName: 'Maikutlo kapa mehato e latelang',
               valueType: 'LONG_TEXT',
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF737373),

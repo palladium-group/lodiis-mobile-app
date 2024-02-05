@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/line_separator.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
@@ -114,44 +115,48 @@ class PpPrevReferralOutcomeContainer extends StatelessWidget {
     required Color color,
     required VoidCallback onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(),
-      child: Column(
-        children: [
-          LineSeparator(
-            color: color.withOpacity(
-              0.1,
-            ),
-          ),
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(12.0),
-              bottomRight: Radius.circular(12.0),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.03),
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) =>  Container(
+        margin: const EdgeInsets.symmetric(),
+        child: Column(
+          children: [
+            LineSeparator(
+              color: color.withOpacity(
+                0.1,
               ),
-              width: double.infinity,
-              child: TextButton(
-                onPressed: onTap,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                  ),
-                  child: Text(
-                    'COMPLETE OUTCOME',
-                    style: const TextStyle().copyWith(
-                      color: color,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w700,
+            ),
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.03),
+                ),
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: onTap,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10.0,
+                    ),
+                    child: Text(
+                     languageState.currentLanguage == 'lesotho'
+                          ? 'QETELA SEPHETHO'
+                          : 'COMPLETE OUTCOME',
+                      style: const TextStyle().copyWith(
+                        color: color,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

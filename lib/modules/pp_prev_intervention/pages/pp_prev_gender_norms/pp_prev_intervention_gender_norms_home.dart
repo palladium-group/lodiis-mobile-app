@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:provider/provider.dart';
 
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
@@ -97,44 +98,48 @@ class PpPrevInterventionGenderNormsHome extends StatelessWidget {
     }
   }
 
-  Map<String?, List<String?>> getSessionsPerIntervention(
-    Events? currentEvent,
-    List<Events>? events,
-  ) {
-    String sessionNumberDataElement = 'vL6NpUA0rIU';
-    List<String> servicesOfConcern = [
-      "fkYHRd1KrWO",
-    ];
-    Map<String?, List<String>> interventionSessions = {};
+ Map<String?, List<String>> getSessionsPerIntervention(
+  Events? currentEvent,
+  List<Events>? events,
+) {
+  String sessionNumberDataElement = 'vL6NpUA0rIU';
+  String interventionsDataElementId = 'IOW7iC5ZuRQ';
+  Map<String?, List<String>> interventionSessions = {};
 
-    String currentEventId =
-        currentEvent != null ? currentEvent.event ?? '' : '';
-    (events ?? [])
-        .removeWhere((eventData) => eventData.event == currentEventId);
+  String currentEventId =
+      currentEvent != null ? currentEvent.event ?? '' : '';
 
-    for (Events event in (events ?? [])) {
-      Map<String, String> data = {};
-      for (Map dataValues in (event.dataValues ?? [])) {
-        String? dataElement = dataValues['dataElement'];
-        if (dataElement != null &&
-            [sessionNumberDataElement, ...servicesOfConcern]
-                .contains(dataElement)) {
-          data[dataElement] = '${dataValues['value']}'.trim();
-        }
-      }
-      var sessionNumber = data[sessionNumberDataElement] ?? '';
-      for (var dataElement in servicesOfConcern) {
-        if (data[dataElement]!.isNotEmpty && data[dataElement] != 'null') {
-          interventionSessions[dataElement] = [
-            ...(interventionSessions[dataElement] ?? []),
-            sessionNumber,
-          ];
-        }
+  // A copy of the events list to avoid modifying the original list
+  List<Events> copiedEvents = List<Events>.from(events ?? []);
+
+  // Remove the current event from the copied list
+  copiedEvents.removeWhere((eventData) => eventData.event == currentEventId);
+
+  for (Events event in (copiedEvents)) {
+    Map<String, String> data = {};
+    for (Map dataValues in (event.dataValues ?? [])) {
+      String? dataElement = dataValues['dataElement'];
+      if (dataElement != null) {
+        data[dataElement] = '${dataValues['value']}'.trim();
       }
     }
-
-    return interventionSessions;
+    // Check if the interventions data element is present in the event data
+    if (data.containsKey(interventionsDataElementId)) {
+      var selectedIntervention = data[interventionsDataElementId];
+      var sessionNumber = data[sessionNumberDataElement] ?? '';
+      if (selectedIntervention != null && selectedIntervention != 'null') {
+        interventionSessions[selectedIntervention] = [
+          ...(interventionSessions[selectedIntervention] ?? []),
+          sessionNumber,
+        ];
+      }
+    }
   }
+  return interventionSessions;
+}
+
+
+  // print("interventionSessions $interventionSessions");
 
   void updateFormState(
     BuildContext context,
@@ -178,91 +183,99 @@ class PpPrevInterventionGenderNormsHome extends StatelessWidget {
           ),
         ),
         body: SubPageBody(
-          body: Consumer<PpPrevInterventionCurrentSelectionState>(
-            builder: (context, ppPrevInterventionCurrentSelectionState, child) {
-              return Consumer<ServiceEventDataState>(
-                builder: (context, serviceEventDataState, child) {
-                  PpPrevBeneficiary? ppPrevBeneficiary =
-                      ppPrevInterventionCurrentSelectionState.currentPpPrev;
-                  bool isLoading = serviceEventDataState.isLoading;
-                  Map<String?, List<Events>> eventListByProgramStage =
-                      serviceEventDataState.eventListByProgramStage;
-                  List<Events> events = TrackedEntityInstanceUtil
-                      .getAllEventListFromServiceDataStateByProgramStages(
-                          eventListByProgramStage, programStageIds,
-                          shouldSortByDate: true);
-                  int serviceIndex = events.length + 1;
-                  return Column(
-                    children: [
-                      PpPrevBeneficiaryTopHeader(
-                        ppPrevBeneficiary: ppPrevBeneficiary!,
-                      ),
-                      Container(
-                        child: isLoading
-                            ? const CircularProcessLoader(
-                                color: Colors.blueGrey,
-                              )
-                            : Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 10.0,
-                                    ),
-                                    child: events.isEmpty
-                                        ? const Text(
-                                            'There is no Gender Norms services at a moment',
-                                          )
-                                        : Container(
-                                            margin: const EdgeInsets.symmetric(
-                                              vertical: 5.0,
-                                              horizontal: 13.0,
+          body: Consumer<LanguageTranslationState>(
+            builder: (context, languageState, child) =>
+                Consumer<PpPrevInterventionCurrentSelectionState>(
+              builder:
+                  (context, ppPrevInterventionCurrentSelectionState, child) {
+                return Consumer<ServiceEventDataState>(
+                  builder: (context, serviceEventDataState, child) {
+                    PpPrevBeneficiary? ppPrevBeneficiary =
+                        ppPrevInterventionCurrentSelectionState.currentPpPrev;
+                    bool isLoading = serviceEventDataState.isLoading;
+                    Map<String?, List<Events>> eventListByProgramStage =
+                        serviceEventDataState.eventListByProgramStage;
+                    List<Events> events = TrackedEntityInstanceUtil
+                        .getAllEventListFromServiceDataStateByProgramStages(
+                            eventListByProgramStage, programStageIds,
+                            shouldSortByDate: true);
+                    int serviceIndex = events.length + 1;
+                    return Column(
+                      children: [
+                        PpPrevBeneficiaryTopHeader(
+                          ppPrevBeneficiary: ppPrevBeneficiary!,
+                        ),
+                        Container(
+                          child: isLoading
+                              ? const CircularProcessLoader(
+                                  color: Colors.blueGrey,
+                                )
+                              : Column(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 10.0,
+                                      ),
+                                      child: events.isEmpty
+                                          ? const Text(
+                                              'There is no Gender Norms services at a moment',
+                                            )
+                                          : Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 5.0,
+                                                horizontal: 13.0,
+                                              ),
+                                              child: Column(
+                                                children: events
+                                                    .map((Events eventData) {
+                                                  serviceIndex--;
+                                                  return PpPrevServiceVisitCard(
+                                                    eventData: eventData,
+                                                    visitName: languageState
+                                                                .currentLanguage ==
+                                                            'lesotho'
+                                                        ? 'Tšebeletso ea litloaelo tsa tekano $serviceIndex'
+                                                        : "Gender norms Service $serviceIndex",
+                                                    onEdit: () =>
+                                                        onEditPpPrevGenderNorms(
+                                                      context,
+                                                      ppPrevBeneficiary,
+                                                      eventData,
+                                                      events,
+                                                    ),
+                                                    onView: () =>
+                                                        onViewPpPrevGenderNorms(
+                                                      context,
+                                                      ppPrevBeneficiary,
+                                                      eventData,
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                              ),
                                             ),
-                                            child: Column(
-                                              children: events
-                                                  .map((Events eventData) {
-                                                serviceIndex--;
-                                                return PpPrevServiceVisitCard(
-                                                  eventData: eventData,
-                                                  visitName:
-                                                      "Gender norms Service $serviceIndex",
-                                                  onEdit: () =>
-                                                      onEditPpPrevGenderNorms(
-                                                    context,
-                                                    ppPrevBeneficiary,
-                                                    eventData,
-                                                    events,
-                                                  ),
-                                                  onView: () =>
-                                                      onViewPpPrevGenderNorms(
-                                                    context,
-                                                    ppPrevBeneficiary,
-                                                    eventData,
-                                                  ),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-                                  ),
-                                  EntryFormSaveButton(
-                                    label: 'ADD Gender Norms',
-                                    labelColor: Colors.white,
-                                    buttonColor: const Color(0xFF9B2BAE),
-                                    fontSize: 15.0,
-                                    onPressButton: () =>
-                                        onAddNewPpPrevGenderNorms(
-                                      context,
-                                      ppPrevBeneficiary,
-                                      events,
                                     ),
-                                  )
-                                ],
-                              ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+                                    EntryFormSaveButton(
+                                      label: 'ADD Gender Norms',
+                                      labelColor: Colors.white,
+                                      buttonColor: const Color(0xFF9B2BAE),
+                                      fontSize: 15.0,
+                                      onPressButton: () =>
+                                          onAddNewPpPrevGenderNorms(
+                                        context,
+                                        ppPrevBeneficiary,
+                                        events,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),

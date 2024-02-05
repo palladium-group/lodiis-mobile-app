@@ -77,6 +77,9 @@ class _OvcChildReferralManageState extends State<OvcChildReferralManage> {
                           ReferralOutComeCardContainer(
                             isIncomingReferral: widget.isIncomingReferral,
                             isOvcIntervention: true,
+                            enrollmentOuAccessible: currentOvcHouseholdChild
+                                    .enrollmentOuAccessible ==
+                                true,
                             currentEventId: widget.eventData.event,
                             currentProgramStage: widget.eventData.programStage,
                             beneficiary: currentOvcHouseholdChild.teiData,

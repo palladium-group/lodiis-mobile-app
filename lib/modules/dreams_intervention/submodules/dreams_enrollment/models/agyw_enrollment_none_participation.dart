@@ -18,6 +18,7 @@ class AgywEnrollmentNoneParticipation {
     return [
       FormSection(
         name: 'AGYW/DREAMS None Participation',
+        translatedName: 'E eseng karolo ea AGYW/DREAMS',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(

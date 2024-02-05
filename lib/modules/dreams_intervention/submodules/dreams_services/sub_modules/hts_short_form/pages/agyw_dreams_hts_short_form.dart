@@ -40,6 +40,7 @@ class AgywDreamsHTSShortForm extends StatefulWidget {
 
 class _AgywDreamsHTSShortFormState extends State<AgywDreamsHTSShortForm> {
   final String label = "HTS Form";
+  final String translatedLabel = 'Foromo ea HTS';
   List<FormSection>? formSections;
   List<FormSection>? defaultFormSections;
   List<String> mandatoryFields = AgywDreamsShortForm.getMandatoryFields();
@@ -81,6 +82,7 @@ class _AgywDreamsHTSShortFormState extends State<AgywDreamsHTSShortForm> {
     defaultFormSections = AgywDreamsShortForm.getFormSections(
       firstDate: agyw.createdDate!,
     );
+    mandatoryFields = AgywDreamsShortForm.getMandatoryFields();
     if (agyw.enrollmentOuAccessible!) {
       formSections = defaultFormSections;
     } else {
@@ -96,13 +98,15 @@ class _AgywDreamsHTSShortFormState extends State<AgywDreamsHTSShortForm> {
         program: AgywDreamsEnrollmentConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields.addAll(FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
-      ));
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+      mandatoryFields.addAll(
+        FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        ),
+      );
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -137,6 +141,7 @@ class _AgywDreamsHTSShortFormState extends State<AgywDreamsHTSShortForm> {
       String? eventId = dataObject['eventId'];
       List<String> hiddenFields = [];
       String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+      orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           AgywDreamsHTSShortFormConstant.program,
@@ -301,7 +306,9 @@ class _AgywDreamsHTSShortFormState extends State<AgywDreamsHTSShortForm> {
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage != 'lesotho'
                                                 ? 'Save'
                                                 : 'Boloka',

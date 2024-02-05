@@ -14,11 +14,12 @@ class CasePlanHomeList extends StatelessWidget {
     required this.onViewCasePlan,
     required this.isOnCasePlanServiceProvision,
     required this.isOnCasePlanServiceMonitoring,
+    this.hasBeneficiaryExitedProgram = false,
   }) : super(key: key);
   final Map<String, List<Events>> casePlanByDates;
   final bool isOnCasePlanServiceProvision;
   final bool isOnCasePlanServiceMonitoring;
-
+  final bool hasBeneficiaryExitedProgram;
   final Function onEditCasePlan;
   final Function onViewCasePlan;
 
@@ -28,6 +29,7 @@ class CasePlanHomeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int casePlanIndex = casePlanByDates.keys.length;
+    var latestCasePlan = casePlanByDates.keys.first;
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 17.0,
@@ -37,8 +39,9 @@ class CasePlanHomeList extends StatelessWidget {
           (String casePlanDate) {
             var index = casePlanIndex - 1;
             casePlanIndex--;
-            bool hasEditAccess =
-                OvcCasePlanUtil.hasAccessToEdit(casePlanByDates[casePlanDate]!);
+            bool hasEditAccessToCasePlan = OvcCasePlanUtil.hasAccessToEdit(
+                    casePlanByDates[casePlanDate]!) &&
+                latestCasePlan == casePlanDate;
             return Container(
               margin: const EdgeInsets.symmetric(
                 vertical: 7.0,
@@ -107,7 +110,8 @@ class CasePlanHomeList extends StatelessWidget {
                               casePlanByDates[casePlanDate], casePlanDate),
                         ),
                         Visibility(
-                          visible: hasEditAccess &&
+                          visible: hasEditAccessToCasePlan &&
+                              !hasBeneficiaryExitedProgram &&
                               !(isOnCasePlanServiceMonitoring ||
                                   isOnCasePlanServiceProvision),
                           child: _getActionButton(

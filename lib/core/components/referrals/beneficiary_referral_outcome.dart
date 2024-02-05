@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/line_separator.dart';
 import 'package:kb_mobile_app/core/components/referrals/beneficiary_referral_follow_up_container.dart';
 import 'package:kb_mobile_app/core/components/referrals/beneficiary_referral_follow_up_modal.dart';
@@ -188,60 +189,64 @@ class BeneficiaryReferralOutcome extends StatelessWidget {
   }
 
   Widget _getReferralOutcomeHeader() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 10.0,
-            ),
-            child: Text(
-              'OUTCOME',
-              style: const TextStyle().copyWith(
-                color: valueColor,
-                fontWeight: FontWeight.w700,
-                fontSize: 14.0,
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) => Row(
+        children: [
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                vertical: 10.0,
+              ),
+              child: Text(
+                languageState.currentLanguage == 'lesotho'
+                    ? 'SEPHETHO'
+                    : 'OUTCOME',
+                style: const TextStyle().copyWith(
+                  color: valueColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.0,
+                ),
               ),
             ),
           ),
-        ),
-        Consumer<ServiceEventDataState>(
-          builder: (context, serviceEventDataState, child) {
-            List<ReferralOutcomeFollowUpEvent> followingUps =
-                _getReferralOutcomFollowUps(
-              eventListByProgramStage:
-                  serviceEventDataState.eventListByProgramStage,
-            );
-            return Visibility(
-              visible: followingUps.isEmpty &&
-                  isOnEditMode &&
-                  isIncomingReferral &&
-                  enrollmentOuAccessible,
-              child: Container(
-                margin: const EdgeInsets.symmetric(),
-                child: InkWell(
-                  onTap: onEditReferralOutcome,
-                  child: Container(
-                    height: editIconHeight,
-                    width: editIconHeight,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 10.0,
-                      horizontal: 10.0,
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/icons/edit-icon.svg',
-                      colorFilter: ColorFilter.mode(
-                        labelColor,
-                        BlendMode.srcIn,
+          Consumer<ServiceEventDataState>(
+            builder: (context, serviceEventDataState, child) {
+              List<ReferralOutcomeFollowUpEvent> followingUps =
+                  _getReferralOutcomFollowUps(
+                eventListByProgramStage:
+                    serviceEventDataState.eventListByProgramStage,
+              );
+              return Visibility(
+                visible: followingUps.isEmpty &&
+                    isOnEditMode &&
+                    isIncomingReferral &&
+                    enrollmentOuAccessible,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(),
+                  child: InkWell(
+                    onTap: onEditReferralOutcome,
+                    child: Container(
+                      height: editIconHeight,
+                      width: editIconHeight,
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 10.0,
+                        horizontal: 10.0,
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/icons/edit-icon.svg',
+                        colorFilter: ColorFilter.mode(
+                          labelColor,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        )
-      ],
+              );
+            },
+          )
+        ],
+      ),
     );
   }
 
@@ -291,45 +296,49 @@ class BeneficiaryReferralOutcome extends StatelessWidget {
   }
 
   Widget _getReferralOutcomeDetails() {
-    return Column(
-      children: [
-        _getReferralOutcomeDetail(
-          label: 'Date client reached the referral station',
-          color: labelColor,
-        ),
-        _getReferralOutcomeDetail(
-          label: referralOutcomeEvent.dateClientReachStation!,
-          color: valueColor,
-        ),
-        Visibility(
-          visible: referralOutcomeEvent.referralServiceProvided!,
-          child: _getReferralOutcomeDetail(
-            label: 'Date service was provided',
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) => Column(
+        children: [
+          _getReferralOutcomeDetail(
+            label: 'Date client reached the referral station',
             color: labelColor,
           ),
-        ),
-        Visibility(
-          visible: referralOutcomeEvent.referralServiceProvided!,
-          child: _getReferralOutcomeDetail(
-            label: referralOutcomeEvent.dateServiceProvided!,
+          _getReferralOutcomeDetail(
+            label: referralOutcomeEvent.dateClientReachStation!,
             color: valueColor,
           ),
-        ),
-        Visibility(
-          visible: !referralOutcomeEvent.referralServiceProvided!,
-          child: _getReferralOutcomeDetail(
-            label: 'Reason for decline referral',
-            color: labelColor,
+          Visibility(
+            visible: referralOutcomeEvent.referralServiceProvided!,
+            child: _getReferralOutcomeDetail(
+              label: languageState.currentLanguage == 'lesotho'
+                  ? 'Ho fanoe ka tšebeletso ea letsatsi'
+                  : 'Date service was provided',
+              color: labelColor,
+            ),
           ),
-        ),
-        Visibility(
-          visible: !referralOutcomeEvent.referralServiceProvided!,
-          child: _getReferralOutcomeDetail(
-            label: referralOutcomeEvent.reasonForDecline!,
-            color: valueColor,
+          Visibility(
+            visible: referralOutcomeEvent.referralServiceProvided!,
+            child: _getReferralOutcomeDetail(
+              label: referralOutcomeEvent.dateServiceProvided!,
+              color: valueColor,
+            ),
           ),
-        ),
-      ],
+          Visibility(
+            visible: !referralOutcomeEvent.referralServiceProvided!,
+            child: _getReferralOutcomeDetail(
+              label: 'Reason for decline referral',
+              color: labelColor,
+            ),
+          ),
+          Visibility(
+            visible: !referralOutcomeEvent.referralServiceProvided!,
+            child: _getReferralOutcomeDetail(
+              label: referralOutcomeEvent.reasonForDecline!,
+              color: valueColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,7 +1,7 @@
 
 class PpPrevGenderNormsSessionConstants {
   static final Map<String, List<String>> sessionMapping = {
-    'fkYHRd1KrWO': [
+    'Stepping Stones': [
       "A",
       "B",
       "C",
@@ -12,6 +12,12 @@ class PpPrevGenderNormsSessionConstants {
       "H",
       "I",
       "J",
+    ],
+     'Condom Promotion and Provision': [
+      "1",
+      "2",
+      "4",
+      "6",
     ],
   };
 }

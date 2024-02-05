@@ -40,8 +40,9 @@ mixin OvcCasePlanGapSkipLogic {
               dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
                   'To adhere to ART') &&
           ([
-            "hJUuQ648wVF",
             "ylSjcj6cv42",
+            "HKCv7lkLexo",
+            "pbcXNnAuzfh",
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -50,7 +51,16 @@ mixin OvcCasePlanGapSkipLogic {
                   'Proper nutrition for my children') &&
           ([
             "BJrrrqQqwQO",
-            "d2vXxEPeCq7",
+            "hJUuQ648wVF",
+            "AwWKp6KmqgY", //Care givers, propagate
+            "JSQ3xP1NhuN", //Care givers, propagate
+            "x4yAqv4z2Xv",
+            "AM9oJCOHM7f",
+            "uvJV4WGc5ct",
+            "DQxqyncQtwm", // Caregiver, propagate
+            "Hvq9oisH7Gt", // Caregiver, propagate
+            "qTf8VSoojJ2", // Caregiver, propagate
+            "EaJTFrklMo5", // Caregiver, propagate
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -58,20 +68,11 @@ mixin OvcCasePlanGapSkipLogic {
               dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
                   'Access to PMTCT services') &&
           ([
+            "d2vXxEPeCq7",
             "LswSBpMoG5C",
-            "AwWKp6KmqgY",
-            "JSQ3xP1NhuN",
-            "DQxqyncQtwm",
-            "qTf8VSoojJ2",
-            "Hvq9oisH7Gt",
-            "HKCv7lkLexo",
             "dTFLFtUUeEK",
-            "x4yAqv4z2Xv",
-            "AM9oJCOHM7f",
             "gCKoJgBFdob",
-            "uvJV4WGc5ct",
-            "EaJTFrklMo5",
-            "AxtahhoHcXV"
+            "AxtahhoHcXV",
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -79,7 +80,7 @@ mixin OvcCasePlanGapSkipLogic {
               dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
                   'Knowledgeable about food security') &&
           ([
-            'e6NV2ZAzFEh',
+            'WrjNxZBVHCL', // Caregiver, propagate
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -87,16 +88,19 @@ mixin OvcCasePlanGapSkipLogic {
                   'Learn about food production and preservation' ||
               dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
                   'Learn about food production and preservation') &&
-          (['yPP7lkomNfK'].contains(gap))) {
+          ([
+            'WrjNxZBVHCL', // Caregiver, propagate
+          ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
-      } else if ((dataObject[OvcCasePlanConstant.casePlanFirstGoal] ==
-                  'To improve my family financial status' ||
+      } else if ((dataObject[OvcCasePlanConstant.casePlanFirstGoal] == 'To improve my family financial status' ||
               dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
                   'To improve my family financial status') &&
           ([
-            'kvF996ugmMl',
-            'WrjNxZBVHCL',
+            "e6NV2ZAzFEh", // Caregiver, propagate
+            "yPP7lkomNfK",
+            "HsxFZOuV4oZ",
+            "kvF996ugmMl", //  Caregiver, propagate 9- 17
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -104,39 +108,41 @@ mixin OvcCasePlanGapSkipLogic {
               dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
                   'Knowledgeable about VAC') &&
           ([
-            'uQiyym8SEvd',
-            'WiPTQhWLVU1',
-            'WdZ3PnW5yV6',
-            'hS7aONLz2cq',
+            "uQiyym8SEvd",
+            "aPmPhwm8Zln",
+            "AaqeRcyjbyS",
+            "WdZ3PnW5yV6",
+            "Ccp4Odlh3BE",
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
       } else if ((dataObject[OvcCasePlanConstant.casePlanFirstGoal] == 'Knowledgeable about child protection' ||
-              dataObject[OvcCasePlanConstant.casePlansSecondGoal] == 'Knowledgeable about child protection') &&
+              dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
+                  'Knowledgeable about child protection') &&
           ([
-            'neF08iYV9Os',
-            'PoxYSqq8Hgz',
-            'aPmPhwm8Zln',
-            'AaqeRcyjbyS',
-            'WdZ3PnW5yV6',
-            'Ccp4Odlh3BE'
+            "WiPTQhWLVU1", // Caregiver, propagate
+            "PoxYSqq8Hgz", // Caregiver, propagate to <5
+            "hS7aONLz2cq",
+            "GO3Ojp1UEX7",
+            "exHDkX1gPiC",
+            "yf6KmY3Rm5I",
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
-      } else if ((dataObject[OvcCasePlanConstant.casePlanFirstGoal] == 'Better school attendance and performance' || dataObject[OvcCasePlanConstant.casePlansSecondGoal] == 'Better school attendance and performance') &&
+      } else if ((dataObject[OvcCasePlanConstant.casePlanFirstGoal] == 'Better school attendance and performance' ||
+              dataObject[OvcCasePlanConstant.casePlansSecondGoal] == 'Better school attendance and performance') &&
           ([
-            'Cb8qzfdrg7d',
-            'qraZh4n14S4',
+            "X47zxNAqMv0",
+            "qraZh4n14S4",
+            "q2N7p3UbvSF",
+            "NcMANzhhphO",
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
       } else if ((dataObject[OvcCasePlanConstant.casePlanFirstGoal] == 'Equipped with social assets for better living' || dataObject[OvcCasePlanConstant.casePlansSecondGoal] == 'Equipped with social assets for better living') &&
           ([
-            'X47zxNAqMv0',
-            'qraZh4n14S4',
-            'q2N7p3UbvSF',
-            'NcMANzhhphO',
-            'TdReJf2LTXA',
+            "Cb8qzfdrg7d",
+            "TdReJf2LTXA",
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -174,12 +180,6 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['b6hvMQuH3oJ'] = true;
         hiddenFields['SIEeRmPm0Q0'] = true;
         hiddenFields['iy0KZ7K4qld'] = true;
-      }
-      if (inputFieldId == 'AxtahhoHcXV' && value != 'true') {
-        hiddenFields['cHWpS3Pa71v'] = true;
-        hiddenFields['G6GkSeccLmB'] = true;
-        hiddenFields['ugZKkd3UMNF'] = true;
-        hiddenFields['GULhHDCXRvz'] = true;
       }
       if (inputFieldId == 'd2vXxEPeCq7' && value != 'true') {
         hiddenFields['HbjnW1JjroQ'] = true;
@@ -277,12 +277,6 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['Io9nnYXCvWR'] = true;
         hiddenFields['yoI0bu18mPo'] = true;
       }
-      if (inputFieldId == 'yf6KmY3Rm5I' && value != 'true') {
-        hiddenFields['UVuBtkjHQ95'] = true;
-        hiddenFields['oth3dRYox12'] = true;
-        hiddenFields['YtwjCoHKA9G'] = true;
-        hiddenFields['RsCebbDkMx9'] = true;
-      }
       if (inputFieldId == 'WdZ3PnW5yV6' && value != 'true') {
         hiddenFields['Hvvdmc2rsKl'] = true;
         hiddenFields['dJR6GJyHCTr'] = true;
@@ -361,18 +355,7 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['Mu0LxlAOoSp'] = true;
         hiddenFields['u8yn7sY5eOX'] = true;
       }
-      if (inputFieldId == 'EaJTFrklMo5' && value != 'true') {
-        hiddenFields['kyie4dHxpeC'] = true;
-        hiddenFields['whcEPShYGkD'] = true;
-        hiddenFields['WAq2HJHXZYS'] = true;
-        hiddenFields['v00dsDvhCRu'] = true;
-      }
-      if (inputFieldId == 'HsxFZOuV4oZ' && value != 'true') {
-        hiddenFields['j6rrXcnGpvo'] = true;
-        hiddenFields['KKZBSXc1Sg3'] = true;
-        hiddenFields['tRxPMAXY6VC'] = true;
-        hiddenFields['DdNC3FdhhsW'] = true;
-      }
+
       if (inputFieldId == 'yPP7lkomNfK' && value != 'true') {
         hiddenFields['oASchGdCDjh'] = true;
         hiddenFields['ZQ6jDrZ54ic'] = true;
@@ -397,26 +380,12 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['Y1ta8eJAWBT'] = true;
         hiddenFields['OyeIR1fmV4s'] = true;
       }
-      if (inputFieldId == 'GO3Ojp1UEX7' && value != 'true') {
-        hiddenFields['UR5q3bp0Qez'] = true;
-        hiddenFields['kRwTftt9Nl0'] = true;
-        hiddenFields['Trhl3lfCSA6'] = true;
-        hiddenFields['gi7tMxuE2nG'] = true;
-      }
-      if (inputFieldId == 'exHDkX1gPiC' && value != 'true') {
-        hiddenFields['vis25l3jzKh'] = true;
-        hiddenFields['vODRi6sq3Pn'] = true;
-        hiddenFields['MDMmtTJTIyh'] = true;
-        hiddenFields['aVfUmmotSaB'] = true;
-      }
       if (inputFieldId == 'Cb8qzfdrg7d' && value != 'true') {
-        hiddenFields['NwrsMPc0Per'] = true;
         hiddenFields['JiqD0sYv7pH'] = true;
         hiddenFields['HeoYwEJukC8'] = true;
         hiddenFields['vqmvjogGeX5'] = true;
       }
       if (inputFieldId == 'qraZh4n14S4' && value != 'true') {
-        hiddenFields['hLafgW56GqY'] = true;
         hiddenFields['dSS3xEVkH26'] = true;
         hiddenFields['ZwGE57BjVdJ'] = true;
         hiddenFields['JXx3FiIQe08'] = true;
@@ -427,13 +396,11 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['meR35m2WVNZ'] = true;
       }
       if (inputFieldId == 'q2N7p3UbvSF' && value != 'true') {
-        hiddenFields['VSVJitLJCmb'] = true;
         hiddenFields['XFY4FxA7ymC'] = true;
         hiddenFields['Gw1wRcsPemn'] = true;
         hiddenFields['rjKp0pEFJ2L'] = true;
       }
       if (inputFieldId == 'NcMANzhhphO' && value != 'true') {
-        hiddenFields['ZEC0IXEd8KX'] = true;
         hiddenFields['fT9sHAd6Gvw'] = true;
         hiddenFields['GhPb5Acr00X'] = true;
         hiddenFields['lO7yfY3mBYB'] = true;
@@ -443,13 +410,44 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['LGsvIyYkrP8'] = true;
         hiddenFields['XSTUvAjvijB'] = true;
       }
+
+      if (inputFieldId == 'pbcXNnAuzfh' && value != 'true') {
+        hiddenFields['X4OdB7fDJs6'] = true;
+        hiddenFields['rKeQ5AA6Gqt'] = true;
+        hiddenFields['CgtL9IfeuTB'] = true;
+      }
+      if (inputFieldId == 'GO3Ojp1UEX7' && value != 'true') {
+        hiddenFields['Rm4ooBgON9O'] = true;
+        hiddenFields['gi7tMxuE2nG'] = true;
+        hiddenFields['Trhl3lfCSA6'] = true;
+      }
+      if (inputFieldId == 'exHDkX1gPiC' && value != 'true') {
+        hiddenFields['MaBOowDgrFF'] = true;
+        hiddenFields['aVfUmmotSaB'] = true;
+        hiddenFields['MDMmtTJTIyh'] = true;
+      }
+      if (inputFieldId == 'yf6KmY3Rm5I' && value != 'true') {
+        hiddenFields['oth3dRYox12'] = true;
+        hiddenFields['RsCebbDkMx9'] = true;
+        hiddenFields['YtwjCoHKA9G'] = true;
+      }
       if (inputFieldId == 'EaJTFrklMo5' && value != 'true') {
         hiddenFields['rHgxOKM91wi'] = true;
         hiddenFields['v00dsDvhCRu'] = true;
         hiddenFields['WAq2HJHXZYS'] = true;
       }
-    }
+      if (inputFieldId == 'AxtahhoHcXV' && value != 'true') {
+        hiddenFields['G6GkSeccLmB'] = true;
+        hiddenFields['GULhHDCXRvz'] = true;
+        hiddenFields['ugZKkd3UMNF'] = true;
+      }
 
+      if (inputFieldId == 'HsxFZOuV4oZ' && value != 'true') {
+        hiddenFields['KKZBSXc1Sg3'] = true;
+        hiddenFields['DdNC3FdhhsW'] = true;
+        hiddenFields['tRxPMAXY6VC'] = true;
+      }
+    }
     if (currentHouseholdChild != null) {
       evaluateAgeSkipLogics(inputFieldIds, currentHouseholdChild);
     }
@@ -506,21 +504,46 @@ mixin OvcCasePlanGapSkipLogic {
       List<String> inputFieldIds, OvcHouseholdChild? currentHouseholdChild) {
     try {
       int age = int.parse(currentHouseholdChild!.age!);
-      String? gender = currentHouseholdChild.sex;
-      //Domain health
-      if (!(age == 12 && gender == 'Female')) {
-        hiddenFields['d2vXxEPeCq7'] = true;
+      String sex = currentHouseholdChild.sex ?? '';
+      bool isClHiv = currentHouseholdChild.isClHiv;
+      if (age > 17 || !isClHiv) {
+        hiddenFields['pbcXNnAuzfh'] = true;
       }
-      if (age >= 5) {
-        hiddenFields['x4yAqv4z2Xv'] = true;
-        hiddenFields['AM9oJCOHM7f'] = true;
-        hiddenFields['gCKoJgBFdob'] = true;
-        hiddenFields['uvJV4WGc5ct'] = true;
+      if (age > 17) {
+        hiddenFields['GO3Ojp1UEX7'] = true;
+        hiddenFields['exHDkX1gPiC'] = true;
+        hiddenFields['yf6KmY3Rm5I'] = true;
+        hiddenFields['HsxFZOuV4oZ'] = true;
       }
-      //Domain Schooled
+      if (age < 9 || age > 17) {
+        hiddenFields['cx4xBY4jZXM'] = true;
+        hiddenFields['yPP7lkomNfK'] = true;
+        hiddenFields['uQiyym8SEvd'] = true;
+        hiddenFields['aPmPhwm8Zln'] = true;
+        hiddenFields['AaqeRcyjbyS'] = true;
+        hiddenFields['Cb8qzfdrg7d'] = true;
+      }
+      if (age < 6 || age > 17) {
+        hiddenFields['X47zxNAqMv0'] = true;
+        hiddenFields['q2N7p3UbvSF'] = true;
+      }
       if (age < 13 || age > 17) {
         hiddenFields['qraZh4n14S4'] = true;
-        hiddenFields['TdReJf2LTXA'] = true;
+        if (sex != 'Female') {
+          hiddenFields['TdReJf2LTXA'] = true;
+        }
+      }
+      if (age < 2 || age >= 5) {
+        hiddenFields['BJrrrqQqwQO'] = true;
+      }
+      if (age > 5) {
+        hiddenFields['hJUuQ648wVF'] = true;
+        hiddenFields['x4yAqv4z2Xv'] = true;
+        hiddenFields['AM9oJCOHM7f'] = true;
+        hiddenFields['uvJV4WGc5ct'] = true;
+        hiddenFields['LswSBpMoG5C'] = true;
+        hiddenFields['gCKoJgBFdob'] = true;
+        hiddenFields['PoxYSqq8Hgz'] = true;
       }
     } catch (e) {
       //

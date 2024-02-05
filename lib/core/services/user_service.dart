@@ -22,35 +22,23 @@ class UserService {
     CurrentUser? user;
     try {
       if (isOnlineAuthentication) {
+        var url = 'api/me.json';
+        var queryParameters = {
+          "fields":
+              "id,name,email,phoneNumber,programs,organisationUnits[id],attributeValues[value,attribute[id]],userGroups[name,id],userCredentials[userRoles[id,name]]"
+        };
         HttpService http = HttpService(
           username: username,
           password: password,
         );
-
-        Map userData = await getUserIdAndInterventionAssignments(
-          username: username,
-          password: password,
-        );
-        String userId = userData['id'] ?? '';
-        if (userId.isNotEmpty) {
-          var queryParameters = {
-            "fields":
-                "id,name,email,phoneNumber,organisationUnits[id],attributeValues[value,attribute[id]],userGroups[name,id],userCredentials[userRoles[id,name]]"
-          };
-          var url = 'api/users/$userId.json';
-          var response =
-              await http.httpGet(url, queryParameters: queryParameters);
-          if (response.statusCode == 200) {
-            user = CurrentUser.fromJson(
-              {...userData, ...json.decode(response.body)},
-              username,
-              password,
-            );
-          }
-        } else {
-          String message =
-              "You can not login with provided username and password, kindly connect to network and try again";
-          throw message;
+        var response =
+            await http.httpGet(url, queryParameters: queryParameters);
+        if (response.statusCode == 200) {
+          user = CurrentUser.fromJson(
+            json.decode(response.body),
+            username,
+            password,
+          );
         }
       } else {
         List<CurrentUser> users = await UserOfflineProvider().getUsers();
@@ -67,30 +55,6 @@ class UserService {
     } catch (error) {
       rethrow;
     }
-  }
-
-  Future<Map> getUserIdAndInterventionAssignments({
-    required String username,
-    required String password,
-  }) async {
-    Map userData = {};
-    try {
-      var url = 'api/me.json';
-      var queryParameters = {"fields": "id,programs"};
-      HttpService http = HttpService(
-        username: username,
-        password: password,
-      );
-      var response = await http.httpGet(url, queryParameters: queryParameters);
-      if (response.statusCode == 200) {
-        dynamic userJsonData = json.decode(response.body);
-        userData = {...userJsonData};
-      }
-    } catch (error) {
-      rethrow;
-    }
-
-    return userData;
   }
 
   Future<bool> hasUserPreviousSuccessLogin({
@@ -114,7 +78,7 @@ class UserService {
     if (user != null) {
       user.isLogin = false;
       await setCurrentUser(user);
-      await setCurrentUserMetadatadataSyncStatus("false");
+      await setCurrentUserMetadataSyncStatus("false");
     }
   }
 
@@ -131,12 +95,12 @@ class UserService {
     try {
       var response = await http.httpGet(url, queryParameters: queryParameters);
       if (response.statusCode == 200) {
-        Map<String, dynamic> dataReponse = json.decode(response.body);
-        List<String> authorities = (dataReponse["authorities"] as List)
+        Map<String, dynamic> dataResponse = json.decode(response.body);
+        List<String> authorities = (dataResponse["authorities"] as List)
             .map((authority) => "$authority")
             .toList();
         List userGroups =
-            (dataReponse["userGroups"] as List).where((userGroup) {
+            (dataResponse["userGroups"] as List).where((userGroup) {
           List<String> allowedGroupsForDataEntry =
               UserAccountReference.allowedGroupsForDataEntry;
           String userGroupId =
@@ -188,12 +152,12 @@ class UserService {
     );
   }
 
-  Future setCurrentUserMetadatadataSyncStatus(dynamic status) async {
+  Future setCurrentUserMetadataSyncStatus(dynamic status) async {
     await PreferenceProvider.setPreferenceValue(
         userSuccessMetadataSyncKey, "$status");
   }
 
-  Future<bool> getCurrentUserMetadatadataSyncStatus() async {
+  Future<bool> getCurrentUserMetadataSyncStatus() async {
     var status =
         await PreferenceProvider.getPreferenceValue(userSuccessMetadataSyncKey);
     return "$status" == "true";

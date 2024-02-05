@@ -184,6 +184,7 @@ class _NoneAgywPrepFormState extends State<NoneAgywPrepForm> {
       String? eventId = dataObject['eventId'];
       List<String> hiddenFields = [];
       String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+      orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
           NonAgywPrepVisitConstant.program,
@@ -315,7 +316,9 @@ class _NoneAgywPrepFormState extends State<NoneAgywPrepForm> {
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

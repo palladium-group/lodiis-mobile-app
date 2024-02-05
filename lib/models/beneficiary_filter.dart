@@ -20,12 +20,14 @@ import 'package:provider/provider.dart';
 class BeneficiaryFilter {
   String id;
   String name;
+  String? translatedName;
   List<String>? interventions;
   Widget filterInput;
 
   BeneficiaryFilter({
     required this.id,
     required this.name,
+    this.translatedName,
     this.interventions = const [],
     required this.filterInput,
   });
@@ -95,6 +97,7 @@ class BeneficiaryFilter {
     InputField implementingPartnerInput = InputField(
         id: 'implementingPartner',
         name: 'Select Implementing partner',
+        translatedName: 'Khetha Basebetsi mmoho',
         valueType: 'TEXT',
         options: implementingPartners
             .map(
@@ -259,60 +262,61 @@ class BeneficiaryFilter {
             InputField gradeInput = InputField(
                 id: 'grade',
                 name: 'Select Grade',
+                translatedName: 'Khetha sehlopha',
                 valueType: 'TEXT',
                 options: interventionBottomNavigation.id == 'lbse'
                     ? [
                         InputFieldOption(
-                          code: "Grade 4",
-                          name: "Grade 4",
-                        ),
+                            code: "Grade 4",
+                            name: "Grade 4",
+                            translatedName: 'Sehlopha sa 4'),
                         InputFieldOption(
-                          code: "Grade 5",
-                          name: "Grade 5",
-                        ),
+                            code: "Grade 5",
+                            name: "Grade 5",
+                            translatedName: 'Sehlopha sa 5'),
                         InputFieldOption(
-                          code: "Grade 6",
-                          name: "Grade 6",
-                        ),
+                            code: "Grade 6",
+                            name: "Grade 6",
+                            translatedName: 'Sehlopha sa 6'),
                         InputFieldOption(
-                          code: "Grade 7",
-                          name: "Grade 7",
-                        ),
+                            code: "Grade 7",
+                            name: "Grade 7",
+                            translatedName: 'Sehlopha sa 7'),
                         InputFieldOption(
-                          code: "Grade 8",
-                          name: "Grade 8",
-                        ),
+                            code: "Grade 8",
+                            name: "Grade 8",
+                            translatedName: 'Sehlopha sa 8'),
                         InputFieldOption(
-                          code: "Grade 9",
-                          name: "Grade 9",
-                        ),
+                            code: "Grade 9",
+                            name: "Grade 9",
+                            translatedName: 'Sehlopha sa 9'),
                         InputFieldOption(
-                          code: "Grade 10",
-                          name: "Grade 10",
-                        ),
+                            code: "Grade 10",
+                            name: "Grade 10",
+                            translatedName: 'Sehlopha sa 10'),
                         InputFieldOption(
-                          code: "Grade 11",
-                          name: "Grade 11",
-                        ),
+                            code: "Grade 11",
+                            name: "Grade 11",
+                            translatedName: 'Sehlopha sa 11'),
                       ]
                     : interventionBottomNavigation.id == 'bursary'
                         ? [
                             InputFieldOption(
-                              code: "Grade 8",
-                              name: "Grade 8",
-                            ),
+                                code: "Grade 8",
+                                name: "Grade 8",
+                                translatedName: 'Sehlopha sa 8'),
                             InputFieldOption(
-                              code: "Grade 9",
-                              name: "Grade 9",
-                            ),
+                                code: "Grade 9",
+                                name: "Grade 9",
+                                translatedName: 'Sehlopha sa 9'),
                             InputFieldOption(
-                              code: "Grade 10",
-                              name: "Grade 10",
-                            ),
+                                code: "Grade 10",
+                                name: "Grade 10",
+                                translatedName: 'Sehlopha sa 10'),
                             InputFieldOption(
-                              code: "Grade 11",
-                              name: "Grade 11",
-                            ),
+                                code: "Grade 11",
+                                name: "Grade 11",
+                                translatedName: 'Sehlopha sa 11'),
                           ]
                         : []);
             return Consumer<LanguageTranslationState>(
@@ -366,6 +370,7 @@ class BeneficiaryFilter {
     InputField sexInput = InputField(
       id: 'sex',
       name: 'Select sex',
+      translatedName: 'Khetha boleng',
       valueType: 'TEXT',
       options: currentIntervention.id == 'dreams'
           ? [
@@ -500,6 +505,7 @@ class BeneficiaryFilter {
     InputField ageInput = InputField(
       id: 'age',
       name: 'Age',
+      translatedName: 'Lilemo',
       inputColor: currentIntervention.primaryColor,
       valueType: 'NUMBER',
     );
@@ -557,16 +563,19 @@ class BeneficiaryFilter {
       BeneficiaryFilter(
           id: 'implementingPartner',
           name: 'Implementing Partner',
+          translatedName: 'Basebetsi mmoho',
           interventions: ['dreams', 'ovc', 'ogac', 'education', 'pp_prev'],
           filterInput: getImplementingPartnerFilterInput(currentIntervention)),
       BeneficiaryFilter(
           id: 'age',
           name: 'Age',
+          translatedName: 'Lilemo',
           interventions: ['ogac', 'education', 'pp_prev', 'dreams'],
           filterInput: getAgeFilterInput(currentIntervention)),
       BeneficiaryFilter(
           id: 'sex',
           name: 'Sex',
+          translatedName: 'Boleng',
           interventions: ['ogac', 'education', 'pp_prev', 'dreams'],
           filterInput: getSexFilterInput(currentIntervention)),
       BeneficiaryFilter(
@@ -579,6 +588,7 @@ class BeneficiaryFilter {
       BeneficiaryFilter(
         id: 'schoolName',
         name: 'School',
+        translatedName: 'Sekolo',
         interventions: ['education'],
         filterInput: getSchoolFilterInput(currentIntervention),
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
+import 'package:provider/provider.dart';
 
 class InterventionSelectionCard extends StatelessWidget {
   const InterventionSelectionCard({
@@ -82,15 +84,17 @@ class InterventionSelectionCard extends StatelessWidget {
 
   String getBeneficiaryCardLabel({
     required String interventionId,
-    required bool isSubtitle,
+    required bool isSubtitle, required BuildContext context,
   }) {
-    String beneficiaryCardLabel = isSubtitle ? '' : '# of Beneficiaries:';
+
+  String currentLanguage = Provider.of <LanguageTranslationState>(context, listen: false).currentLanguage;  
+    String beneficiaryCardLabel = isSubtitle ? '' : currentLanguage=='lesotho'?'Palo ea bajalefa':'# of Beneficiaries:';
     if (interventionId == 'ovc') {
-      beneficiaryCardLabel = isSubtitle ? '# of OVCs:' : '# of Households:';
+      beneficiaryCardLabel = isSubtitle ? currentLanguage=='lesotho'?'Palo ea OVCs':'# of OVCs:' : currentLanguage=='lesotho'?'Palo ea malapa':'# of Households:';
     } else if (interventionId == 'dreams') {
-      beneficiaryCardLabel = isSubtitle ? '# of none-AGWYs:' : '# of AGYWS:';
+      beneficiaryCardLabel = isSubtitle ? currentLanguage=='lesotho'?'Palo ea none AGYWS':'# of none-AGWYs:' : currentLanguage=='lesotho'?'Palo ea AGYWS':'# of AGYWS:';
     } else if (interventionId == 'education') {
-      beneficiaryCardLabel = isSubtitle ? '# of BURSARY:' : '# of LBSE:';
+      beneficiaryCardLabel = isSubtitle ? currentLanguage=='lesotho'?'Palo ea Bursary':'# of BURSARY:' : currentLanguage=='lesotho'?'Palo ea LBSE':'# of LBSE:';
     }
     return beneficiaryCardLabel;
   }
@@ -159,6 +163,7 @@ class InterventionSelectionCard extends StatelessWidget {
                           label: getBeneficiaryCardLabel(
                             interventionId: interventionProgram!.id!,
                             isSubtitle: false,
+                            context: context
                           ),
                           count: getBeneficiaryCardCount(
                             interventionId: interventionProgram!.id!,
@@ -169,6 +174,7 @@ class InterventionSelectionCard extends StatelessWidget {
                           label: getBeneficiaryCardLabel(
                             interventionId: interventionProgram!.id!,
                             isSubtitle: true,
+                             context: context
                           ),
                           count: getBeneficiaryCardCount(
                             interventionId: interventionProgram!.id!,

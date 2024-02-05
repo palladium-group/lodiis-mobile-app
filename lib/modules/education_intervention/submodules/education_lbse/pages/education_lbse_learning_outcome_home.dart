@@ -3,6 +3,7 @@ import 'package:kb_mobile_app/app_state/education_intervention_state/education_i
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
@@ -26,6 +27,7 @@ class EducationLbseLearningOutcomeHome extends StatelessWidget {
   const EducationLbseLearningOutcomeHome({Key? key}) : super(key: key);
 
   final String label = 'LBSE Learning Outcomes';
+  final String translatedName = 'Sephetho sa boithuto ba LBSE';
 
   void updateFormState(
     BuildContext context,
@@ -132,22 +134,26 @@ class EducationLbseLearningOutcomeHome extends StatelessWidget {
       LbseInterventionConstant.learningOutcomeProgamStage
     ];
     return SafeArea(
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(65.0),
-          child: Consumer<InterventionCardState>(
-            builder: (context, interventionCardState, child) {
-              InterventionCard activeInterventionProgram =
-                  interventionCardState.currentInterventionProgram;
-              return SubPageAppBar(
-                label: label,
-                activeInterventionProgram: activeInterventionProgram,
-              );
-            },
-          ),
+        child: Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(65.0),
+        child: Consumer<InterventionCardState>(
+          builder: (context, interventionCardState, child) {
+            InterventionCard activeInterventionProgram =
+                interventionCardState.currentInterventionProgram;
+            return SubPageAppBar(
+              label: label,
+              translatedName: translatedName,
+              activeInterventionProgram: activeInterventionProgram,
+            );
+          },
         ),
-        body: SubPageBody(
-          body: Consumer<EducationInterventionCurrentSelectionState>(
+      ),
+      body: SubPageBody(
+        body: Consumer<LanguageTranslationState>(
+            builder: (context, languageTranslationState, child) {
+          String? currentLanguage = languageTranslationState.currentLanguage;
+          return Consumer<EducationInterventionCurrentSelectionState>(
             builder:
                 (context, educationInterventionCurrentSelectionState, child) {
               return Consumer<ServiceEventDataState>(
@@ -183,8 +189,10 @@ class EducationLbseLearningOutcomeHome extends StatelessWidget {
                                       vertical: 10.0,
                                     ),
                                     child: lbseLearningOutcomes.isEmpty
-                                        ? const Text(
-                                            'There is no learning outcome at a moment',
+                                        ? Text(
+                                            currentLanguage == 'lesotho'
+                                                ? 'Ha ho sephetho sa ho ithuta hajoale'
+                                                : 'There is no learning outcome at a moment',
                                           )
                                         : Container(
                                             margin: const EdgeInsets.symmetric(
@@ -222,7 +230,9 @@ class EducationLbseLearningOutcomeHome extends StatelessWidget {
                                           ),
                                   ),
                                   EntryFormSaveButton(
-                                    label: 'ADD LEARNING OUTCOME',
+                                    label: currentLanguage == 'lesotho'
+                                        ? 'KENYA SEPHETHO SA BOITSEBISO'
+                                        : 'ADD LEARNING OUTCOME',
                                     labelColor: Colors.white,
                                     buttonColor: const Color(0xFF009688),
                                     fontSize: 15.0,
@@ -238,9 +248,9 @@ class EducationLbseLearningOutcomeHome extends StatelessWidget {
                 },
               );
             },
-          ),
-        ),
+          );
+        }),
       ),
-    );
+    ));
   }
 }

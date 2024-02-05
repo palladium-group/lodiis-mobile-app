@@ -118,8 +118,8 @@ class OvcHouseholdCardBody extends StatelessWidget {
 
   Container _getHouseholdStatusRow({
     required String status,
+    required String key,
   }) {
-    String key = 'Status';
     return status.isEmpty
         ? Container()
         : Container(
@@ -165,6 +165,7 @@ class OvcHouseholdCardBody extends StatelessWidget {
                 value: ovcHousehold.location!,
               ),
               _getHouseholdStatusRow(
+                key: currentLanguage == 'lesotho' ? 'Boemo' : 'Status',
                 status: ovcHousehold.houseHoldStatus ?? '',
               ),
               OvcHouseholdChildCount(

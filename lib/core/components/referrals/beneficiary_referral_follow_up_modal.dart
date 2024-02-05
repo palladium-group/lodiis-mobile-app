@@ -133,7 +133,7 @@ class _BeneficiaryReferralFollowUpModalState
           dataObject[widget.referralToFollowUpLinkage] ?? '';
       var orgUnit = dataObject['location'] ?? '';
       var eventId = dataObject['eventId'];
-      var eventDate = dataObject['eventDate'];
+      var eventDate = dataObject['eventDate'] ?? dataObject['DPf5mUDoZMy'];
       await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
         widget.referralProgram,
         widget.referralFollowUpStage,

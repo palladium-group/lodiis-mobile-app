@@ -107,8 +107,8 @@ class OvcHouseholdInfoTopHeader extends StatelessWidget {
 
   Container _getHouseholdStatusRow({
     required String status,
+    required String key,
   }) {
-    String key = 'Status';
     double fontSize = 13.0;
     Color keyColor = const Color(0xFF92A791);
 
@@ -182,6 +182,7 @@ class OvcHouseholdInfoTopHeader extends StatelessWidget {
                       value: currentOvcHousehold!.village ?? '',
                     ),
                     _getHouseholdStatusRow(
+                        key: currentLanguage == 'lesotho' ? 'Boemo' : 'Status',
                         status: currentOvcHousehold?.houseHoldStatus ?? '')
                   ],
                 ),

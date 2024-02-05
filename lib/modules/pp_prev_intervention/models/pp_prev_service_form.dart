@@ -5,7 +5,14 @@ import 'package:kb_mobile_app/models/input_field_option.dart';
 
 class PpPrevServiceForm {
   static List<String> getMandatoryField() {
-    return [];
+    return [
+      'Nr7UJVA1CZE',
+      'mFxyT39XSE4',
+      'type_of_violence',
+      'pY4J9Z90qhb',
+      'action_taken',
+      'HwGBP9iNl1g',
+    ];
   }
 
   static List<FormSection> getFormSections({
@@ -14,6 +21,7 @@ class PpPrevServiceForm {
     return [
       FormSection(
         name: "Service provision",
+        translatedName: "Phano ea lits'ebeletso",
         color: const Color(0xFF9B2BAE),
         inputFields: [
           InputField(
@@ -26,7 +34,7 @@ class PpPrevServiceForm {
           ),
           InputField(
             id: 'XBekI82ixNm',
-            name: 'Condom Promotion and Provision',
+            name: 'Condom Messaging',
             translatedName: 'Khothaletso le phano ea likhohlopo',
             valueType: 'TRUE_ONLY',
             inputColor: const Color(0xFF9B2BAE),
@@ -44,6 +52,7 @@ class PpPrevServiceForm {
       ),
       FormSection(
           name: "Condom Distribution",
+          translatedName: 'Phano ea likhohlopo',
           color: const Color(0xFF9B2BAE),
           inputFields: [
             InputField(
@@ -105,9 +114,9 @@ class PpPrevServiceForm {
                 translatedName: '4-6 likhoeli tse fetileng',
               ),
               InputFieldOption(
-                code: 'Above 12 months ago',
-                name: 'Above 12 months ago',
-              ),
+                  code: 'Above 12 months ago',
+                  name: 'Above 12 months ago',
+                  translatedName: 'Ka holimo ho likhoeli tse 12 tse fetileng'),
             ],
             inputColor: const Color(0xFF9B2BAE),
             labelColor: const Color(0xFF737373),
@@ -193,6 +202,7 @@ class PpPrevServiceForm {
           InputField(
             id: 'HwGBP9iNl1g',
             name: 'Specify other type of action taken',
+            translatedName: "Hlalosa mofuta o mong oa ts'ebetso e entsoeng",
             valueType: 'TEXT',
             inputColor: const Color(0xFF9B2BAE),
             labelColor: const Color(0xFF737373),

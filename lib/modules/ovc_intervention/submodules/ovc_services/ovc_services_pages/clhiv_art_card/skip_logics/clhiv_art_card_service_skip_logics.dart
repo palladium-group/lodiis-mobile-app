@@ -38,8 +38,13 @@ class ClhivArtCardServiceSkipLogics {
         if (value != 'false') {
           hiddenFields['QkoJ1afnMMK'] = true;
         }
-      } else if (inputFieldId == 'LaeDyUWYcoN' && value != 'Other (Specify)') {
-        hiddenFields['YxJQ58njlLM'] = true;
+      } else if (inputFieldId == 'LaeDyUWYcoN') {
+        if (value != '<3 Months') {
+          hiddenFields['yWE2jEJxMdB'] = true;
+        }
+        if (value != 'Other (Specify)') {
+          hiddenFields['YxJQ58njlLM'] = true;
+        }
       }
     }
 

@@ -40,8 +40,7 @@ class _CurrentUserMetadataSyncState extends State<CurrentUserMetadataSync> {
             .connectivityStatus;
     if (isOnline!) {
       CurrentUser? user = await UserService().getCurrentUser();
-      bool syncStatus =
-          await UserService().getCurrentUserMetadatadataSyncStatus();
+      bool syncStatus = await UserService().getCurrentUserMetadataSyncStatus();
       if (!syncStatus) {
         var userAccessConfigurations =
             await UserAccess().getUserAccessConfigurationsFromTheServer(
@@ -55,7 +54,7 @@ class _CurrentUserMetadataSyncState extends State<CurrentUserMetadataSync> {
         }
         await OrganisationUnitService()
             .discoveringOrgananisationUnitsFromTheServer();
-        await UserService().setCurrentUserMetadatadataSyncStatus(true);
+        await UserService().setCurrentUserMetadataSyncStatus(true);
       }
     }
     Timer(const Duration(milliseconds: 400), () {

@@ -53,7 +53,11 @@ class _OvcEnrollmentChildViewEditContainerState
   }
 
   void _setFormMetadata() {
-    formSections = OvcEnrollmentChild.getFormSections();
+    formSections = OvcEnrollmentChild.getFormSections(
+        isEnrolmentDateEditable:
+            Provider.of<EnrollmentFormState>(context, listen: false)
+                .isEditableMode,
+        enrollmentDate: '');
     mandatoryFields = OvcEnrollmentChild.getMandatoryField();
     for (String id in mandatoryFields) {
       mandatoryFieldObject[id] = true;
@@ -105,7 +109,7 @@ class _OvcEnrollmentChildViewEditContainerState
           dataObject['parentTrackedEntityInstance'];
       String? orgUnit = dataObject['orgUnit'];
       String? enrollmentDate = dataObject['enrollmentDate'];
-      String? incidentDate = dataObject['incidentDate'];
+      String? incidentDate = dataObject['incidentDate'] ?? enrollmentDate;
       bool shouldEnroll = dataObject['trackedEntityInstance'] == null;
       List<String> hiddenFields = [
         BeneficiaryIdentification.beneficiaryId,
@@ -191,6 +195,16 @@ class _OvcEnrollmentChildViewEditContainerState
   }
 
   void onInputValueChange(String id, dynamic value) {
+    if (id == 'enrollmentDate') {
+      Map dataObject =
+          Provider.of<EnrollmentFormState>(context, listen: false).formState;
+      String previousEnrollmentDate = dataObject['enrollmentDate'] ?? '';
+      if (previousEnrollmentDate != value) {
+        String dobId = 'qZP982qpSPS';
+        Provider.of<EnrollmentFormState>(context, listen: false)
+            .setFormFieldState(dobId, null);
+      }
+    }
     Provider.of<EnrollmentFormState>(context, listen: false)
         .setFormFieldState(id, value);
     _evaluateSkipLogics();
@@ -221,8 +235,8 @@ class _OvcEnrollmentChildViewEditContainerState
             body: SubPageBody(
               body: Container(
                 child: !_isFormReady
-                    ? Column(
-                        children: const [
+                    ? const Column(
+                        children: [
                           Center(
                             child: CircularProcessLoader(
                               color: Colors.blueGrey,
@@ -250,6 +264,9 @@ class _OvcEnrollmentChildViewEditContainerState
                               ),
                               child: Consumer<EnrollmentFormState>(
                                 builder: (context, enrollmentFormState, child) {
+                                  String enrollmentDate = enrollmentFormState
+                                          .formState['enrollmentDate'] ??
+                                      '';
                                   return Column(
                                     children: [
                                       EntryFormContainer(
@@ -262,7 +279,14 @@ class _OvcEnrollmentChildViewEditContainerState
                                         hiddenInputFieldOptions:
                                             enrollmentFormState
                                                 .hiddenInputFieldOptions,
-                                        formSections: formSections,
+                                        formSections:
+                                            OvcEnrollmentChild.getFormSections(
+                                                isEnrolmentDateEditable: Provider
+                                                        .of<EnrollmentFormState>(
+                                                            context,
+                                                            listen: false)
+                                                    .isEditableMode,
+                                                enrollmentDate: enrollmentDate),
                                         mandatoryFieldObject:
                                             mandatoryFieldObject,
                                         isEditableMode:
@@ -278,7 +302,10 @@ class _OvcEnrollmentChildViewEditContainerState
                                             enrollmentFormState.isEditableMode,
                                         child: EntryFormSaveButton(
                                           label: _isSaving
-                                              ? 'Saving ...'
+                                              ? languageTranslationState
+                                                      .isSesothoLanguage
+                                                  ? 'E ntse e boloka...'
+                                                  : 'Saving ...'
                                               : languageTranslationState
                                                       .isSesothoLanguage
                                                   ? 'Boloka'

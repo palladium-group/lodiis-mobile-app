@@ -50,6 +50,7 @@ class AgywEnrollmentFormSection {
     return [
       FormSection(
         name: 'Enrollment Instructions',
+        translatedName: 'Litaelo tsa ho Ngolisa',
         color: const Color(0xFF258DCC),
         inputFields: [
           InputField(
@@ -541,6 +542,7 @@ class AgywEnrollmentFormSection {
           InputField(
             id: 'iQdwzVfZdml',
             name: 'Type of school',
+            translatedName: 'Mofutoa oa Sekolo',
             valueType: 'TEXT',
             inputColor: const Color(0xFF258DCC),
             labelColor: const Color(0xFF737373),
@@ -667,7 +669,7 @@ class AgywEnrollmentFormSection {
               InputFieldOption(
                   code: 'Pregnancy',
                   name: 'Pregnancy',
-                  translatedName: 'Ke mokhachane'),
+                  translatedName: 'Boimana'),
               InputFieldOption(
                   code: 'Peer pressure',
                   name: 'Peer pressure',
@@ -675,7 +677,7 @@ class AgywEnrollmentFormSection {
               InputFieldOption(
                   code: 'Not interested',
                   name: 'Not interested',
-                  translatedName: 'Ha ke na tjantjello/thahasello'),
+                  translatedName: 'Ha ke Thahaselle'),
               InputFieldOption(
                   code: 'Awaiting to join secondary',
                   name: 'Awaiting to join secondary',

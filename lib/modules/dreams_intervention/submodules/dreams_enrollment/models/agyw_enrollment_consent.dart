@@ -26,6 +26,7 @@ class AgywEnrollmentConcent {
     return [
       FormSection(
           name: 'Consent',
+          translatedName: 'Tumellano',
           color: const Color(0xFF258DCC),
           inputFields: [
             InputField(

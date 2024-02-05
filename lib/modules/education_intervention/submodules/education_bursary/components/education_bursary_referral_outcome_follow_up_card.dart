@@ -68,101 +68,104 @@ class EducationBursaryReferralOutcomeFollowUpCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LineSeparator(
-          color: color.withOpacity(0.7),
-          height: 1.0,
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 10.0,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'FOLLOW UP $followUpIndex',
-                  style: const TextStyle().copyWith(
-                    color: color,
-                    fontSize: 15.0,
-                  ),
-                ),
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageTranslationState, child) {
+        String currentLanguage = languageTranslationState.currentLanguage;
+
+        return Column(
+          children: [
+            LineSeparator(
+              color: color.withOpacity(0.7),
+              height: 1.0,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(
+                vertical: 10.0,
               ),
-              Visibility(
-                visible: shouldEditFollowingUp,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                  ),
-                  child: InkWell(
-                    onTap: onAddOutComeFollowingUp,
-                    child: Container(
-                      height: iconHeight,
-                      width: iconHeight,
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 5.0,
-                        horizontal: 5.0,
-                      ),
-                      child: SvgPicture.asset(
-                        svgIcon,
-                        colorFilter: ColorFilter.mode(
-                          color,
-                          BlendMode.srcIn,
-                        ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      currentLanguage == 'lesotho'
+                          ? 'Tšalo-morao $followUpIndex'
+                          : 'FOLLOW UP $followUpIndex',
+                      style: const TextStyle().copyWith(
+                        color: color,
+                        fontSize: 15.0,
                       ),
                     ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ),
-        LineSeparator(
-          color: color.withOpacity(0.7),
-          height: 1.0,
-        ),
-        Consumer<LanguageTranslationState>(
-            builder: (context, languageTranslationState, child) {
-          String? currentLanguage = languageTranslationState.currentLanguage;
-
-          return Container(
-            margin: const EdgeInsets.only(
-              top: 10.0,
-              left: 15.0,
-              right: 15.0,
+                  Visibility(
+                    visible: shouldEditFollowingUp,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                      ),
+                      child: InkWell(
+                        onTap: onAddOutComeFollowingUp,
+                        child: Container(
+                          height: iconHeight,
+                          width: iconHeight,
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 5.0,
+                            horizontal: 5.0,
+                          ),
+                          child: SvgPicture.asset(
+                            svgIcon,
+                            colorFilter: ColorFilter.mode(
+                              color,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-            child: Column(
-              children: [
-                _getReferralOutcomeDetailData(
-                  labelColor: color,
-                  valueColor: valueColor,
-                  label: currentLanguage == 'lesotho'
-                      ? 'Follow up date'
-                      : 'Follow up date',
-                  value: referralOutcomeFollowUpEvent.followUpDate,
-                ),
-                _getReferralOutcomeDetailData(
-                  labelColor: color,
-                  valueColor: valueColor,
-                  label: currentLanguage == 'lesotho'
-                      ? 'Follow up status'
-                      : 'Follow up status',
-                  value: referralOutcomeFollowUpEvent.followUpStatus,
-                ),
-                _getReferralOutcomeDetailData(
-                  labelColor: color,
-                  valueColor: valueColor,
-                  label: currentLanguage == 'lesotho'
-                      ? 'Comments or next steps'
-                      : 'Comments or next steps',
-                  value: referralOutcomeFollowUpEvent.comments,
-                ),
-              ],
+            LineSeparator(
+              color: color.withOpacity(0.7),
+              height: 1.0,
             ),
-          );
-        })
-      ],
+            Container(
+              margin: const EdgeInsets.only(
+                top: 10.0,
+                left: 15.0,
+                right: 15.0,
+              ),
+              child: Column(
+                children: [
+                  _getReferralOutcomeDetailData(
+                    labelColor: color,
+                    valueColor: valueColor,
+                    label: currentLanguage == 'lesotho'
+                        ? "Letsatsi la ts'alo morao"
+                        : 'Follow up date',
+                    value: referralOutcomeFollowUpEvent.followUpDate,
+                  ),
+                  _getReferralOutcomeDetailData(
+                    labelColor: color,
+                    valueColor: valueColor,
+                    label: currentLanguage == 'lesotho'
+                        ? 'Follow up status'
+                        : 'Follow up status',
+                    value: referralOutcomeFollowUpEvent.followUpStatus,
+                  ),
+                  _getReferralOutcomeDetailData(
+                    labelColor: color,
+                    valueColor: valueColor,
+                    label: currentLanguage == 'lesotho'
+                        ? 'Maikutlo kapa mehato e latelang'
+                        : 'Comments or next steps',
+                    value: referralOutcomeFollowUpEvent.comments,
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 }

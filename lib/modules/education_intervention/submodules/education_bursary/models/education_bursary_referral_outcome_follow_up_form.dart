@@ -19,6 +19,7 @@ class EducationBursaryReferralOutcomeFollowUpForm {
           InputField(
             id: 'DPf5mUDoZMy',
             name: 'Follow-up date',
+            translatedName: 'Latsatsi la tlhahlobo e latelang',
             valueType: 'DATE',
             firstDate: firstDate,
             inputColor: const Color(0xFF009688),
@@ -44,6 +45,7 @@ class EducationBursaryReferralOutcomeFollowUpForm {
           InputField(
             id: 'BzkeBAxdEVT',
             name: 'Additional follow up required',
+            translatedName: 'Ho hlokahala tlhahlobo hape',
             valueType: 'BOOLEAN',
             inputColor: const Color(0xFF009688),
             labelColor: const Color(0xFF737373),
@@ -51,6 +53,7 @@ class EducationBursaryReferralOutcomeFollowUpForm {
           InputField(
             id: 'Yp3zlQ779fk',
             name: 'Additional Follow-up date',
+            translatedName: 'Ho hlokahala tlhahlobo hape',
             allowFuturePeriod: true,
             disablePastPeriod: true,
             valueType: 'DATE',
@@ -60,6 +63,7 @@ class EducationBursaryReferralOutcomeFollowUpForm {
           InputField(
             id: 'LcG4J82PM4Z',
             name: 'Comments or next steps',
+            translatedName: 'Maikutlo kapa mehato e latelang',
             valueType: 'LONG_TEXT',
             inputColor: const Color(0xFF009688),
             labelColor: const Color(0xFF737373),

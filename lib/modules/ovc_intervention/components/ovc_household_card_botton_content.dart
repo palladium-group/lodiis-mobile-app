@@ -20,6 +20,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_exit/ovc_e
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_referral/ovc_referral_pages/ovc_child_referral_pages/ovc_child_referral_home.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/ovc_child_service_home.dart';
 import 'package:provider/provider.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
 class OvcHouseholdCardButtonContent extends StatelessWidget {
   const OvcHouseholdCardButtonContent({
@@ -203,141 +204,100 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const LineSeparator(
-          color: Color(0xFFECF5EC),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 10.0),
-          child: Row(
-            children: [
-              Container(
-                  margin: const EdgeInsets.only(right: 10.0),
-                  child:
-                      SvgPicture.asset('assets/icons/children_ovc_icon.svg')),
-              Expanded(
-                child: Text(
-                  currentLanguage == 'lesotho'
-                      ? 'Lethathamo la bana'
-                      : 'Children List',
-                  style: const TextStyle().copyWith(
-                    fontSize: 14.0,
-                    color: const Color(0xFF536852),
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              )
-            ],
+    return Consumer<LanguageTranslationState>(
+      builder: (context, languageState, child) => Column(
+        children: [
+          const LineSeparator(
+            color: Color(0xFFECF5EC),
           ),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 13.0,
-            vertical: 10.0,
-          ),
-          child: Column(
-            children: ovcHousehold.children!.map(
-              (OvcHouseholdChild ovcHouseholdChild) {
-                int index =
-                    ovcHousehold.children!.indexOf(ovcHouseholdChild) + 1;
-                return Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '$index. ${ovcHouseholdChild.toString()}',
-                        style: const TextStyle().copyWith(
-                            fontSize: 14.0,
-                            color: const Color(0xFF536852),
-                            fontWeight: FontWeight.w500),
-                      ),
+          Container(
+            margin:
+                const EdgeInsets.symmetric(horizontal: 13.0, vertical: 10.0),
+            child: Row(
+              children: [
+                Container(
+                    margin: const EdgeInsets.only(right: 10.0),
+                    child:
+                        SvgPicture.asset('assets/icons/children_ovc_icon.svg')),
+                Expanded(
+                  child: Text(
+                    currentLanguage == 'lesotho'
+                        ? 'Lethathamo la bana'
+                        : 'Children List',
+                    style: const TextStyle().copyWith(
+                      fontSize: 14.0,
+                      color: const Color(0xFF536852),
+                      fontWeight: FontWeight.w700,
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Visibility(
-                          visible: ovcHouseholdChild.isChildPrimary == true,
-                          child: Icon(
-                            Icons.key,
-                            color: ovcHouseholdChild.ovcStatus ==
-                                    ProgramStatus.exit
-                                ? Colors.amberAccent
-                                : const Color(0xFF4B9F46),
-                          ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 13.0,
+              vertical: 10.0,
+            ),
+            child: Column(
+              children: ovcHousehold.children!.map(
+                (OvcHouseholdChild ovcHouseholdChild) {
+                  int index =
+                      ovcHousehold.children!.indexOf(ovcHouseholdChild) + 1;
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '$index. ${ovcHouseholdChild.toString()}',
+                          style: const TextStyle().copyWith(
+                              fontSize: 14.0,
+                              color: const Color(0xFF536852),
+                              fontWeight: FontWeight.w500),
                         ),
-                        Consumer<SynchronizationStatusState>(builder:
-                            (context, synchronizationStatusState, child) {
-                          List<String> unsyncedTeiReferences =
-                              synchronizationStatusState.unsyncedTeiReferences;
-                          return BeneficiarySyncStatusIndicator(
-                            isSynced: _getSyncStatusOfChild(
-                                ovcHouseholdChild, unsyncedTeiReferences),
-                          );
-                        }),
-                        Visibility(
-                          visible: canViewChildService ||
-                              canViewChildInfo ||
-                              canViewChildExit,
-                          child: InkWell(
-                            onTap: () => canViewChildExit
-                                ? onViewChildExit(context, ovcHouseholdChild)
-                                : canViewChildInfo
-                                    ? onViewChildInfo(
-                                        context, ovcHouseholdChild)
-                                    : canViewChildService
-                                        ? onViewChildService(
-                                            context, ovcHouseholdChild)
-                                        : null,
-                            child: Container(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                'VIEW',
-                                style: const TextStyle().copyWith(
-                                  fontSize: 12.0,
-                                  color: const Color(0xFF4B9F46),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Visibility(
+                            visible: ovcHouseholdChild.isChildPrimary == true,
+                            child: Icon(
+                              Icons.key,
+                              color: ovcHouseholdChild.ovcStatus ==
+                                      ProgramStatus.exit
+                                  ? Colors.amberAccent
+                                  : const Color(0xFF4B9F46),
                             ),
                           ),
-                        ),
-                        Visibility(
-                          visible: canViewChildReferral,
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                              left: 10.0,
-                            ),
+                          Consumer<SynchronizationStatusState>(builder:
+                              (context, synchronizationStatusState, child) {
+                            List<String> unsyncedTeiReferences =
+                                synchronizationStatusState
+                                    .unsyncedTeiReferences;
+                            return BeneficiarySyncStatusIndicator(
+                              isSynced: _getSyncStatusOfChild(
+                                  ovcHouseholdChild, unsyncedTeiReferences),
+                            );
+                          }),
+                          Visibility(
+                            visible: canViewChildService ||
+                                canViewChildInfo ||
+                                canViewChildExit,
                             child: InkWell(
-                              onTap: () => onViewChildReferral(
-                                  context, ovcHouseholdChild),
-                              child: Container(
-                                padding: const EdgeInsets.all(
-                                  10.0,
-                                ),
-                                child: Text(
-                                  'REFERRAL',
-                                  style: const TextStyle().copyWith(
-                                    fontSize: 12.0,
-                                    color: const Color(0xFF4B9F46),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: canEditChildInfo &&
-                              ovcHouseholdChild.enrollmentOuAccessible!,
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 10.0),
-                            child: InkWell(
-                              onTap: () =>
-                                  onEditChildInfo(context, ovcHouseholdChild),
+                              onTap: () => canViewChildExit
+                                  ? onViewChildExit(context, ovcHouseholdChild)
+                                  : canViewChildInfo
+                                      ? onViewChildInfo(
+                                          context, ovcHouseholdChild)
+                                      : canViewChildService
+                                          ? onViewChildService(
+                                              context, ovcHouseholdChild)
+                                          : null,
                               child: Container(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
-                                  'EDIT',
+                                  languageState.currentLanguage == 'lesotho'
+                                      ? 'SHEBA'
+                                      : 'VIEW',
                                   style: const TextStyle().copyWith(
                                     fontSize: 12.0,
                                     color: const Color(0xFF4B9F46),
@@ -347,45 +307,100 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
                               ),
                             ),
                           ),
-                        )
-                      ],
-                    )
-                  ],
-                );
-              },
-            ).toList(),
+                          Visibility(
+                            visible: canViewChildReferral,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                left: 10.0,
+                              ),
+                              child: InkWell(
+                                onTap: () => onViewChildReferral(
+                                    context, ovcHouseholdChild),
+                                child: Container(
+                                  padding: const EdgeInsets.all(
+                                    10.0,
+                                  ),
+                                  child: Text(
+                                    languageState.currentLanguage == 'lesotho'
+                                        ? 'PHETISETSO'
+                                        : 'REFERRAL',
+                                    style: const TextStyle().copyWith(
+                                      fontSize: 12.0,
+                                      color: const Color(0xFF4B9F46),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: canEditChildInfo &&
+                                ovcHouseholdChild.enrollmentOuAccessible! &&
+                                ovcHouseholdChild.hasExitedProgram != true &&
+                                ovcHousehold.hasExitedProgram != true,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 10.0),
+                              child: InkWell(
+                                onTap: () =>
+                                    onEditChildInfo(context, ovcHouseholdChild),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    languageState.currentLanguage == 'lesotho'
+                                        ? 'FETOLA'
+                                        : 'EDIT',
+                                    style: const TextStyle().copyWith(
+                                      fontSize: 12.0,
+                                      color: const Color(0xFF4B9F46),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  );
+                },
+              ).toList(),
+            ),
           ),
-        ),
-        Visibility(
-            visible: canAddChild && ovcHousehold.enrollmentOuAccessible!,
-            child: const LineSeparator(
-              color: Color(0xFFECF5EC),
-            )),
-        Visibility(
-          visible: canAddChild && ovcHousehold.enrollmentOuAccessible!,
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 5.0),
-            child: InkWell(
-              onTap: () => onAddNewChild(context),
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                alignment: Alignment.center,
-                width: double.infinity,
-                child: Text(
-                  currentLanguage == 'lesotho'
-                      ? 'Kenya ngoana e mong'.toLowerCase()
-                      : 'ADD CHILD',
-                  style: const TextStyle().copyWith(
-                    fontSize: 12.0,
-                    color: const Color(0xFF4B9F46),
-                    fontWeight: FontWeight.w500,
+          Visibility(
+              visible: canAddChild && ovcHousehold.enrollmentOuAccessible!,
+              child: const LineSeparator(
+                color: Color(0xFFECF5EC),
+              )),
+          Visibility(
+            visible: canAddChild &&
+                ovcHousehold.enrollmentOuAccessible! &&
+                ovcHousehold.hasExitedProgram != true,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 5.0),
+              child: InkWell(
+                onTap: () => onAddNewChild(context),
+                child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  child: Text(
+                    currentLanguage == 'lesotho'
+                        ? 'Kenya ngoana e mong'.toLowerCase()
+                        : 'ADD CHILD',
+                    style: const TextStyle().copyWith(
+                      fontSize: 12.0,
+                      color: const Color(0xFF4B9F46),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

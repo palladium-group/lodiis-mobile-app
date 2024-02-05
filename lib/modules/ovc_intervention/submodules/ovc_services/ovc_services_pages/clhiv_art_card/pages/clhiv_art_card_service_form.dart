@@ -14,6 +14,7 @@ import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.d
 import 'package:kb_mobile_app/core/components/intervention_bottom_navigation/intervention_bottom_navigation_bar_container.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
 import 'package:kb_mobile_app/core/components/sup_page_body.dart';
+import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
 import 'package:kb_mobile_app/core/services/form_auto_save_offline_service.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
@@ -24,7 +25,7 @@ import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_routes_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_enrollment/constants/ovc_intervention_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_clhiv_art_service.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/clhiv_art_card/constants/clhiv_art_card_constants.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/clhiv_art_card/skip_logics/clhiv_art_card_service_skip_logics.dart';
@@ -52,12 +53,6 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
   void initState() {
     super.initState();
     setFormSections();
-    Timer(const Duration(seconds: 1), () {
-      setState(() {
-        isFormReady = true;
-        evaluateSkipLogics();
-      });
-    });
   }
 
   void evaluateSkipLogics() {
@@ -77,8 +72,7 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
 
   void setFormSections() {
     var defaultFormSections = OvcClhivArtService.getFormSections();
-    var mandatoryFields = OvcClhivArtService.getMandatoryFields();
-
+    mandatoryFields = OvcClhivArtService.getMandatoryFields();
     var currentOvc =
         Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
             .currentOvcHouseholdChild;
@@ -91,8 +85,10 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
         inputColor: const Color(0xFF4B9F46),
         labelColor: const Color(0xFF1A3518),
         sectionLabelColor: const Color(0xFF1A3518),
-        allowedSelectedLevels: [3],
-        program: OvcInterventionConstant.program,
+        allowedSelectedLevels: [
+          AppHierarchyReference.communityLevel,
+        ],
+        program: OvcInterventionConstant.ovcProgramprogram,
       );
       formSections = [
         serviceProvisionForm,
@@ -109,6 +105,12 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
     for (String fieldId in mandatoryFields) {
       mandatoryFieldObject[fieldId] = true;
     }
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        isFormReady = true;
+        evaluateSkipLogics();
+      });
+    });
   }
 
   void onInputValueChange(String id, dynamic value) {
@@ -168,11 +170,12 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
         setState(() {
           isSaving = true;
         });
-        String? eventDate = dataObject['eventDate'];
+        String? eventDate =
+            dataObject['eventDate'] ?? dataObject['uVmlqLmHYpD'];
         String? eventId = dataObject['eventId'];
         List<String> hiddenFields = [];
         String orgUnit = dataObject['location'] ?? ovc.orgUnit;
-
+        orgUnit = orgUnit.isEmpty ? ovc.orgUnit ?? '' : orgUnit;
         try {
           await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
             ClhivArtCardConstants.program,
@@ -226,6 +229,17 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
         );
       }
     } else {
+      unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+        mandatoryFields,
+        dataObject,
+        hiddenFields:
+            Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+        checkBoxInputFields: FormUtil.getInputFieldByValueType(
+          valueType: 'CHECK_BOX',
+          formSections: formSections ?? [],
+        ),
+      );
+      setState(() {});
       AppUtil.showToastMessage(
         message: 'Please fill all mandatory field',
         position: ToastGravity.TOP,
@@ -323,7 +337,9 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
                                     visible: serviceFormState.isEditableMode,
                                     child: EntryFormSaveButton(
                                       label: isSaving
-                                          ? 'Saving ...'
+                                          ? currentLanguage == 'lesotho'
+                                              ? 'E ntse e boloka...'
+                                              : 'Saving ...'
                                           : currentLanguage == 'lesotho'
                                               ? 'Boloka'
                                               : 'Save',

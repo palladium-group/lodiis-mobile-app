@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
+import 'package:kb_mobile_app/models/input_field_option.dart';
 
 class PpPrevGenderNormsForm {
   static List<String> getMandatoryField() {
     return [
       "W79837fEI3C",
-      "fkYHRd1KrWO",
       "O7sjTjxUmEa",
-      "vL6NpUA0rIU",
       "FoLeDcnocv4",
       "JjX25d72ume",
       "qxO13pu8vAk",
-      "JGgGQZPZH4n"
+      "JGgGQZPZH4n",
+      "O7sjTjxUmEa",
+      "vL6NpUA0rIU",
+      "IOW7iC5ZuRQ"
     ];
   }
 
@@ -22,6 +24,7 @@ class PpPrevGenderNormsForm {
     return [
       FormSection(
         name: 'Gender Norms',
+        translatedName: 'Melao/litloahelo tsa tekano ea boleng',
         color: const Color(0xFF9B2BAE),
         inputFields: [
           InputField(
@@ -34,13 +37,23 @@ class PpPrevGenderNormsForm {
             labelColor: const Color(0xFF737373),
           ),
           InputField(
-            id: 'fkYHRd1KrWO',
-            name: 'Stepping Stones',
-            valueType: 'TRUE_ONLY',
-            isReadOnly: true,
-            inputColor: const Color(0xFF9B2BAE),
+              id: 'IOW7iC5ZuRQ',
+              name: 'Type of Intervention',
+              translatedName: 'Mofuta oa Tsebeletso',
+              valueType: 'TEXT',
+             inputColor: const Color(0xFF9B2BAE),
             labelColor: const Color(0xFF737373),
-          ),
+              options: [
+                InputFieldOption(
+                  code: 'Stepping Stones',
+                  name: 'Stepping Stones',
+                ),
+                InputFieldOption(
+                  code: 'Condom Promotion and Provision',
+                  name: 'Condom Promotion and Provision',
+                ),
+              ],
+            ),
           InputField(
             id: 'O7sjTjxUmEa',
             name: 'Session Date',

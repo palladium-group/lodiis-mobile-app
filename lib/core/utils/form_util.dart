@@ -31,7 +31,10 @@ class FormUtil {
   }) {
     bool hasMandoryFieldCheckPass = true;
     List inputFieldWithData = dataDynamic.keys.toList();
-    List hiddenFieldsIds = hiddenFields.keys.toList();
+    List hiddenFieldsIds = hiddenFields.keys
+        .toList()
+        .where((key) => hiddenFields[key] == true)
+        .toList();
     List checkBoxInputFieldIds = checkBoxInputFields
         .map((InputField inputField) => inputField.id)
         .toSet()
@@ -39,6 +42,7 @@ class FormUtil {
     List filteredMandatoryFields = mandatoryFields
         .where((field) => !hiddenFieldsIds.contains(field))
         .toList();
+
     for (var mandatoryField in filteredMandatoryFields) {
       if (!inputFieldWithData.contains(mandatoryField)) {
         if (checkBoxInputFieldIds.contains(mandatoryField)) {
@@ -106,7 +110,10 @@ class FormUtil {
   }) {
     List unFilledMandatoryFields = [];
     List fieldIds = dataDynamic.keys.toList();
-    List hiddenFieldsIds = hiddenFields.keys.toList();
+    List hiddenFieldsIds = hiddenFields.keys
+        .toList()
+        .where((key) => hiddenFields[key] == true)
+        .toList();
     List checkBoxInputFieldIds = checkBoxInputFields
         .map((InputField inputField) => inputField.id)
         .toSet()
@@ -193,6 +200,16 @@ class FormUtil {
     return inputFields;
   }
 
+  static List<String> getInputFieldIdsByValueType({
+    required String valueType,
+    required List<FormSection> formSections,
+  }) {
+    return getInputFieldByValueType(
+      valueType: valueType,
+      formSections: formSections,
+    ).map((InputField inputField) => inputField.id).toList();
+  }
+
   static hasAtLeastOnFieldFilled({
     required Map hiddenFields,
     required List<FormSection> formSections,
@@ -242,9 +259,10 @@ class FormUtil {
   }
 
   static List<FormSection> getFormSectionWithReadOnlyStatus(
-      List<FormSection> formSections,
-      bool isReadOnly,
-      List<String> skippedInputs) {
+    List<FormSection> formSections,
+    bool isReadOnly,
+    List<String> skippedInputs,
+  ) {
     List<FormSection> sanitizedFormSections = [];
     for (FormSection formSection in formSections) {
       List<InputField> inputFields = getInputFieldsWithStatus(
@@ -272,13 +290,13 @@ class FormUtil {
   }
 
   static List<FormSection> getFlattenFormSections(
-      List<FormSection> formSections) {
+    List<FormSection> formSections,
+  ) {
     List<FormSection> sections = [];
     for (FormSection formSection in formSections) {
       if (formSection.subSections!.isNotEmpty) {
         sections.addAll(getFlattenFormSections(formSection.subSections!));
       }
-      // formSection.subSections = [];
       sections.add(formSection);
     }
     return sections;
@@ -290,7 +308,6 @@ class FormUtil {
     String inputFieldId,
   ) {
     List<InputFieldOption> inputFieldOptions = [];
-
     InputField? inputField = (formSections
                 .firstWhereOrNull(
                     (formSection) => formSection.id == formSectionId)
@@ -304,6 +321,23 @@ class FormUtil {
       }
     }
     return inputFieldOptions;
+  }
+
+  static List<String> getAllFormSectionInpiutFields(
+    List<FormSection> formSections,
+  ) {
+    List<String> fieldIds = [];
+    for (FormSection formSection in formSections) {
+      for (InputField inputField in formSection.inputFields!) {
+        if (inputField.id != '') {
+          fieldIds.add(inputField.id);
+        }
+      }
+      List<String> subSectionFormFields =
+          getAllFormSectionInpiutFields(formSection.subSections!);
+      fieldIds.addAll(subSectionFormFields);
+    }
+    return fieldIds.toSet().toList();
   }
 
   static List<String> getFormFieldIds(
@@ -359,12 +393,15 @@ class FormUtil {
   }
 
   static Future<TrackedEntityInstance> geTrackedEntityInstanceEnrollmentPayLoad(
-      String? trackedEntityInstance,
-      String trackedEntityType,
-      String? orgUnit,
-      List<String> inputFieldIds,
-      Map dataObject,
-      {bool hasBeneficiaryId = true}) async {
+    String? trackedEntityInstance,
+    String trackedEntityType,
+    String? orgUnit,
+    List<String> inputFieldIds,
+    Map dataObject, {
+    bool hasBeneficiaryId = true,
+    List<String> skippedFields = const ['enrollmentDate', 'location'],
+  }) async {
+    inputFieldIds.removeWhere((field) => skippedFields.contains(field));
     trackedEntityInstance = trackedEntityInstance ?? AppUtil.getUid();
     String appAndDeviceTrackingAttribute =
         await AppInfoUtil.getAppAndDeviceTrackingInfo();
@@ -384,10 +421,11 @@ class FormUtil {
           dataObject[BeneficiaryIdentification.beneficiaryId] =
               dataObject[BeneficiaryIdentification.beneficiaryIndex] != null
                   ? dataObject[BeneficiaryIdentification.beneficiaryId]
-                  : BeneficiaryIdentification().getBenificiaryId(
+                  : BeneficiaryIdentification().getBeneficiaryId(
                       organisationUnit!, dataObject, beneficiaryIndex);
       dataObject[BeneficiaryIdentification.beneficiaryIndex] = beneficiaryIndex;
     }
+
     String attributes = inputFieldIds
         .toSet()
         .toList()
@@ -424,7 +462,6 @@ class FormUtil {
         enrollmentDate ?? AppUtil.formattedDateTimeIntoString(DateTime.now());
     incidentDate =
         incidentDate ?? AppUtil.formattedDateTimeIntoString(DateTime.now());
-
     String searchableValue =
         dataObject != null ? _getSearchableFieldFromDataObject(dataObject) : '';
     dynamic enrollmentJson =

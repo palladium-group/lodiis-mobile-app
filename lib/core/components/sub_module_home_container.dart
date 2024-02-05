@@ -80,6 +80,12 @@ class SubModuleHomeContainer extends StatelessWidget {
     return Scaffold(
       appBar: header != null && header != ''
           ? AppBar(
+              actionsIconTheme: const IconThemeData().copyWith(
+                color: Colors.white,
+              ),
+              iconTheme: const IconThemeData().copyWith(
+                color: Colors.white,
+              ),
               title: Row(
                 children: [
                   Expanded(

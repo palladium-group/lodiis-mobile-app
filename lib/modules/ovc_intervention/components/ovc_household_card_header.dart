@@ -139,7 +139,9 @@ class OvcHouseholdCardHeader extends StatelessWidget {
               ),
               _getOvcHouseHoldCardHeaderIcon(
                 iconHeight: iconHeight,
-                isVisible: canEdit && ovcHousehold!.enrollmentOuAccessible!,
+                isVisible: canEdit &&
+                    ovcHousehold!.enrollmentOuAccessible! &&
+                    ovcHousehold!.hasExitedProgram != true,
                 onTap: onEdit,
                 svgIcon: 'assets/icons/edit-icon.svg',
                 iconColor: const Color(0xFF4B9F46),

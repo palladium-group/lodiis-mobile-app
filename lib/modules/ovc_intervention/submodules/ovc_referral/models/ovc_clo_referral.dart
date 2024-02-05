@@ -42,6 +42,7 @@ class OvcCLOReferral {
                   InputField(
                       id: 'BelCZxo1ge9',
                       name: 'Date of Service',
+                      translatedName: 'Letsatsi la Tshebeletso',
                       valueType: 'DATE',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),

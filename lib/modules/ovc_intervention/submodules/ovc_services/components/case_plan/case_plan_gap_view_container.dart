@@ -17,7 +17,8 @@ class CasePlanGapViewContainer extends StatelessWidget {
     required this.dataObject,
     required this.formSectionColor,
     required this.isHouseholdCasePlan,
-    required this.hasEditAccess,
+    required this.hasEditAccessToCasePlan,
+    required this.enrollmentOuAccessible,
     required this.isEditableMode,
     required this.canAddDomainGaps,
     required this.domainId,
@@ -27,7 +28,8 @@ class CasePlanGapViewContainer extends StatelessWidget {
   }) : super(key: key);
 
   final bool isHouseholdCasePlan;
-  final bool hasEditAccess;
+  final bool hasEditAccessToCasePlan;
+  final bool enrollmentOuAccessible;
   final bool isEditableMode;
   final bool canAddDomainGaps;
 
@@ -138,7 +140,7 @@ class CasePlanGapViewContainer extends StatelessWidget {
       child: Column(
         children: [
           CasePlanGapView(
-            hasEditAccess: hasEditAccess,
+            hasEditAccessToCasePlan: hasEditAccessToCasePlan,
             isEditableMode: isEditableMode,
             isOnCasePlanServiceProvision: isOnCasePlanServiceProvision,
             isOnCasePlanServiceMonitoring: isOnCasePlanServiceMonitoring,
@@ -166,7 +168,7 @@ class CasePlanGapViewContainer extends StatelessWidget {
                       casePlanGap:
                           _getCasePlanGapObjects(dataObject['gaps'] ?? []),
                       isHouseholdCasePlan: isHouseholdCasePlan,
-                      hasEditAccess: hasEditAccess,
+                      enrollmentOuAccessible: enrollmentOuAccessible,
                     ),
                   ),
                   Visibility(
@@ -177,7 +179,7 @@ class CasePlanGapViewContainer extends StatelessWidget {
                       casePlanGap:
                           _getCasePlanGapObjects(dataObject['gaps'] ?? []),
                       isHouseholdCasePlan: isHouseholdCasePlan,
-                      hasEditAccess: hasEditAccess,
+                      enrollmentOuAccessible: enrollmentOuAccessible,
                     ),
                   )
                 ],

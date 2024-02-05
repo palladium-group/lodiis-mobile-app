@@ -32,6 +32,8 @@ class CasePlanGapServiceProvisionEvent {
     return dataObject;
   }
 
+  bool get canCurrentUserEdit => eventData?.enrollmentOuAccessible == true;
+
   CasePlanGapServiceProvisionEvent toDataModel({required Events eventData}) {
     List keys = [
       OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,

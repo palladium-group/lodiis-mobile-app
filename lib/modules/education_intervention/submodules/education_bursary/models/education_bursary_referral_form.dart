@@ -59,6 +59,7 @@ class EducationBursaryReferralForm {
           InputField(
             id: 'hpuu3TCZkKx',
             name: 'Referred to',
+            translatedName: 'Phetisetso ho',
             valueType: 'TEXT',
             inputColor: const Color(0xFF009688),
             labelColor: const Color(0xFF737373),

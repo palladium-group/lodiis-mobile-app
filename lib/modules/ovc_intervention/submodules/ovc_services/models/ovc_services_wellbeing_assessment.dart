@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
+import 'package:kb_mobile_app/core/utils/app_util.dart';
+import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/input_field_option.dart';
 
 class OvcServicesWellbeingAssessment {
+  static List<String> getMandatoryFields() {
+    return FormUtil.getAllFormSectionInpiutFields(
+      getFormSections(
+        firstDate: '',
+      ),
+    );
+  }
+
   static List<FormSection> getFormSections({
     required String firstDate,
   }) {
     return [
+      AppUtil.getServiceProvisionEventDateSection(
+        inputColor: const Color(0xFF4A9F46),
+        labelColor: const Color(0xFF1A3518),
+        sectionLabelColor: const Color(0xFF0D3A16),
+        formSectionLabel: ' Well-being Assessment Date',
+        inputFieldLabel: 'Assessment Date',
+        firstDate: firstDate,
+      ),
       FormSection(
           name: 'Role/Impact of a Child to the family',
           translatedName: "Karolo/ts'usumetso ea ngoana ka hare ho lelapa",
@@ -200,7 +218,7 @@ class OvcServicesWellbeingAssessment {
             InputField(
                 id: 'cv8RKCPOOAo',
                 name: 'Which one you are enrolled in?',
-                translatedName: 'U ngolisitse ho efe?',
+                translatedName: 'O ngolisitse ho efe?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF9B2BAE),
                 labelColor: const Color(0xFF284227),
@@ -210,7 +228,7 @@ class OvcServicesWellbeingAssessment {
                   InputFieldOption(
                       code: 'Vocational Training',
                       name: 'Vocational Training',
-                      translatedName: 'Ho Koetlisetsoa mosebetsi oa matsoho'),
+                      translatedName: 'Koetliso ea mosebetsi oa matsoho'),
                 ]),
             InputField(
                 id: 'xYdWjIv5eup',
@@ -220,7 +238,10 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFF9B2BAE),
                 labelColor: const Color(0xFF284227),
                 options: [
-                  InputFieldOption(code: 'Primary', name: 'Primary'),
+                  InputFieldOption(
+                      code: 'Primary',
+                      name: 'Primary',
+                      translatedName: 'Mathomo'),
                   InputFieldOption(code: 'Secondary', name: 'Secondary')
                 ]),
             InputField(
@@ -231,11 +252,17 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFF9B2BAE),
                 labelColor: const Color(0xFF284227),
                 options: [
-                  InputFieldOption(code: 'Primary', name: 'Primary'),
+                  InputFieldOption(
+                      code: 'Primary',
+                      name: 'Primary',
+                      translatedName: 'Mathomo'),
                   InputFieldOption(
                       code: 'Secondary/High level',
                       name: 'Secondary/High level'),
-                  InputFieldOption(code: 'College', name: 'College')
+                  InputFieldOption(
+                      code: 'College',
+                      name: 'College',
+                      translatedName: 'Kholeche')
                 ]),
             InputField(
                 id: 'TRuxsvRahqm',
@@ -267,11 +294,17 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFF9B2BAE),
                 labelColor: const Color(0xFF284227),
                 options: [
-                  InputFieldOption(code: 'Primary', name: 'Primary'),
+                  InputFieldOption(
+                      code: 'Primary',
+                      name: 'Primary',
+                      translatedName: 'Mathomo'),
                   InputFieldOption(
                       code: 'Secondary/High level',
                       name: 'Secondary/High level'),
-                  InputFieldOption(code: 'College', name: 'College')
+                  InputFieldOption(
+                      code: 'College',
+                      name: 'College',
+                      translatedName: 'Kholeche')
                 ]),
             InputField(
                 id: 'KlbW2l1L1NC',
@@ -281,11 +314,17 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFF9B2BAE),
                 labelColor: const Color(0xFF284227),
                 options: [
-                  InputFieldOption(code: 'Primary', name: 'Primary'),
+                  InputFieldOption(
+                      code: 'Primary',
+                      name: 'Primary',
+                      translatedName: 'Mathomo'),
                   InputFieldOption(
                       code: 'Secondary/High level',
                       name: 'Secondary/High level'),
-                  InputFieldOption(code: 'College', name: 'College')
+                  InputFieldOption(
+                      code: 'College',
+                      name: 'College',
+                      translatedName: 'Kholeche')
                 ]),
             InputField(
                 id: 'xbAukRUBixJ',
@@ -720,6 +759,7 @@ class OvcServicesWellbeingAssessment {
                 name: '62. Do you know child’s HIV status?',
                 translatedName: '62. Na u tseba boemo ba ngoana ba HIV?',
                 valueType: 'BOOLEAN',
+                isReadOnly: true,
                 inputColor: const Color(0xFF2895F0),
                 labelColor: const Color(0xFF1A3518)),
             InputField(
@@ -766,6 +806,7 @@ class OvcServicesWellbeingAssessment {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF2895F0),
                 labelColor: const Color(0xFF1A3518),
+                isReadOnly: true,
                 options: [
                   InputFieldOption(
                       code: 'Positive',
@@ -1374,7 +1415,7 @@ class OvcServicesWellbeingAssessment {
                   InputFieldOption(
                       code: 'No response',
                       name: 'No response',
-                      translatedName: 'Ha ho joalo')
+                      translatedName: 'Ha ho Karabo')
                 ]),
             InputField(
                 id: 'HqNP6ovZw3p',
@@ -1445,7 +1486,7 @@ class OvcServicesWellbeingAssessment {
                   InputFieldOption(
                       code: 'No response',
                       name: 'No response',
-                      translatedName: 'Ha ho joalo')
+                      translatedName: 'Ha ho Karabo')
                 ]),
             InputField(
                 id: 't1VRnFuBb7I',
@@ -1521,7 +1562,7 @@ class OvcServicesWellbeingAssessment {
                   InputFieldOption(
                       code: 'No response',
                       name: 'No response',
-                      translatedName: 'Ha ho joalo')
+                      translatedName: 'Ha ho Karabo')
                 ]),
             InputField(
                 id: 'MxioydJaOgX',

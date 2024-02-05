@@ -66,9 +66,12 @@ class _DateInputFieldContainerState extends State<DateInputFieldContainer> {
     });
   }
 
-  DateTime getDateFromGivenYear(int year,
-      {int numberOfMonth = 0, int numberOfDays = 0}) {
-    DateTime currentDate = DateTime.now();
+  DateTime getDateFromGivenYear(
+    int year, {
+    int numberOfMonth = 0,
+    int numberOfDays = 0,
+    required DateTime currentDate,
+  }) {
     return DateTime(
       currentDate.year - year,
       currentDate.month - numberOfMonth,
@@ -84,6 +87,7 @@ class _DateInputFieldContainerState extends State<DateInputFieldContainer> {
         ? AppUtil.getDateIntoDateTimeFormat(widget.inputField.lastDate!)
         : getDateFromGivenYear(
             widget.inputField.minAgeInYear != null ? minAgeInYear : -limit,
+            currentDate: DateTime.now(),
           );
     DateTime firstDate = widget.inputField.firstDate!.isNotEmpty
         ? AppUtil.getDateIntoDateTimeFormat(widget.inputField.firstDate!)
@@ -93,8 +97,12 @@ class _DateInputFieldContainerState extends State<DateInputFieldContainer> {
                 ? widget.inputField.numberOfMonth! + 1
                 : 0,
             numberOfDays: 1,
+            currentDate: widget.inputField.lastDate!.isNotEmpty
+                ? lastDate
+                : DateTime.now(),
           );
-    DateTime currentDate = DateTime.now();
+    DateTime currentDate =
+        widget.inputField.lastDate!.isNotEmpty ? lastDate : DateTime.now();
     int numberOfYearBetweenCurrentAndMaxDate = currentDate.year - lastDate.year;
     _date = _date ??
         AppUtil.formattedDateTimeIntoString(

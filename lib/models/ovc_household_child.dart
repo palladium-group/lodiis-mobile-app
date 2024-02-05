@@ -1,6 +1,7 @@
 import 'package:kb_mobile_app/core/constants/beneficiary_identification.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 
 class OvcHouseholdChild {
   String? id;
@@ -18,6 +19,7 @@ class OvcHouseholdChild {
   bool? enrollmentOuAccessible;
   String? ovcStatus;
   bool? isChildPrimary;
+  bool? hasExitedProgram;
   String? artInitiationDate;
   TrackedEntityInstance? teiData;
 
@@ -39,7 +41,10 @@ class OvcHouseholdChild {
     this.ovcStatus,
     this.teiData,
     this.artInitiationDate,
+    this.hasExitedProgram,
   });
+
+  bool get isClHiv => '$hivStatus' == 'Positive';
 
   Map toMap({
     required String parentId,
@@ -76,7 +81,8 @@ class OvcHouseholdChild {
       'EIMgHQW61kx',
       BeneficiaryIdentification.phoneNumber,
       BeneficiaryIdentification.primaryUIC,
-      BeneficiaryIdentification.secondaryUIC
+      BeneficiaryIdentification.secondaryUIC,
+      OvcInterventionConstant.programStatus,
     ];
     Map data = {};
     for (Map attributeObject in tei.attributes) {
@@ -107,7 +113,9 @@ class OvcHouseholdChild {
         isChildPrimary: "${data['KO5NC4pfBmv']}" == 'true',
         ovcStatus: data['PN92g65TkVI'] ?? '',
         orgUnit: orgUnit,
-        teiData: tei);
+        teiData: tei,
+        hasExitedProgram:
+            data[OvcInterventionConstant.programStatus] == 'Exit');
   }
 
   @override

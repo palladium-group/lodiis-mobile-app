@@ -18,8 +18,8 @@ class CasePlanGapServiceMonitoringView extends StatefulWidget {
     required this.casePlanGap,
     required this.isHouseholdCasePlan,
     required this.hasEditAccess,
-    required this.onEditCasePlanServiveMonitoring,
-    required this.onViewCasePlanServiveMonitoring,
+    required this.onEditCasePlanServiceMonitoring,
+    required this.onViewCasePlanServiceMonitoring,
   }) : super(key: key);
 
   final String domainId;
@@ -28,8 +28,8 @@ class CasePlanGapServiceMonitoringView extends StatefulWidget {
   final bool isHouseholdCasePlan;
   final bool hasEditAccess;
 
-  final Function onEditCasePlanServiveMonitoring;
-  final Function onViewCasePlanServiveMonitoring;
+  final Function onEditCasePlanServiceMonitoring;
+  final Function onViewCasePlanServiceMonitoring;
 
   @override
   State<CasePlanGapServiceMonitoringView> createState() =>
@@ -114,17 +114,18 @@ class _CasePlanGapServiceMonitoringViewState
                             _getActionIcon(
                               icon: 'assets/icons/expand_icon.svg',
                               onTap: () =>
-                                  widget.onViewCasePlanServiveMonitoring(
+                                  widget.onViewCasePlanServiceMonitoring(
                                 OvcCasePlanUtil.getMappedEventObject(
                                     casePlanServiceMonitoring.eventData!),
                               ),
                             ),
                             Visibility(
-                              visible: widget.hasEditAccess,
+                              visible: widget.hasEditAccess &&
+                                  casePlanServiceMonitoring.canCurrentUserEdit,
                               child: _getActionIcon(
                                 icon: 'assets/icons/edit-icon.svg',
                                 onTap: () =>
-                                    widget.onEditCasePlanServiveMonitoring(
+                                    widget.onEditCasePlanServiceMonitoring(
                                   OvcCasePlanUtil.getMappedEventObject(
                                       casePlanServiceMonitoring.eventData!),
                                 ),

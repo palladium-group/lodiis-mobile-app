@@ -147,7 +147,9 @@ class _AgywDreamsPostGBVLegalState extends State<AgywDreamsPostGBVLegal> {
                                   ),
                                   child: events.isEmpty
                                       ? const Text(
-                                          'There is no POST GBV(legal) at a moment')
+                                          'There is no POST GBV(legal) at a moment',
+                                          textAlign: TextAlign.center,
+                                        )
                                       : Container(
                                           margin: const EdgeInsets.symmetric(
                                             vertical: 5.0,

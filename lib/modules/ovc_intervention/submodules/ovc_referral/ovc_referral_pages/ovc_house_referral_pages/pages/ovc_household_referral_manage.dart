@@ -82,6 +82,9 @@ class _OvcHouseholdReferralManageState
                         ReferralOutComeCardContainer(
                           isIncomingReferral: widget.isIncomingReferral,
                           isOvcIntervention: true,
+                          enrollmentOuAccessible:
+                              currentOvcHousehold.enrollmentOuAccessible ==
+                                  true,
                           currentEventId: widget.eventData.event,
                           currentProgramStage: widget.eventData.programStage,
                           beneficiary: currentOvcHousehold.teiData,

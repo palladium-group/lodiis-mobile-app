@@ -9,6 +9,7 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
 import 'package:kb_mobile_app/models/events.dart';
 import 'package:kb_mobile_app/models/form_auto_save.dart';
+import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/core/components/referrals_old/referral_card_summary.dart';
@@ -41,7 +42,6 @@ class _OvcChildReferralState extends State<OvcChildReferral> {
     String eventId = '';
     String formAutoSaveId =
         '${OvcRoutesConstant.ovcReferralFormPage}_${beneficiaryId}_$eventId';
-
     FormAutoSave formAutoSave =
         await FormAutoSaveOfflineService().getSavedFormAutoData(formAutoSaveId);
     bool shouldResumeWithUnSavedChanges = await AppResumeRoute()
@@ -103,6 +103,8 @@ class _OvcChildReferralState extends State<OvcChildReferral> {
               builder: (context, serviceEventDataState, child) {
                 OvcHouseholdChild? currentOvcHouseholdChild =
                     ovcHouseholdCurrentSelectionState.currentOvcHouseholdChild;
+                OvcHousehold? currentOvcHousehold =
+                    ovcHouseholdCurrentSelectionState.currentOvcHousehold;
                 bool isLoading = serviceEventDataState.isLoading;
                 Map<String?, List<Events>> eventListByProgramStage =
                     serviceEventDataState.eventListByProgramStage;
@@ -150,6 +152,12 @@ class _OvcChildReferralState extends State<OvcChildReferral> {
                                                   titleColor:
                                                       const Color(0xFF1B3518),
                                                   count: count,
+                                                  canManageReferral: currentOvcHousehold
+                                                              ?.hasExitedProgram !=
+                                                          true &&
+                                                      currentOvcHouseholdChild
+                                                              ?.hasExitedProgram !=
+                                                          true,
                                                   cardBody:
                                                       ReferralCardBodySummary(
                                                     isIncomingReferral: widget
@@ -179,11 +187,15 @@ class _OvcChildReferralState extends State<OvcChildReferral> {
                                         ),
                                 ),
                                 Visibility(
-                                  visible: currentOvcHouseholdChild!
-                                      .enrollmentOuAccessible!,
+                                  visible:
+                                      currentOvcHousehold?.hasExitedProgram !=
+                                              true &&
+                                          currentOvcHouseholdChild
+                                                  ?.hasExitedProgram !=
+                                              true,
                                   child: EntryFormSaveButton(
                                     label: currentLanguage == 'lesotho'
-                                        ? 'Kenya Referral'.toUpperCase()
+                                        ? 'Kenya Phetisetso'.toUpperCase()
                                         : 'ADD REFERRAL',
                                     labelColor: Colors.white,
                                     buttonColor: const Color(0xFF4B9F46),

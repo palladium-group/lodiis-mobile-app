@@ -13,11 +13,13 @@ class OvcHouseholdGraduationListContainer extends StatelessWidget {
     required this.programStageIds,
     this.onViewHouseholdAchievement,
     this.onEditHouseholdAchievement,
+    this.hasBeneficiaryExited = false,
   }) : super(key: key);
 
   final List<String> programStageIds;
   final Function? onViewHouseholdAchievement;
   final Function? onEditHouseholdAchievement;
+  final bool hasBeneficiaryExited;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +130,8 @@ class OvcHouseholdGraduationListContainer extends StatelessWidget {
                                           ),
                                           Visibility(
                                             visible: achievement
-                                                .enrollmentOuAccessible!,
+                                                    .enrollmentOuAccessible! &&
+                                                hasBeneficiaryExited != true,
                                             child: Container(
                                               margin:
                                                   const EdgeInsets.symmetric(

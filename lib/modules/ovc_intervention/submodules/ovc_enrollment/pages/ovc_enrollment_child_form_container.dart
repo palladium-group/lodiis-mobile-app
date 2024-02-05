@@ -30,7 +30,9 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_enrollment
 import 'package:provider/provider.dart';
 
 class OvcEnrollmentChildFormContainer extends StatefulWidget {
-  const OvcEnrollmentChildFormContainer({Key? key}) : super(key: key);
+  const OvcEnrollmentChildFormContainer({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<OvcEnrollmentChildFormContainer> createState() =>
@@ -68,6 +70,10 @@ class _OvcEnrollmentChildFormContainerState
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
     lastUpdatedId = '';
+    Map caregiverDataObject =
+        Provider.of<EnrollmentFormState>(context, listen: false).formState;
+    childrenMapObject['enrollmentDate'] =
+        caregiverDataObject['enrollmentDate'] ?? '';
   }
 
   _evaluateSkipLogics() {
@@ -104,7 +110,10 @@ class _OvcEnrollmentChildFormContainerState
     for (String id in mandatoryFields) {
       mandatoryFieldObject[id] = true;
     }
-    formSections = OvcEnrollmentChild.getFormSections();
+    formSections = OvcEnrollmentChild.getFormSections(
+      isEnrolmentDateEditable: false,
+      enrollmentDate: childrenMapObject['enrollmentDate'],
+    );
     _isFormReady = true;
     setState(() {});
   }
@@ -132,6 +141,13 @@ class _OvcEnrollmentChildFormContainerState
   }
 
   void onInputValueChange(String id, dynamic value) {
+    if (id == 'enrollmentDate') {
+      String previousEnrollmentDate = childrenMapObject['enrollmentDate'] ?? '';
+      if (previousEnrollmentDate != value) {
+        String dobId = 'qZP982qpSPS';
+        childrenMapObject[dobId] = '';
+      }
+    }
     childrenMapObject[id] = value;
     lastUpdatedId = id;
     setState(() {});

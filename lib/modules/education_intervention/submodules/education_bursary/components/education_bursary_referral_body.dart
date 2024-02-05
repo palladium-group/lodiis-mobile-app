@@ -83,14 +83,14 @@ class EducationBursaryReferralBody extends StatelessWidget {
                     labelColor: labelColor,
                     valueColor: valueColor,
                     label:
-                        currentLanguage == 'lesotho' ? 'Referral' : 'Referral',
+                        currentLanguage == 'lesotho' ? 'Phetisetso' : 'Referral',
                     value: bursaryReferral.referral,
                   ),
                   _getReferralDetailData(
                     labelColor: labelColor,
                     valueColor: valueColor,
                     label: currentLanguage == 'lesotho'
-                        ? 'Referred To'
+                        ? 'Phetisetso ho'
                         : 'Referred To',
                     value: bursaryReferral.referralTo,
                   ),

@@ -40,12 +40,13 @@ class PpPrevInterventionServiceProvisionForm extends StatefulWidget {
 class _PpPrevInterventionServiceProvisionFormState
     extends State<PpPrevInterventionServiceProvisionForm> {
   final String label = "PP Prev Service Provision Form";
+  List<String> mandatoryFields = PpPrevServiceForm.getMandatoryField();
+  final Map mandatoryFieldObject = {};
+
   List<FormSection>? formSections;
   List<FormSection>? defaultFormSections;
   bool isFormReady = false;
   bool isSaving = false;
-  Map mandatoryFieldObject = {};
-  List<String> mandatoryFields = [];
   List unFilledMandatoryFields = [];
 
   @override
@@ -94,13 +95,13 @@ class _PpPrevInterventionServiceProvisionFormState
         program: PpPrevInterventionConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields = FormUtil.getFormFieldIds(
+      mandatoryFields = [...mandatoryFields,...FormUtil.getFormFieldIds(
         [serviceProvisionForm],
         includeLocationId: true,
-      );
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+      )];
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -150,6 +151,7 @@ class _PpPrevInterventionServiceProvisionFormState
         String? eventId = dataObject['eventId'];
         List<String> hiddenFields = [];
         String orgUnit = dataObject['location'] ?? ppPrevBeneficiary.orgUnit;
+        orgUnit = orgUnit.isEmpty ? ppPrevBeneficiary.orgUnit ?? '' : orgUnit;
         try {
           await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
             PpPrevInterventionConstant.program,
@@ -310,7 +312,9 @@ class _PpPrevInterventionServiceProvisionFormState
                                       visible: serviceFormState.isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: isSaving
-                                            ? 'Saving ...'
+                                            ? currentLanguage == 'lesotho'
+                                                ? 'E ntse e boloka...'
+                                                : 'Saving ...'
                                             : currentLanguage == 'lesotho'
                                                 ? 'Boloka'
                                                 : 'Save',

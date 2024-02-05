@@ -30,16 +30,6 @@ class _OvcChildReferralHomeState extends State<OvcChildReferralHome> {
   final List<String> programStageIds = [OvcChildReferralConstant.referralStage];
   bool isCloReferralSelected = false;
 
-  void onCLOReferralSelection(BuildContext context) {
-    isCloReferralSelected = true;
-    setState(() {});
-  }
-
-  void onReferralSelection(BuildContext context) {
-    isCloReferralSelected = false;
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +52,6 @@ class _OvcChildReferralHomeState extends State<OvcChildReferralHome> {
             return Consumer<ServiceEventDataState>(
               builder: (context, serviceFormState, child) {
                 bool isLoading = serviceFormState.isLoading;
-
                 return Column(
                   children: [
                     const OvcChildInfoTopHeader(),
@@ -75,10 +64,14 @@ class _OvcChildReferralHomeState extends State<OvcChildReferralHome> {
                               children: [
                                 OvcReferralTopBarSelection(
                                   isClicked: isCloReferralSelected,
-                                  onSelectCLOReferral: () =>
-                                      onCLOReferralSelection(context),
-                                  onSelectReferral: () =>
-                                      onReferralSelection(context),
+                                  onSelectCLOReferral: () => setState(() {
+                                    isCloReferralSelected =
+                                        !isCloReferralSelected;
+                                  }),
+                                  onSelectReferral: () => setState(() {
+                                    isCloReferralSelected =
+                                        !isCloReferralSelected;
+                                  }),
                                 ),
                                 isCloReferralSelected
                                     ? const OvcChildCLOReferral()

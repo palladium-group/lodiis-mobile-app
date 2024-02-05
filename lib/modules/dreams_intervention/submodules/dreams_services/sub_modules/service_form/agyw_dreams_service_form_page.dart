@@ -3,6 +3,7 @@ import 'package:kb_mobile_app/app_state/dreams_intervention_list_state/dreams_cu
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/intervention_bottom_navigation/intervention_bottom_navigation_bar_container.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
@@ -35,6 +36,7 @@ class AgywDreamsServiceFormPage extends StatefulWidget {
 
 class _AgywDreamsServiceFormPage extends State<AgywDreamsServiceFormPage> {
   final String label = 'Service Form';
+  final String translatedLabel = 'Foromo ea Tšebeletso';
   List<String> programStageIds = [ServiceFormConstant.programStage];
   @override
   void initState() {
@@ -81,9 +83,16 @@ class _AgywDreamsServiceFormPage extends State<AgywDreamsServiceFormPage> {
     Map<String?, List<String>> interventionSessions = {};
     String currentEventId =
         currentEvent != null ? currentEvent.event ?? '' : '';
-    (serviceEvents ?? [])
+
+    // A copy of the serviceEvents list to avoid modifying the original list
+    List<ServiceEvent> copiedServiceEvents =
+        List<ServiceEvent>.from(serviceEvents ?? []);
+
+    // Remove the current event from the copied list
+    copiedServiceEvents
         .removeWhere((eventData) => eventData.event == currentEventId);
-    for (ServiceEvent event in (serviceEvents ?? [])) {
+
+    for (ServiceEvent event in (copiedServiceEvents)) {
       if (interventionSessions[event.interventionType] != null) {
         interventionSessions[event.interventionType]!.add(event.sessionNumber!);
         interventionSessions[event.interventionType]!.sort();
@@ -91,6 +100,7 @@ class _AgywDreamsServiceFormPage extends State<AgywDreamsServiceFormPage> {
         interventionSessions[event.interventionType] = [event.sessionNumber!];
       }
     }
+
     return interventionSessions;
   }
 
@@ -152,6 +162,7 @@ class _AgywDreamsServiceFormPage extends State<AgywDreamsServiceFormPage> {
     List<ServiceEvent> serviceEvents,
   ) async {
     updateFormState(context, true, eventData, agywDream, serviceEvents);
+
     CurrentUser? currentUser = await (UserService().getCurrentUser());
     String? youthMentorName = currentUser!.name;
     String? implementingPartner = currentUser.implementingPartner;
@@ -163,6 +174,7 @@ class _AgywDreamsServiceFormPage extends State<AgywDreamsServiceFormPage> {
         await FormAutoSaveOfflineService().getSavedFormAutoData(formAutoSaveId);
     bool shouldResumeWithUnSavedChanges = await AppResumeRoute()
         .shouldResumeWithUnSavedChanges(context, formAutoSave);
+
     if (shouldResumeWithUnSavedChanges) {
       AppResumeRoute().redirectToPages(context, formAutoSave);
     } else {
@@ -191,103 +203,114 @@ class _AgywDreamsServiceFormPage extends State<AgywDreamsServiceFormPage> {
                 interventionCardState.currentInterventionProgram;
             return SubPageAppBar(
               label: label,
+              translatedName: translatedLabel,
               activeInterventionProgram: activeInterventionProgram,
             );
           },
         ),
       ),
       body: SubPageBody(
-        body: Consumer<DreamsBeneficiarySelectionState>(
-          builder: (context, dreamBeneficiarySelectionState, child) {
-            return Consumer<ServiceEventDataState>(
-              builder: (context, serviceEventDataState, child) {
-                AgywDream? agywDream =
-                    dreamBeneficiarySelectionState.currentAgywDream;
-                bool isLoading = serviceEventDataState.isLoading;
-                Map<String?, List<Events>> eventListByProgramStage =
-                    serviceEventDataState.eventListByProgramStage;
-                List<Events> events = TrackedEntityInstanceUtil
-                    .getAllEventListFromServiceDataStateByProgramStages(
-                  eventListByProgramStage,
-                  programStageIds,
-                  shouldSortByDate: true,
-                );
-                List<ServiceEvent> serviceEvents = events
-                    .map((Events event) =>
-                        ServiceEvent().getServiceSessions(event))
-                    .toList();
-                return Column(
-                  children: [
-                    DreamsBeneficiaryTopHeader(
-                      agywDream: agywDream,
-                    ),
-                    Container(
-                      child: isLoading
-                          ? const CircularProcessLoader(
-                              color: Colors.blueGrey,
-                            )
-                          : Column(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 10.0,
-                                  ),
-                                  child: events.isEmpty
-                                      ? const Text(
-                                          'There is no Services at a moment',
-                                        )
-                                      : Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 5.0,
-                                            horizontal: 13.0,
-                                          ),
-                                          child: Column(
-                                            children:
-                                                events.map((Events eventData) {
-                                              return Container(
-                                                margin: const EdgeInsets.only(
-                                                  bottom: 15.0,
-                                                ),
-                                                child: DreamsServiceVisitCard(
-                                                  visitName: eventData
-                                                      .getServiceFormEventLabel(),
-                                                  onEdit: () => onEditService(
+        body: Consumer<LanguageTranslationState>(
+          builder: (context, languageState, child) =>
+              Consumer<DreamsBeneficiarySelectionState>(
+            builder: (context, dreamBeneficiarySelectionState, child) {
+              return Consumer<ServiceEventDataState>(
+                builder: (context, serviceEventDataState, child) {
+                  AgywDream? agywDream =
+                      dreamBeneficiarySelectionState.currentAgywDream;
+                  bool isLoading = serviceEventDataState.isLoading;
+                  Map<String?, List<Events>> eventListByProgramStage =
+                      serviceEventDataState.eventListByProgramStage;
+                  List<Events> events = TrackedEntityInstanceUtil
+                      .getAllEventListFromServiceDataStateByProgramStages(
+                    eventListByProgramStage,
+                    programStageIds,
+                    shouldSortByDate: true,
+                  );
+                  List<ServiceEvent> serviceEvents = events
+                      .map((Events event) =>
+                          ServiceEvent().getServiceSessions(event))
+                      .toList();
+                  return Column(
+                    children: [
+                      DreamsBeneficiaryTopHeader(
+                        agywDream: agywDream,
+                      ),
+                      Container(
+                        child: isLoading
+                            ? const CircularProcessLoader(
+                                color: Colors.blueGrey,
+                              )
+                            : Column(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 10.0,
+                                    ),
+                                    child: events.isEmpty
+                                        ? Text(
+                                            languageState.currentLanguage ==
+                                                    'lesotho'
+                                                ? 'Ha ho na Litšebeletso hajoale'
+                                                : 'There is no Services at a moment',
+                                            textAlign: TextAlign.center,
+                                          )
+                                        : Container(
+                                            margin: const EdgeInsets.symmetric(
+                                              vertical: 5.0,
+                                              horizontal: 13.0,
+                                            ),
+                                            child: Column(
+                                              children: events
+                                                  .map((Events eventData) {
+                                                return Container(
+                                                  margin: const EdgeInsets.only(
+                                                    bottom: 15.0,
+                                                  ),
+                                                  child: DreamsServiceVisitCard(
+                                                    visitName: eventData
+                                                        .getServiceFormEventLabel(),
+                                                    onEdit: () => onEditService(
+                                                        context,
+                                                        eventData,
+                                                        agywDream!,
+                                                        serviceEvents),
+                                                    onView: () => onViewService(
                                                       context,
                                                       eventData,
                                                       agywDream!,
-                                                      serviceEvents),
-                                                  onView: () => onViewService(
-                                                    context,
-                                                    eventData,
-                                                    agywDream!,
+                                                    ),
+                                                    eventData: eventData,
+                                                    // visitCount: serviceIndex,
                                                   ),
-                                                  eventData: eventData,
-                                                  // visitCount: serviceIndex,
-                                                ),
-                                              );
-                                            }).toList(),
+                                                );
+                                              }).toList(),
+                                            ),
                                           ),
-                                        ),
-                                ),
-                                EntryFormSaveButton(
-                                  label: 'ADD SERVICE',
-                                  labelColor: Colors.white,
-                                  buttonColor: const Color(0xFF1F8ECE),
-                                  fontSize: 15.0,
-                                  onPressButton: () => onAddService(
-                                    context,
-                                    agywDream!,
-                                    serviceEvents,
                                   ),
-                                )
-                              ],
-                            ),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
+                                  EntryFormSaveButton(
+                                    label: languageState.currentLanguage ==
+                                            'lesotho'
+                                        ? 'TLATSA TŠEBELETSO'
+                                        : 'ADD SERVICE',
+                                    labelColor: Colors.white,
+                                    buttonColor: const Color(0xFF1F8ECE),
+                                    fontSize: 15.0,
+                                    onPressButton: () => onAddService(
+                                      context,
+                                      agywDream!,
+                                      serviceEvents,
+                                    ),
+                                  )
+                                ],
+                              ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
       bottomNavigationBar: const InterventionBottomNavigationBarContainer(),

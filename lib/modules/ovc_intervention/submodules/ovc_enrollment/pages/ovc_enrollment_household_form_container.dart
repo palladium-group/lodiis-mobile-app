@@ -51,7 +51,9 @@ class _OvcEnrollmentHouseholdFormContainerState
     for (String id in mandatoryFields) {
       mandatoryFieldObject[id] = true;
     }
-    formSections = OvcEnrollmentHousehold.getFormSections();
+    formSections = OvcEnrollmentHousehold.getFormSections(
+      isEnrolmentDateEditable: false,
+    );
     isFormReady = true;
     evaluateSkipLogics();
     setState(() {});
@@ -169,8 +171,8 @@ class _OvcEnrollmentHouseholdFormContainerState
                   horizontal: 13.0,
                 ),
                 child: !isFormReady
-                    ? Column(
-                        children: const [
+                    ? const Column(
+                        children: [
                           Center(
                             child: CircularProcessLoader(
                               color: Colors.blueGrey,
@@ -183,18 +185,22 @@ class _OvcEnrollmentHouseholdFormContainerState
                             Column(
                           children: [
                             Consumer<EnrollmentFormState>(
-                              builder: (context, enrollmentFormState, child) =>
-                                  EntryFormContainer(
-                                hiddenSections:
-                                    enrollmentFormState.hiddenSections,
-                                hiddenFields: enrollmentFormState.hiddenFields,
-                                formSections: formSections,
-                                mandatoryFieldObject: mandatoryFieldObject,
-                                dataObject: enrollmentFormState.formState,
-                                onInputValueChange: onInputValueChange,
-                                unFilledMandatoryFields:
-                                    unFilledMandatoryFields,
-                              ),
+                              builder: (context, enrollmentFormState, child) {
+                                return EntryFormContainer(
+                                  hiddenSections:
+                                      enrollmentFormState.hiddenSections,
+                                  hiddenFields:
+                                      enrollmentFormState.hiddenFields,
+                                  formSections: formSections =
+                                      OvcEnrollmentHousehold.getFormSections(
+                                          isEnrolmentDateEditable: false),
+                                  mandatoryFieldObject: mandatoryFieldObject,
+                                  dataObject: enrollmentFormState.formState,
+                                  onInputValueChange: onInputValueChange,
+                                  unFilledMandatoryFields:
+                                      unFilledMandatoryFields,
+                                );
+                              },
                             ),
                             EntryFormSaveButton(
                               label: languageTranslationState.isSesothoLanguage

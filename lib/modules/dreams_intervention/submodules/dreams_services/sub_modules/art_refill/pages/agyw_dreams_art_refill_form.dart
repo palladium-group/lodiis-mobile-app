@@ -81,6 +81,7 @@ class _AgywDreamsARTRefillFormState extends State<AgywDreamsARTRefillForm> {
     defaultFormSections = DreamsARTRefillInfo.getFormSections(
       firstDate: agyw.createdDate!,
     );
+    mandatoryFields = DreamsARTRefillInfo.getMandatoryField();
     if (agyw.enrollmentOuAccessible!) {
       formSections = defaultFormSections;
     } else {
@@ -96,13 +97,15 @@ class _AgywDreamsARTRefillFormState extends State<AgywDreamsARTRefillForm> {
         program: AgywDreamsEnrollmentConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields = FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
+      mandatoryFields.addAll(
+        FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        ),
       );
-      for (String fieldId in mandatoryFields) {
-        mandatoryFieldObject[fieldId] = true;
-      }
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
     }
   }
 
@@ -152,6 +155,7 @@ class _AgywDreamsARTRefillFormState extends State<AgywDreamsARTRefillForm> {
         String? eventId = dataObject['eventId'];
         List<String> hiddenFields = [];
         String orgUnit = dataObject['location'] ?? agywDream!.orgUnit;
+        orgUnit = orgUnit.isEmpty ? agywDream!.orgUnit ?? '' : orgUnit;
         try {
           await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
             ARTRefillConstant.program,
@@ -302,7 +306,9 @@ class _AgywDreamsARTRefillFormState extends State<AgywDreamsARTRefillForm> {
                                     visible: serviceFormState.isEditableMode,
                                     child: EntryFormSaveButton(
                                       label: isSaving
-                                          ? 'Saving ...'
+                                          ? currentLanguage == 'lesotho'
+                                              ? 'E ntse e boloka...'
+                                              : 'Saving ...'
                                           : currentLanguage == 'lesotho'
                                               ? 'Boloka'
                                               : 'Save',

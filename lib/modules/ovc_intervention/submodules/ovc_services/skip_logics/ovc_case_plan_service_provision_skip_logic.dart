@@ -18,8 +18,7 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
   ) async {
     hiddenFields.clear();
     hiddenSections.clear();
-    CurrentUser? currentUser =
-        Provider.of<CurrentUserState>(context, listen: false).currentUser;
+    CurrentUser? currentUser = Provider.of<CurrentUserState>(context, listen: false).currentUser;
     String implementingPartner = currentUser!.implementingPartner ?? "";
 
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
@@ -29,11 +28,22 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
     inputFieldIds = inputFieldIds.toSet().toList();
 
     for (String inputFieldId in inputFieldIds) {
-      hiddenFields[inputFieldId] = true;
+      hiddenFields[inputFieldId] = !['eventDate', 'location'].contains(inputFieldId);
     }
 
+    //TOODO add additional services
     dataObject.forEach((key, value) {
-      if (key == 'ylSjcj6cv42' && value == 'true') {
+      if (key == 'pbcXNnAuzfh' && value == 'true') {
+        hiddenFields['RIpmBgYc0ZN'] = hideServicesByImplementingPartner(
+          "RIpmBgYc0ZN",
+          implementingPartner,
+        );
+        var inputValue = '${dataObject['RIpmBgYc0ZN']}';
+        if (inputValue == 'true') {
+          hiddenFields['uVmlqLmHYpD'] = false;
+          hiddenFields['QpE5qR1cQ6T'] = false;
+        }
+      } else if (key == 'ylSjcj6cv42' && value == 'true') {
         hiddenFields['YFgrURiwirq'] = hideServicesByImplementingPartner(
           "YFgrURiwirq",
           implementingPartner,
@@ -557,12 +567,9 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
     });
 
     for (String sectionId in hiddenSections.keys) {
-      List<FormSection> allFormSections =
-          FormUtil.getFlattenFormSections(formSections);
+      List<FormSection> allFormSections = FormUtil.getFlattenFormSections(formSections);
       List<String> hiddenSectionInputFieldIds = FormUtil.getFormFieldIds(
-          allFormSections
-              .where((formSection) => formSection.id == sectionId)
-              .toList());
+          allFormSections.where((formSection) => formSection.id == sectionId).toList());
       for (String inputFieldId in hiddenSectionInputFieldIds) {
         hiddenFields[inputFieldId] = true;
       }
