@@ -165,83 +165,74 @@ class _ClhivArtCardServiceFormState extends State<ClhivArtCardServiceForm> {
         formSections: formSections ?? [],
       ),
     );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
     if (hadAllMandatoryFilled) {
-      if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
-        setState(() {
-          isSaving = true;
-        });
-        String? eventDate =
-            dataObject['eventDate'] ?? dataObject['uVmlqLmHYpD'];
-        String? eventId = dataObject['eventId'];
-        List<String> hiddenFields = [];
-        String orgUnit = dataObject['location'] ?? ovc.orgUnit;
-        orgUnit = orgUnit.isEmpty ? ovc.orgUnit ?? '' : orgUnit;
-        try {
-          await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            ClhivArtCardConstants.program,
-            ClhivArtCardConstants.programStage,
-            orgUnit,
-            formSections ?? [],
-            dataObject,
-            eventDate,
-            ovc.id,
-            eventId,
-            hiddenFields,
-          ).then(
-            (_) {
-              setState(() {
-                isSaving = false;
-              });
-              Provider.of<ServiceEventDataState>(context, listen: false)
-                  .resetServiceEventDataState(ovc.id);
-              String? currentLanguage =
-                  Provider.of<LanguageTranslationState>(context, listen: false)
-                      .currentLanguage;
-              AppUtil.showToastMessage(
-                message: currentLanguage == 'lesotho'
-                    ? 'Fomo e bolokeile'
-                    : 'Form has been saved successfully',
-                position: ToastGravity.TOP,
-              );
-              clearFormAutoSaveState(context, ovc.id, eventId ?? '');
-              Navigator.pop(context);
-            },
-          );
-        } catch (e) {
-          Timer(
-            const Duration(seconds: 1),
-            () {
-              setState(
-                () {
-                  AppUtil.showToastMessage(
-                    message: e.toString(),
-                    position: ToastGravity.BOTTOM,
-                  );
-                },
-              );
-            },
-          );
-        }
-      } else {
-        AppUtil.showToastMessage(
-          message: 'Please fill at least one form field',
-          position: ToastGravity.TOP,
+      isSaving = true;
+      setState(() {});
+      String? eventDate = dataObject['eventDate'] ?? dataObject['uVmlqLmHYpD'];
+      String? eventId = dataObject['eventId'];
+      List<String> hiddenFields = [];
+      String orgUnit = dataObject['location'] ?? ovc.orgUnit;
+      orgUnit = orgUnit.isEmpty ? ovc.orgUnit ?? '' : orgUnit;
+      try {
+        await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+          ClhivArtCardConstants.program,
+          ClhivArtCardConstants.programStage,
+          orgUnit,
+          formSections ?? [],
+          dataObject,
+          eventDate,
+          ovc.id,
+          eventId,
+          hiddenFields,
+        ).then(
+          (_) {
+            setState(() {
+              isSaving = false;
+            });
+            Provider.of<ServiceEventDataState>(context, listen: false)
+                .resetServiceEventDataState(ovc.id);
+            String? currentLanguage =
+                Provider.of<LanguageTranslationState>(context, listen: false)
+                    .currentLanguage;
+            AppUtil.showToastMessage(
+              message: currentLanguage == 'lesotho'
+                  ? 'Fomo e bolokeile'
+                  : 'Form has been saved successfully',
+              position: ToastGravity.TOP,
+            );
+            clearFormAutoSaveState(context, ovc.id, eventId ?? '');
+            Navigator.pop(context);
+          },
+        );
+      } catch (e) {
+        Timer(
+          const Duration(seconds: 1),
+          () {
+            setState(
+              () {
+                AppUtil.showToastMessage(
+                  message: e.toString(),
+                  position: ToastGravity.BOTTOM,
+                );
+              },
+            );
+          },
         );
       }
     } else {
-      unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
-        mandatoryFields,
-        dataObject,
-        hiddenFields:
-            Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
-        checkBoxInputFields: FormUtil.getInputFieldByValueType(
-          valueType: 'CHECK_BOX',
-          formSections: formSections ?? [],
-        ),
-      );
-      setState(() {});
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

@@ -143,7 +143,7 @@ class _OvcServicesPageState extends State<OvcServicesPage> {
                       bottomRight: Radius.circular(12.0),
                     ),
               child: SizedBox(
-                  height: 50.0,
+                  height: 55.0,
                   child: Container(
                     decoration: const BoxDecoration(
                       color: Color(0XFFF6FAF6),

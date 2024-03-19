@@ -35,7 +35,8 @@ class InterventionBottomNavigationState with ChangeNotifier {
         InterventionBottomNavigation.getInterventionNavigationButtons(
       activeInterventionProgram,
     );
-    if (implementingPartner == 'Paralegal') {
+    if (['KB-Facility Based Social Worker', 'Paralegal']
+        .contains(implementingPartner)) {
       interventionBottomNavigations = interventionBottomNavigations
           .where((interventionBottomNavigation) =>
               interventionBottomNavigation.id != 'enrollment')
@@ -43,14 +44,14 @@ class InterventionBottomNavigationState with ChangeNotifier {
     }
     InterventionBottomNavigation interventionBottomNavigation =
         interventionBottomNavigations.isNotEmpty
-            ? interventionBottomNavigations[0] // filter by user
+            ? interventionBottomNavigations.first
             : InterventionBottomNavigation(id: "", name: "");
     if (_currentInterventionBottomNavigationId != null) {
       var filteredList = interventionBottomNavigations
           .where((nav) => nav.id == _currentInterventionBottomNavigationId)
           .toList();
       interventionBottomNavigation = filteredList.isNotEmpty
-          ? filteredList[0]
+          ? filteredList.first
           : interventionBottomNavigation;
     }
     return interventionBottomNavigation;

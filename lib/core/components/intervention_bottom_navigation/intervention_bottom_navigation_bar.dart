@@ -34,10 +34,13 @@ class InterventionBottomNavigationBar extends StatelessWidget {
           InterventionCardState interventionCardState) {
     if (!currentUserState.canManageReferral) {
       interventionBottomNavigations = interventionBottomNavigations
-          .where((nav) =>
-              nav.id != 'referral' ||
-              nav.id != 'outGoingReferral' ||
-              nav.id != 'incomingReferral')
+          .where(
+            (InterventionBottomNavigation navigation) => ![
+              'referral',
+              'outGoingReferral',
+              'incomingReferral'
+            ].contains(navigation.id),
+          )
           .toList();
     }
     if (!currentUserState.canManageNoneAgyw) {
@@ -48,9 +51,11 @@ class InterventionBottomNavigationBar extends StatelessWidget {
 
     String currentUserImplementingPartner =
         currentUserState.currentUser!.implementingPartner!;
-    if (currentUserImplementingPartner == 'Paralegal') {
+    if (['Paralegal', 'KB-Facility Based Social Worker']
+        .contains(currentUserImplementingPartner)) {
       interventionBottomNavigations = interventionBottomNavigations
-          .where((nav) => !['enrollment', 'exit', 'records'].contains(nav.id))
+          .where((InterventionBottomNavigation navigation) =>
+              !['enrollment', 'exit'].contains(navigation.id))
           .toList();
     }
 

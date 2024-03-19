@@ -47,8 +47,9 @@ class _OnlineBeneficiarySearchResultCardState
     var teiId = widget.searchResult.id ?? '';
     try {
       await TrackedEntityInstanceService().discoverTrackedEntityInstanceById(
-          teiId,
-          shouldDownloadRelatedTei: true);
+        teiId,
+        shouldDownloadRelatedTei: true,
+      );
       await Provider.of<SynchronizationState>(context, listen: false)
           .refreshBeneficiaryCounts();
       updateDownloadedStatus(true);

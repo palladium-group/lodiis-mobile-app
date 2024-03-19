@@ -15,6 +15,7 @@ class OvcEnrollmentHousehold {
       'vIX4GTSCX4P',
       'qZP982qpSPS',
       'oSKX8fFQdWc',
+      'location',
     ];
   }
 

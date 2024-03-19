@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
@@ -163,24 +164,28 @@ class _OvcHouseholdAssessmentState extends State<OvcHouseholdAssessment> {
                                         ),
                                       ),
                                     ),
-                                    Visibility(
-                                      visible: !isLoading &&
-                                          currentOvcHousehold
-                                                  ?.hasExitedProgram !=
-                                              true,
-                                      child: EntryFormSaveButton(
-                                        label: languageTranslationState
-                                                    .currentLanguage ==
-                                                'lesotho'
-                                            ? 'HLAHLOBO E NCHA'
-                                            : "NEW ASSESSMENT",
-                                        labelColor: Colors.white,
-                                        fontSize: 10,
-                                        buttonColor: const Color(0xFF4B9F46),
-                                        onPressButton: () =>
-                                            onAddNewHouseholdAssessment(
-                                          context,
-                                          currentOvcHousehold,
+                                    Consumer<CurrentUserState>(
+                                      builder:
+                                          (context, curentUserState, child) =>
+                                              Visibility(
+                                        visible: !curentUserState
+                                                .isKbFacilitySocialWorker &&
+                                            !isLoading &&
+                                            currentOvcHousehold
+                                                    ?.hasExitedProgram !=
+                                                true,
+                                        child: EntryFormSaveButton(
+                                          label: languageTranslationState
+                                                      .currentLanguage ==
+                                                  'lesotho'
+                                              ? 'HLAHLOBO E NCHA'
+                                              : "NEW ASSESSMENT",
+                                          labelColor: Colors.white,
+                                          fontSize: 10,
+                                          buttonColor: const Color(0xFF4B9F46),
+                                          onPressButton: () =>
+                                              onAddNewHouseholdAssessment(
+                                                  context, currentOvcHousehold),
                                         ),
                                       ),
                                     ),

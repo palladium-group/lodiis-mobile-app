@@ -629,30 +629,34 @@ class SynchronizationState with ChangeNotifier {
   }
 
   Future refreshBeneficiaryCounts() async {
-    await Provider.of<ReferralNotificationState>(context!, listen: false)
-        .reloadReferralNotifications();
-    List<String> teiWithIncomingReferral =
-        Provider.of<ReferralNotificationState>(context!, listen: false)
-            .beneficiariesWithIncomingReferrals;
-    Provider.of<DreamsInterventionListState>(context!, listen: false)
-        .setTeiWithIncomingReferral(
-            teiWithIncomingReferral: teiWithIncomingReferral);
-    await Provider.of<OvcInterventionListState>(context!, listen: false)
-        .refreshOvcNumber();
-    await Provider.of<DreamsInterventionListState>(context!, listen: false)
-        .refreshBeneficiariesNumber();
-    await Provider.of<OgacInterventionListState>(context!, listen: false)
-        .refreshOgacNumber();
-    await Provider.of<EducationLbseInterventionState>(context!, listen: false)
-        .refreshEducationLbseNumber();
-    await Provider.of<PpPrevInterventionState>(context!, listen: false)
-        .refreshPpPrevNumber();
-    Provider.of<ReferralNotificationState>(context!, listen: false)
-        .reloadReferralNotifications();
-    Provider.of<DreamsRaAssessmentListState>(context!, listen: false)
-        .refreshBeneficiariesNumber();
-    await Provider.of<EducationBursaryInterventionState>(context!,
-            listen: false)
-        .refreshEducationBursaryNumber();
+    try {
+      await Provider.of<ReferralNotificationState>(context!, listen: false)
+          .reloadReferralNotifications();
+      List<String> teiWithIncomingReferral =
+          Provider.of<ReferralNotificationState>(context!, listen: false)
+              .beneficiariesWithIncomingReferrals;
+      Provider.of<DreamsInterventionListState>(context!, listen: false)
+          .setTeiWithIncomingReferral(
+              teiWithIncomingReferral: teiWithIncomingReferral);
+      await Provider.of<OvcInterventionListState>(context!, listen: false)
+          .refreshOvcNumber();
+      await Provider.of<DreamsInterventionListState>(context!, listen: false)
+          .refreshBeneficiariesNumber();
+      await Provider.of<OgacInterventionListState>(context!, listen: false)
+          .refreshOgacNumber();
+      await Provider.of<EducationLbseInterventionState>(context!, listen: false)
+          .refreshEducationLbseNumber();
+      await Provider.of<PpPrevInterventionState>(context!, listen: false)
+          .refreshPpPrevNumber();
+      Provider.of<ReferralNotificationState>(context!, listen: false)
+          .reloadReferralNotifications();
+      Provider.of<DreamsRaAssessmentListState>(context!, listen: false)
+          .refreshBeneficiariesNumber();
+      await Provider.of<EducationBursaryInterventionState>(context!,
+              listen: false)
+          .refreshEducationBursaryNumber();
+    } catch (e) {
+      //
+    }
   }
 }

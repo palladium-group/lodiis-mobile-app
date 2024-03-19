@@ -33,7 +33,7 @@ class BeneficiaryFilter {
   });
 
   static void onUpdateFilter(BuildContext context,
-      InterventionCard currentIntervention, String id, String? value) {
+      InterventionCard currentIntervention, String id, dynamic value) {
     String interventionId = currentIntervention.id!;
     String implementingPartner =
         Provider.of<CurrentUserState>(context, listen: false)
@@ -45,6 +45,7 @@ class BeneficiaryFilter {
     String programId = interventionId == 'education'
         ? interventionBottomNavigation.id!
         : interventionId;
+
     Provider.of<BeneficiaryFilterState>(context, listen: false)
         .addOrUpdateFilter(programId, id, value);
   }
@@ -86,6 +87,7 @@ class BeneficiaryFilter {
     String programId = interventionId == 'education'
         ? interventionBottomNavigation.id!
         : interventionId;
+
     return Provider.of<BeneficiaryFilterState>(context, listen: false)
         .getFilterValue(programId, id);
   }
@@ -501,6 +503,85 @@ class BeneficiaryFilter {
     );
   }
 
+  static Widget getAgeDreamsFilterInput(InterventionCard currentIntervention) {
+    InputField ageInput = InputField(
+        id: 'age',
+        name: 'Select Age',
+        translatedName: 'Lilemo',
+        inputColor: currentIntervention.primaryColor,
+        valueType: 'TEXT',
+        options: [
+          InputFieldOption(code: '10-14', name: '10-14'),
+          InputFieldOption(code: '15-19', name: '15-19'),
+          InputFieldOption(code: '20-24', name: '20-24'),
+        ]);
+    return Consumer<CurrentUserState>(
+      builder: (context, currentUserState, child) {
+        return Consumer<LanguageTranslationState>(
+          builder: (context, languageTranslationState, child) {
+            return Consumer<InterventionCardState>(
+              builder: (context, interventionCardState, child) {
+                InterventionCard currentInterventionProgram =
+                    interventionCardState.currentInterventionProgram;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        text: ageInput.name,
+                        style: TextStyle(
+                          color: ageInput.labelColor,
+                          fontSize: 13.0,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    Consumer<InterventionBottomNavigationState>(
+                      builder: (context, bottomNavigationState, child) {
+                        InterventionBottomNavigation
+                            interventionBottomNavigation = bottomNavigationState
+                                .getCurrentInterventionBottomNavigation(
+                                    currentIntervention,
+                                    currentUserState.implementingPartner);
+                        dynamic age = getFilterValue(
+                          context,
+                          currentIntervention,
+                          interventionBottomNavigation,
+                          ageInput.id,
+                        );
+
+                        return SelectInputField(
+                          hiddenInputFieldOptions: const {},
+                          selectedOption: age,
+                          isReadOnly: false,
+                          currentLanguage:
+                              languageTranslationState.currentLanguage,
+                          color: currentInterventionProgram.primaryColor,
+                          renderAsRadio: ageInput.renderAsRadio,
+                          onInputValueChange: (dynamic value) => onUpdateFilter(
+                            context,
+                            currentIntervention,
+                            ageInput.id,
+                            value,
+                          ),
+                          options: ageInput.options,
+                        );
+                      },
+                    ),
+                    LineSeparator(
+                      color: currentInterventionProgram.primaryColor!
+                          .withOpacity(0.3),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   static Widget getAgeFilterInput(InterventionCard currentIntervention) {
     InputField ageInput = InputField(
       id: 'age',
@@ -570,8 +651,14 @@ class BeneficiaryFilter {
           id: 'age',
           name: 'Age',
           translatedName: 'Lilemo',
-          interventions: ['ogac', 'education', 'pp_prev', 'dreams'],
+          interventions: ['ogac', 'education', 'pp_prev'],
           filterInput: getAgeFilterInput(currentIntervention)),
+      BeneficiaryFilter(
+          id: 'age',
+          name: 'Age',
+          translatedName: 'Lilemo',
+          interventions: ['dreams'],
+          filterInput: getAgeDreamsFilterInput(currentIntervention)),
       BeneficiaryFilter(
           id: 'sex',
           name: 'Sex',

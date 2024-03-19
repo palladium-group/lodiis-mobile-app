@@ -43,6 +43,9 @@ class _OvcExitCaseClosureFormState extends State<OvcExitCaseClosureForm>
   List<FormSection>? formSections;
   bool isFormReady = false;
   bool isSaving = false;
+  Map mandatoryFieldObject = {};
+  List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
 
   @override
   void initState() {
@@ -56,21 +59,29 @@ class _OvcExitCaseClosureFormState extends State<OvcExitCaseClosureForm>
             .currentOvcHouseholdChild!;
     formSections =
         OvcExitCaseClosure.getFormSections(firstDate: child.createdDate!);
-    formSections = child.enrollmentOuAccessible!
-        ? formSections
-        : [
-            AppUtil.getServiceProvisionLocationSection(
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF1A3518),
-              sectionLabelColor: const Color(0xFF1A3518),
-              formlabel: 'Location',
-              allowedSelectedLevels: [
-                AppHierarchyReference.communityLevel,
-              ],
-              program: OvcInterventionConstant.ovcProgramprogram,
-            ),
-            ...formSections ?? []
-          ];
+    mandatoryFields = [
+      'eventDate',
+      ...OvcExitCaseClosure.getMandatoryFields(),
+    ];
+    if (child.enrollmentOuAccessible! != true) {
+      formSections = [
+        AppUtil.getServiceProvisionLocationSection(
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF1A3518),
+          sectionLabelColor: const Color(0xFF1A3518),
+          formlabel: 'Location',
+          allowedSelectedLevels: [
+            AppHierarchyReference.communityLevel,
+          ],
+          program: OvcInterventionConstant.ovcProgramprogram,
+        ),
+        ...formSections ?? []
+      ];
+      mandatoryFields.add('location');
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
+    }
     Timer(const Duration(seconds: 1), () {
       setState(() {
         isFormReady = true;
@@ -141,10 +152,30 @@ class _OvcExitCaseClosureFormState extends State<OvcExitCaseClosureForm>
     Map dataObject,
     OvcHouseholdChild? currentOvcHouseholdChild,
   ) async {
-    if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
-      setState(() {
-        isSaving = true;
-      });
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
+    if (hadAllMandatoryFilled) {
+      isSaving = true;
+      setState(() {});
       String? eventDate = dataObject['eventDate'];
       String? eventId = dataObject['eventId'];
       String orgUnit =
@@ -192,8 +223,9 @@ class _OvcExitCaseClosureFormState extends State<OvcExitCaseClosureForm>
       }
     } else {
       AppUtil.showToastMessage(
-          message: 'Please fill at least one form field',
-          position: ToastGravity.TOP);
+        message: 'Please fill all mandatory fields',
+        position: ToastGravity.TOP,
+      );
     }
   }
 
@@ -245,7 +277,10 @@ class _OvcExitCaseClosureFormState extends State<OvcExitCaseClosureForm>
                                           hiddenSections: hiddenSections,
                                           hiddenFields: hiddenFields,
                                           formSections: formSections,
-                                          mandatoryFieldObject: const {},
+                                          mandatoryFieldObject:
+                                              mandatoryFieldObject,
+                                          unFilledMandatoryFields:
+                                              unFilledMandatoryFields,
                                           dataObject:
                                               serviceFormState.formState,
                                           isEditableMode:

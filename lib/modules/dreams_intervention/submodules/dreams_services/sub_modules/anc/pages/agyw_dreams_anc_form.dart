@@ -197,7 +197,7 @@ class _AgywDreamsANCFormState extends State<AgywDreamsANCForm> {
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

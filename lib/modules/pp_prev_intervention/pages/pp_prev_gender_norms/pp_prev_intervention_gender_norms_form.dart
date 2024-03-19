@@ -76,6 +76,7 @@ class _PpPrevInterventionGenderNormsFormState
         formSections: formSections ?? [],
       ),
     );
+    setState(() {});
   }
 
   setFormSections() {
@@ -306,7 +307,7 @@ class _PpPrevInterventionGenderNormsFormState
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

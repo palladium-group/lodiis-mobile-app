@@ -146,14 +146,14 @@ class _LoginFormState extends State<LoginForm> {
         );
         await DeviceTrackingService()
             .checkAndRegistertDeviceTrackingInfo(user: user);
+        var userAccessConfigurations =
+            await UserAccess().getUserAccessConfigurationsFromTheServer(
+          user.username,
+          user.password,
+        );
+        await setCurrentUserAccess(user, userAccessConfigurations);
         if (!hasPreviousSuccessLogin) {
           UserService().resetUserAssociatedMetadata(user.id);
-          var userAccessConfigurations =
-              await UserAccess().getUserAccessConfigurationsFromTheServer(
-            user.username,
-            user.password,
-          );
-          await setCurrentUserAccess(user, userAccessConfigurations);
           loginFormState.setCurrentLoginProcessMessage(
               widget.currentLanguage == 'lesotho'
                   ? 'Basebelise ba polokelo ba abetsoeng sebaka'
@@ -168,10 +168,6 @@ class _LoginFormState extends State<LoginForm> {
             await ProgramService()
                 .discoverProgramOrganisationUnitsFromTheServer("$program");
           }
-        } else {
-          var userAccessConfigurations =
-              await UserAccess().getSavedUserAccessConfigurations();
-          await setCurrentUserAccess(user, userAccessConfigurations);
         }
         user.isLogin = true;
         user.hasPreviousSuccessLogin = true;

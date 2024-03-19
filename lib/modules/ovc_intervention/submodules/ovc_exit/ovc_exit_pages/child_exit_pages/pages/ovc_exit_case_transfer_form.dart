@@ -69,21 +69,22 @@ class _OvcExitCaseTransferFormState extends State<OvcExitCaseTransferForm>
       'eventDate',
       ...OvcExitCaseTransfer.getMandatoryFields()
     ];
-    formSections = child.enrollmentOuAccessible!
-        ? formSections
-        : [
-            AppUtil.getServiceProvisionLocationSection(
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF1A3518),
-              sectionLabelColor: const Color(0xFF1A3518),
-              formlabel: 'Location',
-              allowedSelectedLevels: [
-                AppHierarchyReference.communityLevel,
-              ],
-              program: OvcInterventionConstant.ovcProgramprogram,
-            ),
-            ...formSections ?? []
-          ];
+    if (child.enrollmentOuAccessible! != true) {
+      formSections = [
+        AppUtil.getServiceProvisionLocationSection(
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF1A3518),
+          sectionLabelColor: const Color(0xFF1A3518),
+          formlabel: 'Location',
+          allowedSelectedLevels: [
+            AppHierarchyReference.communityLevel,
+          ],
+          program: OvcInterventionConstant.ovcProgramprogram,
+        ),
+        ...formSections ?? []
+      ];
+      mandatoryFields.add('location');
+    }
     for (String fieldId in mandatoryFields) {
       mandatoryFieldObject[fieldId] = true;
     }
@@ -167,6 +168,17 @@ class _OvcExitCaseTransferFormState extends State<OvcExitCaseTransferForm>
         formSections: formSections ?? [],
       ),
     );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
     if (hadAllMandatoryFilled) {
       setState(() {
         isSaving = true;
@@ -230,19 +242,8 @@ class _OvcExitCaseTransferFormState extends State<OvcExitCaseTransferForm>
         });
       }
     } else {
-      unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
-        mandatoryFields,
-        dataObject,
-        hiddenFields:
-            Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
-        checkBoxInputFields: FormUtil.getInputFieldByValueType(
-          valueType: 'CHECK_BOX',
-          formSections: formSections ?? [],
-        ),
-      );
-      setState(() {});
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

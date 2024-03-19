@@ -4,5 +4,6 @@ class ServiceFormConstant {
   static const List<String> oneOffServices = [
     'VACLegalMessaging',
     'GBVLegalMessaging',
+    'EducationSubsidiesSupport',
   ];
 }

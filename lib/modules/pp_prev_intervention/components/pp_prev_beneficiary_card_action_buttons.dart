@@ -23,7 +23,7 @@ class PpPrevBeneficiaryCardActionButtons extends StatelessWidget {
     var beneficiarySex = ppPrevBeneficiary.sex;
     return Consumer<LanguageTranslationState>(
       builder: (context, languageState, child) => SizedBox(
-        height: 50.0,
+        height: 55.0,
         child: Center(
           child: ListView(
             shrinkWrap: true,

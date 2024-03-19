@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/material_card.dart';
 import 'package:kb_mobile_app/models/events.dart';
@@ -109,17 +110,25 @@ class CasePlanHomeList extends StatelessWidget {
                           onTap: () => onViewCasePlan(
                               casePlanByDates[casePlanDate], casePlanDate),
                         ),
-                        Visibility(
-                          visible: hasEditAccessToCasePlan &&
-                              !hasBeneficiaryExitedProgram &&
-                              !(isOnCasePlanServiceMonitoring ||
-                                  isOnCasePlanServiceProvision),
-                          child: _getActionButton(
-                            icon: 'assets/icons/edit-icon.svg',
-                            onTap: () => onEditCasePlan(
-                                casePlanByDates[casePlanDate], casePlanDate),
-                          ),
-                        ),
+                        Consumer<CurrentUserState>(
+                          builder: (context, currentUserState, child) {
+                            bool isKbFacilitySocialWorker =
+                                currentUserState.isKbFacilitySocialWorker;
+                            return Visibility(
+                              visible: !isKbFacilitySocialWorker &&
+                                  hasEditAccessToCasePlan &&
+                                  !hasBeneficiaryExitedProgram &&
+                                  !(isOnCasePlanServiceMonitoring ||
+                                      isOnCasePlanServiceProvision),
+                              child: _getActionButton(
+                                icon: 'assets/icons/edit-icon.svg',
+                                onTap: () => onEditCasePlan(
+                                    casePlanByDates[casePlanDate],
+                                    casePlanDate),
+                              ),
+                            );
+                          },
+                        )
                       ],
                     ),
                   ),

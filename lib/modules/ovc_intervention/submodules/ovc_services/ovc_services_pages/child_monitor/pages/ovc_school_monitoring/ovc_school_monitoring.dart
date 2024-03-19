@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
@@ -122,29 +123,39 @@ class _OvcSchoolMonitoringState extends State<OvcSchoolMonitoring> {
                           }).toList(),
                         ),
                 ),
-                Consumer<OvcHouseholdCurrentSelectionState>(
-                  builder: (context, ovcHouseholdCurrentSelectionState, child) {
-                    var currentOvcHouseholdChild =
-                        ovcHouseholdCurrentSelectionState
-                            .currentOvcHouseholdChild!;
-                    var currentOvcHousehold =
-                        ovcHouseholdCurrentSelectionState.currentOvcHousehold!;
-                    return Consumer<LanguageTranslationState>(
-                      builder: (context, languageTranslationState, child) =>
-                          Visibility(
-                        visible:
-                            currentOvcHouseholdChild.hasExitedProgram != true &&
+                Consumer<CurrentUserState>(
+                  builder: (context, currentUserState, child) {
+                    bool isKbFacilitySocialWorker =
+                        currentUserState.isKbFacilitySocialWorker;
+                    return Consumer<OvcHouseholdCurrentSelectionState>(
+                      builder:
+                          (context, ovcHouseholdCurrentSelectionState, child) {
+                        var currentOvcHouseholdChild =
+                            ovcHouseholdCurrentSelectionState
+                                .currentOvcHouseholdChild!;
+                        var currentOvcHousehold =
+                            ovcHouseholdCurrentSelectionState
+                                .currentOvcHousehold!;
+                        return Consumer<LanguageTranslationState>(
+                          builder: (context, languageTranslationState, child) =>
+                              Visibility(
+                            visible: !isKbFacilitySocialWorker &&
+                                currentOvcHouseholdChild.hasExitedProgram !=
+                                    true &&
                                 currentOvcHousehold.hasExitedProgram != true,
-                        child: EntryFormSaveButton(
-                          label: languageTranslationState.isSesothoLanguage
-                              ? "KENYA TLHOKOMELO"
-                              : 'ADD MONITORING',
-                          labelColor: Colors.white,
-                          buttonColor: const Color(0xFF4B9F46),
-                          fontSize: 15.0,
-                          onPressButton: () => onAddSchoolMonitoring(context),
-                        ),
-                      ),
+                            child: EntryFormSaveButton(
+                              label: languageTranslationState.isSesothoLanguage
+                                  ? "KENYA TLHOKOMELO"
+                                  : 'ADD MONITORING',
+                              labelColor: Colors.white,
+                              buttonColor: const Color(0xFF4B9F46),
+                              fontSize: 15.0,
+                              onPressButton: () =>
+                                  onAddSchoolMonitoring(context),
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
                 )

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
@@ -119,17 +120,25 @@ class _CasePlanGapServiceMonitoringViewState
                                     casePlanServiceMonitoring.eventData!),
                               ),
                             ),
-                            Visibility(
-                              visible: widget.hasEditAccess &&
-                                  casePlanServiceMonitoring.canCurrentUserEdit,
-                              child: _getActionIcon(
-                                icon: 'assets/icons/edit-icon.svg',
-                                onTap: () =>
-                                    widget.onEditCasePlanServiceMonitoring(
-                                  OvcCasePlanUtil.getMappedEventObject(
-                                      casePlanServiceMonitoring.eventData!),
-                                ),
-                              ),
+                            Consumer<CurrentUserState>(
+                              builder: (context, currentUserState, child) {
+                                bool isKbFacilitySocialWorker =
+                                    currentUserState.isKbFacilitySocialWorker;
+                                return Visibility(
+                                  visible: !isKbFacilitySocialWorker &&
+                                      widget.hasEditAccess &&
+                                      casePlanServiceMonitoring
+                                          .canCurrentUserEdit,
+                                  child: _getActionIcon(
+                                    icon: 'assets/icons/edit-icon.svg',
+                                    onTap: () =>
+                                        widget.onEditCasePlanServiceMonitoring(
+                                      OvcCasePlanUtil.getMappedEventObject(
+                                          casePlanServiceMonitoring.eventData!),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),

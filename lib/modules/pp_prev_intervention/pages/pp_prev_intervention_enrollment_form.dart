@@ -97,7 +97,22 @@ class _PpPrevInterventionEnrollmentFormState
     await FormAutoSaveOfflineService().deleteSavedFormAutoData(formAutoSaveId);
   }
 
+  void setMandatoryFields(Map<dynamic, dynamic> dataObject) {
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<EnrollmentFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
+  }
+
   void onSaveAndContinue(BuildContext context, Map dataObject) async {
+    setMandatoryFields(dataObject);
     bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       dataObject,
@@ -174,20 +189,8 @@ class _PpPrevInterventionEnrollmentFormState
             message: e.toString(), position: ToastGravity.BOTTOM);
       }
     } else {
-      setState(() {
-        unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
-          mandatoryFields,
-          dataObject,
-          hiddenFields: Provider.of<EnrollmentFormState>(context, listen: false)
-              .hiddenFields,
-          checkBoxInputFields: FormUtil.getInputFieldByValueType(
-            valueType: 'CHECK_BOX',
-            formSections: formSections ?? [],
-          ),
-        );
-      });
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

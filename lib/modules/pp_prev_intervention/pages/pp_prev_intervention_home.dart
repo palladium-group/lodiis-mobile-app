@@ -218,6 +218,7 @@ class PpPrevInterventionHome extends StatelessWidget {
                         languageState.currentLanguage == 'lesotho'
                             ? 'Ha hona ba ngolisitsoeng tlasa PP Prev hajoale'
                             : 'There is no PP PREV beneficiaries enrolled at the moment',
+                        textAlign: TextAlign.center,
                       ),
                     ),
                     IconButton(
@@ -244,6 +245,7 @@ class PpPrevInterventionHome extends StatelessWidget {
                         languageState.currentLanguage == 'lesotho'
                             ? 'Ha hona ba ngolisitsoeng tlasa PP Prev hajoale'
                             : 'There is no PP PREV beneficiaries enrolled at the moment',
+                        textAlign: TextAlign.center,
                       ),
                     ),
                     IconButton(

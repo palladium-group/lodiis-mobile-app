@@ -203,7 +203,7 @@ class _AgywDreamsPostGBVFormState extends State<AgywDreamsPostGBVForm> {
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

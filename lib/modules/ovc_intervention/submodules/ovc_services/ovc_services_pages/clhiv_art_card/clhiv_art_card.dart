@@ -193,24 +193,32 @@ class ClhivArtCard extends StatelessWidget {
                                           }).toList(),
                                         ),
                                 ),
-                                Visibility(
-                                  visible: currentHousehold?.hasExitedProgram !=
-                                          true &&
-                                      currentOvc?.hasExitedProgram != true,
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 10.0,
-                                    ),
-                                    child: EntryFormSaveButton(
-                                      label: 'Add CLHIV ART Card Service',
-                                      labelColor: Colors.white,
-                                      fontSize: 14.0,
-                                      buttonColor: const Color(0xFF4B9F46),
-                                      onPressButton: () =>
-                                          onAddClhivArtCardService(
-                                              context, currentOvc!, null),
-                                    ),
-                                  ),
+                                Consumer<CurrentUserState>(
+                                  builder: (context, currentUserState, child) {
+                                    bool isKbFacilitySocialWorker =
+                                        currentUserState
+                                            .isKbFacilitySocialWorker;
+                                    return Visibility(
+                                      visible: isKbFacilitySocialWorker &&
+                                          currentHousehold?.hasExitedProgram !=
+                                              true &&
+                                          currentOvc?.hasExitedProgram != true,
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 10.0,
+                                        ),
+                                        child: EntryFormSaveButton(
+                                          label: 'Add CLHIV ART Card Service',
+                                          labelColor: Colors.white,
+                                          fontSize: 14.0,
+                                          buttonColor: const Color(0xFF4B9F46),
+                                          onPressButton: () =>
+                                              onAddClhivArtCardService(
+                                                  context, currentOvc!, null),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             ),

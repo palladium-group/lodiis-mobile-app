@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
@@ -209,22 +210,29 @@ class OvcChildAssessment extends StatelessWidget {
                               );
                       },
                     ),
-                    Visibility(
-                      visible:
-                          currentOvcHouseholdChild?.hasExitedProgram != true &&
+                    Consumer<CurrentUserState>(
+                      builder: (context, currentUserState, child) {
+                        bool isKbFacilitySocialWorker =
+                            currentUserState.isKbFacilitySocialWorker;
+                        return Visibility(
+                          visible: !isKbFacilitySocialWorker &&
+                              currentOvcHouseholdChild?.hasExitedProgram !=
+                                  true &&
                               currentHousehold?.hasExitedProgram != true,
-                      child: EntryFormSaveButton(
-                        label: currentLanguage == 'lesotho'
-                            ? 'Hlahlobo e ncha'
-                            : 'NEW ASSESSMENT',
-                        labelColor: Colors.white,
-                        fontSize: 14,
-                        buttonColor: const Color(0xFF4B9F46),
-                        onPressButton: () => onAddNewChildAssessment(
-                          context,
-                          currentOvcHouseholdChild!,
-                        ),
-                      ),
+                          child: EntryFormSaveButton(
+                            label: currentLanguage == 'lesotho'
+                                ? 'Hlahlobo e ncha'
+                                : 'NEW ASSESSMENT',
+                            labelColor: Colors.white,
+                            fontSize: 14,
+                            buttonColor: const Color(0xFF4B9F46),
+                            onPressButton: () => onAddNewChildAssessment(
+                              context,
+                              currentOvcHouseholdChild!,
+                            ),
+                          ),
+                        );
+                      },
                     )
                   ],
                 );

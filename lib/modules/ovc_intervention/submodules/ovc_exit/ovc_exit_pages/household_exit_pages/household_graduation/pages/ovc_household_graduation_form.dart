@@ -45,6 +45,9 @@ class _OvcHouseholdGraduationFormState
   List<FormSection>? formSections;
   bool isFormReady = false;
   bool isSaving = false;
+  Map mandatoryFieldObject = {};
+  List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
 
   @override
   void initState() {
@@ -59,21 +62,26 @@ class _OvcHouseholdGraduationFormState
     formSections = HouseholdGraduationReadinessForm.getFormSections(
       firstDate: household!.createdDate!,
     );
-    formSections = household.enrollmentOuAccessible!
-        ? formSections
-        : [
-            AppUtil.getServiceProvisionLocationSection(
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF1A3518),
-              sectionLabelColor: const Color(0xFF1A3518),
-              formlabel: 'Location',
-              allowedSelectedLevels: [
-                AppHierarchyReference.communityLevel,
-              ],
-              program: OvcInterventionConstant.caregiverProgram,
-            ),
-            ...formSections ?? []
-          ];
+    mandatoryFields = ['eventDate'];
+    if (household.enrollmentOuAccessible != true) {
+      formSections = [
+        AppUtil.getServiceProvisionLocationSection(
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF1A3518),
+          sectionLabelColor: const Color(0xFF1A3518),
+          formlabel: 'Location',
+          allowedSelectedLevels: [
+            AppHierarchyReference.communityLevel,
+          ],
+          program: OvcInterventionConstant.ovcProgramprogram,
+        ),
+        ...formSections ?? []
+      ];
+      mandatoryFields.add('location');
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
+    }
     Timer(const Duration(seconds: 1), () {
       addCaregiverAttributesNeededForGraduation(household);
       setState(() {});
@@ -149,7 +157,28 @@ class _OvcHouseholdGraduationFormState
     Map dataObject,
     OvcHousehold? currentOvcHousehold,
   ) async {
-    if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
+    if (hadAllMandatoryFilled) {
       isSaving = true;
       setState(() {});
       String? eventDate = dataObject['eventDate'];
@@ -197,7 +226,7 @@ class _OvcHouseholdGraduationFormState
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill at least one form field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }
@@ -249,7 +278,10 @@ class _OvcHouseholdGraduationFormState
                                       hiddenSections:
                                           serviceFormState.hiddenSections,
                                       formSections: formSections,
-                                      mandatoryFieldObject: const {},
+                                      unFilledMandatoryFields:
+                                          unFilledMandatoryFields,
+                                      mandatoryFieldObject:
+                                          mandatoryFieldObject,
                                       dataObject: serviceFormState.formState,
                                       isEditableMode:
                                           serviceFormState.isEditableMode,

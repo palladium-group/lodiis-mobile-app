@@ -190,7 +190,7 @@ class _OgacEnrollmentFormState extends State<OgacEnrollmentForm> {
       );
       setState(() {});
       AppUtil.showToastMessage(
-          message: 'Please fill all mandatory field',
+          message: 'Please fill all mandatory fields',
           position: ToastGravity.TOP);
     }
   }

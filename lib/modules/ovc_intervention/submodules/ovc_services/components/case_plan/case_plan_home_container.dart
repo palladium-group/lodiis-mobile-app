@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
@@ -256,34 +257,42 @@ class CasePlanHomeContainer extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Visibility(
-                            visible: !hasBeneficiaryExitedProgram &&
-                                !(isOnCasePlanServiceMonitoring ||
-                                    isOnCasePlanServiceProvision) &&
-                                isAssessmentConducted,
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                vertical: casePlanByDates.keys.toList().isEmpty
-                                    ? 5.0
-                                    : 10.0,
-                              ),
-                              child: EntryFormSaveButton(
-                                label: currentLanguage == 'lesotho'
-                                    ? 'NEW MORALO OA NYEOE'
-                                    : 'NEW CASE PLAN',
-                                labelColor: Colors.white,
-                                fontSize: 14.0,
-                                buttonColor: const Color(0xFF4B9F46),
-                                onPressButton: () => onManageCasePlan(
-                                  context: context,
-                                  casePlanDates: casePlanDates,
-                                  onAddCasePlan: true,
-                                  currentCasePlanDate:
-                                      AppUtil.formattedDateTimeIntoString(
-                                          DateTime.now()),
+                          Consumer<CurrentUserState>(
+                            builder: (context, currentUserState, child) {
+                              bool isKbFacilitySocialWorker =
+                                  currentUserState.isKbFacilitySocialWorker;
+                              return Visibility(
+                                visible: !isKbFacilitySocialWorker &&
+                                    !hasBeneficiaryExitedProgram &&
+                                    !(isOnCasePlanServiceMonitoring ||
+                                        isOnCasePlanServiceProvision) &&
+                                    isAssessmentConducted,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                    vertical:
+                                        casePlanByDates.keys.toList().isEmpty
+                                            ? 5.0
+                                            : 10.0,
+                                  ),
+                                  child: EntryFormSaveButton(
+                                    label: currentLanguage == 'lesotho'
+                                        ? 'NEW MORALO OA NYEOE'
+                                        : 'NEW CASE PLAN',
+                                    labelColor: Colors.white,
+                                    fontSize: 14.0,
+                                    buttonColor: const Color(0xFF4B9F46),
+                                    onPressButton: () => onManageCasePlan(
+                                      context: context,
+                                      casePlanDates: casePlanDates,
+                                      onAddCasePlan: true,
+                                      currentCasePlanDate:
+                                          AppUtil.formattedDateTimeIntoString(
+                                              DateTime.now()),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           )
                         ],
                       );

@@ -234,6 +234,26 @@ class AgywDreamsEnrollmentService {
     return agywDreamList;
   }
 
+// Helper function to parse age range into individual ages
+  List<String> parseAgeRange(dynamic ageFilter) {
+    List<String> ages = [];
+    if (ageFilter is String && ageFilter.contains('-')) {
+      List<String> ageBoundLimits = ageFilter.split('-');
+      if (ageBoundLimits.length == 2) {
+        int startAgeLimit = int.parse(ageBoundLimits.first);
+        int endAgeLimit = int.parse(ageBoundLimits.last);
+        for (int age = startAgeLimit; age <= endAgeLimit; age++) {
+          ages.add(age.toString());
+        }
+      }
+    } else if (ageFilter is String) {
+      ages.add(ageFilter);
+    } else if (ageFilter is List<String>) {
+      ages = ageFilter;
+    }
+    return ages;
+  }
+
   List<AgywDream> filterAgywDreamsBeneficiaries(Map<String, dynamic> metadata) {
     List<Map<String, dynamic>> filters =
         metadata['filters'] as List<Map<String, dynamic>>;
@@ -242,9 +262,8 @@ class AgywDreamsEnrollmentService {
 
     for (Map<String, dynamic> filter in filters) {
       String? implementingPartner = filter['implementingPartner'];
-      String? age = filter['age'];
+      dynamic ageFilterValue = filter['age'];
       String? sex = filter['sex'];
-
       agywDreamList = implementingPartner == null
           ? agywDreamList
           : agywDreamList
@@ -252,15 +271,20 @@ class AgywDreamsEnrollmentService {
                   agyw.enrolledOrganisation == implementingPartner)
               .toList();
 
-      agywDreamList = age == null
-          ? agywDreamList
-          : agywDreamList.where((AgywDream agyw) => agyw.age == age).toList();
+      if (ageFilterValue != null) {
+        List<String> ageRanges = parseAgeRange(ageFilterValue);
+        agywDreamList = agywDreamList.where((AgywDream agyw) {
+          int? individualAge = int.tryParse(agyw.age ?? "0");
+          return individualAge != null &&
+              ageRanges.contains(individualAge.toString());
+        }).toList();
+      }
 
+      // Sex filter
       agywDreamList = sex == null
           ? agywDreamList
           : agywDreamList.where((AgywDream agyw) => agyw.sex == sex).toList();
     }
-
     return agywDreamList;
   }
 

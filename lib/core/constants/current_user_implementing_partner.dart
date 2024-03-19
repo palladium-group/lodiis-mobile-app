@@ -40,6 +40,7 @@ class CurrentUserImplementingPartner {
       "cGenMNiLKqM": "EDUCATION",
       "pNg5CAXMtLP": "M2M",
       "DtCOQEoW52e": "CoHIP SEC",
+      "SM7K5UeB0He": "KB-Facility Based Social Worker"
     };
   }
 }

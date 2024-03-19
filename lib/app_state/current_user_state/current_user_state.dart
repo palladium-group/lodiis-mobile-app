@@ -40,11 +40,13 @@ class CurrentUserState with ChangeNotifier {
   bool? _canManageViolencePreventionEducation;
 
   // selectors
+
   String get implementingPartner => _implementingPartner ?? '';
   CurrentUser? get currentUser => _currentUser;
   bool get canCurrentUserDoDataEntry =>
       _canCurrentUserDoDataEntry == null ? true : _canCurrentUserDoDataEntry!;
-
+  bool get isKbFacilitySocialWorker =>
+      implementingPartner == UserAccountReference.kbFacilitySocialWorker;
   String get currentUserLocations => _currentUserLocations ?? '';
   List<String?> get currentUserCountryLevelReferences =>
       _currentUserCountryLevelReferences ?? [];

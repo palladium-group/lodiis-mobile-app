@@ -140,11 +140,26 @@ class _PpPrevInterventionReferralFormState
     await FormAutoSaveOfflineService().saveFormAutoSaveData(formAutoSave);
   }
 
+  void setMandatoryFields(Map<dynamic, dynamic> dataObject) {
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
+  }
+
   void onSaveForm(
     BuildContext context,
     Map dataObject,
     PpPrevBeneficiary ppPrevBeneficiary,
   ) async {
+    setMandatoryFields(dataObject);
     bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       dataObject,
@@ -214,7 +229,7 @@ class _PpPrevInterventionReferralFormState
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

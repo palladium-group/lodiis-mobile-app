@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
@@ -73,71 +74,80 @@ class _CasePlanGapServiceMonitoringViewContainerState
   @override
   Widget build(BuildContext context) {
     return Consumer<OvcHouseholdCurrentSelectionState>(
-        builder: ((context, state, child) {
-      var hasBeneficiaryExited = widget.isHouseholdCasePlan
-          ? state.currentOvcHousehold?.hasExitedProgram
-          : state.currentOvcHousehold?.hasExitedProgram == true ||
-              state.currentOvcHouseholdChild?.hasExitedProgram == true;
-      return Container(
-        margin: const EdgeInsets.symmetric(),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 15.0,
-              ),
-              child: CasePlanGapServiceMonitoringView(
-                domainId: widget.domainId,
-                formSectionColor: widget.formSectionColor,
-                casePlanGap: widget.casePlanGap,
-                isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                hasEditAccess: hasBeneficiaryExited != true,
-                onViewCasePlanServiceMonitoring: (Map dataObject) =>
-                    onManageCasePlanGapServiceMonitoring(
-                        gapServiceMonitoringObject: dataObject,
-                        isOnEditMode: false),
-                onEditCasePlanServiceMonitoring: (Map dataObject) =>
-                    onManageCasePlanGapServiceMonitoring(
-                        gapServiceMonitoringObject: dataObject,
-                        isOnEditMode: true),
-              ),
-            ),
-            Visibility(
-              visible: hasBeneficiaryExited != true,
-              child: Container(
-                alignment: Alignment.center,
+      builder: ((context, state, child) {
+        var hasBeneficiaryExited = widget.isHouseholdCasePlan
+            ? state.currentOvcHousehold?.hasExitedProgram
+            : state.currentOvcHousehold?.hasExitedProgram == true ||
+                state.currentOvcHouseholdChild?.hasExitedProgram == true;
+        return Container(
+          margin: const EdgeInsets.symmetric(),
+          child: Column(
+            children: [
+              Container(
                 margin: const EdgeInsets.symmetric(
-                  vertical: 10.0,
+                  horizontal: 15.0,
                 ),
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: widget.formSectionColor,
-                      ),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    padding: const EdgeInsets.all(15.0),
-                  ),
-                  onPressed: onManageCasePlanGapServiceMonitoring,
-                  child: Consumer<LanguageTranslationState>(
-                    builder: (context, languageTranslationState, child) => Text(
-                      languageTranslationState.isSesothoLanguage
-                          ? 'KENYA TLHOKOMELO'
-                          : 'ADD MONITORING',
-                      style: const TextStyle().copyWith(
-                        color: widget.formSectionColor,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                child: CasePlanGapServiceMonitoringView(
+                  domainId: widget.domainId,
+                  formSectionColor: widget.formSectionColor,
+                  casePlanGap: widget.casePlanGap,
+                  isHouseholdCasePlan: widget.isHouseholdCasePlan,
+                  hasEditAccess: hasBeneficiaryExited != true,
+                  onViewCasePlanServiceMonitoring: (Map dataObject) =>
+                      onManageCasePlanGapServiceMonitoring(
+                          gapServiceMonitoringObject: dataObject,
+                          isOnEditMode: false),
+                  onEditCasePlanServiceMonitoring: (Map dataObject) =>
+                      onManageCasePlanGapServiceMonitoring(
+                          gapServiceMonitoringObject: dataObject,
+                          isOnEditMode: true),
                 ),
               ),
-            )
-          ],
-        ),
-      );
-    }));
+              Consumer<CurrentUserState>(
+                builder: (context, currentUserState, child) {
+                  bool isKbFacilitySocialWorker =
+                      currentUserState.isKbFacilitySocialWorker;
+                  return Visibility(
+                    visible: !isKbFacilitySocialWorker &&
+                        hasBeneficiaryExited != true,
+                    child: Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 10.0,
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: widget.formSectionColor,
+                            ),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          padding: const EdgeInsets.all(15.0),
+                        ),
+                        onPressed: onManageCasePlanGapServiceMonitoring,
+                        child: Consumer<LanguageTranslationState>(
+                          builder: (context, languageTranslationState, child) =>
+                              Text(
+                            languageTranslationState.isSesothoLanguage
+                                ? 'KENYA TLHOKOMELO'
+                                : 'ADD MONITORING',
+                            style: const TextStyle().copyWith(
+                              color: widget.formSectionColor,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+            ],
+          ),
+        );
+      }),
+    );
   }
 }

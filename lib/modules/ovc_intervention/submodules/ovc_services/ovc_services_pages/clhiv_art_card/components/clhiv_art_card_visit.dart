@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/core/components/material_card.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/events.dart';
+import 'package:provider/provider.dart';
 
 class ClhivArtCardVisit extends StatelessWidget {
   const ClhivArtCardVisit({
@@ -87,37 +89,44 @@ class ClhivArtCardVisit extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Visibility(
-                    visible: editDisabled != true,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 5.0,
-                      ),
-                      child: InkWell(
-                        onTap: editDisabled == true
-                            ? () => AppUtil.showToastMessage(
-                                  message:
-                                      'This visit has been disabled for editing',
-                                  position: ToastGravity.TOP,
-                                )
-                            : onEdit as void Function()?,
+                  Consumer<CurrentUserState>(
+                    builder: (context, currentUserState, child) {
+                      bool isKbFacilitySocialWorker =
+                          currentUserState.isKbFacilitySocialWorker;
+                      return Visibility(
+                        visible:
+                            isKbFacilitySocialWorker && editDisabled != true,
                         child: Container(
-                          height: iconHeight,
-                          width: iconHeight,
                           margin: const EdgeInsets.symmetric(
-                            vertical: 5,
-                            horizontal: 5,
+                            horizontal: 5.0,
                           ),
-                          child: SvgPicture.asset(
-                            'assets/icons/edit-icon.svg',
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFF4B9F46),
-                              BlendMode.srcIn,
+                          child: InkWell(
+                            onTap: editDisabled == true
+                                ? () => AppUtil.showToastMessage(
+                                      message:
+                                          'This visit has been disabled for editing',
+                                      position: ToastGravity.TOP,
+                                    )
+                                : onEdit as void Function()?,
+                            child: Container(
+                              height: iconHeight,
+                              width: iconHeight,
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 5,
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/icons/edit-icon.svg',
+                                colorFilter: const ColorFilter.mode(
+                                  Color(0xFF4B9F46),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ],
               )

@@ -5,7 +5,7 @@ import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/input_field_option.dart';
 
 class OvcExitCaseClosure {
-  static List<String> getMandatoryField() {
+  static List<String> getMandatoryFields() {
     return [
       'eventDate',
       'D9boflKTCM4',

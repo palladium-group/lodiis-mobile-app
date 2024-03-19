@@ -203,7 +203,7 @@ class _AgywDreamsCondomsFormState extends State<AgywDreamsCondomsForm> {
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

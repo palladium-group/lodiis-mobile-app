@@ -10,6 +10,8 @@ class UserAccountReference {
   static const List<String> superUserIpNames = ['Super user'];
   static const List<String> dreamsFacilityBasedIpNames = ['EGPAF', 'M2M'];
   static const List<String> dreamsCommunityBasedIpNames = ['CoHIP SEC'];
+  static const String kbFacilitySocialWorker =
+      'KB-Facility Based Social Worker';
   static final List<String> allowedGroupsForDataEntry = [
     'GaFCOVIUQ4G',
     'HgNG3NZcRuR',
@@ -21,6 +23,7 @@ class UserAccountReference {
     'nt8E25HoIe8',
     'wkRssCmB3b3',
     'bY48ipgY4y0',
-    'JmtPXIJ36L6'
+    'JmtPXIJ36L6',
+    'Lsd3nQpIEXZ',
   ];
 }

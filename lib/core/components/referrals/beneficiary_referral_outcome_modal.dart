@@ -208,7 +208,7 @@ class _BeneficiaryReferralOutcomeModalState
         );
       });
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
       );
     }
   }

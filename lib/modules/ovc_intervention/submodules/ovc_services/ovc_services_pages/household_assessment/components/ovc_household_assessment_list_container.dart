@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/material_card.dart';
@@ -122,36 +123,47 @@ class OvcHouseholdAssessmentListContainer extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        Visibility(
-                                          visible: assessment
-                                              .enrollmentOuAccessible!,
-                                          child: Container(
-                                            margin: const EdgeInsets.symmetric(
-                                              horizontal: 5.0,
-                                            ),
-                                            child: InkWell(
-                                              onTap: () =>
-                                                  onEditHouseholdAssessment!(
-                                                      assessment),
+                                        Consumer<CurrentUserState>(
+                                          builder: (context, currentUserState,
+                                              child) {
+                                            bool isKbFacilitySocialWorker =
+                                                currentUserState
+                                                    .isKbFacilitySocialWorker;
+                                            return Visibility(
+                                              visible: !isKbFacilitySocialWorker &&
+                                                  assessment
+                                                      .enrollmentOuAccessible!,
                                               child: Container(
-                                                height: iconHeight,
-                                                width: iconHeight,
                                                 margin:
                                                     const EdgeInsets.symmetric(
-                                                  vertical: 5.0,
                                                   horizontal: 5.0,
                                                 ),
-                                                child: SvgPicture.asset(
-                                                  'assets/icons/edit-icon.svg',
-                                                  colorFilter:
-                                                      const ColorFilter.mode(
-                                                    Color(0xFF4B9F46),
-                                                    BlendMode.srcIn,
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onEditHouseholdAssessment!(
+                                                          assessment),
+                                                  child: Container(
+                                                    height: iconHeight,
+                                                    width: iconHeight,
+                                                    margin: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 5.0,
+                                                      horizontal: 5.0,
+                                                    ),
+                                                    child: SvgPicture.asset(
+                                                      'assets/icons/edit-icon.svg',
+                                                      colorFilter:
+                                                          const ColorFilter
+                                                              .mode(
+                                                        Color(0xFF4B9F46),
+                                                        BlendMode.srcIn,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
+                                            );
+                                          },
                                         ),
                                       ],
                                     )

@@ -68,7 +68,6 @@ class TrackedEntityInstanceService {
           for (var enrollment in teiEnrollmentsJson) {
             enrollment["searchableValue"] = searchableValue;
           }
-
           await saveTrackedEntityInstanceProfile(teiJson);
           await saveTrackedEntityInstanceEnrollment(teiEnrollmentsJson);
           await saveTrackedEntityInstanceEvents(teiEventsJson);

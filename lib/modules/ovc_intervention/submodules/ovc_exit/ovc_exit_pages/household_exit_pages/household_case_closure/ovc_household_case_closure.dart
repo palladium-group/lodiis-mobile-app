@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
@@ -51,6 +52,9 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
   bool isSaving = false;
   List<FormSection>? formSections;
   bool isFormReady = false;
+  Map mandatoryFieldObject = {};
+  List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
 
   @override
   void initState() {
@@ -65,21 +69,26 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
     formSections = OvcExitCaseClosure.getFormSections(
       firstDate: household!.createdDate!,
     );
-    formSections = household.enrollmentOuAccessible == true
-        ? formSections
-        : [
-            AppUtil.getServiceProvisionLocationSection(
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF1A3518),
-              formlabel: 'Location',
-              sectionLabelColor: const Color(0xFF1A3518),
-              allowedSelectedLevels: [
-                AppHierarchyReference.communityLevel,
-              ],
-              program: OvcInterventionConstant.caregiverProgram,
-            ),
-            ...formSections ?? []
-          ];
+    mandatoryFields = ['eventDate'];
+    if (household.enrollmentOuAccessible != true) {
+      formSections = [
+        AppUtil.getServiceProvisionLocationSection(
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF1A3518),
+          sectionLabelColor: const Color(0xFF1A3518),
+          formlabel: 'Location',
+          allowedSelectedLevels: [
+            AppHierarchyReference.communityLevel,
+          ],
+          program: OvcInterventionConstant.ovcProgramprogram,
+        ),
+        ...formSections ?? []
+      ];
+      mandatoryFields.add('location');
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
+    }
     Timer(const Duration(seconds: 1), () {
       setState(() {
         isFormReady = true;
@@ -99,7 +108,28 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
     Map dataObject,
     OvcHousehold? currentOvcHousehold,
   ) async {
-    if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
+    if (hadAllMandatoryFilled) {
       isSaving = true;
       setState(() {});
       String? eventDate = dataObject['eventDate'];
@@ -150,7 +180,7 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill at least one form field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }
@@ -215,6 +245,9 @@ class _OvcHouseholdCaseClosureState extends State<OvcHouseholdCaseClosure> {
                             : OvcHouseholdExitFormContainer(
                                 event: event,
                                 exitType: 'closure',
+                                unFilledMandatoryFields:
+                                    unFilledMandatoryFields,
+                                mandatoryFieldObject: mandatoryFieldObject,
                                 isSaving: isSaving,
                                 formSections: formSections,
                                 onSaveForm: (dataObject) => onSaveForm(

@@ -88,6 +88,9 @@ class DreamsServiceForm {
                     code: 'HIV Prevention Education',
                     name: 'HIV Prevention Education',
                     translatedName: 'Thuto ea Thibelo ea HIV'),
+                InputFieldOption(
+                    code: 'EducationSubsidiesSupport',
+                    name: 'Education Subsidies/support')
               ],
             ),
             InputField(

@@ -114,6 +114,17 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         formSections: widget.formSections,
       ),
     );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: widget.formSections,
+      ),
+    );
+    setState(() {});
     if (isAllMandatoryFilled) {
       bool hasAtLeastOnFieldFilled = FormUtil.hasAtLeastOnFieldFilled(
         hiddenFields: hiddenFields,
@@ -128,17 +139,6 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         );
       }
     } else {
-      unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
-        mandatoryFields,
-        dataObject,
-        hiddenFields:
-            Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
-        checkBoxInputFields: FormUtil.getInputFieldByValueType(
-          valueType: 'CHECK_BOX',
-          formSections: widget.formSections,
-        ),
-      );
-      setState(() {});
       AppUtil.showToastMessage(
         message: 'Please fill  all mandatory fields',
       );

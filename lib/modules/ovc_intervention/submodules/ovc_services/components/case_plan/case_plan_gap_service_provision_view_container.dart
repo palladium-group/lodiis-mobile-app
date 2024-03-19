@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
@@ -108,42 +109,50 @@ class _CasePlanGapServiceProvisionViewContainerState
                         gapServiceObject: dataObject, isOnEditMode: false),
               ),
             ),
-            Visibility(
-              visible: hasBeneficiaryExited != true,
-              child: Consumer<LanguageTranslationState>(
-                builder: (context, languageTranslationState, child) {
-                  String? currentLanguage =
-                      languageTranslationState.currentLanguage;
-                  return Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 10.0,
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: widget.formSectionColor,
+            Consumer<CurrentUserState>(
+              builder: (context, currentUserState, child) {
+                bool isKbFacilitySocialWorker =
+                    currentUserState.isKbFacilitySocialWorker;
+                return Visibility(
+                  visible:
+                      !isKbFacilitySocialWorker && hasBeneficiaryExited != true,
+                  child: Consumer<LanguageTranslationState>(
+                    builder: (context, languageTranslationState, child) {
+                      String? currentLanguage =
+                          languageTranslationState.currentLanguage;
+                      return Container(
+                        alignment: Alignment.center,
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 10.0,
+                        ),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: widget.formSectionColor,
+                              ),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            padding: const EdgeInsets.all(15.0),
                           ),
-                          borderRadius: BorderRadius.circular(12.0),
+                          onPressed: () =>
+                              onManageCasePlanGapServiceProvision(),
+                          child: Text(
+                            currentLanguage != 'lesotho'
+                                ? 'ADD SERVICE'
+                                : 'TLATSA TŠEBELETSO',
+                            style: const TextStyle().copyWith(
+                              color: widget.formSectionColor,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
-                        padding: const EdgeInsets.all(15.0),
-                      ),
-                      onPressed: () => onManageCasePlanGapServiceProvision(),
-                      child: Text(
-                        currentLanguage != 'lesotho'
-                            ? 'ADD SERVICE'
-                            : 'TLATSA TŠEBELETSO',
-                        style: const TextStyle().copyWith(
-                          color: widget.formSectionColor,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                      );
+                    },
+                  ),
+                );
+              },
             )
           ],
         ),

@@ -187,7 +187,7 @@ class _OvcExitPageState extends State<OvcExitPage> {
                             bottomRight: Radius.circular(12.0),
                           ),
                     child: Container(
-                      height: 50.0,
+                      height: 55.0,
                       width: double.infinity,
                       decoration: const BoxDecoration(
                         color: Color(0XFFF6FAF6),

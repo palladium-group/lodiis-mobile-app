@@ -205,7 +205,7 @@ class _AgywDreamsPrepFormPageState extends State<AgywDreamsPrepFormPage> {
         );
       });
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

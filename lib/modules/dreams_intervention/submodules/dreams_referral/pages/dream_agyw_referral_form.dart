@@ -240,7 +240,7 @@ class _DreamsAgywAddReferralFormState extends State<DreamsAgywAddReferralForm> {
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

@@ -95,10 +95,13 @@ class _PpPrevInterventionServiceProvisionFormState
         program: PpPrevInterventionConstant.program,
       );
       formSections = [serviceProvisionForm, ...defaultFormSections!];
-      mandatoryFields = [...mandatoryFields,...FormUtil.getFormFieldIds(
-        [serviceProvisionForm],
-        includeLocationId: true,
-      )];
+      mandatoryFields = [
+        ...mandatoryFields,
+        ...FormUtil.getFormFieldIds(
+          [serviceProvisionForm],
+          includeLocationId: true,
+        )
+      ];
     }
     for (String fieldId in mandatoryFields) {
       mandatoryFieldObject[fieldId] = true;
@@ -201,7 +204,7 @@ class _PpPrevInterventionServiceProvisionFormState
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
         position: ToastGravity.TOP,
       );
     }

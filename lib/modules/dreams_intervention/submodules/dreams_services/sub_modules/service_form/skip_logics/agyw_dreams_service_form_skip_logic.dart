@@ -32,6 +32,7 @@ class AgywDreamsServiceFormSkipLogic {
       hiddenOptions['PARENTING'] = true;
       hiddenOptions['SAVING GROUP'] = true;
       hiddenOptions['VACLegalMessaging'] = true;
+      hiddenOptions['EducationSubsidiesSupport'] = true;
     }
     if (agywDreamAge < 10 || agywDreamAge > 19) {
       hiddenOptions['LBSE'] = true;

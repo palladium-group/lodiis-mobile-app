@@ -163,7 +163,7 @@ class _ReferralOutComeFollowUpModalOldState
         );
       });
       AppUtil.showToastMessage(
-        message: 'Please fill all mandatory field',
+        message: 'Please fill all mandatory fields',
       );
     }
     if (getReferralOutComeFollowUpStatus(dataObject)) {

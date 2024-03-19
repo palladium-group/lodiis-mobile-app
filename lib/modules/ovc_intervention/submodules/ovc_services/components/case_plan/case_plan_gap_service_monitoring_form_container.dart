@@ -54,6 +54,7 @@ class _CasePlanGapServiceMonitoringFormContainerState
   bool _isSaving = false;
   List<FormSection> formSections = [];
   List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
   Map mandatoryFieldObject = {};
 
   @override
@@ -144,6 +145,16 @@ class _CasePlanGapServiceMonitoringFormContainerState
         formSections: formSections,
       ),
     );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      widget.gapServiceMonitoringObject,
+      hiddenFields: hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections,
+      ),
+    );
+    setState(() {});
     if (hadAllMandatoryFilled) {
       if (hasAtLeasrOnFieldFilled) {
         _isSaving = true;
@@ -250,6 +261,7 @@ class _CasePlanGapServiceMonitoringFormContainerState
                       elevation: 0.0,
                       formSections: formSections,
                       mandatoryFieldObject: mandatoryFieldObject,
+                      unFilledMandatoryFields: unFilledMandatoryFields,
                       dataObject: widget.gapServiceMonitoringObject,
                       isEditableMode: widget.isEditableMode,
                       onInputValueChange: onInputValueChange,

@@ -44,6 +44,9 @@ class _HouseholdGraduationReadinessFormFormState
   List<FormSection>? formSections;
   bool isFormReady = false;
   bool isSaving = false;
+  Map mandatoryFieldObject = {};
+  List<String> mandatoryFields = [];
+  List unFilledMandatoryFields = [];
 
   @override
   void initState() {
@@ -58,21 +61,28 @@ class _HouseholdGraduationReadinessFormFormState
     formSections = OvcGraduationReadinessForm.getFormSections(
       firstDate: child!.createdDate!,
     );
-    formSections = child.enrollmentOuAccessible!
-        ? formSections
-        : [
-            AppUtil.getServiceProvisionLocationSection(
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF1A3518),
-              sectionLabelColor: const Color(0xFF1A3518),
-              formlabel: 'Location',
-              allowedSelectedLevels: [
-                AppHierarchyReference.communityLevel,
-              ],
-              program: OvcInterventionConstant.ovcProgramprogram,
-            ),
-            ...formSections ?? []
-          ];
+    mandatoryFields = [
+      'eventDate',
+    ];
+    if (child.enrollmentOuAccessible! != true) {
+      formSections = [
+        AppUtil.getServiceProvisionLocationSection(
+          inputColor: const Color(0xFF4B9F46),
+          labelColor: const Color(0xFF1A3518),
+          sectionLabelColor: const Color(0xFF1A3518),
+          formlabel: 'Location',
+          allowedSelectedLevels: [
+            AppHierarchyReference.communityLevel,
+          ],
+          program: OvcInterventionConstant.ovcProgramprogram,
+        ),
+        ...formSections ?? []
+      ];
+      mandatoryFields.add('location');
+    }
+    for (String fieldId in mandatoryFields) {
+      mandatoryFieldObject[fieldId] = true;
+    }
 
     Timer(const Duration(seconds: 1), () {
       isFormReady = true;
@@ -151,10 +161,30 @@ class _HouseholdGraduationReadinessFormFormState
     Map dataObject,
     OvcHouseholdChild? currentOvcHouseholdChild,
   ) async {
-    if (FormUtil.geFormFilledStatus(dataObject, formSections)) {
-      setState(() {
-        isSaving = true;
-      });
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
+      mandatoryFields,
+      dataObject,
+      hiddenFields:
+          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      checkBoxInputFields: FormUtil.getInputFieldByValueType(
+        valueType: 'CHECK_BOX',
+        formSections: formSections ?? [],
+      ),
+    );
+    setState(() {});
+    if (hadAllMandatoryFilled) {
+      isSaving = true;
+      setState(() {});
       String? eventDate = dataObject['eventDate'];
       String? eventId = dataObject['eventId'];
       String orgUnit =
@@ -203,7 +233,7 @@ class _HouseholdGraduationReadinessFormFormState
       }
     } else {
       AppUtil.showToastMessage(
-          message: 'Please fill at least one form field',
+          message: 'Please fill all mandatory fields',
           position: ToastGravity.TOP);
     }
   }
@@ -258,7 +288,10 @@ class _HouseholdGraduationReadinessFormFormState
                                           hiddenSections:
                                               serviceFormState.hiddenSections,
                                           formSections: formSections,
-                                          mandatoryFieldObject: const {},
+                                          mandatoryFieldObject:
+                                              mandatoryFieldObject,
+                                          unFilledMandatoryFields:
+                                              unFilledMandatoryFields,
                                           dataObject:
                                               serviceFormState.formState,
                                           isEditableMode:

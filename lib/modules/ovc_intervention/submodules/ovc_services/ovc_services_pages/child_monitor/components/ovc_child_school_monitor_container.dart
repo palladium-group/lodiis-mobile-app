@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/components/material_card.dart';
 import 'package:kb_mobile_app/models/events.dart';
@@ -88,31 +89,38 @@ class OvcChildSchoolMonitorContainer extends StatelessWidget {
                               ),
                             )),
                       ),
-                      Visibility(
-                        visible: eventData.enrollmentOuAccessible!,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 5.0,
-                          ),
-                          child: InkWell(
-                            onTap: onEditMonitor as void Function()?,
+                      Consumer<CurrentUserState>(
+                        builder: (context, currentUserState, child) {
+                          bool isKbFacilitySocialWorker =
+                              currentUserState.isKbFacilitySocialWorker;
+                          return Visibility(
+                            visible: !isKbFacilitySocialWorker &&
+                                eventData.enrollmentOuAccessible!,
                             child: Container(
-                              height: iconHeight,
-                              width: iconHeight,
                               margin: const EdgeInsets.symmetric(
-                                vertical: 5.0,
                                 horizontal: 5.0,
                               ),
-                              child: SvgPicture.asset(
-                                'assets/icons/edit-icon.svg',
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF4B9F46),
-                                  BlendMode.srcIn,
+                              child: InkWell(
+                                onTap: onEditMonitor as void Function()?,
+                                child: Container(
+                                  height: iconHeight,
+                                  width: iconHeight,
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 5.0,
+                                    horizontal: 5.0,
+                                  ),
+                                  child: SvgPicture.asset(
+                                    'assets/icons/edit-icon.svg',
+                                    colorFilter: const ColorFilter.mode(
+                                      Color(0xFF4B9F46),
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     ],
                   )
