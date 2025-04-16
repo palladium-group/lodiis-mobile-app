@@ -30,84 +30,45 @@ class OvcServicesTbscreening {
           name: 'TB Screening',
           color: const Color(0xFF4B9F46),
           inputFields: [
-            InputField(
-                id: 'XMKMFSdCQ0S',
-                name: 'Eligibility Criteria',
-                translatedName: 'MOKHOA OA KHETHO EA BA HLAHLOJOANG',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373),
-                options: [
-                  InputFieldOption(
-                      code:
-                          'A current close contact of a person known or suspe',
-                      name:
-                          'A current close contact of a person known or suspe',
-                      translatedName:
-                          'Ho ba haufi le motho ea nang kapa a belaelloang ho ba le TB'),
-                  InputFieldOption(
-                      code: 'Is HIV positive',
-                      name: 'Is HIV positive',
-                      translatedName: 'Ts’oaetso e teng ho ngoana'),
-                  InputFieldOption(
-                      code: 'Malnourished',
-                      name: 'Malnourished',
-                      translatedName: 'Ngoana o nale khaello ea phepo'),
-                  InputFieldOption(
-                      code: 'Illicit drugs',
-                      name: 'Illicit drugs',
-                      translatedName: 'Ngoana o katlase ho lemo tse hlano'),
-                ]),
+
           ],
           subSections: [
             FormSection(
                 name: '',
                 color: const Color(0xFF4B9F46),
-                description:
-                    'Have the child experienced any of the following in the past 6 months?',
-                translatedDescription:
-                    'Na ngoana o kile a ba le e nngoe eat see likhoeling tse fetileng tse tsheletseng?',
-                inputFields: [
+             inputFields: [
                   InputField(
-                      id: 'aKUSNl3nEHA',
+                      id: 'ugywQJdff4g',
                       name:
-                          '1. Prolonged or difficulty in breathing cough of > 2 weeks?',
+                          '1.	Has the child been coughing?',
                       translatedName:
-                          '1.  Ho ohlola ho feta nako ea libeke tse 2?',
+                          '1.	Has the child been coughing?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'cAVna5BDOM8',
-                      name: '2. Night sweats for no known reason of > 2 weeks?',
+                      id: 'xRV1LwtS5iy',
+                      name: '2.	Has the child had a fever?',
                       translatedName:
-                          '2. Na ngoana o fufuleloa hore liphahlo libe metsi nako e fetang beke tse 2?',
-                      valueType: 'BOOLEAN',
-                      inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF737373)),
-                  InputField(
-                      id: 'usdZsovNmsU',
-                      name: '3. Persistent fever for > 2 weeks?',
-                      translatedName: '3. Mocheso Nakong e fetang beke tse 2?',
+                          '2.	Has the child had a fever?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
                       id: 'Vxhh2rikoQz',
-                      name: '4. Failure to thrive and/or poor?',
-                      translatedName: '4. Ho se hole hantle?',
+                      name: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
+                      translatedName: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'ItMRTuAI5EK',
-                      name:
-                          '5. Swelling in the neck, armpit or groin for more than 2 weeks?',
-                      translatedName:
-                          '5. Ho ruruha molala, ka mahafing le lithalooane nako e fetang beke tse 2?',
+                      id: 'RpsU0xjYhuh',
+                      name: '4.	Has the child been in contact with someone with TB disease?',
+                      translatedName: '4. Has the child been in contact with someone with TB disease?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
+
                 ])
           ])
     ];

@@ -40,10 +40,17 @@ class _OvcChildAssessmentSelectionState
                   ovcHouseholdCurrentSelectionState.currentOvcHouseholdChild!;
               int age = int.parse(currentOvcHouseholdChild.age!);
               String? hivStatus = currentOvcHouseholdChild.hivStatus;
-              if (age < 5) {
+              if (age < 18) {
                 assessmentTitles.add('TB');
               }
-              if (hivStatus != 'Positive') {
+
+              if (age >= 18) {
+                assessmentTitles.add('TB18');
+              }
+              if (age < 2) {
+                assessmentTitles.add('Nutrition');
+              }
+              if (hivStatus != 'Positive' && age < 12) {
                 assessmentTitles.add('HIV');
               }
               return Column(
