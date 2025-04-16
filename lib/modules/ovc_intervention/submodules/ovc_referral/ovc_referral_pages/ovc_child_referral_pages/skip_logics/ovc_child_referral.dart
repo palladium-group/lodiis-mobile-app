@@ -4,6 +4,9 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../../core/utils/app_util.dart';
+import '../../../../../../../models/ovc_household_child.dart';
+
 class OvcChildReferralSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
@@ -12,7 +15,9 @@ class OvcChildReferralSkipLogic {
   static Future evaluateSkipLogics(
     BuildContext context,
     List<FormSection> formSections,
-    Map dataObject,
+    Map dataObject,{
+        OvcHouseholdChild? currentHouseholdChild,
+      }
   ) async {
     hiddenFields.clear();
     hiddenSections.clear();
@@ -21,6 +26,7 @@ class OvcChildReferralSkipLogic {
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
     }
+    int age = int.parse(currentHouseholdChild!.age!);
     inputFieldIds = inputFieldIds.toSet().toList();
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
@@ -30,6 +36,7 @@ class OvcChildReferralSkipLogic {
       if (inputFieldId == 'qAed23reDPP' && value != 'Facility') {
         hiddenSections['SeRefoFa'] = true;
       }
+      //service category at community
       if (inputFieldId == 'LLWTHwhnch0' && value != 'null') {
         Map hiddenOptions = {};
         if (value == 'Clinical Services') {
@@ -45,6 +52,8 @@ class OvcChildReferralSkipLogic {
           hiddenOptions['CAG'] = true;
           hiddenOptions['Home based care visits'] = true;
           hiddenOptions['Educational and vocational support'] = true;
+          hiddenOptions['HIV Testing and counselling'] = true;
+          hiddenOptions['TB screening'] = true;
         } else if (value == 'Post abuse case management') {
           hiddenOptions['Youth friendly services'] = true;
           hiddenOptions['Income generating activity'] = true;
@@ -100,7 +109,8 @@ class OvcChildReferralSkipLogic {
         }
         hiddenInputFieldOptions['rsh5Kvx6qAU'] = hiddenOptions;
       }
-      if (inputFieldId == 'AuCryxQYmrk' && value != 'null') {
+      //service category at facility
+      if (inputFieldId == 'AuCryxQYmrk' && value != 'null' ) {
         Map hiddenOptions = {};
         if (value == 'Clinical Services') {
           hiddenOptions['Youth friendly services'] = true;
@@ -115,6 +125,8 @@ class OvcChildReferralSkipLogic {
           hiddenOptions['CAG'] = true;
           hiddenOptions['Home based care visits'] = true;
           hiddenOptions['Educational and vocational support'] = true;
+          hiddenOptions['HIV Testing and counselling'] = true;
+          hiddenOptions['TB screening'] = true;
         } else if (value == 'Post abuse case management') {
           hiddenOptions['Youth friendly services'] = true;
           hiddenOptions['Income generating activity'] = true;
@@ -143,7 +155,8 @@ class OvcChildReferralSkipLogic {
           hiddenOptions['EID Testing'] = true;
           hiddenOptions['PrEP/PEP'] = true;
           hiddenOptions['PMTCT'] = true;
-        } else if (value == 'Social Services') {
+        }
+        else if (value == 'Social Services') {
           hiddenOptions['Referral to post abuse care services'] = true;
           hiddenOptions['STI Screening'] = true;
           hiddenOptions['STI Treatment'] = true;
@@ -156,6 +169,30 @@ class OvcChildReferralSkipLogic {
           hiddenOptions['TB screening'] = true;
           hiddenOptions['TB treatment'] = true;
           hiddenOptions['Nutrition'] = true;
+          hiddenOptions['VMMC'] = true;
+          hiddenOptions['Cervical Cancer Screening'] = true;
+          hiddenOptions['ECD'] = true;
+          hiddenOptions['HTS'] = true;
+          hiddenOptions['ANC'] = true;
+          hiddenOptions['EID Testing'] = true;
+          hiddenOptions['PrEP/PEP'] = true;
+          hiddenOptions['PMTCT'] = true;
+          hiddenOptions['Gender Based Violence'] = true;
+          hiddenOptions['Domestic Violence Support group'] = true;
+          hiddenOptions['Violence Against Children'] = true;
+        }
+        else if (value == 'Social Services' && age < 3) {
+          hiddenOptions['Referral to post abuse care services'] = true;
+          hiddenOptions['STI Screening'] = true;
+          hiddenOptions['STI Treatment'] = true;
+          hiddenOptions['HIV Testing and counselling'] = true;
+          hiddenOptions['Evaluation for ARVs/HAART'] = true;
+          hiddenOptions['ART and Adherence'] = true;
+          hiddenOptions['PMTCT Services'] = true;
+          hiddenOptions['FamilyPlanningSRH'] = true;
+          hiddenOptions['Condom supply'] = true;
+          hiddenOptions['TB screening'] = true;
+          hiddenOptions['TB treatment'] = true;
           hiddenOptions['VMMC'] = true;
           hiddenOptions['Cervical Cancer Screening'] = true;
           hiddenOptions['ECD'] = true;

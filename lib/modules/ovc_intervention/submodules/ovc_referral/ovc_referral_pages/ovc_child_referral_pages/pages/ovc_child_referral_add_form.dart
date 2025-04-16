@@ -142,10 +142,14 @@ class _OvcChildReferralAddFormState extends State<OvcChildReferralAddForm> {
       () async {
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
+        OvcHouseholdChild? currentHouseholdChild =
+            Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+                .currentOvcHouseholdChild;
         await OvcChildReferralSkipLogic.evaluateSkipLogics(
           context,
           formSections,
           dataObject,
+            currentHouseholdChild: currentHouseholdChild
         );
       },
     );
