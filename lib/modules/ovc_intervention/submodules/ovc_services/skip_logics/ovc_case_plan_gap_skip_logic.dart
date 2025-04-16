@@ -536,7 +536,7 @@ mixin OvcCasePlanGapSkipLogic {
       if (age < 2 || age >= 5) {
         hiddenFields['BJrrrqQqwQO'] = true;
       }
-      if (age > 5) {
+      if (age > 2) {
         hiddenFields['hJUuQ648wVF'] = true;
         hiddenFields['x4yAqv4z2Xv'] = true;
         hiddenFields['AM9oJCOHM7f'] = true;
