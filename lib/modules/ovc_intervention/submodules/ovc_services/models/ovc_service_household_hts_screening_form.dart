@@ -47,7 +47,7 @@ class OvcHouseholdServiceHtsScreening {
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
-                isReadOnly: true),
+                ),
             InputField(
                 id: 'Uv26fX0HQvO',
                 name: 'If Yes when?',
@@ -90,7 +90,7 @@ class OvcHouseholdServiceHtsScreening {
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
-                isReadOnly: true),
+                ),
             InputField(
                 id: 'vNeOE9abQBB',
                 name: 'What is your HIV Status?',
@@ -98,7 +98,7 @@ class OvcHouseholdServiceHtsScreening {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
-                isReadOnly: true,
+
                 options: [
                   InputFieldOption(
                       code: 'Positive',
@@ -130,13 +130,11 @@ class OvcHouseholdServiceHtsScreening {
               options: [
                 InputFieldOption(code: '1', name: 'Yes', translatedName: 'E'),
                 InputFieldOption(code: '0', name: 'No', translatedName: 'Che'),
-                InputFieldOption(
-                    code: '0.000001', name: 'NA', translatedName: 'N/A')
               ],
             ),
             InputField(
                 id: 'ubin7MjQ5OI',
-                name: '18. If Yes, How long have you been on ART?',
+                name: '4.How long have you been on ART?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -152,7 +150,38 @@ class OvcHouseholdServiceHtsScreening {
                   InputFieldOption(code: 'NA', name: 'NA')
                 ]),
 
-
+            InputField(
+              id: 'QagndU441C1',
+              name: '5.Had sex with more than 1 sexual partner?',
+              translatedName: '5.Had sex with more than 1 sexual partner?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'dtUOh1TfESL',
+              name: '6.In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              translatedName: '6. In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'qoKPxEkgfdh',
+              name: '7. In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              translatedName: '7. In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'NGZH2JYy86L',
+              name: '8. In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              translatedName: '8. In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
 
           ]),
 

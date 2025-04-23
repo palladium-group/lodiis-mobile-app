@@ -26,16 +26,6 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'PiXi6AtLqiQ' && value != 'true') {
         hiddenFields['zUU33n41Soa'] = true;
       }
-
-      if (inputFieldId == 'tMvluCbiiUm' && value == 'true' || inputFieldId == 'P9hiqrTjAdg' && value == 'true' ) {
-
-            Future future = Navigator.push(
-          context,
-          MaterialPageRoute(
-          builder: (context) => const OvcHouseholdHtsAssessmentForm(),
-          ));
-                }
-
       if (inputFieldId == 'yqwX3XCGAUN' && value != 'true') {
         hiddenFields['BKDRNiyoMgV'] = true;
       }

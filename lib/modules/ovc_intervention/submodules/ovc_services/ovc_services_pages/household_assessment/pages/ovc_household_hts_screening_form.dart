@@ -33,6 +33,7 @@ import 'package:provider/provider.dart';
 
 import '../../../constants/ovc_household_hts_assessment_constant.dart';
 import '../../../models/ovc_service_household_hts_screening_form.dart';
+import '../skip_logics/ovc_household_hts_assessment_skip_logis.dart';
 
 class OvcHouseholdHtsAssessmentForm extends StatefulWidget {
   const OvcHouseholdHtsAssessmentForm({Key? key}) : super(key: key);
@@ -109,7 +110,7 @@ class _OvcHouseholdHtsAssessmentFormState
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
 
-        await OvchouseHoldAssessmentSkipLogic.evaluateSkipLogics(
+        await OvchouseHoldHtsAssessmentSkipLogic.evaluateSkipLogics(
             context, formSections!, dataObject, adult?.hivStatus);
       },
     );
