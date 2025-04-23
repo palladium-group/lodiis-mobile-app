@@ -38,7 +38,7 @@ class OvcServicesTbscreening {
                 color: const Color(0xFF4B9F46),
              inputFields: [
                   InputField(
-                      id: 'ugywQJdff4g',
+                      id: 'C9cpFDvwOUJ',
                       name:
                           '1.	Has the child been coughing?',
                       translatedName:
@@ -47,7 +47,7 @@ class OvcServicesTbscreening {
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'xRV1LwtS5iy',
+                      id: 'TpyePxydX6K',
                       name: '2.	Has the child had a fever?',
                       translatedName:
                           '2.	Has the child had a fever?',
@@ -55,14 +55,14 @@ class OvcServicesTbscreening {
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'Vxhh2rikoQz',
+                      id: 'dlWawszpssl',
                       name: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
                       translatedName: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'RpsU0xjYhuh',
+                      id: 'GTIxkgzrJgS',
                       name: '4.	Has the child been in contact with someone with TB disease?',
                       translatedName: '4. Has the child been in contact with someone with TB disease?',
                       valueType: 'BOOLEAN',
