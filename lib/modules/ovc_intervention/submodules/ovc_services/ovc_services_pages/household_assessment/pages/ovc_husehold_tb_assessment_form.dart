@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
@@ -28,8 +29,11 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../../models/ovc_household.dart';
 import '../../../../../components/ovc_household_top_header.dart';
+import '../../../../ovc_referral/ovc_referral_pages/ovc_house_referral_pages/pages/ovc_household_add_referral_form.dart';
+import '../../../../ovc_referral/ovc_referral_pages/ovc_house_referral_pages/pages/ovc_household_add_tb_referral_form.dart';
 import '../../../constants/ovc_household_tb_assessment_constant.dart';
 import '../../../models/ovc_service_household_tb_screening.dart';
+import 'ovc_household_hts_screening_form.dart';
 
 class OvcServiceHouseholdTBAssessmentForm extends StatefulWidget {
   const OvcServiceHouseholdTBAssessmentForm({Key? key}) : super(key: key);
@@ -174,6 +178,39 @@ class _OvcServiceHouseholdTBAssessmentFormState
                 : 'Form has been saved successfully',
             position: ToastGravity.TOP,
           );
+
+
+          List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections!);
+          for (var key in dataObject.keys) {
+            inputFieldIds.add('$key');
+          }
+          inputFieldIds = inputFieldIds.toSet().toList();
+           int x=0;
+          for (String inputFieldId in inputFieldIds) {
+            String value = '${dataObject[inputFieldId]}';
+            if (value == 'true') {
+              x++;
+            }
+
+            if(x>=1){
+              AppUtil.showToastMessage(
+                message: currentLanguage == 'lesotho'
+                    ? 'Fomo e bolokeile'
+                    : 'Record patient details in the referral form and refer to the clinic for further investigations',
+                position: ToastGravity.TOP,
+              );
+
+              Future future = Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OvcHouseholdAddTbReferralForm(),
+
+                  ));
+            }
+
+          }
+
+
           Navigator.pop(context);
         });
       } catch (e) {

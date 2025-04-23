@@ -4,6 +4,8 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:provider/provider.dart';
 
+import '../pages/ovc_household_hts_screening_form.dart';
+
 class OvchouseHoldAssessmentSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
@@ -24,6 +26,16 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'PiXi6AtLqiQ' && value != 'true') {
         hiddenFields['zUU33n41Soa'] = true;
       }
+
+      if (inputFieldId == 'tMvluCbiiUm' && value == 'true' || inputFieldId == 'P9hiqrTjAdg' && value == 'true' ) {
+
+            Future future = Navigator.push(
+          context,
+          MaterialPageRoute(
+          builder: (context) => const OvcHouseholdHtsAssessmentForm(),
+          ));
+                }
+
       if (inputFieldId == 'yqwX3XCGAUN' && value != 'true') {
         hiddenFields['BKDRNiyoMgV'] = true;
       }

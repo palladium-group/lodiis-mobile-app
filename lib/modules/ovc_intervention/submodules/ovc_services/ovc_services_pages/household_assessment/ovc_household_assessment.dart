@@ -27,6 +27,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../core/utils/app_util.dart';
 import '../../../../../../core/utils/tracked_entity_instance_util.dart';
+import '../../../ovc_referral/ovc_referral_pages/ovc_house_referral_pages/pages/ovc_household_add_referral_form.dart';
 import '../../constants/ovc_household_hts_assessment_constant.dart';
 import '../../constants/ovc_household_tb_assessment_constant.dart';
 import '../../models/ovc_service_household_hts_screening_form.dart';
@@ -122,7 +123,7 @@ class _OvcHouseholdAssessmentState extends State<OvcHouseholdAssessment> {
           ? Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const OvcHouseholdHtsAssessmentForm(),
+          builder: (context) => const OvcHouseholdAssessmentForm(),
         ),
       )
           : assessmentResponse == 'TB Screening'
@@ -137,7 +138,7 @@ class _OvcHouseholdAssessmentState extends State<OvcHouseholdAssessment> {
           ? Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const OvcHouseholdHtsAssessmentForm(),
+          builder: (context) => const OvcHouseholdAddReferralForm(),
         ),
       )
           : '';
