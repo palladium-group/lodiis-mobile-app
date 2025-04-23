@@ -43,6 +43,7 @@ mixin OvcCasePlanGapSkipLogic {
             "ylSjcj6cv42",
             "HKCv7lkLexo",
             "pbcXNnAuzfh",
+            "bRv4ZZy5MDH",
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -168,6 +169,12 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['vqf67Edjw4y'] = true;
         hiddenFields['iFv7FJeG3V1'] = true;
         hiddenFields['bQtXR6iQyo8'] = true;
+      }
+      if (inputFieldId == 'bRv4ZZy5MDH' && value != 'true') {
+        hiddenFields['mvDI6Jr40kI'] = true;
+        hiddenFields['OPmcOXe5Ogy'] = true;
+        hiddenFields['Wc58mUb3AXg'] = true;
+        hiddenFields['IhzyIy3tzo0'] = true;
       }
       if (inputFieldId == 'ylSjcj6cv42' && value != 'true') {
         hiddenFields['JDqgRJlOSeZ'] = true;
