@@ -273,7 +273,7 @@ class OvcEnrollmentHousehold {
           ),
           InputField(
             id: 'kQehaqmaygZ',
-            isReadOnly: true,
+
             name: 'Male aged below 18 years living in household',
             translatedName:
                 'Kakaretso ea bashanyana ba ka tlase ho lilemo tse 18 ba lula kahare ho lelapa',
@@ -283,7 +283,7 @@ class OvcEnrollmentHousehold {
           ),
           InputField(
             id: 'BXUNH6LXeGA',
-            isReadOnly: true,
+
             name: 'Female aged below 18 years currently living in household',
             translatedName:
                 'Kakaretso ea banana ba ka tlase ho lilemo tse 18 ba lula kahare ho lelapa',
