@@ -6,7 +6,10 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 
 mixin OvcCasePlanGapSkipLogic {
   Map hiddenFields = {};
-  Map hiddenSections = {};
+  Map hiddenSections = {
+    "Stable":true,
+    "Safe":true
+  };
   Map childMapObject = {};
 
   Future evaluateSkipLogics(
@@ -16,14 +19,23 @@ mixin OvcCasePlanGapSkipLogic {
     OvcHouseholdChild? currentHouseholdChild,
   }) async {
     hiddenFields.clear();
-    hiddenSections.clear();
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
     }
     inputFieldIds = inputFieldIds.toSet().toList();
     String implementingPartner = dataObject['implementingPartner'];
-
+    for (String sectionId in hiddenSections.keys) {
+      List<FormSection> allFormSections =
+      FormUtil.getFlattenFormSections(formSections);
+      List<String> hiddenSectionInputFieldIds = FormUtil.getFormFieldIds(
+          allFormSections
+              .where((formSection) => formSection.id == sectionId)
+              .toList());
+      for (String inputFieldId in hiddenSectionInputFieldIds) {
+        hiddenFields[inputFieldId] = true;
+      }
+    }
     // Hiding gap based on the goal
     List<String> casPlanServiceGaps = OvcCasePlanConstant.casPlanServiceGaps;
     for (String gap in casPlanServiceGaps) {

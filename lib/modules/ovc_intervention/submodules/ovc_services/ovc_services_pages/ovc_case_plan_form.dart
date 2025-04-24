@@ -98,15 +98,16 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
     for (FormSection formSection in OvcServicesCasePlan.getFormSections(
       firstDate: widget.enrollmentDate,
     )) {
-      // Removing the Schooled section for caregiver
-      if (!(widget.isHouseholdCasePlan && ['Schooled'].contains(formSection.id))) {
+
+       // Removing the 'Safe','Stable','Schooled' section for caregiver
+      if (!(widget.isHouseholdCasePlan && ['Safe','Stable','Schooled'].contains(formSection.id))) {
         borderColors[formSection.id] = formSection.borderColor;
         formSection.borderColor = Colors.transparent;
         formSections.add(formSection);
       }
+
       // Removing the house categorization for child
-      if (!widget.isHouseholdCasePlan &&
-          formSection.id == OvcCasePlanConstant.householdCategorizationSection) {
+      if (!widget.isHouseholdCasePlan && formSection.id == OvcCasePlanConstant.householdCategorizationSection) {
         formSections.remove(formSection);
       }
     }

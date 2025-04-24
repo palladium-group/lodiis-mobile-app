@@ -6,7 +6,11 @@ import 'package:provider/provider.dart';
 
 class OvcHouseholdCasePlanSkipLogic {
   static Map hiddenFields = {};
-  static Map hiddenSections = {};
+  static Map hiddenSections = {
+    "DOMAIN STABLE":true,
+    "DOMAIN SAFE":true
+
+  };
 
   static Future evaluateSkipLogics(
     BuildContext context,
@@ -14,7 +18,7 @@ class OvcHouseholdCasePlanSkipLogic {
     Map dataObject,
   ) async {
     hiddenFields.clear();
-    hiddenSections.clear();
+    //hiddenSections.clear();
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -31,6 +35,7 @@ class OvcHouseholdCasePlanSkipLogic {
         hiddenFields[inputFieldId] = true;
       }
     }
+
     resetValuesForHiddenFields(context, hiddenFields.keys);
     resetValuesForHiddenSections(context, formSections);
   }
