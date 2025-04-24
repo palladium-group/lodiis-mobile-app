@@ -131,8 +131,13 @@ class OvcReferral {
                       code: 'Nutrition',
                       name: 'Nutrition',
                       translatedName: 'Phepo e nepahetseng'),
-                  InputFieldOption(code: 'HTS', name: 'HTS'),
-                  InputFieldOption(code: 'ANC', name: 'ANC'),
+                  InputFieldOption(
+                      code: 'HTS',
+                      name: 'HTS'),
+
+                  InputFieldOption(
+                      code: 'ANC',
+                      name: 'ANC'),
                   InputFieldOption(
                       code: 'VMMC',
                       name: 'VMMC',

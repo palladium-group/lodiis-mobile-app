@@ -12,6 +12,9 @@ class OvcRoutesConstant {
       "None Participation Form";
 
   static const String houseHoldAssessmentFormPage = 'Household Assessment Form';
+  static const String houseHoldHtsAssessmentFormPage = 'HTS Assessment Form';
+  static const String houseHoldHtsAssessmentFormNextPage =
+      'HTS Assessment Form';
   static const String houseHoldAssessmentFormNextPage =
       'Household Assessment Form';
   static const String houseHoldCasePlanFormPage = 'Household Case Plan Form';

@@ -4,17 +4,19 @@ import 'package:kb_mobile_app/core/components/line_separator.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:provider/provider.dart';
 
-class OvcChildAssessmentSelection extends StatefulWidget {
-  const OvcChildAssessmentSelection({Key? key}) : super(key: key);
+import '../../../../../../../models/ovc_household.dart';
+
+class OvcHouseholdAssessmentSelection extends StatefulWidget {
+  const OvcHouseholdAssessmentSelection({Key? key}) : super(key: key);
 
   @override
-  State<OvcChildAssessmentSelection> createState() =>
-      _OvcChildAssessmentSelectionState();
+  State<OvcHouseholdAssessmentSelection> createState() =>
+      _OvcHouseholdAssessmentSelectionState();
 }
 
-class _OvcChildAssessmentSelectionState
-    extends State<OvcChildAssessmentSelection> {
-  final List<String> assessmentTitles = ['Well-being'];
+class _OvcHouseholdAssessmentSelectionState
+    extends State<OvcHouseholdAssessmentSelection> {
+  final List<String> assessmentTitles = ['Household Assessment','TB Screening'];
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +38,13 @@ class _OvcChildAssessmentSelectionState
           ),
           Consumer<OvcHouseholdCurrentSelectionState>(
             builder: (context, ovcHouseholdCurrentSelectionState, child) {
-              OvcHouseholdChild currentOvcHouseholdChild =
-                  ovcHouseholdCurrentSelectionState.currentOvcHouseholdChild!;
-              int age = int.parse(currentOvcHouseholdChild.age!);
-              String? hivStatus = currentOvcHouseholdChild.hivStatus;
-              if (age < 18) {
-                assessmentTitles.add('TB');
-              }
+              OvcHousehold currentOvcHousehold =
+              ovcHouseholdCurrentSelectionState.currentOvcHousehold!;
+              int age = int.parse(currentOvcHousehold.age!);
+              String? hivStatus = currentOvcHousehold.hivStatus;
 
-              if (age >= 18) {
-                assessmentTitles.add('TB18');
-              }
-              if (age < 2) {
-                assessmentTitles.add('Nutrition');
-              }
-              if (hivStatus != 'Positive' && age < 12) {
-                assessmentTitles.add('HIV');
+              if (hivStatus != 'Positive') {
+                assessmentTitles.add('HTS Screening');
               }
               return Column(
                 children: assessmentTitles.map((assessmentTitle) {

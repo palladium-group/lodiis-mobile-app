@@ -5,7 +5,7 @@ import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/input_field_option.dart';
 
-class OvcServicesTbscreening {
+class OvcServicesHouseholdTbscreening {
   static List<String> getMandatoryFields() {
     return FormUtil.getAllFormSectionInpiutFields(
       getFormSections(
@@ -36,35 +36,35 @@ class OvcServicesTbscreening {
             FormSection(
                 name: '',
                 color: const Color(0xFF4B9F46),
-             inputFields: [
+                inputFields: [
                   InputField(
-                      id: 'C9cpFDvwOUJ',
+                      id: 'tMvluCbiiUm',
                       name:
-                          '1.	Has the child been coughing?',
+                      '1.	Are you coughing?',
                       translatedName:
-                          '1.	Has the child been coughing?',
+                      '1.	Are you coughing?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'TpyePxydX6K',
-                      name: '2.	Has the child had a fever?',
+                      id: 'P9hiqrTjAdg',
+                      name: '2.	Have you lost weight (without trying)?',
                       translatedName:
-                          '2.	Has the child had a fever?',
+                      '2.	Have you lost weight (without trying)?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'dlWawszpssl',
-                      name: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
-                      translatedName: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
+                      id: 'Y8Xzy7bEWsi',
+                      name: '3.	Do you have drenching/soaking sweats at night?',
+                      translatedName: '3.	Do you have drenching/soaking sweats at night?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'GTIxkgzrJgS',
-                      name: '4.	Has the child been in contact with someone with TB disease?',
-                      translatedName: '4. Has the child been in contact with someone with TB disease?',
+                      id: 'VETgonq6tFr',
+                      name: '4.	Do you have fevers?',
+                      translatedName: '4.	Do you have fevers?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),

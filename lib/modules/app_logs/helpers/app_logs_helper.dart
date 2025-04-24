@@ -70,16 +70,16 @@ class AppLogsHelper {
 
       // Insert app version row
       List<String> appVersionRow = ['Application Version', appVersion];
-      sheetObject.insertRowIterables(appVersionRow, 0);
+      sheetObject.insertRowIterables(appVersionRow.cast<CellValue?>(), 0);
 
       // Insert table header row
-      sheetObject.insertRowIterables(tableHeaders, rowCount);
+      sheetObject.insertRowIterables(tableHeaders.cast<CellValue?>(), rowCount);
 
       // Insert data rows
       List<List<String?>> rows = await getExcelRows(tableHeaders);
       for (List<String?> row in rows) {
         rowCount++;
-        sheetObject.insertRowIterables(row, rowCount);
+        sheetObject.insertRowIterables(row.cast<CellValue?>(), rowCount);
       }
       return excel;
     } catch (e) {

@@ -22,23 +22,35 @@ class UserService {
     CurrentUser? user;
     try {
       if (isOnlineAuthentication) {
-        var url = 'api/me.json';
-        var queryParameters = {
-          "fields":
-              "id,name,email,phoneNumber,programs,organisationUnits[id],attributeValues[value,attribute[id]],userGroups[name,id],userCredentials[userRoles[id,name]]"
-        };
         HttpService http = HttpService(
           username: username,
           password: password,
         );
-        var response =
-            await http.httpGet(url, queryParameters: queryParameters);
-        if (response.statusCode == 200) {
-          user = CurrentUser.fromJson(
-            json.decode(response.body),
-            username,
-            password,
-          );
+
+        Map userData = await getUserIdAndInterventionAssignments(
+          username: username,
+          password: password,
+        );
+        String userId = userData['id'] ?? '';
+        if (userId.isNotEmpty) {
+          var queryParameters = {
+            "fields":
+                "id,name,email,phoneNumber,organisationUnits[id],attributeValues[value,attribute[id]],userGroups[name,id],userCredentials[userRoles[id,name]]"
+          };
+          var url = 'api/users/$userId.json';
+          var response =
+              await http.httpGet(url, queryParameters: queryParameters);
+          if (response.statusCode == 200) {
+            user = CurrentUser.fromJson(
+              {...userData, ...json.decode(response.body)},
+              username,
+              password,
+            );
+          }
+        } else {
+          String message =
+              "You can not login with provided username and password, kindly connect to network and try again";
+          throw message;
         }
       } else {
         List<CurrentUser> users = await UserOfflineProvider().getUsers();
@@ -55,6 +67,30 @@ class UserService {
     } catch (error) {
       rethrow;
     }
+  }
+
+  Future<Map> getUserIdAndInterventionAssignments({
+    required String username,
+    required String password,
+  }) async {
+    Map userData = {};
+    try {
+      var url = 'api/me.json';
+      var queryParameters = {"fields": "id,programs"};
+      HttpService http = HttpService(
+        username: username,
+        password: password,
+      );
+      var response = await http.httpGet(url, queryParameters: queryParameters);
+      if (response.statusCode == 200) {
+        dynamic userJsonData = json.decode(response.body);
+        userData = {...userJsonData};
+      }
+    } catch (error) {
+      rethrow;
+    }
+
+    return userData;
   }
 
   Future<bool> hasUserPreviousSuccessLogin({

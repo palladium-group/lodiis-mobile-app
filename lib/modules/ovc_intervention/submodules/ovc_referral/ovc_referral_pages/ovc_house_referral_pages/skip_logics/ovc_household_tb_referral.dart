@@ -4,19 +4,21 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:provider/provider.dart';
 
-class OvcHouseholdReferralSkipLogic {
+class OvcHouseholdTbReferralSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
   static Map hiddenInputFieldOptions = {};
+  static Map assignedFields = {};
 
   static Future evaluateSkipLogics(
-    BuildContext context,
-    List<FormSection> formSections,
-    Map dataObject,
-  ) async {
+      BuildContext context,
+      List<FormSection> formSections,
+      Map dataObject,
+      ) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
+    assignedFields.clear();
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -24,6 +26,16 @@ class OvcHouseholdReferralSkipLogic {
     inputFieldIds = inputFieldIds.toSet().toList();
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
+
+      if(inputFieldId=='qAed23reDPP'){
+        Map hiddenOptions={};
+        assignedFields['qAed23reDPP'] = 'Facility';
+        if(value=='Facility'){
+        hiddenOptions['Community'] = true;}
+        hiddenInputFieldOptions=hiddenOptions;
+      }
+
+
       if (inputFieldId == 'qAed23reDPP' ) {
         hiddenSections['SeRefoCo'] = true;
       }
@@ -177,7 +189,7 @@ class OvcHouseholdReferralSkipLogic {
     }
     for (String sectionId in hiddenSections.keys) {
       List<FormSection> allFormSections =
-          FormUtil.getFlattenFormSections(formSections);
+      FormUtil.getFlattenFormSections(formSections);
       List<String> hiddenSectionInputFieldIds = FormUtil.getFormFieldIds(
           allFormSections
               .where((formSection) => formSection.id == sectionId)
@@ -186,11 +198,16 @@ class OvcHouseholdReferralSkipLogic {
         hiddenFields[inputFieldId] = true;
       }
     }
+    setAssignedValues(context, assignedFields);
     resetValuesForHiddenFields(context, hiddenFields.keys);
     resetValuesForHiddenInputFieldOptions(context);
     resetValuesForHiddenSections(context, formSections);
   }
-
+  static void setAssignedValues(BuildContext context, Map assignedValues) {
+    assignedFields.forEach((key, value) {
+      assignInputFieldValue(context, key, value);
+    });
+  }
   static resetValuesForHiddenFields(BuildContext context, inputFieldIds) {
     for (String inputFieldId in inputFieldIds) {
       if (hiddenFields[inputFieldId]) {
@@ -207,18 +224,18 @@ class OvcHouseholdReferralSkipLogic {
   }
 
   static resetValuesForHiddenSections(
-    BuildContext context,
-    List<FormSection> formSections,
-  ) {
+      BuildContext context,
+      List<FormSection> formSections,
+      ) {
     Provider.of<ServiceFormState>(context, listen: false)
         .setHiddenSections(hiddenSections);
   }
 
   static assignInputFieldValue(
-    BuildContext context,
-    String inputFieldId,
-    String? value,
-  ) {
+      BuildContext context,
+      String inputFieldId,
+      String? value,
+      ) {
     Provider.of<ServiceFormState>(context, listen: false).setFormFieldState(
       inputFieldId,
       value,

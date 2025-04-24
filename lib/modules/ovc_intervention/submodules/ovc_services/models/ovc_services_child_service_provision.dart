@@ -87,7 +87,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'uVmlqLmHYpD',
                 name: 'CLHIV ART Card Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa CLHIV ART Card',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa CLHIV ART Card',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -110,7 +111,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'oTSVSO3iHTk',
                 name: 'CHILD STIMULATION  Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa CHILD STIMULATION ',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa CHILD STIMULATION ',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -141,7 +143,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'fVpcWBp0Ngp',
                 name: 'TB SCREENING Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa TB SCREENING ',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa TB SCREENING ',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -165,7 +168,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'EnrZPBFxZuX',
                 name: 'FOOD SUPPORT Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa FOOD SUPPORT',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa FOOD SUPPORT',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 isReadOnly: true,
@@ -200,7 +204,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'V1HnY5m2Pmv',
                 name: 'FOOD PREV Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa FOOD PREV',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa FOOD PREV',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 isReadOnly: true,
@@ -235,7 +240,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'GtejBpkVvtD',
                 name: 'FOOD PREP Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa FOOD PREP',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa FOOD PREP',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 isReadOnly: true,
@@ -270,7 +276,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'lQYnoeqfKpe',
                 name: 'TIPPY TAP Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa TIPPY TAP',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa TIPPY TAP',
                 isReadOnly: true,
                 valueType: 'DATE',
                 firstDate: firstDate,
@@ -296,7 +303,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'pUphS6E1Gu5',
                 name: 'SOACKAGE PIT Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa SOACKAGE PIT ',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa SOACKAGE PIT ',
                 isReadOnly: true,
                 valueType: 'DATE',
                 firstDate: firstDate,
@@ -331,7 +339,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'aqJBZDBzh4m',
                 name: 'WASH MESSAGING Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa WASH MESSAGING ',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa WASH MESSAGING ',
                 isReadOnly: true,
                 valueType: 'DATE',
                 firstDate: firstDate,
@@ -357,7 +366,8 @@ class OvcServicesChildServiceProvision {
             InputField(
               id: 'otd2tndsE4Z',
               name: 'HIV ADHERANCE SUPPORT Service provided',
-              translatedName: "Lits'ebeletso tsa HIV ADHERANCE SUPPORT li fanoe",
+              translatedName:
+                  "Lits'ebeletso tsa HIV ADHERANCE SUPPORT li fanoe",
               valueType: 'TRUE_ONLY',
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
@@ -365,7 +375,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'ruZFn94Hcyw',
                 name: 'HIV ADHERANCE SUPPORT Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HIV ADHERANCE SUPPORT',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa HIV ADHERANCE SUPPORT',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -480,7 +491,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'jsEr16lnber',
                 name: 'IMMUNIZATION Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa IMMUNIZATION',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa IMMUNIZATION',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -511,7 +523,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'gYAZrh9o1DB',
                 name: 'MALNUTRITION Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa MALNUTRITION',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa MALNUTRITION',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -542,7 +555,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'h6obb1v1stw',
                 name: 'TB REFFER Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa TB REFFER',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa TB REFFER',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -573,7 +587,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'wjD9ZJmft7n',
                 name: 'FOOD SUPPLIMENTS Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa FOOD SUPPLIMENTS',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa FOOD SUPPLIMENTS',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -596,7 +611,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'F8x8QAoFQBO',
                 name: 'ANY HEALTH RELATED Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa ANY HEALTH RELATED',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa ANY HEALTH RELATED',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -653,7 +669,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'UHWzhDsQdoB',
                 name: 'Savings Group Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa Savings Group',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa Savings Group',
                 valueType: 'DATE',
                 inputColor: const Color(0xFF0000FF),
                 labelColor: const Color(0xFF737373)),
@@ -706,7 +723,8 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'j1yzHzO0w6w',
                 name: 'FINANCIAL EDUCATION  Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa FINANCIAL EDUCATION ',
+                translatedName:
+                    'Letsatsi la Kabo ea Litšebeletso tsa FINANCIAL EDUCATION ',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 isReadOnly: true,
@@ -812,7 +830,8 @@ class OvcServicesChildServiceProvision {
           InputField(
               id: 'fFuabYbLUjz',
               name: 'RTEEN/Parenting Service Provision Date',
-              translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa RTEEN/Parenting',
+              translatedName:
+                  'Letsatsi la Kabo ea Litšebeletso tsa RTEEN/Parenting',
               valueType: 'DATE',
               isReadOnly: true,
               firstDate: firstDate,
@@ -879,7 +898,8 @@ class OvcServicesChildServiceProvision {
           InputField(
               id: 'qwnfgBG2web',
               name: 'VAC MESSAGING Service Provision Date',
-              translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa VAC MESSAGING',
+              translatedName:
+                  'Letsatsi la Kabo ea Litšebeletso tsa VAC MESSAGING',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
@@ -909,7 +929,8 @@ class OvcServicesChildServiceProvision {
           InputField(
               id: 'Dw1xLXILErU',
               name: 'VAC Legal Messaging Provision Date',
-              translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa VAC Legal Messaging',
+              translatedName:
+                  'Letsatsi la Kabo ea Litšebeletso tsa VAC Legal Messaging',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
@@ -939,7 +960,8 @@ class OvcServicesChildServiceProvision {
           InputField(
               id: 'pBVmFpsSGN7',
               name: 'COUNSELLING Service Provision Date',
-              translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa COUNSELLING',
+              translatedName:
+                  'Letsatsi la Kabo ea Litšebeletso tsa COUNSELLING',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
@@ -1068,7 +1090,8 @@ class OvcServicesChildServiceProvision {
           InputField(
               id: 'P06od0qmlSR',
               name: 'LEGAL PROTECTION  Provision Date',
-              translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa LEGAL PROTECTION ',
+              translatedName:
+                  'Letsatsi la Kabo ea Litšebeletso tsa LEGAL PROTECTION ',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
@@ -1107,7 +1130,8 @@ class OvcServicesChildServiceProvision {
           InputField(
               id: 'zYrrrFd48S5',
               name: 'Aflatoun/teen Service Provision Date',
-              translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa Aflatoun/teen',
+              translatedName:
+                  'Letsatsi la Kabo ea Litšebeletso tsa Aflatoun/teen',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF9B2BAE),
@@ -1137,7 +1161,8 @@ class OvcServicesChildServiceProvision {
           InputField(
               id: 'wB2jXLTYtDb',
               name: 'HOMEWORK CLUBService Provision Date',
-              translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HOMEWORK CLUB',
+              translatedName:
+                  'Letsatsi la Kabo ea Litšebeletso tsa HOMEWORK CLUB',
               valueType: 'DATE',
               firstDate: firstDate,
               inputColor: const Color(0xFF9B2BAE),

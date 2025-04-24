@@ -21,22 +21,24 @@ import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_child_info_top_header.dart';
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_service_tb_assessment_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_tbscreening.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/skip_logics/ovc_child_tb_assessment_skip_logic.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_service_nutrition_assessment_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_service_nutrition_assesment_form.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/skip_logics/ovc_child_nutrition_assessment_skip_logic.dart';
 import 'package:provider/provider.dart';
 
-class OvcServiceTBAssessmentForm extends StatefulWidget {
-  const OvcServiceTBAssessmentForm({Key? key}) : super(key: key);
+import '../../../models/ovc_service_nutrition_assesment_form.dart';
+
+class OvcServiceNutritionAssessmentForm extends StatefulWidget {
+  const OvcServiceNutritionAssessmentForm ({Key? key}) : super(key: key);
 
   @override
-  State<OvcServiceTBAssessmentForm> createState() =>
-      _OvcServiceTBAssessmentFormState();
+  State<OvcServiceNutritionAssessmentForm > createState() =>
+      _OvcServiceNutritionAssessmentFormState();
 }
 
-class _OvcServiceTBAssessmentFormState
-    extends State<OvcServiceTBAssessmentForm> {
-  final String label = 'Child TB Assessment';
+class _OvcServiceNutritionAssessmentFormState
+    extends State<OvcServiceNutritionAssessmentForm > {
+  final String label = 'Child Nutrition Assessment';
   List<FormSection>? formSections;
   bool isFormReady = false;
   bool isSaving = false;
@@ -53,12 +55,12 @@ class _OvcServiceTBAssessmentFormState
   void setFormSections() {
     mandatoryFields = [
       'eventDate',
-      ...OvcServicesTbscreening.getMandatoryFields()
+      ...OvcServicesNutritionscreening.getMandatoryFields()
     ];
     OvcHouseholdChild? child =
         Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
             .currentOvcHouseholdChild;
-    formSections = OvcServicesTbscreening.getFormSections(
+    formSections = OvcServicesNutritionscreening.getFormSections(
       firstDate: child!.createdDate!,
     );
     if (child.enrollmentOuAccessible! != true) {
@@ -91,10 +93,10 @@ class _OvcServiceTBAssessmentFormState
   evaluateSkipLogics() {
     Timer(
       const Duration(milliseconds: 200),
-      () async {
+          () async {
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
-        await OvcChildTBAssessmentSkipLogic.evaluateSkipLogics(
+        await OvcChildNutritionAssessmentSkipLogic.evaluateSkipLogics(
           context,
           formSections!,
           dataObject,
@@ -110,15 +112,15 @@ class _OvcServiceTBAssessmentFormState
   }
 
   void onSaveForm(
-    BuildContext context,
-    Map dataObject,
-    OvcHouseholdChild? currentOvcHouseholdChild,
-  ) async {
+      BuildContext context,
+      Map dataObject,
+      OvcHouseholdChild? currentOvcHouseholdChild,
+      ) async {
     bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       dataObject,
       hiddenFields:
-          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
       checkBoxInputFields: FormUtil.getInputFieldByValueType(
         valueType: 'CHECK_BOX',
         formSections: formSections ?? [],
@@ -128,7 +130,7 @@ class _OvcServiceTBAssessmentFormState
       mandatoryFields,
       dataObject,
       hiddenFields:
-          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
       checkBoxInputFields: FormUtil.getInputFieldByValueType(
         valueType: 'CHECK_BOX',
         formSections: formSections ?? [],
@@ -144,8 +146,8 @@ class _OvcServiceTBAssessmentFormState
           dataObject['location'] ?? currentOvcHouseholdChild?.orgUnit ?? '';
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-          OvcServiceTBAssessmentConstant.program,
-          OvcServiceTBAssessmentConstant.programStage,
+          OvcServiceNutritionAssessmentConstant.program,
+          OvcServiceNutritionAssessmentConstant.programStage,
           orgUnit,
           formSections ?? [],
           dataObject,
@@ -221,53 +223,53 @@ class _OvcServiceTBAssessmentFormState
                         Container(
                           child: !isFormReady
                               ? const CircularProcessLoader(
-                                  color: Colors.blueGrey,
-                                )
+                            color: Colors.blueGrey,
+                          )
                               : Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 10.0,
-                                        left: 13.0,
-                                        right: 13.0,
-                                      ),
-                                      child: EntryFormContainer(
-                                        hiddenSections:
-                                            serviceFormState.hiddenSections,
-                                        hiddenFields:
-                                            serviceFormState.hiddenFields,
-                                        formSections: formSections,
-                                        mandatoryFieldObject:
-                                            mandatoryFieldObject,
-                                        unFilledMandatoryFields:
-                                            unFilledMandatoryFields,
-                                        dataObject: serviceFormState.formState,
-                                        isEditableMode:
-                                            serviceFormState.isEditableMode,
-                                        onInputValueChange: onInputValueChange,
-                                      ),
-                                    ),
-                                    Visibility(
-                                      visible: serviceFormState.isEditableMode,
-                                      child: EntryFormSaveButton(
-                                        label: isSaving
-                                            ? currentLanguage == 'lesotho'
-                                                ? 'E ntse e boloka...'
-                                                : 'Saving ...'
-                                            : currentLanguage == 'lesotho'
-                                                ? 'Boloka'
-                                                : 'Save',
-                                        labelColor: Colors.white,
-                                        buttonColor: const Color(0xFF4B9F46),
-                                        fontSize: 15.0,
-                                        onPressButton: () => onSaveForm(
-                                            context,
-                                            serviceFormState.formState,
-                                            currentOvcHouseholdChild),
-                                      ),
-                                    )
-                                  ],
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  left: 13.0,
+                                  right: 13.0,
                                 ),
+                                child: EntryFormContainer(
+                                  hiddenSections:
+                                  serviceFormState.hiddenSections,
+                                  hiddenFields:
+                                  serviceFormState.hiddenFields,
+                                  formSections: formSections,
+                                  mandatoryFieldObject:
+                                  mandatoryFieldObject,
+                                  unFilledMandatoryFields:
+                                  unFilledMandatoryFields,
+                                  dataObject: serviceFormState.formState,
+                                  isEditableMode:
+                                  serviceFormState.isEditableMode,
+                                  onInputValueChange: onInputValueChange,
+                                ),
+                              ),
+                              Visibility(
+                                visible: serviceFormState.isEditableMode,
+                                child: EntryFormSaveButton(
+                                  label: isSaving
+                                      ? currentLanguage == 'lesotho'
+                                      ? 'E ntse e boloka...'
+                                      : 'Saving ...'
+                                      : currentLanguage == 'lesotho'
+                                      ? 'Boloka'
+                                      : 'Save',
+                                  labelColor: Colors.white,
+                                  buttonColor: const Color(0xFF4B9F46),
+                                  fontSize: 15.0,
+                                  onPressButton: () => onSaveForm(
+                                      context,
+                                      serviceFormState.formState,
+                                      currentOvcHouseholdChild),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     );

@@ -9,6 +9,10 @@ import 'package:kb_mobile_app/models/current_user.dart';
 import 'package:kb_mobile_app/modules/dreams_intervention/constants/agyw_dreams_re_assessment_constant.dart';
 import 'package:workmanager/workmanager.dart';
 
+@pragma("vm:entry-point")
+@pragma("vm:entry-point", true)
+@pragma("vm:entry-point", !const bool.fromEnvironment("dart.vm.product"))
+@pragma("vm:entry-point", "call")
 callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     var autoSyncTaskName = WorkmanagerConstants.autoSync;
@@ -33,7 +37,9 @@ callbackDispatcher() {
     }
   });
 }
-
+@pragma("vm:entry-point")
+@pragma("vm:entry-point", true)
+@pragma("vm:entry-point", !const bool.fromEnvironment("dart.vm.product"))
 class WorkmanagerService {
   static void init() {
     Workmanager().initialize(callbackDispatcher, isInDebugMode: false);

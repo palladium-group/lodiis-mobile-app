@@ -21,6 +21,8 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/components/ovc_child_assessment_selection.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/constants/ovc_asessment_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_hiv_assessment_form.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_nutrition_assesment_form.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_tb_assessment18.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_tb_assessment_form.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_well_being_assessment_form.dart';
 import 'package:provider/provider.dart';
@@ -63,15 +65,29 @@ class OvcChildAssessment extends StatelessWidget {
                     builder: (context) => const OvcServiceTBAssessmentForm(),
                   ),
                 )
-              : assessmentResponse == 'HIV'
-                  ? Navigator.push(
+          : assessmentResponse == 'TB18'
+              ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const OvcServiceTB18AssessmentForm(),
+              ),
+            )
+              : assessmentResponse == 'Nutrition'
+                   ? Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            const OvcServiceHIVAssessmentForm(),
+                        builder: (context) => const OvcServiceNutritionAssessmentForm(),
                       ),
                     )
-                  : '';
+                  : assessmentResponse == 'HIV'
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const OvcServiceHIVAssessmentForm(),
+                          ),
+                        )
+                      : '';
     }
   }
 

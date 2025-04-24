@@ -14,6 +14,8 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants/ovc_service_nutrition_assessment_constant.dart';
+
 class OvcChildCasePlan extends StatelessWidget {
   const OvcChildCasePlan({Key? key}) : super(key: key);
   final String label = 'Child Case Plan';
@@ -49,6 +51,7 @@ class OvcChildCasePlan extends StatelessWidget {
                     OvcServiceHIVAssessmentConstant.programStage,
                     OvcServiceWellBeingAssessmentConstant.programStage,
                     OvcServiceTBAssessmentConstant.programStage,
+                    OvcServiceNutritionAssessmentConstant.programStage
                   ],
                   casePlanProgram: OvcChildCasePlanConstant.program,
                   casePlanProgramStage:

@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.hisptanzania.kb_mobile_app.testing">
+   >
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

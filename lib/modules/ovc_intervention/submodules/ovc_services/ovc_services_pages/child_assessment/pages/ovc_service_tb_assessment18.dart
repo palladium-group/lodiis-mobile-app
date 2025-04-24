@@ -22,20 +22,20 @@ import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_child_info
 import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/constants/ovc_intervention_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_service_tb_assessment_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_tbscreening.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_tbscreening18.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/skip_logics/ovc_child_tb_assessment_skip_logic.dart';
 import 'package:provider/provider.dart';
 
-class OvcServiceTBAssessmentForm extends StatefulWidget {
-  const OvcServiceTBAssessmentForm({Key? key}) : super(key: key);
+class OvcServiceTB18AssessmentForm extends StatefulWidget {
+  const OvcServiceTB18AssessmentForm({Key? key}) : super(key: key);
 
   @override
-  State<OvcServiceTBAssessmentForm> createState() =>
-      _OvcServiceTBAssessmentFormState();
+  State<OvcServiceTB18AssessmentForm> createState() =>
+      _OvcServiceTB18AssessmentFormState();
 }
 
-class _OvcServiceTBAssessmentFormState
-    extends State<OvcServiceTBAssessmentForm> {
+class _OvcServiceTB18AssessmentFormState
+    extends State<OvcServiceTB18AssessmentForm> {
   final String label = 'Child TB Assessment';
   List<FormSection>? formSections;
   bool isFormReady = false;
@@ -53,12 +53,12 @@ class _OvcServiceTBAssessmentFormState
   void setFormSections() {
     mandatoryFields = [
       'eventDate',
-      ...OvcServicesTbscreening.getMandatoryFields()
+      ...OvcServicesTb18screening.getMandatoryFields()
     ];
     OvcHouseholdChild? child =
         Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
             .currentOvcHouseholdChild;
-    formSections = OvcServicesTbscreening.getFormSections(
+    formSections = OvcServicesTb18screening.getFormSections(
       firstDate: child!.createdDate!,
     );
     if (child.enrollmentOuAccessible! != true) {
@@ -91,7 +91,7 @@ class _OvcServiceTBAssessmentFormState
   evaluateSkipLogics() {
     Timer(
       const Duration(milliseconds: 200),
-      () async {
+          () async {
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
         await OvcChildTBAssessmentSkipLogic.evaluateSkipLogics(
@@ -110,15 +110,15 @@ class _OvcServiceTBAssessmentFormState
   }
 
   void onSaveForm(
-    BuildContext context,
-    Map dataObject,
-    OvcHouseholdChild? currentOvcHouseholdChild,
-  ) async {
+      BuildContext context,
+      Map dataObject,
+      OvcHouseholdChild? currentOvcHouseholdChild,
+      ) async {
     bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       dataObject,
       hiddenFields:
-          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
       checkBoxInputFields: FormUtil.getInputFieldByValueType(
         valueType: 'CHECK_BOX',
         formSections: formSections ?? [],
@@ -128,7 +128,7 @@ class _OvcServiceTBAssessmentFormState
       mandatoryFields,
       dataObject,
       hiddenFields:
-          Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
+      Provider.of<ServiceFormState>(context, listen: false).hiddenFields,
       checkBoxInputFields: FormUtil.getInputFieldByValueType(
         valueType: 'CHECK_BOX',
         formSections: formSections ?? [],
@@ -221,53 +221,53 @@ class _OvcServiceTBAssessmentFormState
                         Container(
                           child: !isFormReady
                               ? const CircularProcessLoader(
-                                  color: Colors.blueGrey,
-                                )
+                            color: Colors.blueGrey,
+                          )
                               : Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 10.0,
-                                        left: 13.0,
-                                        right: 13.0,
-                                      ),
-                                      child: EntryFormContainer(
-                                        hiddenSections:
-                                            serviceFormState.hiddenSections,
-                                        hiddenFields:
-                                            serviceFormState.hiddenFields,
-                                        formSections: formSections,
-                                        mandatoryFieldObject:
-                                            mandatoryFieldObject,
-                                        unFilledMandatoryFields:
-                                            unFilledMandatoryFields,
-                                        dataObject: serviceFormState.formState,
-                                        isEditableMode:
-                                            serviceFormState.isEditableMode,
-                                        onInputValueChange: onInputValueChange,
-                                      ),
-                                    ),
-                                    Visibility(
-                                      visible: serviceFormState.isEditableMode,
-                                      child: EntryFormSaveButton(
-                                        label: isSaving
-                                            ? currentLanguage == 'lesotho'
-                                                ? 'E ntse e boloka...'
-                                                : 'Saving ...'
-                                            : currentLanguage == 'lesotho'
-                                                ? 'Boloka'
-                                                : 'Save',
-                                        labelColor: Colors.white,
-                                        buttonColor: const Color(0xFF4B9F46),
-                                        fontSize: 15.0,
-                                        onPressButton: () => onSaveForm(
-                                            context,
-                                            serviceFormState.formState,
-                                            currentOvcHouseholdChild),
-                                      ),
-                                    )
-                                  ],
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  left: 13.0,
+                                  right: 13.0,
                                 ),
+                                child: EntryFormContainer(
+                                  hiddenSections:
+                                  serviceFormState.hiddenSections,
+                                  hiddenFields:
+                                  serviceFormState.hiddenFields,
+                                  formSections: formSections,
+                                  mandatoryFieldObject:
+                                  mandatoryFieldObject,
+                                  unFilledMandatoryFields:
+                                  unFilledMandatoryFields,
+                                  dataObject: serviceFormState.formState,
+                                  isEditableMode:
+                                  serviceFormState.isEditableMode,
+                                  onInputValueChange: onInputValueChange,
+                                ),
+                              ),
+                              Visibility(
+                                visible: serviceFormState.isEditableMode,
+                                child: EntryFormSaveButton(
+                                  label: isSaving
+                                      ? currentLanguage == 'lesotho'
+                                      ? 'E ntse e boloka...'
+                                      : 'Saving ...'
+                                      : currentLanguage == 'lesotho'
+                                      ? 'Boloka'
+                                      : 'Save',
+                                  labelColor: Colors.white,
+                                  buttonColor: const Color(0xFF4B9F46),
+                                  fontSize: 15.0,
+                                  onPressButton: () => onSaveForm(
+                                      context,
+                                      serviceFormState.formState,
+                                      currentOvcHouseholdChild),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     );
