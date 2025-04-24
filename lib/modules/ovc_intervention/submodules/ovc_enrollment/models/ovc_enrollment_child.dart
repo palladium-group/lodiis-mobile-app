@@ -946,7 +946,7 @@ class OvcEnrollmentChild {
             id: 'mTv9eZZq0Nz',
             name: 'Which is the primary vulnerability?',
             translatedName: 'Tlokotsi ea mantlha ea ngoana ke e fe?',
-            isReadOnly: true,
+
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'TEXT',
