@@ -46,7 +46,7 @@ android {
 
     defaultConfig {
         applicationId "org.hisptanzania.kb_mobile_app"
-        minSdkVersion 21
+
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

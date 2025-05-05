@@ -55,15 +55,18 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       LoginTopIcon(
-                        appLabel:currentLanguage == 'lesotho' ? translatedAppLabel :appLabel,
+                        appLabel: currentLanguage == 'lesotho'
+                            ? translatedAppLabel
+                            : appLabel,
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       LoginFormContainer(
                         currentLanguage: currentLanguage,
-                        appLabel:currentLanguage == 'lesotho' ? translatedAppLabel :appLabel,
-                      
+                        appLabel: currentLanguage == 'lesotho'
+                            ? translatedAppLabel
+                            : appLabel,
                       )
                     ],
                   );
