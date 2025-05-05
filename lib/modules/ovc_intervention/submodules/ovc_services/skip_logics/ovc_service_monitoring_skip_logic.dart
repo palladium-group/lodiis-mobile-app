@@ -252,12 +252,19 @@ class OvcServiceMonitoringSkipLogic {
           "JINWcteYR7D",
           implementingPartner,
         );
-      } else if (key == 'EaJTFrklMo5' && value == 'true') {
+      } else if (key == 'CaAOIbC10yv' && value == 'true') {
+        hiddenFields['HKNayBlUGII'] = hideServicesByImplementingPartner(
+          "HKNayBlUGII",
+          implementingPartner,
+        );
+      }
+      else if (key == 'EaJTFrklMo5' && value == 'true') {
         hiddenFields['gtXZARFG9Pa'] = hideServicesByImplementingPartner(
           "gtXZARFG9Pa",
           implementingPartner,
         );
-      } else if (key == 'HsxFZOuV4oZ' && value == 'true') {
+      }
+      else if (key == 'HsxFZOuV4oZ' && value == 'true') {
         hiddenFields['EG4MGO83vqG'] = hideServicesByImplementingPartner(
           "EG4MGO83vqG",
           implementingPartner,
@@ -325,6 +332,11 @@ class OvcServiceMonitoringSkipLogic {
       } else if (key == 'EaJTFrklMo5' && value == 'true') {
         hiddenFields['gtXZARFG9Pa'] = hideServicesByImplementingPartner(
           "gtXZARFG9Pa",
+          implementingPartner,
+        );
+      }else if (key == 'CaAOIbC10yv' && value == 'true') {
+        hiddenFields['HKNayBlUGII'] = hideServicesByImplementingPartner(
+          "HKNayBlUGII",
           implementingPartner,
         );
       }

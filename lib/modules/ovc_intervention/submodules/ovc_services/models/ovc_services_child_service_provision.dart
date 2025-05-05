@@ -600,6 +600,38 @@ class OvcServicesChildServiceProvision {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
+              id: 'CRVDu0WUOFm',
+              name: 'Nutrition Messaging Service provided',
+              translatedName: "Lits'ebeletso tsa Nutrition Messaging li fanoe",
+              valueType: 'TRUE_ONLY',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'cyEa4fwKL7O',
+                name: 'Nutrition Messaging Service Provision Date',
+                translatedName:
+                'Letsatsi la Kabo ea Litšebeletso tsa Nutrition Messaging',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+              id: 'hyVWFxIg7x6',
+              name: 'Nutrition Messaging session number',
+              translatedName: 'Thupelo ea Nutrition Messaging',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'OypZVFbZ1r0',
+                name: 'Nutrition Messaging Comment',
+                translatedName: 'Tlhaloso ea Nutrition Messaging',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
               id: 'DoU7AeHDsUs',
               name: 'FOOD SUPPLIMENTS Service provided',
               translatedName: "Lits'ebeletso tsa FOOD SUPPLEMENTS li fanoe",

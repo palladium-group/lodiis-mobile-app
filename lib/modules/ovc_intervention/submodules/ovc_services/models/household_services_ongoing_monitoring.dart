@@ -104,6 +104,21 @@ class HouseholdServicesOngoingMonitoring {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
+                id: 'HKNayBlUGII',
+                name: 'Nutrition Messaging Service progress',
+                translatedName: 'Tsoelo-pele ea litšebeletso tsa Nutrition Messaging',
+                valueType: 'TEXT',
+                options: [
+                  InputFieldOption(
+                      code: 'Incomplete', name: 'Incomplete', translatedName: 'Ha ea phetheloa'),
+                  InputFieldOption(
+                      code: 'Inprogress', name: 'Inprogress', translatedName: 'E mocheng'),
+                  InputFieldOption(
+                      code: 'Completed', name: 'Completed', translatedName: 'E phethetsoe'),
+                ],
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
                 id: 'JINWcteYR7D',
                 name: 'FOOD PREV Service progress',
                 translatedName: 'Tsoelo-pele ea litšebeletso tsa FOOD PREV',
