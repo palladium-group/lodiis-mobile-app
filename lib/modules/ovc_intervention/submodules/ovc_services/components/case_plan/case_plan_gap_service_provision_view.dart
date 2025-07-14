@@ -195,7 +195,9 @@ class _CasePlanGapServiceProvisionViewState
         children: [
           TableRow(children: [
             _getTableCell(
-                label: currentLanguage == 'lesotho' ? 'Letsatsi' : 'Date',
+                label: currentLanguage == 'lesotho'
+                    ? 'Letsatsi'
+                    : 'Date',
                 color: const Color(0xFF8A9589)),
             _getTableCell(
                 label: currentLanguage == 'lesotho'
@@ -203,7 +205,9 @@ class _CasePlanGapServiceProvisionViewState
                     : 'Service provided',
                 color: const Color(0xFF8A9589)),
             _getTableCell(
-                label: currentLanguage == 'lesotho' ? "Maikutlo" : 'Comment',
+                label: currentLanguage == 'lesotho'
+                    ? "Maikutlo"
+                    : 'Comment',
                 color: const Color(0xFF8A9589)),
           ]),
           TableRow(children: [
