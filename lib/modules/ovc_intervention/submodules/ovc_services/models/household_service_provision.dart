@@ -15,7 +15,7 @@ class HouseholdServiceProvision {
           borderColor: const Color(0xFF4D9E49),
           inputFields: [
             InputField(
-              id: 'y8ToqnbVz1o',
+              id: 'HzI5X2yHef6',
               name: 'HIVS&D Service provided',
               translatedName: "Lits'ebeletso tsa HIVS&D li fanoe",
               valueType: 'TRUE_ONLY',
@@ -39,7 +39,7 @@ class HouseholdServiceProvision {
               labelColor: const Color(0xFF737373),
             ),
             InputField(
-                id: 'dwhnvU5m667',
+                id: 'y8ToqnbVz1o',
                 name: 'HIVS&D Comment',
                 translatedName: 'Tlhaloso ea HIVS&D',
                 valueType: 'TEXT',
