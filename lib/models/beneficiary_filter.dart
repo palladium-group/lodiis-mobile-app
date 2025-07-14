@@ -645,13 +645,13 @@ class BeneficiaryFilter {
           id: 'implementingPartner',
           name: 'Implementing Partner',
           translatedName: 'Basebetsi mmoho',
-          interventions: ['dreams', 'ovc', 'ogac', 'education', 'pp_prev'],
+          interventions: ['dreams', 'ogac', 'education', 'pp_prev'],
           filterInput: getImplementingPartnerFilterInput(currentIntervention)),
       BeneficiaryFilter(
           id: 'age',
           name: 'Age',
           translatedName: 'Lilemo',
-          interventions: ['ogac', 'education', 'pp_prev'],
+          interventions: ['ovc','ogac', 'education', 'pp_prev'],
           filterInput: getAgeFilterInput(currentIntervention)),
       BeneficiaryFilter(
           id: 'age',
@@ -663,7 +663,7 @@ class BeneficiaryFilter {
           id: 'sex',
           name: 'Sex',
           translatedName: 'Boleng',
-          interventions: ['ogac', 'education', 'pp_prev', 'dreams'],
+          interventions: ['ovc','ogac', 'education', 'pp_prev', 'dreams'],
           filterInput: getSexFilterInput(currentIntervention)),
       BeneficiaryFilter(
           id: 'grade',
