@@ -124,7 +124,7 @@ class AppLogsService {
         formattedMessage = 'Can not upload services for unknown intervention';
       } else if (attributeRegEx.hasMatch(message) ||
           notValidRegEx.hasMatch(message)) {
-        formattedMessage = 'Attribute has invalid value type';
+        formattedMessage = message;
       } else if (ouAccessRegEx.hasMatch(message)) {
         String ouId = message.split(':').last.trim();
         var ou = (await OrganisationUnitService().getOrganisationUnits([ouId]))
