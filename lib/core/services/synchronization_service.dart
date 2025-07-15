@@ -733,12 +733,18 @@ class SynchronizationService {
     Map body = {};
     body['events'] = teiEvents.map((Events event) {
       var data = event.toOffline(event);
+      if(data['dataValues'] != null){
+        data['dataValues'].removeWhere((item)=>item['dataElement']=='eventDate');
+
+      }
+
       if (data['trackedEntityInstance'] == null ||
           data['trackedEntityInstance'] == '') {
         data.remove('trackedEntityInstance');
       }
       return data;
     }).toList();
+    print(body);
     try {
       var queryParameters = {
         "strategy": "CREATE_AND_UPDATE",
@@ -748,9 +754,13 @@ class SynchronizationService {
         json.encode(body),
         queryParameters: queryParameters,
       );
+      print(response.statusCode);
+      print(response.body);
+
       if (response.statusCode >= 400 && response.statusCode != 409) {
         var message = await _getHttpResponseAppLogs(response.body);
         if (message.isNotEmpty) {
+
           AppLogs log = AppLogs(
               type: AppLogsConstants.errorLogType,
               message: 'uploadTeiEventsToTheServer: $message');
