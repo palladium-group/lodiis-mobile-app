@@ -31,7 +31,7 @@ class OvcServicesNutritionscreening {
           color: const Color(0xFF4B9F46),
           inputFields: [
             InputField(
-                id: 'SESFM9vwRMy',
+                id: 'JnCFOeouVIy',
                 name: '1. Check weight on the growth chart',
                 translatedName: '1. Khetha boima ba ngoana bukaneng',
                 valueType: 'TEXT',
@@ -68,14 +68,14 @@ class OvcServicesNutritionscreening {
                 options: [
                   InputFieldOption(
                       code:
-                      'Always Pleasant ',
+                      'Always Pleasant',
                       name:
-                      'Always Pleasant ',
+                      'Always Pleasant',
                       translatedName:
-                      'Always Pleasant '),
+                      'Always Pleasant'),
                   InputFieldOption(
-                      code: 'Sometimes pleasant',
-                      name: 'Sometimes pleasant',
+                      code: 'Sometimes Pleasant',
+                      name: 'Sometimes Pleasant',
                       translatedName: 'Sometimes pleasant'),
                   InputFieldOption(
                       code: 'Never Pleasant',
