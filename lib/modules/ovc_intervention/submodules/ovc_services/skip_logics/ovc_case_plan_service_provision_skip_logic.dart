@@ -54,6 +54,17 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
           hiddenFields['i9icxSZ8HCf'] = false;
         }
       }
+      else if (key == 'HKCv7lkLexo' && value == 'true') {
+        hiddenFields['otd2tndsE4Z'] = hideServicesByImplementingPartner(
+          "otd2tndsE4Z",
+          implementingPartner,
+        );
+        var inputValue = '${dataObject['otd2tndsE4Z']}';
+        if (inputValue == 'true') {
+          hiddenFields['ruZFn94Hcyw'] = false;
+          hiddenFields['dwhnvU5m667'] = false;
+        }
+      }
       else if (key == 'bRv4ZZy5MDH' && value == 'true'){
         hiddenFields['dJO2m3CXfM5'] = hideServicesByImplementingPartner(
           "dJO2m3CXfM5",
