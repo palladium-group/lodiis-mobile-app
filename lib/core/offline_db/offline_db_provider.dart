@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class OfflineDbProvider {
-  final String databaseName = "lodiis_testing";
+  final String databaseName = "lodiis";
   Database? _db;
   // Script for migrations as well as initialization of tables
   final List<String> initialQuery = [
