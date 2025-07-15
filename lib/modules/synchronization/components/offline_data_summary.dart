@@ -58,7 +58,7 @@ class OfflineDataSummary extends StatelessWidget {
                       child: Text(
                         languageState.currentLanguage == 'lesotho'
                             ? 'Basebeletsuoa ba so sync'
-                            : 'Unsynced Beneficiaries',
+                            : 'Unsynced Beneficiaries and Services',
                         style: const TextStyle().copyWith(
                           fontSize: 14.0,
                           fontWeight: FontWeight.w500,
@@ -85,7 +85,7 @@ class OfflineDataSummary extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Expanded(
+                    /*Expanded(
                       flex: 2,
                       child: Text(
                         languageState.currentLanguage == 'lesotho'
@@ -96,8 +96,8 @@ class OfflineDataSummary extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                    Expanded(
+                    ),*/
+                  /*  Expanded(
                       child: Text(
                         '$beneficiaryServiceCount',
                         style: const TextStyle().copyWith(
@@ -105,7 +105,7 @@ class OfflineDataSummary extends StatelessWidget {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                    )
+                    )*/
                   ],
                 ),
               ),
@@ -115,7 +115,7 @@ class OfflineDataSummary extends StatelessWidget {
                   marginLeft: 30.0,
                   marginRight: 30.0,
                   vertical: 5.0,
-                  label: 'Data download and upload',
+                  label: 'Upload your changes',
                   svgIconPath: 'assets/icons/sync.svg',
                   svgIconHeight: 15.0,
                   svgIconWidth: 15.0,

@@ -99,8 +99,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
       firstDate: widget.enrollmentDate,
     )) {
 
-       // Removing the 'Safe','Stable','Schooled' section for caregiver
-      if (!(widget.isHouseholdCasePlan && ['Safe','Stable','Schooled'].contains(formSection.id))) {
+       // Removing the 'Safe','Stable','Schooled' section for caregiver widget.isHouseholdCasePlan
+      if (!(['Safe','Stable','Schooled'].contains(formSection.id))) {
         borderColors[formSection.id] = formSection.borderColor;
         formSection.borderColor = Colors.transparent;
         formSections.add(formSection);
@@ -249,7 +249,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
               (domainDataObject['gaps'].length > 0 &&
                   (domainDataObject[casePlanFirstGoal] != null ||
                       '${domainDataObject[casePlanFirstGoal]}'.trim() != '')) ||
-          domainType == OvcCasePlanConstant.householdCategorizationSection) {
+          domainType == OvcCasePlanConstant.casePlanDomainType) {
         try {
           List<String> hiddenFields = [
             OvcCasePlanConstant.casePlanToGapLinkage,
