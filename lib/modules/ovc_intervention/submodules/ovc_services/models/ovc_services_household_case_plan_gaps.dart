@@ -21,20 +21,8 @@ class OvcHouseholdServicesCasePlanGaps {
                 valueType: 'TRUE_ONLY',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'b6hvMQuH3oJ',
-                name: '(HIV S&D) Name of responsible internal person',
-                translatedName: 'Motho ea ikarabellang ka hare ho HIV S&D',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4D9E49),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'iy0KZ7K4qld',
-                name: '(HIV S&D) Name of responsible external Person',
-                translatedName: 'Motho ea ikarabellang ka ntle ho HIV S&D',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4D9E49),
-                labelColor: const Color(0xFF737373)),
+
+
             InputField(
                 id: 'SIEeRmPm0Q0',
                 allowFuturePeriod: true,
@@ -51,20 +39,7 @@ class OvcHouseholdServicesCasePlanGaps {
                 valueType: 'TRUE_ONLY',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'vqf67Edjw4y',
-                name: '(HTS) Name of responsible internal person',
-                translatedName: 'Motho ea ikarabellang ka hare ho HTS',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4D9E49),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'bQtXR6iQyo8',
-                name: '(HTS) Name of responsible external person',
-                translatedName: 'Motho ea ikarabellang ka ntle ho HTS',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4D9E49),
-                labelColor: const Color(0xFF737373)),
+
             InputField(
                 id: 'iFv7FJeG3V1',
                 allowFuturePeriod: true,
@@ -253,7 +228,8 @@ class OvcHouseholdServicesCasePlanGaps {
                     valueType: 'DATE',
                     firstDate: firstDate,
                     inputColor: const Color(0xFF4D9E49),
-                    labelColor: const Color(0xFF737373)),
+                    labelColor: const Color(0xFF737373)
+                ),
             InputField(
                 id: 'AwWKp6KmqgY',
                 name: 'FOOD PREV ',
