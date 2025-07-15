@@ -20,8 +20,10 @@ class OvcChildEnrollmentSkipLogic {
     bool shouldSetEnrollmentState = true,
     Map caregiverDataObject = const {},
   }) {
-    hiddenFields.clear();
+
     hiddenSections.clear();
+    hiddenFields.clear();
+    hiddenFields['RB8Wx75hGa4'] = true;
     hiddenInputFieldOptions.clear();
     assignedFields.clear();
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
@@ -41,7 +43,7 @@ class OvcChildEnrollmentSkipLogic {
     var caregiverPhoneNumber =
         caregiverDataObject[OvcInterventionConstant.phoneNumber] ?? '';
     var caregiverVillage =
-        caregiverDataObject[OvcInterventionConstant.phoneNumber] ?? '';
+        caregiverDataObject[OvcInterventionConstant.village] ?? '';
     var caregiverSubVillage =
         caregiverDataObject[OvcInterventionConstant.phoneNumber] ?? '';
     var caregiverHivStatus =
@@ -56,9 +58,8 @@ class OvcChildEnrollmentSkipLogic {
 
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
-      if (inputFieldId == 'iS9mAp3jDaU') {
-        if (value == 'Biological mother' || value == 'Biological father') {
-          if (value == 'Biological mother') {
+      if (inputFieldId == 'iS9mAp3jDaU')
+      {if(value == 'Biological mother') {
             assignedFields['R9e8v9r3lMM'] = 'Yes';
             assignedFields['d3HviODv676'] = caregiverFirstName;
             assignedFields['Zv8FOfjPZzm'] = caregiverMiddleName;
@@ -68,7 +69,7 @@ class OvcChildEnrollmentSkipLogic {
             assignedFields['nO38lKlKHYi'] = caregiverHivStatus;
             assignedFields['PAv1sKQn2hO'] = caregiverArtStatus;
             assignedFields['fa0BSFwqQGQ'] = caregiverArtFacility;
-          } else if (value == 'Biological father') {
+      } if (value == 'Biological father'){
             assignedFields['cJl00w5DjIL'] = 'Yes';
             assignedFields['ZPf4iCd2aw3'] = caregiverFirstName;
             assignedFields['zKKeQ5pTCAd'] = caregiverMiddleName;
@@ -79,8 +80,11 @@ class OvcChildEnrollmentSkipLogic {
             assignedFields['xJfScNlfNS2'] = caregiverArtStatus;
             assignedFields['IWFLOoEtisa'] = caregiverArtFacility;
           }
-        }
-      } else if (inputFieldId == 'tNdoR0jYr7R') {
+      } if(inputFieldId == 'nO38lKlKHYi' && value == 'Positive'){
+        hiddenFields['NqhUKijE4hB'] = true;
+        hiddenFields['GMcljM7jbNG'] = true;
+      }
+      else if (inputFieldId == 'tNdoR0jYr7R') {
         if (caregiverPhoneNumber != 'N/A') {
           if (shouldSetEnrollmentState) {
             assignInputFieldValue(context, 'tNdoR0jYr7R', caregiverPhoneNumber);
@@ -97,11 +101,12 @@ class OvcChildEnrollmentSkipLogic {
         } else {
           assignedFields['ls9hlz2tyol'] = age.toString();
         }
-        if (age > 2) {
+        if (age > 3) {
           hiddenFields['GMcljM7jbNG'] = true;
         }
-        if (age > 5) {
-          hiddenFields['isPgJvbU8tT'] = true;
+        if (age > 18 || age < 10) {
+          hiddenFields['ZGH70UbL2O1'] = true;
+          hiddenFields['tHbPB5hrbOc'] = true;
         }
       } else if (inputFieldId == 'nOgf8LKXS4k') {
         Map hiddenOptions = {};
@@ -114,7 +119,11 @@ class OvcChildEnrollmentSkipLogic {
           hiddenOptions['Double Orphan'] = true;
         }
         hiddenInputFieldOptions[inputFieldId] = hiddenOptions;
+        if (dataObject['vIX4GTSCX4P'] != 'Female'){
+          hiddenFields['ZGH70UbL2O1'] = true;
+          hiddenFields['tHbPB5hrbOc'] = true;
 
+        }
         if (dataObject['cJl00w5DjIL'] == 'Yes' &&
             dataObject['R9e8v9r3lMM'] == 'Yes') {
           hiddenOptions['Single Orphan(Father)'] = true;
@@ -144,24 +153,15 @@ class OvcChildEnrollmentSkipLogic {
         }
       } else if (inputFieldId == 'wmKqYZML8GA' &&
           (value.isEmpty || value.trim() == 'true')) {
+        hiddenFields['NqhUKijE4hB'] = true;
         hiddenFields['GMcljM7jbNG'] = true;
-      } else if (inputFieldId == 'wmKqYZML8GA' &&
-          (value.isEmpty || value.trim() == 'true')) {
-        hiddenFields['GMcljM7jbNG'] = true;
-      } else if (inputFieldId == 'Gkjp5XZD70V' &&
-          (value.isEmpty || value.trim() != 'true')) {
-        hiddenFields['Sa0KVprHUr7'] = true;
-        hiddenFields['wtrZQadTkOL'] = true;
-        hiddenFields['Mc3k3bSwXNe'] = true;
-        hiddenFields['CePNVGSnj00'] = true;
-        hiddenFields['GM2mJDlGZin'] = true;
       } else if (inputFieldId == 'GMcljM7jbNG') {
         int age =
             AppUtil.getAgeInYear('${dataObject["qZP982qpSPS"]}', ceil: true);
-        if (age > 2) {
+        if (age > 3) {
           hiddenFields[inputFieldId] = true;
         } else {
-          var isOvcHIVExposedInfant = (age >= 0 && age <= 2) &&
+          var isOvcHIVExposedInfant = (age >= 0 && age <= 3) &&
               '${dataObject["nO38lKlKHYi"]}' == 'Positive';
           assignedFields[inputFieldId] = '$isOvcHIVExposedInfant';
         }
@@ -188,23 +188,37 @@ class OvcChildEnrollmentSkipLogic {
         }
       } else if (inputFieldId == 'omUPOnb4JVp' && value != 'true') {
         hiddenFields['WsmWkkFBiT6'] = true;
-      } else if (inputFieldId == 'pJ5NAEmwnDq' && value != 'true') {
-        hiddenFields['JPNe5w7zeki'] = true;
-      } else if (inputFieldId == 'JTNxMQPT134' && value != 'true') {
+      }else if (inputFieldId == 'JTNxMQPT134' && value != 'true') {
         hiddenFields['iQdwzVfZdml'] = true;
         hiddenFields['EwZil0AnlYo'] = true;
         hiddenFields['f7WkgoF9uib'] = true;
         hiddenFields['h1HeZ2eEkGn'] = true;
         hiddenFields['NGVFqUVSHiU'] = true;
         hiddenFields['oioDyk1WK1j'] = true;
-      } else if (inputFieldId == 'f7WkgoF9uib' && value != 'PrimaryLevel') {
-        hiddenFields['h1HeZ2eEkGn'] = true;
-      } else if (inputFieldId == 'f7WkgoF9uib' && value != 'SecondaryLevel') {
-        hiddenFields['NGVFqUVSHiU'] = true;
-      } else if (inputFieldId == 'f7WkgoF9uib' &&
-          !(value == 'PrimaryLevel' || value == 'SecondaryLevel')) {
-        hiddenFields['oioDyk1WK1j'] = true;
-      } else if (inputFieldId == 'oSKX8fFQdWc') {
+        hiddenFields['cFDqjIXQucQ'] = true;
+        hiddenFields['i6Y27IFBR9b'] = true;
+      }else if (inputFieldId == 'f7WkgoF9uib' && value == 'Preschool' || value=='TertiaryLevel'|| value=='VocationalLevel') {
+        hiddenFields['cFDqjIXQucQ'] = true;
+        hiddenFields['i6Y27IFBR9b'] = true;
+
+
+      }
+      else if (inputFieldId == 'iQdwzVfZdml' && value == 'Informal') {
+        hiddenFields['f7WkgoF9uib'] = true;
+        hiddenFields['cFDqjIXQucQ'] = true;
+        hiddenFields['i6Y27IFBR9b'] = true;
+
+
+      }
+
+      else if (inputFieldId == 'f7WkgoF9uib' && value == 'SecondaryLevel') {
+        hiddenFields['cFDqjIXQucQ'] = true;
+      }
+      else if (inputFieldId == 'f7WkgoF9uib' && value == 'PrimaryLevel') {
+
+        hiddenFields['i6Y27IFBR9b'] = true;
+      }
+      else if (inputFieldId == 'oSKX8fFQdWc') {
         assignedFields['wmKqYZML8GA'] = '${value == 'Positive'}';
         if (value != 'Positive') {
           hiddenFields['l7op0btSqSc'] = true;
@@ -217,15 +231,28 @@ class OvcChildEnrollmentSkipLogic {
           value != 'Positive' &&
           value != 'null') {
         hiddenFields['xJfScNlfNS2'] = true;
+        hiddenFields['IWFLOoEtisa'] = true;
+
       } else if (inputFieldId == 'xJfScNlfNS2' &&
           value != 'true' &&
           value != 'null') {
         hiddenFields['IWFLOoEtisa'] = true;
-      } else if (inputFieldId == 'cJl00w5DjIL') {
+      }else if (inputFieldId == 'cJl00w5DjIL') {
         if (value != 'No') {
           hiddenFields['wKEQZfKU2jX'] = true;
+        }else if (value =='No'){
+         // hiddenFields['wKEQZfKU2jX'] = false;
+          hiddenFields['ZPf4iCd2aw3'] = true;
+          hiddenFields['zKKeQ5pTCAd'] = true;
+          hiddenFields['JMwIgMSUnlu'] = true;
+          hiddenFields['PvLva3TSY9N'] = true;
+          hiddenFields['NzeeDnWJsNU'] = true;
+          hiddenFields['tbpqNLJotOi'] = true;
+          hiddenFields['xJfScNlfNS2'] = true;
+          hiddenFields['IWFLOoEtisa'] = true;
+
         }
-        if (value == "Don't Know") {
+        else if (value != "Yes") {
           hiddenFields['ZPf4iCd2aw3'] = true;
           hiddenFields['zKKeQ5pTCAd'] = true;
           hiddenFields['JMwIgMSUnlu'] = true;
@@ -233,11 +260,18 @@ class OvcChildEnrollmentSkipLogic {
           hiddenFields['NzeeDnWJsNU'] = true;
           hiddenFields['wKEQZfKU2jX'] = true;
           hiddenFields['tbpqNLJotOi'] = true;
+          hiddenFields['xJfScNlfNS2'] = true;
+          hiddenFields['IWFLOoEtisa'] = true;
+
+
         }
+
       } else if (inputFieldId == 'nO38lKlKHYi' &&
           value != 'Positive' &&
           value != 'null') {
         hiddenFields['PAv1sKQn2hO'] = true;
+        hiddenFields['fa0BSFwqQGQ'] = true;
+
       } else if (inputFieldId == 'PAv1sKQn2hO' &&
           value != 'true' &&
           value != 'null') {
@@ -245,8 +279,21 @@ class OvcChildEnrollmentSkipLogic {
       } else if (inputFieldId == 'R9e8v9r3lMM') {
         if (value != 'No') {
           hiddenFields['voFec8nlKRX'] = true;
+        }else if(value == 'No'){
+          //hiddenFields['voFec8nlKRX'] = false;
+          hiddenFields['d3HviODv676'] = true;
+          hiddenFields['Zv8FOfjPZzm'] = true;
+          hiddenFields['FBdCMyESsdg'] = true;
+          hiddenFields['or2YNqJqVqZ'] = true;
+          hiddenFields['rP7oCRukLkq'] = true;
+          hiddenFields['nO38lKlKHYi'] = true;
+          hiddenFields['wKEQZfKU2jX'] = true;
+          hiddenFields['PAv1sKQn2hO'] = true;
+          hiddenFields['fa0BSFwqQGQ'] = true;
+
+
         }
-        if (value == "Don't Know") {
+        else if (value != 'Yes') {
           hiddenFields['d3HviODv676'] = true;
           hiddenFields['Zv8FOfjPZzm'] = true;
           hiddenFields['FBdCMyESsdg'] = true;
@@ -254,6 +301,11 @@ class OvcChildEnrollmentSkipLogic {
           hiddenFields['rP7oCRukLkq'] = true;
           hiddenFields['voFec8nlKRX'] = true;
           hiddenFields['nO38lKlKHYi'] = true;
+          hiddenFields['wKEQZfKU2jX'] = true;
+          hiddenFields['PAv1sKQn2hO'] = true;
+          hiddenFields['fa0BSFwqQGQ'] = true;
+
+
         }
       }
     }
@@ -290,24 +342,28 @@ class OvcChildEnrollmentSkipLogic {
     Map dataObject,
     bool shouldSetEnrollmentState,
   ) {
-    const String defaultVulnerability = 'Sibling';
+    const String defaultVulnerability = 'Sibling ';
     List<String> vulnerabilities = [
       'wmKqYZML8GA',
       'GMcljM7jbNG',
-      'Gkjp5XZD70V',
       'ZKMhrjWoXnD',
-      'br1xvwAQ6el',
-      'UeF4OvjIIEK',
-      'YR7Xxk14qoP'
+      'tHbPB5hrbOc',
+      'ZGH70UbL2O1',
+      'FYjxxvyugEt',
+      'NqhUKijE4hB',
+
     ];
     List<String> primaryVulnerabilitiesOptions = [
       'Child living with HIV',
       'HIV exposed infants',
-      'Child exposed/experiencing violence and abuse (Survivors of Vac)',
       'Child of PLHIV',
-      'Child of a sex worker (FSW)',
-      'Orphan',
-      'Child living with disability'
+      'Adolescent Girl who is Pregnant',
+      'Adolescent Girl who is Breastfeeding',
+      'Child of Adolescent Girl who is Breastfeeding',
+      'Sibling for CALHIV',
+
+
+
     ];
     for (var vulnerabilityKey in vulnerabilities) {
       if ('${dataObject[vulnerabilityKey]}' == 'true') {
@@ -385,4 +441,5 @@ class OvcChildEnrollmentSkipLogic {
       isChangesBasedOnSkipLogic: true,
     );
   }
+
 }
