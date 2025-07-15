@@ -126,33 +126,6 @@ class _SynchronizationProgressState extends State<SynchronizationProgress> {
               margin: const EdgeInsets.only(top: 10.0),
               child: Column(
                 children: [
-                  const Text('Data Download'),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: LinearProgressIndicator(
-                        backgroundColor: Colors.grey,
-                        valueColor: AlwaysStoppedAnimation<Color?>(
-                            Provider.of<InterventionCardState>(context,
-                                    listen: false)
-                                .currentInterventionProgram
-                                .primaryColor),
-                        minHeight: 10.0,
-                        value: widget.overallDownloadProgress ?? 0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Visibility(
-            visible: widget.syncAction ==
-                SynchronizationActionsConstants.downloadAndUpload,
-            child: Container(
-              margin: const EdgeInsets.only(top: 10.0),
-              child: Column(
-                children: [
                   const Text('Data upload'),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
