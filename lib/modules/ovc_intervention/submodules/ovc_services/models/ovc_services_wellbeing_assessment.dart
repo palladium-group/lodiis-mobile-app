@@ -1472,21 +1472,25 @@ class OvcServicesWellbeingAssessment {
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
-                      code: 'Almost everyday',
-                      name: 'Almost everyday',
+                      code: 'All the time',
+                      name: 'All the time',
                       translatedName: 'Nako eohle'),
                   InputFieldOption(
-                      code: 'Once in a while',
-                      name: 'Once in a while',
+                      code: 'Often',
+                      name: 'Often',
                       translatedName: 'Hangata'),
                   InputFieldOption(
-                      code: 'Long time ago',
-                      name: 'Long time ago',
+                      code: 'Sometimes',
+                      name: 'Sometimes',
                       translatedName: 'Ka linako tse ling'),
                   InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha ho Karabo')
+                      code: 'Rarely',
+                      name: 'Rarely',
+                      translatedName: 'Hase ka mehla'),
+                  InputFieldOption(
+                      code: 'Never',
+                      name: 'Never',
+                      translatedName: 'Hohang')
                 ]),
             InputField(
                 id: 't1VRnFuBb7I',
@@ -1548,21 +1552,25 @@ class OvcServicesWellbeingAssessment {
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
-                      code: 'Almost everyday',
-                      name: 'Almost everyday',
+                      code: 'All the time',
+                      name: 'All the time',
                       translatedName: 'Nako eohle'),
                   InputFieldOption(
-                      code: 'Once in a while',
-                      name: 'Once in a while',
+                      code: 'Often',
+                      name: 'Often',
                       translatedName: 'Hangata'),
                   InputFieldOption(
-                      code: 'Long time ago',
-                      name: 'Long time ago',
+                      code: 'Sometimes',
+                      name: 'Sometimes',
                       translatedName: 'Ka linako tse ling'),
                   InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha ho Karabo')
+                      code: 'Rarely',
+                      name: 'Rarely',
+                      translatedName: 'Hase ka mehla'),
+                  InputFieldOption(
+                      code: 'Never',
+                      name: 'Never',
+                      translatedName: 'Hohang')
                 ]),
             InputField(
                 id: 'MxioydJaOgX',
@@ -1615,64 +1623,7 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFFEE6E22),
                 labelColor: const Color(0xFF1A3518))
           ]),
-      FormSection(
-          name: 'GOALS',
-          translatedName: 'SEPHEO',
-          description:
-              'Caseworker reads: “Now I’m going to ask you some questions about how you would like to grow and improve over the next year.”',
-          translatedDescription:
-              'Mosebeletsi oa morero: “Joale ke tla u botsa lipotso tse mabapi le kamoo u ka ratang ho hōla le ho ntlafala kateng selemong se hlahlamang."',
-          color: const Color(0xFF1B3519),
-          inputFields: [
-            InputField(
-                id: 'ADc3clrQRl4',
-                name: 'Goal 1',
-                translatedName: 'Sepheo 1',
-                valueType: 'LONG_TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'WmnbKX3Vj05',
-                allowFuturePeriod: true,
-                name: 'Timeline for goal 1',
-                translatedName:
-                    "Nako eo Sepheo 1 se reretsoeng ho phetheloa ka eona",
-                valueType: 'DATE',
-                firstDate: firstDate,
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'rEIhH5N4z0e',
-                name: 'Actions need to take place to accomplish goal 1',
-                translatedName: 'Likhato tsa sepheo 1',
-                valueType: 'LONG_TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'efNgDIqhlNs',
-                name: 'Goal 2',
-                translatedName: 'Sepheo 2',
-                valueType: 'LONG_TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'cbxJhkrHUtk',
-                allowFuturePeriod: true,
-                name: 'Timeline for goal 2',
-                translatedName:
-                    "Nako eo Sepheo 2 se reretsoeng ho phetheloa ka eona",
-                valueType: 'DATE',
-                firstDate: firstDate,
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'iDkUpkg6vO6',
-                name: 'Actions need to take place to accomplish goal 2',
-                translatedName: 'Likhato tsa sepheo 2',
-                valueType: 'LONG_TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373))
-          ]),
+
     ];
   }
 }
