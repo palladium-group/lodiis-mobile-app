@@ -28,7 +28,7 @@ android {
 
 
     compileSdkVersion flutter.compileSdkVersion
-    namespace 'org.hisptanzania.kb_mobile_app'
+    namespace 'org.hisptanzania.kb_mobile_app.testing'
     ndkVersion'27.0.12077973'
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "org.hisptanzania.kb_mobile_app"
+        applicationId "org.hisptanzania.kb_mobile_app.testing"
 
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

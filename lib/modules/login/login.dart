@@ -17,8 +17,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final String appLabel = "";
-  final String translatedAppLabel = "";
+  final String appLabel = "Testing";
+  final String translatedAppLabel = "Testing";
   late StreamSubscription connectionSubscription;
   @override
   void initState() {
