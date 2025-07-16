@@ -6,10 +6,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 
 mixin OvcCasePlanGapSkipLogic {
   Map hiddenFields = {};
-  Map hiddenSections = {
-    "Stable":true,
-    "Safe":true
-  };
+  Map hiddenSections = {};
   Map childMapObject = {};
 
   Future evaluateSkipLogics(
@@ -17,13 +14,19 @@ mixin OvcCasePlanGapSkipLogic {
     List<FormSection> formSections,
     Map dataObject, {
     OvcHouseholdChild? currentHouseholdChild,
+    Map caregiverDataObject = const {},
   }) async {
+
     hiddenFields.clear();
+    hiddenSections.clear();
+    childMapObject.clear();
+
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
     }
     inputFieldIds = inputFieldIds.toSet().toList();
+
     String implementingPartner = dataObject['implementingPartner'];
     for (String sectionId in hiddenSections.keys) {
       List<FormSection> allFormSections =
@@ -73,7 +76,8 @@ mixin OvcCasePlanGapSkipLogic {
             "DQxqyncQtwm", // Caregiver, propagate
             "Hvq9oisH7Gt", // Caregiver, propagate
             "qTf8VSoojJ2", // Caregiver, propagate
-            "EaJTFrklMo5", // Caregiver, propagate
+            "EaJTFrklMo5",// Caregiver, propagate
+            "CaAOIbC10yv",// Caregiver, propagate
           ].contains(gap))) {
         hiddenFields[gap] = shouldServiceBeHiddenByImplementingPartner(
             gap, implementingPartner);
@@ -449,6 +453,11 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['oth3dRYox12'] = true;
         hiddenFields['RsCebbDkMx9'] = true;
         hiddenFields['YtwjCoHKA9G'] = true;
+      }
+      if (inputFieldId == 'CaAOIbC10yv' && value != 'true') {
+        hiddenFields['VR8T3pFREzK'] = true;
+        hiddenFields['x6O0oNypdUw'] = true;
+        hiddenFields['v7GBKBoqJPr'] = true;
       }
       if (inputFieldId == 'EaJTFrklMo5' && value != 'true') {
         hiddenFields['rHgxOKM91wi'] = true;

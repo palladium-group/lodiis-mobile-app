@@ -52,7 +52,7 @@ class OvcEnrollmentConsent {
         InputField(
             id: 'OVaqHW5kimy',
             name:
-                'Do you understand the goal of the KB OVC Program and its potential benefits to my household',
+                'Do you understand the goal of the Bokamoso OVC Program and its potential benefits to your household?',
             translatedName:
                 'Ke utloisisa sepheo sa morero oa bana ba tlokotsing ba Karabo ea Bophelo le melemo ea eona ho lelapa laka',
             valueType: 'BOOLEAN',

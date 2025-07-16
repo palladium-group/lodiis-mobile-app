@@ -60,7 +60,7 @@ class Events {
     mapData['orgUnit'] = eventData.orgUnit;
     mapData['syncStatus'] = eventData.syncStatus;
     mapData['dataValues'] = eventData.dataValues;
-
+    //dataValues.removeWhere((item)=>item['dataElement'] == 'eventDate');
     return mapData;
   }
 

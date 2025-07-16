@@ -151,7 +151,7 @@ class OvcHouseholdServiceHtsScreening {
                 ]),
 
             InputField(
-              id: 'QagndU441C1',
+              id: 'upkFeuyd1fX',
               name: '5.Had sex with more than 1 sexual partner?',
               translatedName: '5.Had sex with more than 1 sexual partner?',
               valueType: 'BOOLEAN',
@@ -159,7 +159,7 @@ class OvcHouseholdServiceHtsScreening {
               labelColor: const Color(0xFF1A3518),
             ),
             InputField(
-              id: 'dtUOh1TfESL',
+              id: 'R38Mm0YgXcx',
               name: '6.In the past 12 months Have you had sex without a condom with someone living with HIV?',
               translatedName: '6. In the past 12 months Have you had sex without a condom with someone living with HIV?',
               valueType: 'BOOLEAN',
@@ -175,7 +175,7 @@ class OvcHouseholdServiceHtsScreening {
               labelColor: const Color(0xFF1A3518),
             ),
             InputField(
-              id: 'NGZH2JYy86L',
+              id: 'B46Zeuzafkg',
               name: '8. In the past 12 months have you had/currently have genital sores or unusual leakage?',
               translatedName: '8. In the past 12 months have you had/currently have genital sores or unusual leakage?',
               valueType: 'BOOLEAN',

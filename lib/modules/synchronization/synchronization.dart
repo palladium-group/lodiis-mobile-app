@@ -22,7 +22,7 @@ class Synchronization extends StatefulWidget {
 
 class _SynchronizationState extends State<Synchronization> {
   final String label = 'Data Synchronization';
-  String selectedSyncAction = SynchronizationActionsConstants.downloadAndUpload;
+  String selectedSyncAction = SynchronizationActionsConstants.upload;
 
   void onViewConflicts(BuildContext context) async {
     Navigator.push(context, MaterialPageRoute(
@@ -35,7 +35,7 @@ class _SynchronizationState extends State<Synchronization> {
   void initializeSynchronization(BuildContext context) async {
     await Provider.of<SynchronizationState>(context, listen: false)
         .startSyncActivity(
-            syncAction: SynchronizationActionsConstants.downloadAndUpload);
+            syncAction: SynchronizationActionsConstants.upload);
   }
 
   @override

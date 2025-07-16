@@ -138,10 +138,7 @@ class _OvcServiceWellBeingAssessmentFormState
     );
     setState(() {});
     if (hadAllMandatoryFilled) {
-      if (dataObject['ADc3clrQRl4'] == null &&
-          dataObject['efNgDIqhlNs'] == null) {
-        AppUtil.showToastMessage(message: "Fill atleast one goal");
-      } else {
+
         isSaving = true;
         setState(() {});
         String? eventDate = dataObject['eventDate'];
@@ -188,7 +185,7 @@ class _OvcServiceWellBeingAssessmentFormState
             });
           });
         }
-      }
+
     } else {
       AppUtil.showToastMessage(
         message: 'Please fill all mandatory fields',

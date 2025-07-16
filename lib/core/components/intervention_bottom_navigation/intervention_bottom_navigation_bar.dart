@@ -58,7 +58,13 @@ class InterventionBottomNavigationBar extends StatelessWidget {
               !['enrollment', 'exit'].contains(navigation.id))
           .toList();
     }
-
+    if (['M2M']
+        .contains(currentUserImplementingPartner)) {
+      interventionBottomNavigations = interventionBottomNavigations
+          .where((InterventionBottomNavigation navigation) =>
+      ['enrollment'].contains(navigation.id))
+          .toList();
+    }
     return interventionBottomNavigations;
   }
 

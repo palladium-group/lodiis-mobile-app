@@ -44,6 +44,7 @@ class OvcClhivArtService {
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
           ),
+
           InputField(
             id: 'uVmlqLmHYpD',
             name: 'CLHIV ART CARD Service Provision Date',
@@ -64,6 +65,14 @@ class OvcClhivArtService {
             valueType: 'ORGANISATION_UNIT',
             showCountryLevelTree: true,
             allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
+            inputColor: const Color(0xFF4B9F46),
+            labelColor: const Color(0xFF1A3518),
+          ),
+          InputField(
+            id: 'QInz3UAj6zC',
+            name: 'CLHIV ART CARD: Date of ART Initiation',
+            valueType: 'DATE',
+            allowFuturePeriod: true,
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
           ),
@@ -101,6 +110,10 @@ class OvcClhivArtService {
                 code: '>=1000 Copies',
                 name: '≥1000 Copies (unsuppressed and detectable)',
               ),
+              InputFieldOption(
+                code: 'Pending',
+                name: 'Pending',
+              ),
             ],
           ),
           InputField(
@@ -111,6 +124,7 @@ class OvcClhivArtService {
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
           ),
+
           InputField(
             id: 'LaeDyUWYcoN',
             name: 'CLHIV ART CARD: MMD',

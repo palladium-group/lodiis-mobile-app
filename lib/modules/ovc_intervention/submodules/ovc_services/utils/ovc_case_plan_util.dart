@@ -118,7 +118,7 @@ class OvcCasePlanUtil {
           }
         }
       } else if (isHouseholdCasePlan &&
-          domainType == OvcCasePlanConstant.householdCategorizationSection) {
+          domainType == OvcCasePlanConstant.casePlanDomainType) {
         String houseHoldCategorization = domainDataObject[
                 OvcCasePlanConstant.houseHoldCategorizationDataElement] ??
             '';

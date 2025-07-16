@@ -17,8 +17,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final String appLabel = "Training App";
-  final String translatedAppLabel = "App ea boikoetliso";
+  final String appLabel = "Testing";
+  final String translatedAppLabel = "Testing";
   late StreamSubscription connectionSubscription;
   @override
   void initState() {
@@ -55,15 +55,18 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       LoginTopIcon(
-                        appLabel:currentLanguage == 'lesotho' ? translatedAppLabel :appLabel,
+                        appLabel: currentLanguage == 'lesotho'
+                            ? translatedAppLabel
+                            : appLabel,
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       LoginFormContainer(
                         currentLanguage: currentLanguage,
-                        appLabel:currentLanguage == 'lesotho' ? translatedAppLabel :appLabel,
-                      
+                        appLabel: currentLanguage == 'lesotho'
+                            ? translatedAppLabel
+                            : appLabel,
                       )
                     ],
                   );

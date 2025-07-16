@@ -54,6 +54,17 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
           hiddenFields['i9icxSZ8HCf'] = false;
         }
       }
+      else if (key == 'HKCv7lkLexo' && value == 'true') {
+        hiddenFields['otd2tndsE4Z'] = hideServicesByImplementingPartner(
+          "otd2tndsE4Z",
+          implementingPartner,
+        );
+        var inputValue = '${dataObject['otd2tndsE4Z']}';
+        if (inputValue == 'true') {
+          hiddenFields['ruZFn94Hcyw'] = false;
+          hiddenFields['dwhnvU5m667'] = false;
+        }
+      }
       else if (key == 'bRv4ZZy5MDH' && value == 'true'){
         hiddenFields['dJO2m3CXfM5'] = hideServicesByImplementingPartner(
           "dJO2m3CXfM5",
@@ -437,7 +448,21 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
           hiddenFields['vXuVPQLxw1d'] = false;
           hiddenFields['xdI5atw8DC4'] = false;
         }
-      } else if (key == 'HsxFZOuV4oZ' && value == 'true') {
+      }
+
+      else if (key == 'CaAOIbC10yv' && value == 'true') {
+        hiddenFields['CRVDu0WUOFm'] = hideServicesByImplementingPartner(
+          "CRVDu0WUOFm",
+          implementingPartner,
+        );
+        var inputValue = '${dataObject['CRVDu0WUOFm']}';
+        if (inputValue == 'true') {
+          hiddenFields['cyEa4fwKL7O'] = false;
+          hiddenFields['hyVWFxIg7x6'] = false;
+          hiddenFields['OypZVFbZ1r0'] = false;
+        }
+      }
+      else if (key == 'HsxFZOuV4oZ' && value == 'true') {
         hiddenFields['KvLYMr8F4vg'] = hideServicesByImplementingPartner(
           "KvLYMr8F4vg",
           implementingPartner,

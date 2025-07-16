@@ -1,4 +1,4 @@
-package org.hisptanzania.kb_mobile_app.testing
+package org.hisptanzania.kb_mobile_app
 
 import io.flutter.embedding.android.FlutterActivity
 
