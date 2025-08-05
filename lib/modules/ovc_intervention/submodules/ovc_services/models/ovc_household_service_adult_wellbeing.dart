@@ -28,117 +28,11 @@ class OvcHouseholdServiceAdultWellbeing {
         firstDate: firstDate,
       ),
       FormSection(
-          name: 'DOMAIN STABLE',
+          name: 'DOMAIN HEALTH',
           translatedName: 'BOTSITSO',
           color: const Color(0xFF4B9F46),
-          description:
-              'Case Management Worker reads: “Assets are things that are useful and valuable to you. For example, they can be people because each person has knowledge, skills, and talents.”',
-          translatedDescription:
-              'Mosebeletsi oa morero o oa bala: “Thepa ke lintho tse molemo li bile li le bohlokoa ho oena. Mohlala e ka ba batho hobane motho ka mong o na le litsebo, mahlale le litalenta tse itseng.”',
           borderColor: const Color(0xFF4B9F46),
           inputFields: [
-            InputField(
-                id: 'How-do-you-help-your-family',
-                name: '1. How do you help your family?',
-                translatedName: '1. U thusa lelapa la hau joang?',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'CjAlp228JXu',
-                      name: 'Providing money',
-                      translatedName: 'Ho fana ka chelete'),
-                  InputFieldOption(
-                      code: 'O4i1IMcrjNP',
-                      name: 'Looking after the children',
-                      translatedName: 'Ho hlokomela bana'),
-                  InputFieldOption(
-                      code: 'dGQN8qr47k5',
-                      name: 'House chores',
-                      translatedName: 'Ho thusa ka mesebetsi ea lelapa'),
-                  InputFieldOption(
-                      code: 'rSOF0xwHBfp',
-                      name: 'Collecting water and/ or wood',
-                      translatedName: 'Ho kha metsi le ho roalla'),
-                  InputFieldOption(
-                      code: 'UZVG6KG5Rtm',
-                      name: 'Taking care of animals',
-                      translatedName: 'Ho sebetsa masimong'),
-                  InputFieldOption(
-                      code: 'eD5eOF5nYGS',
-                      name: 'Providing food & other household items',
-                      translatedName: 'Ho reka lijo le thepa engoe ea lelapa'),
-                  InputFieldOption(
-                      code: 'PiXi6AtLqiQ',
-                      name: 'Other',
-                      translatedName: 'Tse ling')
-                ]),
-            InputField(
-                id: 'zUU33n41Soa',
-                name: 'Other: Please specify',
-                translatedName: 'Tse ling, hlakisa',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF1A3518),
-                labelColor: const Color(0xFF4A9F46)),
-            InputField(
-                id:
-                    'How-do-other-adults-in-your-household-and-those-not-living-with-you-help-you',
-                name:
-                    '2. How do other adults in your household and those not living with you help you?',
-                translatedName:
-                    '2. Batho ba bang ba baholo bao u lulang le bona le ba u sa luleng le bona ba u thusa joang? ',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'cIvR9TgW8Bx',
-                      name: 'Not applicable (no other adults)'),
-                  InputFieldOption(
-                      code: 'd5Z8bqGYGha',
-                      name: 'Provide money',
-                      translatedName: 'Ho fana ka chelete'),
-                  InputFieldOption(
-                      code: 'OPZgRaCoCix',
-                      name: 'Help you look after the children',
-                      translatedName: 'Ho hlokomela bana'),
-                  InputFieldOption(
-                      code: 'HIhJEBccb4s',
-                      name: 'Help you with house Chores',
-                      translatedName: 'Ho thusa ka mesebetsi ea lelapa'),
-                  InputFieldOption(
-                      code: 'rBoJRVqlWpD',
-                      name: 'Work on the farms',
-                      translatedName: 'Ho sebetsa masimong'),
-                  InputFieldOption(
-                      code: 'z2Pq08hpx51',
-                      name: 'Collecting water and/ or wood',
-                      translatedName: 'Ho kha metsi le ho roalla'),
-                  InputFieldOption(
-                      code: 'zk0W0bDbTls',
-                      name: 'Taking care of animals',
-                      translatedName: 'Ho hlokomela liphoofolo'),
-                  InputFieldOption(
-                      code: 'iSE037kVfFJ',
-                      name: 'Provide food & other household items',
-                      translatedName: 'Ho reka lijo le thepa engoe ea lelapa'),
-                  InputFieldOption(
-                      code: 'oD8mSMj2cjD',
-                      name: 'Earn extra money',
-                      translatedName: 'ho fumana chelete engoe'),
-                  InputFieldOption(
-                      code: 'yqwX3XCGAUN',
-                      name: 'Other',
-                      translatedName: 'Tse ling')
-                ]),
-            InputField(
-                id: 'BKDRNiyoMgV',
-                name: 'Other, Specify (Other adults)',
-                translatedName: 'Tse ling, hlakisa',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)),
             InputField(
                 id: 'income_source',
                 translatedName: '3. U fumana chelete joang?',
