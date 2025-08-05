@@ -64,7 +64,7 @@ class WorkmanagerService {
               existingWorkPolicy: ExistingWorkPolicy.replace,
               frequency: reAssessmentTimeout,
               constraints: Constraints(
-                networkType: NetworkType.not_required,
+                networkType: NetworkType.notRequired,
               ));
       await PreferenceProvider.setPreferenceValue(
         WorkmanagerConstants.reAssessmentEvaluation,
