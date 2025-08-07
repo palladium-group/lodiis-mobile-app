@@ -57,11 +57,11 @@ class CasePlanGapViewContainer extends StatelessWidget {
         dataObject[OvcCasePlanConstant.casePlanFirstGoal] ?? '';
     String casePlansSecondGoal =
         dataObject[OvcCasePlanConstant.casePlansSecondGoal] ?? '';
-    if (casePlanFirstGoal.isEmpty && casePlansSecondGoal.isEmpty) {
+    /*if (casePlanFirstGoal.isEmpty && casePlansSecondGoal.isEmpty) {
       AppUtil.showToastMessage(
         message: 'Please fill at least one goal in $domainId domain',
       );
-    } else {
+    }*/  {
       double ratio = 0.8;
       gapDataObject = gapDataObject ?? {};
       gapDataObject[casePlanGapToServiceProvisionLinkage] =

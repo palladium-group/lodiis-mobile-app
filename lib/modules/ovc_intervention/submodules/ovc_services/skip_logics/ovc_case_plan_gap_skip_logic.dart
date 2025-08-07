@@ -41,6 +41,7 @@ mixin OvcCasePlanGapSkipLogic {
     }
     // Hiding gap based on the goal
     List<String> casPlanServiceGaps = OvcCasePlanConstant.casPlanServiceGaps;
+/*
     for (String gap in casPlanServiceGaps) {
       if ((dataObject[OvcCasePlanConstant.casePlanFirstGoal] == 'KnowledgeableAboutHIVEducation' ||
               dataObject[OvcCasePlanConstant.casePlansSecondGoal] ==
@@ -167,6 +168,7 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields[gap] = true;
       }
     }
+*/
 
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';

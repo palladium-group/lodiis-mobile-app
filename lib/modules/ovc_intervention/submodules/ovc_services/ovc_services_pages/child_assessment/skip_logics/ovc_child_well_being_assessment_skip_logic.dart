@@ -12,6 +12,10 @@ class OvcChildWellBeingAssessmentSkipLogic {
       List<FormSection> formSections, Map dataObject, String? hivStatus) async {
     hiddenFields.clear();
     hiddenSections.clear();
+    hiddenSections['domainschooltsasekolo'] = true;
+    hiddenSections['roleimpact'] = true;
+    hiddenSections['domainstable'] = true;
+    hiddenSections['domainsafe'] = true;
 
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
