@@ -4,29 +4,40 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:provider/provider.dart';
 
-class OvcHouseholdCasePlanSkipLogic {
+import '../components/ovc_household_caseplan_list_container.dart';
+class OvchouseHoldCaseplanSkipLogic {
   static Map hiddenFields = {};
-  static Map hiddenSections = {
-    "DOMAIN STABLE":true,
-    "DOMAIN SAFE":true
+  static Map hiddenSections = {};
+  static Map hiddenInputFieldOptions = {};
 
-  };
 
-  static Future evaluateSkipLogics(
-    BuildContext context,
-    List<FormSection> formSections,
-    Map dataObject,
-  ) async {
+  static Future evaluateSkipLogics(BuildContext context,
+      List<FormSection> formSections, Map dataObject, String? hivStatus) async {
     hiddenFields.clear();
-    //hiddenSections.clear();
+    hiddenSections.clear();
+    hiddenInputFieldOptions.clear();
+    hiddenSections['domainsafe'] = true;
+    hiddenSections['domainhealth'] = true;
+    hiddenSections['otherdetails'] = true;
+
+
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
     }
     inputFieldIds = inputFieldIds.toSet().toList();
+    for (String inputFieldId in inputFieldIds) {
+      String value = '${dataObject[inputFieldId]}';
+      dataObject['HKCv7lkLexo1']=dataObject['HKCv7lkLexo'];
+
+      if (inputFieldId == 'HKCv7lkLexo' && value != 'true') {
+        hiddenFields['HKCv7lkLexo'] = true;
+        hiddenFields['JzlLk2tW4xh'] = true;
+      }
+    }
     for (String sectionId in hiddenSections.keys) {
       List<FormSection> allFormSections =
-          FormUtil.getFlattenFormSections(formSections);
+      FormUtil.getFlattenFormSections(formSections);
       List<String> hiddenSectionInputFieldIds = FormUtil.getFormFieldIds(
           allFormSections
               .where((formSection) => formSection.id == sectionId)
@@ -35,9 +46,9 @@ class OvcHouseholdCasePlanSkipLogic {
         hiddenFields[inputFieldId] = true;
       }
     }
-
     resetValuesForHiddenFields(context, hiddenFields.keys);
     resetValuesForHiddenSections(context, formSections);
+    resetValuesForHiddenInputFieldOptions(context);
   }
 
   static resetValuesForHiddenFields(BuildContext context, inputFieldIds) {
@@ -51,18 +62,25 @@ class OvcHouseholdCasePlanSkipLogic {
   }
 
   static resetValuesForHiddenSections(
-    BuildContext context,
-    List<FormSection> formSections,
-  ) {
+      BuildContext context,
+      List<FormSection> formSections,
+      ) {
     Provider.of<ServiceFormState>(context, listen: false)
         .setHiddenSections(hiddenSections);
   }
 
+  static resetValuesForHiddenInputFieldOptions(
+      BuildContext context,
+      ) {
+    Provider.of<ServiceFormState>(context, listen: false)
+        .setHiddenInputFieldOptions(hiddenInputFieldOptions);
+  }
+
   static assignInputFieldValue(
-    BuildContext context,
-    String inputFieldId,
-    String? value,
-  ) {
+      BuildContext context,
+      String inputFieldId,
+      String? value,
+      ) {
     Provider.of<ServiceFormState>(context, listen: false).setFormFieldState(
       inputFieldId,
       value,

@@ -8,8 +8,8 @@ import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
 import 'package:kb_mobile_app/models/events.dart';
 import 'package:provider/provider.dart';
 
-class OvcHouseholdAssessmentListContainer extends StatelessWidget {
-  const OvcHouseholdAssessmentListContainer({
+class OvcHouseholdCaseplanListContainer extends StatelessWidget {
+  const OvcHouseholdCaseplanListContainer ({
     Key? key,
     required this.programStageIds,
     this.onViewHouseholdAssessment,
@@ -41,8 +41,8 @@ class OvcHouseholdAssessmentListContainer extends StatelessWidget {
               return assessmentIndex == 0
                   ? Center(
                       child: Text(currentLanguage == 'lesotho'
-                          ? 'Ha hona hlahlobo hajoale'
-                          : 'There is no Assessment at moment'),
+                          ? 'Ha hona moralo hajoale etsa bonnete ba hore lelapa lena le hlahlobo'
+                          : 'There is no Case Plan at moment make sure the household has been assessed'),
                     )
                   : Column(
                       children: eventList.map((Events assessment) {
@@ -83,7 +83,7 @@ class OvcHouseholdAssessmentListContainer extends StatelessWidget {
                                                   text: currentLanguage ==
                                                           'lesotho'
                                                       ? 'Hlahlobo ${assessmentIndex + 1}'
-                                                      : 'Household Assessment ${assessmentIndex + 1}',
+                                                      : 'Household Case Plan ${assessmentIndex + 1}',
                                                   style: const TextStyle()
                                                       .copyWith(
                                                     color:
@@ -181,4 +181,5 @@ class OvcHouseholdAssessmentListContainer extends StatelessWidget {
       },
     );
   }
+
 }

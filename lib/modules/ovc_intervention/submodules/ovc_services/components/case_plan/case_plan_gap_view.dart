@@ -60,7 +60,7 @@ class CasePlanGapView extends StatelessWidget {
                 builder: (context, languageTranslationState, child) => Text(
                   languageTranslationState.isSesothoLanguage
                       ? "Likheo"
-                      : "Gaps",
+                      : "Identified Gaps",
                   style: const TextStyle().copyWith(
                     color: formSectionColor,
                     fontSize: 15.0,

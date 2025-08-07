@@ -16,6 +16,9 @@ class OvchouseHoldAssessmentSkipLogic {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
+
+    hiddenSections['domainsafe'] = true;
+    hiddenSections['healthcaseplangaps'] = true;
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -62,8 +65,23 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'gcW6652C8Bt' && value != 'true') {
         hiddenFields['bmJjZctbkhX'] = true;
       }
+      if (inputFieldId == 'blod3xZ2dPP' && value == '1') {
+        dataObject['HKCv7lkLexo'] = 'true';
+        hiddenFields['ubin7MjQ5OI'] = true;
+        hiddenFields['JzlLk2tW4xh'] = false;
+
+      }
+      else if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
+        dataObject['HKCv7lkLexo'] = 'false';
+        hiddenFields['ubin7MjQ5OI'] = true;
+        hiddenFields['HKCv7lkLexo'] = true;
+        hiddenFields['JzlLk2tW4xh'] = true;
+      }
       if (inputFieldId == 'AccHyrWqhI0' && value != '1') {
+
         hiddenFields['w6xeZ47TwwI'] = true;
+
+
       }
       if (inputFieldId == 'BvNaiaoxc6w') {
         if (hivStatus != null) {

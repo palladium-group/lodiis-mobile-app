@@ -31,6 +31,8 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_assessment/skip_logics/ovc_household_assessment_skip_logic.dart';
 import 'package:provider/provider.dart';
 
+import '../../../services/auto_case_plan_services.dart';
+
 class OvcHouseholdAssessmentForm extends StatefulWidget {
   const OvcHouseholdAssessmentForm({Key? key}) : super(key: key);
 
@@ -225,6 +227,15 @@ class _OvcHouseholdAssessmentFormState
           null,
           skippedFields: skippedFields,
         );
+
+
+        await AutoCasePlanService.generateCasePlanGaps(
+          assessmentData: dataObject,
+          teiId: currentOvcHousehold?.id ?? '',
+          orgUnit: orgUnit,
+          context: context,
+        );
+
         Provider.of<ServiceEventDataState>(context, listen: false)
             .resetServiceEventDataState(currentOvcHousehold?.id ?? '');
         Timer(const Duration(seconds: 1), () {

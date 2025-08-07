@@ -29,6 +29,7 @@ class OvcServicesWellbeingAssessment {
       ),
       FormSection(
           name: 'Role/Impact of a Child to the family',
+          id:'roleimpact',
           translatedName: "Karolo/ts'usumetso ea ngoana ka hare ho lelapa",
           color: const Color(0xFF4B9F46),
           inputFields: [
@@ -482,8 +483,9 @@ class OvcServicesWellbeingAssessment {
       FormSection(
           name: 'DOMAIN STABLE',
           translatedName: 'BOTSITSO',
-          color: const Color(0xFF4D9E49),
-          borderColor: const Color(0xFF4D9E49),
+          id:'domainstable',
+          color: const Color(0xFF2895F0),
+          borderColor: const Color(0xFF2895F0),
           inputFields: [
             InputField(
                 id: 'OBugEkynJG0',
@@ -612,8 +614,8 @@ class OvcServicesWellbeingAssessment {
       FormSection(
           name: 'DOMAIN HEALTH',
           translatedName: 'BOPHELO BO BOTLE',
-          color: const Color(0xFF2895F0),
-          borderColor: const Color(0xFF2895F0),
+          color: const Color(0xFF4D9E49),
+          borderColor: const Color(0xFF4D9E49),
           inputFields: [
             InputField(
                 id: 'H84JX4fQWsK',
@@ -1222,6 +1224,7 @@ class OvcServicesWellbeingAssessment {
       FormSection(
           name: 'DOMAIN SAFE',
           translatedName: 'TSIRELETSO',
+          id:'domainsafe',
           color: const Color(0xFFEE6E21),
           borderColor: const Color(0xFFEE6E21),
           inputFields: [
