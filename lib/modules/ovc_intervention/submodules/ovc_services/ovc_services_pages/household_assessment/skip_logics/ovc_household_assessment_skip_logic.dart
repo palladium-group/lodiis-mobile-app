@@ -26,6 +26,7 @@ class OvchouseHoldAssessmentSkipLogic {
     inputFieldIds = inputFieldIds.toSet().toList();
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
+
       if (inputFieldId == 'PiXi6AtLqiQ' && value != 'true') {
         hiddenFields['zUU33n41Soa'] = true;
       }
