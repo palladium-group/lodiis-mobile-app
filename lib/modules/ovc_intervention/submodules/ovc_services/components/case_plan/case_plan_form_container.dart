@@ -46,27 +46,10 @@ class CasePlanFormContainer extends StatelessWidget {
   void onValueChange(String id, dynamic value) {
     dynamic previousValue = dataObject[id] ?? '';
     dataObject[id] = value;
-    bool canUpdate = _hasAtLeasOneGoalAndGap();
-    if (canUpdate) {
-      onInputValueChange(dataObject);
-    } else {
-      dataObject[id] = previousValue;
-      AppUtil.showToastMessage(
-        message: 'You can not clear all goals with identifier needs/gaps',
-      );
-    }
-  }
+    //bool canUpdate = _hasAtLeasOneGoalAndGap();
 
-  bool _hasAtLeasOneGoalAndGap() {
-    bool status = true;
-    dynamic gaps = dataObject['gaps'] ?? [];
-    String firstGoal = dataObject[OvcCasePlanConstant.casePlanFirstGoal] ?? '';
-    String secondGoal =
-        dataObject[OvcCasePlanConstant.casePlansSecondGoal] ?? '';
-    if (gaps.isNotEmpty && firstGoal.isEmpty && secondGoal.isEmpty) {
-      status = false;
-    }
-    return status;
+      onInputValueChange(dataObject);
+
   }
 
   @override
