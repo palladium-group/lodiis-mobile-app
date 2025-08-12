@@ -80,7 +80,7 @@ class OvcChildEnrollmentSkipLogic {
             assignedFields['xJfScNlfNS2'] = caregiverArtStatus;
             assignedFields['IWFLOoEtisa'] = caregiverArtFacility;
           }
-      } if(inputFieldId == 'nO38lKlKHYi' && value == 'Positive'){
+      } if(inputFieldId == 'nO38lKlKHYi' && value != 'Positive'){
         hiddenFields['NqhUKijE4hB'] = true;
         hiddenFields['GMcljM7jbNG'] = true;
       }
@@ -271,6 +271,7 @@ class OvcChildEnrollmentSkipLogic {
           value != 'null') {
         hiddenFields['PAv1sKQn2hO'] = true;
         hiddenFields['fa0BSFwqQGQ'] = true;
+
 
       } else if (inputFieldId == 'PAv1sKQn2hO' &&
           value != 'true' &&
