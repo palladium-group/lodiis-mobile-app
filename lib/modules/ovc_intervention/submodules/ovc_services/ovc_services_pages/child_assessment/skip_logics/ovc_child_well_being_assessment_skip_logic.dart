@@ -89,11 +89,17 @@ class OvcChildWellBeingAssessmentSkipLogic {
 
 // hideMalnutrition
     void hideMalnutritionQuestions() {
+      hiddenFields['r0vhM9GCkxp'] = true;
       hiddenFields['OBugEkynJG0'] = true;
-      hiddenFields['OBugEkynJG0_checkbox'] = true;
-      hiddenFields['xQjn7WKtJvm'] = true;
-      hiddenFields['dTiDozleQuO'] = true;
-      hiddenFields['dTiDozleQuO_checkbox'] = true;
+      hiddenFields['JnCFOeouVIy'] = true;
+      hiddenFields['lbr7YOB6HJ1'] = true;
+      hiddenFields['ATWzSRHBmuF'] = true;
+      hiddenFields['uINNVU0OeRP'] = true;
+      hiddenFields['bMNyAIWumx1'] = true;
+      hiddenFields['OUPk2e9DoMe'] = true;
+      hiddenFields['eQM7VOlr5hG'] = true;
+      hiddenFields['yVTsRM4eMHA'] = true;
+      hiddenSections['childnutrition']=true;
     }
 
     void hideForCaregiver() {
@@ -106,6 +112,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['ot2CtK0hAHo'] = true;
       hiddenFields['VMP6xJWkWHK'] = true;
       hiddenFields['mtZfZIAkVjt'] = true;
+      hiddenSections['tbsection_adolescent']= true;
       //Domain Stable
       hiddenFields['MEmFZrOhvb3'] = true;
       //Domain Health
@@ -147,14 +154,14 @@ class OvcChildWellBeingAssessmentSkipLogic {
     }
 
     int age = int.parse(dataObject['age']);
-    if (age >= 14) {
+    if (age >= 9) {
       hideForChild();
     } else {
       hideForCaregiver();
     }
-    if (age > 5) {
+    if (age > 2) {
       hideMalnutritionQuestions();
-      hiddenFields['r0vhM9GCkxp'] = true;
+
     } else if (age < 2) {
       hiddenSections['domainschooltsasekolo'] = true;
     }
@@ -183,6 +190,43 @@ class OvcChildWellBeingAssessmentSkipLogic {
         hiddenFields['sbgsFW299ND'] = true;
         hiddenFields['PErwPNVDZl1'] = true;
         hiddenFields['aRrET00WEbz'] = true;
+      }
+///////////////////////////////////////////////////////////////////////
+      if (inputFieldId == 'WYUkGeSWaZY' && value != 'true') {
+        hiddenFields['dE3bwyB7guF'] = true;
+      }
+
+      if (inputFieldId == 'KA3l4V5NDWu' && value != 'true') {
+        hiddenFields['NdvnM08tekD'] = true;
+      }
+
+      if (inputFieldId == 'NpxDYjUFlKS' && value != 'true') {
+        hiddenFields['eAVGC2zqUjP'] = true;
+      }
+
+      if (inputFieldId == 'sftyaTdwBKz' && value != 'true') {
+        hiddenFields['ehtYoYKxATO'] = true;
+      }
+
+      if (inputFieldId == 'bEXtDfYHP4B' && value != 'true') {
+        hiddenFields['z9StVriYu0Q'] = true;
+      }
+
+      if (inputFieldId == 'gcW6652C8Bt' && value != 'true') {
+        hiddenFields['bmJjZctbkhX'] = true;
+      }
+
+      if (inputFieldId == 'bmJjZctbkhX' && (value == null || value.isEmpty)) {
+        hiddenFields['HQdMUzgaIXr'] = true;
+      }
+////////////////////////////////////////////////////////////////////////////////////////
+
+      if (inputFieldId == 'EDgB0kYWS3v' && value != 'true' ) {
+        hiddenFields['ut8LqpHyZnR_checkbox'] = true;
+        hiddenFields['bmJjZctbkhX'] = true;
+
+
+
       }
 
       if (inputFieldId == '' && value != '') {}

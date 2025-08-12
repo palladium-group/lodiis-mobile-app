@@ -227,14 +227,15 @@ class _OvcHouseholdAssessmentFormState
           null,
           skippedFields: skippedFields,
         );
-
-
-        await AutoCasePlanService.generateCasePlanGaps(
-          assessmentData: dataObject,
-          teiId: currentOvcHousehold?.id ?? '',
-          orgUnit: orgUnit,
-          context: context,
+        final household = Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false).currentOvcHousehold!;
+        await AutoCasePlanService.saveFromAssessment(
+          teiId: household.id!,
+          orgUnit: household.orgUnit!,
+          firstDate: household.createdDate ?? '',
+          assessmentData: dataObject, // the map you logged with assessment answers
         );
+
+// refresh so Case Plan Home picks it up
 
         Provider.of<ServiceEventDataState>(context, listen: false)
             .resetServiceEventDataState(currentOvcHousehold?.id ?? '');
