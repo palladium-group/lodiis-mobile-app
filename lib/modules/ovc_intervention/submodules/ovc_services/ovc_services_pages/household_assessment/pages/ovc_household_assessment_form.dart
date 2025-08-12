@@ -109,7 +109,7 @@ class _OvcHouseholdAssessmentFormState
             Provider.of<ServiceFormState>(context, listen: false).formState;
 
         await OvchouseHoldAssessmentSkipLogic.evaluateSkipLogics(
-            context, formSections!, dataObject, adult?.hivStatus);
+            context, formSections!, dataObject, adult?.hivStatus, adult?.artStatus);
       },
     );
   }
