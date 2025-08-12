@@ -1,83 +1,134 @@
-
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
+import 'package:kb_mobile_app/models/form_section.dart';
 
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_case_plan.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
 import '../ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 
 class AutoCasePlanService {
-  static Future<void> generateCasePlanGaps({
-    required BuildContext context,
-    required Map assessmentData,
-    required String orgUnit,
+  /// Call this after a Household Assessment saves successfully.
+  static Future<void> saveFromAssessment({
     required String teiId,
-    firstDate,
+    required String orgUnit,
+    required String firstDate, // household.createdDate
+    required Map assessmentData,
   }) async {
-    try {
-      final List<FormSection> formSections =
-      OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: DateTime.now().toIso8601String());
+    // 1) Build domain packages (you can extend with more rules below)
+    final String eventDate = AppUtil.formattedDateTimeIntoString(DateTime.now());
+    final List<_DomainPackage> pkgs = _mapAssessmentToDomains(assessmentData, eventDate);
+    if (pkgs.isEmpty) {
+      print('⚠️ Auto-CP: no domains triggered');
+      return;
+    }
 
-      Map<String, dynamic> dataObject = {
-        'eventDate': DateTime.now().toIso8601String(),
-      };
+    // Load sections once (same as manual)
+    final cpAll = OvcServicesCasePlan.getFormSections(firstDate: firstDate);
+    final gapAll = OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: firstDate);
 
-      // === Mapping logic from Assessment to Case Plan Gaps ===
-      if (assessmentData['blod3xZ2dPP'] == '1') {
-        dataObject['HKCv7lkLexo'] = 'true'; // use string 'true' or 'false' if expected
-      }
+    for (final _DomainPackage pkg in pkgs) {
+      // --- Case Plan (domain) ---
+      final List<FormSection> cpSections =
+      cpAll.where((s) => s.id == pkg.domainId).toList();
 
-      if (assessmentData['jzmOXiyGGgw'] == 'Yes') {
-        dataObject['AccHyrWqhI0'] = 'true';
-      }
+      // Hidden fields MUST be passed like in manual form (positional last arg)
+      final cpHiddenFields = <String>[
+        OvcCasePlanConstant.casePlanToGapLinkage, // ajqTV28fydL
+        OvcCasePlanConstant.casePlanDomainType,   // vexrPNgPBYg
+      ];
 
-      // You can add more mapping rules here...
-
-      // Remove any null values from dataObject before saving
-      dataObject.removeWhere((key, value) => key == null || value == null);
-
-      // Log full data object before saving
-      print('📤 Submitting Case Plan Data: $dataObject');
-      print('Form field IDs: ${formSections.expand((s) => s.inputFields!.map((f) => f.id)).toList()}');
-      await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-        OvcHouseholdCasePlanConstant.program,
-        OvcHouseholdCasePlanConstant.casePlanGapProgramStage,
-        orgUnit,
-        formSections,
-        dataObject,
-        dataObject['eventDate'],
-        teiId,
-        '', // empty means create a new event
-        null,
-        skippedFields: [],
-      );
-
+      print('🧭 CP sections for ${pkg.domainId}: ${cpSections.expand((s) => s.inputFields!.map((f) => f.id)).toList()}');
+      print('📤 Saving CP payload: ${pkg.casePlanData}');
       await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
         OvcHouseholdCasePlanConstant.program,
         OvcHouseholdCasePlanConstant.casePlanProgramStage,
         orgUnit,
-        formSections,
-        dataObject,
-        dataObject['eventDate'],
+        cpSections,
+        pkg.casePlanData,
+        eventDate,
         teiId,
-        '', // empty means create a new event
-        null,
-        skippedFields: [],
+        '', // new event
+        cpHiddenFields, // << positional hiddenFields (like manual)
       );
-      AppUtil.showToastMessage(
-        message: '✅ Case Plan Gaps auto-generated',
-        position: ToastGravity.TOP,
-      );
-    } catch (e, stack) {
-      print('❌ Error generating case plan gaps: $e');
-      print(stack);
-      AppUtil.showToastMessage(
-        message: '❌ Failed to generate case plan',
-        position: ToastGravity.TOP,
-      );
+
+      // --- Case Plan Gaps (domain) ---
+      final List<FormSection> gapSections =
+      gapAll.where((s) => s.id == pkg.domainId).toList();
+
+      final gapHiddenFields = <String>[
+        OvcCasePlanConstant.casePlanToGapLinkage,                 // ajqTV28fydL
+        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage, // tDWIRBsuwsB
+        OvcCasePlanConstant.casePlanGapToMonitoringLinkage,       // H7BMnqZEqGN
+      ];
+
+      for (final gap in pkg.gaps) {
+        print('🧭 GAP sections for ${pkg.domainId}: ${gapSections.expand((s) => s.inputFields!.map((f) => f.id)).toList()}');
+        print('📤 Saving GAP payload: $gap');
+        await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+          OvcHouseholdCasePlanConstant.program,
+          OvcHouseholdCasePlanConstant.casePlanGapProgramStage,
+          orgUnit,
+          gapSections,
+          gap,
+          eventDate,
+          teiId,
+          '', // new event
+          gapHiddenFields, // << positional hiddenFields (like manual)
+        );
+      }
     }
+
+    print('✅ Auto-CP: saved ${pkgs.length} domain(s) on $eventDate');
   }
+
+  /// Map assessment → one or more domain packages.
+  /// Each package mirrors the manual structure: linkage + domain + gaps.
+  static List<_DomainPackage> _mapAssessmentToDomains(Map a, String eventDate) {
+    final out = <_DomainPackage>[];
+
+    // --------- EXAMPLE RULE: HEALTH ----------
+    // If blod3xZ2dPP == '1' then set HKCv7lkLexo (Health gap)
+    if (a['blod3xZ2dPP'] == '1') {
+      final link = AppUtil.getUid();             // ajqTV28fydL
+      const domainId = 'Health';                 // must match section.id from CP & GAP models
+
+      final cpData = <String, dynamic>{
+        'eventDate': eventDate,
+        OvcCasePlanConstant.casePlanToGapLinkage: link, // ajqTV28fydL
+        OvcCasePlanConstant.casePlanDomainType: domainId, // vexrPNgPBYg
+        'ADc3clrQRl4': 'Auto goal (Health)', // Goal 1 so CP isn’t empty
+        // 'efNgDIqhlNs': 'Optional Goal 2',
+      };
+
+      final gap = <String, dynamic>{
+        'eventDate': eventDate,
+        OvcCasePlanConstant.casePlanToGapLinkage: link, // SAME linkage
+        'HKCv7lkLexo': 'true',                          // gap DE (string)
+        // 'JzlLk2tW4xh': eventDate,                    // optional due date
+      };
+
+      out.add(_DomainPackage(domainId: domainId, casePlanData: cpData, gaps: [gap]));
+    }
+
+    // --------- ADD MORE RULES HERE ----------
+    // Example SAFE/STABLE/SCHOOLED mappings:
+    // if (a['someSafeKey'] == 'Yes')  -> domainId: 'Safe',    gaps: [{'SAFE_DE_UID': 'true'}]
+    // if (a['incomeLow']  == 'true')  -> domainId: 'Stable',  gaps: [{'STABLE_DE_UID': 'true'}]
+    // if (a['childOutOfSchool']=='1')-> domainId: 'Schooled', gaps: [{'SCHOOLED_DE_UID':'true'}]
+
+    return out;
+  }
+}
+
+class _DomainPackage {
+  final String domainId; // e.g. 'Health' | 'Safe' | 'Stable' | 'Schooled'
+  final Map<String, dynamic> casePlanData;
+  final List<Map<String, dynamic>> gaps;
+  _DomainPackage({
+    required this.domainId,
+    required this.casePlanData,
+    required this.gaps,
+  });
 }

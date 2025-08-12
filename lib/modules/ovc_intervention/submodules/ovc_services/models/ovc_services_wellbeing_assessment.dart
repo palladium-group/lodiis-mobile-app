@@ -481,150 +481,255 @@ class OvcServicesWellbeingAssessment {
                 labelColor: const Color(0xFF284227))
           ]),
       FormSection(
-          name: 'DOMAIN STABLE',
-          translatedName: 'BOTSITSO',
-          id:'domainstable',
-          color: const Color(0xFF2895F0),
-          borderColor: const Color(0xFF2895F0),
-          inputFields: [
-            InputField(
-                id: 'OBugEkynJG0',
-                name: '52. Are there any signs of malnutrition?',
-                translatedName: '52. Ngola mat’soao a ho haelloa ke phepo.',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44)),
-            InputField(
-                id: 'OBugEkynJG0_checkbox',
-                name: 'Signs of malnutrition',
-                translatedName: 'Matšoao a khaello ea phepo e nepahetseng',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44),
-                options: [
-                  InputFieldOption(
-                      code: 'UHMtTnEP9Yh', name: 'Emaciated and dry skin'),
-                  InputFieldOption(code: 'JuHzVswoDKw', name: 'Dry hair'),
-                  InputFieldOption(code: 'G5EFtvf5qcF', name: 'Not playing'),
-                  InputFieldOption(
-                      code: 'g8j8aNxz7lh', name: 'Extremely thirsty'),
-                  InputFieldOption(
-                      code: 'W9bFXNhcWHN', name: 'Wounds not healing'),
-                  InputFieldOption(
-                      code: 'B7i1JLk1GIk', name: 'Swollen face and legs'),
-                  InputFieldOption(
-                      code: 'SSUQsWk0JiA', name: 'Red-orange colored hair'),
-                  InputFieldOption(code: 'FmJ0mLOhMSd', name: 'Other signs')
-                ]),
-            InputField(
-                id: 'xQjn7WKtJvm',
-                name: 'Specify signs of malnutrition',
-                translatedName:
-                    'Hlalosa Matšoao a khaello ea phepo e nepahetseng',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44)),
-            InputField(
-                id: 'aaERjQ9jSZn',
-                name:
-                    '53. In the past month have you ever gone a whole day or night without eating anything at all because there was not enough food?',
-                translatedName:
-                    '53. Na ngoana o kile a robala a sa ja khoeling e fetileng?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44)),
-            InputField(
-                id: 'MEmFZrOhvb3',
-                name:
-                    '8. In the past month have you ever gone a whole day or night without eating anything at all because there was not enough food?',
-                valueType: 'BOOLEAN',
-                translatedName:
-                    '8. Khoeling e fetileng u kile oa qeta letsatsi kapa bosiu kaofela u sa ja letho hobane ho ne ho se na lijo tse lekaneng?',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44)),
-            InputField(
-                id: 'cGJa4gfVPQ7',
-                name: '54. How often would you say this happens?',
-                translatedName: '54. u ka re se etsahetse hakae?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44),
-                options: [
-                  InputFieldOption(
-                      code: 'Every night',
-                      name: 'Every night',
-                      translatedName: 'Bosiu bo bong le bo bong'),
-                  InputFieldOption(
-                      code: 'A few nights per week',
-                      name: 'A few nights per week',
-                      translatedName: 'Matsatsi a \'maloa ka beke'),
-                  InputFieldOption(
-                      code: 'A few nights per month',
-                      name: 'A few nights per month',
-                      translatedName: 'Masiu a fokolang ka khoeli')
-                ]),
-            InputField(
-                id: 'dTiDozleQuO',
-                name:
-                    '55. During the past month, did the child receive nutritional supplements?',
-                translatedName:
-                    '55. Na ngoana o kile a fumana limatlafatsi khoeling e fetileng?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'I don\'t know',
-                      name: 'I don\'t know',
-                      translatedName: 'Ha ke tsebe'),
-                  InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha hona Karabo'),
-                  InputFieldOption(
-                      code: 'Refuse', name: 'Refuse', translatedName: 'Hana')
-                ]),
-            InputField(
-                id: 'dTiDozleQuO_checkbox',
-                name: '56. Nutritional supplements received',
-                translatedName:
-                    '56. Ngoana o fumane limatlafatsi tsa mofuta ofe?',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF455B44),
-                options: [
-                  InputFieldOption(
-                      code: 'sGmUf0A8OG3', name: 'Iron supplement'),
-                  InputFieldOption(code: 'DUOFvJnn1R7', name: 'Vitamin A'),
-                  InputFieldOption(code: 'gE1zlNMfA1r', name: 'Con Soya'),
-                  InputFieldOption(
-                      code: 'kqDD44PTEiq',
-                      name: 'Therapeutic nutrition (Plumpy Nut)'),
-                  InputFieldOption(code: 'Ca0n8YbBSeG', name: 'Food Packages.'),
-                  InputFieldOption(
-                      code: 'INGfPNUjHxP',
-                      name: 'Other',
-                      translatedName: 'Tse ling')
-                ])
-          ]),
-      FormSection(
           name: 'DOMAIN HEALTH',
           translatedName: 'BOPHELO BO BOTLE',
           color: const Color(0xFF4D9E49),
           borderColor: const Color(0xFF4D9E49),
           inputFields: [
             InputField(
-                id: 'H84JX4fQWsK',
-                name:
-                    '58. In the last month, has the child been too sick or too tired to participate in daily activities?',
+                id: 'MkoDGBOBo06',
+                name: '1. Where do you access health services?',
                 translatedName:
-                    '58. Na ngoana o kile a kula kapa a khathala haholo ho a setiloeng ho etsa mabaka a mehla khoeling e fetileng?',
+                "1.U fumana litsebeletso tsa bophelo hokae?",
+                allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
+                showCountryLevelTree: true,
+                valueType: 'ORGANISATION_UNIT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)
+            ),
+            InputField(
+                id: 'EDgB0kYWS3v',
+                name:
+                '2. Do you have a long-term illness that you would like to share with me',
+                translatedName:
+                '2. Na oena kapa emong oa ba lelapa o na le bokulo ba nako e telele bo u ka lakatsang ho mpolella bona?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+            InputField(
+                id: 'ut8LqpHyZnR_checkbox',
+                name: '3. What is the long-term illness that you have?',
+                translatedName:
+                '3. Ke bokuli bo fe ba nako e telele boo u nang le bona?',
+                valueType: 'CHECK_BOX',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'WYUkGeSWaZY',
+                      name: 'Cancer',
+                      translatedName: 'Kankere'),
+                  InputFieldOption(
+                      code: 'KA3l4V5NDWu',
+                      name: 'Epilepsy',
+                      translatedName: 'Lefu la Sethoathoa'),
+                  InputFieldOption(
+                      code: 'NpxDYjUFlKS',
+                      name: 'Mental',
+                      translatedName: 'Lefu la hlooho'),
+                  InputFieldOption(
+                      code: 'sftyaTdwBKz',
+                      name: 'Diabetes',
+                      translatedName: 'Lefu la tsoekere'),
+                  InputFieldOption(
+                      code: 'bEXtDfYHP4B',
+                      name: 'Hypertension',
+                      translatedName: 'Phallo e phahamemeng ea mali'),
+                  InputFieldOption(
+                      code: 'KexFaUmJpt5', name: 'N/A', translatedName: 'N/A'),
+                  InputFieldOption(
+                      code: 'gcW6652C8Bt',
+                      name: 'Other',
+                      translatedName: 'Tse ling')
+                ]),
+
+            //Make sure you use proper other
+            InputField(
+                id: 'bmJjZctbkhX',
+                name: 'Specify Other',
+                translatedName: 'Hlalosa tse ling',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+
+            InputField(
+                id: 'AccHyrWqhI0',
+                name: '4. Are you receiving treatment for this illness?',
+                translatedName: '4. Na u fumana kalafo ea lefu leo?',
+                description: 'If no, Refer to appropriate health service',
+                translatedDescription: 'Fetisetsa litsebeletsong tsa bophel',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(code: '1', name: 'Yes', translatedName: 'E'),
+                  InputFieldOption(
+                      code: '0', name: 'No', translatedName: 'Che'),
+                  InputFieldOption(
+                      code: '0.000001', name: 'NA', translatedName: 'N/A')
+                ]),
+            InputField(
+                id: 'BvNaiaoxc6w',
+                name: '5. Have you been tested for HIV?',
+                translatedName: '5. U kile oa hlahlobela HIV?',
+                description: 'If no refer for testing',
+                translatedDescription:
+                'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                ),
+            InputField(
+                id: 'Uv26fX0HQvO',
+                name: 'If Yes when?',
+                translatedName: 'Haeba Karabo le “E”, neng',
+                description:
+                'If over six months (or their window period) refer for testing ',
+                translatedDescription:
+                'Ha sephetho se feta khoeli tse 6 fetesitsa setsing sa tlhabollo',
+                valueType: 'TEXT',
+                options: [
+                  InputFieldOption(
+                    code: 'Less than 3 months',
+                    name: 'Less than 3 months',
+                    translatedName: 'Less than 3 months',
+                  ),
+                  InputFieldOption(
+                    code: 'Three months to twelve months',
+                    name: 'Three months to twelve months',
+                    translatedName: 'Three months to twelve months',
+                  ),
+                  InputFieldOption(
+                      code: 'More than 1 year',
+                      name: 'More than 1 year',
+                      translatedName:
+                      'Ka holimo ho likhoeli tse 12 tse fetileng'),
+                ],
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+                id: 'eSJhbqT1NQb',
+                name: '6. Latest HIV test result?',
+                translatedName:
+                '6. Liphetho tsa liteko tsa HIV tsa morao-rao?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF2895F0),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Positive',
+                      name: 'Positive',
+                      translatedName: 'T’soaetso e teng'),
+                  InputFieldOption(
+                      code: 'Negative',
+                      name: 'Negative',
+                      translatedName: 'T’soaetso haeo'),
+                  InputFieldOption(
+                      code: 'Unknown',
+                      name: 'Unknown',
+                      translatedName: 'Ha e tsejoe'),
+                ]),
+
+
+            InputField(
+              id: 'blod3xZ2dPP',
+              name: '7. Are you currently taking ART to treat HIV?',
+              translatedName: '7. Na u tlasa kalafo ea lefu la HIV ha joale?',
+              description: 'If no, refer to HIV care and treatment services.',
+              translatedDescription:
+              'Ha ase tlasa kalafo fetisetsa setsing sa kalafo.',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+              options: [
+                InputFieldOption(code: '1', name: 'Yes', translatedName: 'E'),
+                InputFieldOption(code: '0', name: 'No', translatedName: 'Che'),
+                InputFieldOption(
+                    code: '0.000001', name: 'NA', translatedName: 'N/A')
+              ],
+            ),
+
+            InputField(
+                id: 'ubin7MjQ5OI',
+                name: '8. If Yes, How long have you been on ART?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'less than six months',
+                      name: 'less than six months'),
+                  InputFieldOption(
+                      code: 'more than six months',
+                      name: 'more than six months'),
+                  InputFieldOption(
+                      code: 'more than one year', name: 'more than one year'),
+                  InputFieldOption(code: 'NA', name: 'NA')
+                ]),
+
+            InputField(
+                id: 'sLyfb45aLkl',
+                name: '9. Ever had a blood test called viral load?',
+                translatedName:
+                '9. U kile oa etsa hlahlobo ea mali bakeng sa boemo ba t’soaetso bo maling (viral load)?',
+                description:
+                'If taking ART for over six months and not tested refer to viral load test.',
+                translatedDescription:
+                'Haeba a le litlhareng ho feta khoeli tse tseletseng eba ha a so hlahlobe mali, fetisetsa setsing bakeng sa tlahobo.',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(code: '1', name: 'Yes', translatedName: 'E'),
+                  InputFieldOption(
+                      code: '0', name: 'No', translatedName: 'Che'),
+                  InputFieldOption(
+                      code: '0.000001', name: 'NA', translatedName: 'N/A')
+                ]),
+            InputField(
+                id: 'aRNGDZcwWmS',
+                name: '10. What was the result of your viral load test?',
+                translatedName:
+                '10. Sephetho sa tlhahlobo eo ea mali se ne se reng?',
+                description:
+                'Note to Case Management Workers, they do not have to know exact numbers just whether it was high, low or undetectable.',
+                translatedDescription:
+                'Tlhokomeliso ho Mosebeletsi oa morero, ha ba tlameha ho tseba palo tse nepahetseng empa hore na e holimo kapa e tlase.',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'High (above 1,000 copies/ml)',
+                      name: 'High (above 1,000 copies/ml)',
+                      translatedName: 'E holimo'),
+                  InputFieldOption(
+                      code: 'Low (less than 1,000 copies/ml)',
+                      name: 'Low (less than 1,000 copies/ml)',
+                      translatedName: 'E tlase '),
+                  InputFieldOption(
+                      code: 'Undetectable',
+                      name: 'Undetectable',
+                      translatedName: 'Ha e bonahale'),
+                  InputFieldOption(
+                      code: 'Don? know',
+                      name: 'Don? know',
+                      translatedName: 'Ha a tsebe'),
+                  InputFieldOption(
+                      code: 'NA', name: 'NA', translatedName: 'N/A')
+                ]),
+            InputField(
+                id: 'BYZu8p33lzP',
+                name: '11. Ever disclosed your status to anyone?',
+                translatedName:
+                '11. Na ho na le motho eo u kileng oa mojoetsa boemo ba hau ba HIV?',
+                description: 'Refer to HIV support services if no',
+                translatedDescription:
+                'Fetisetsa setsing bakeng sa litsebeletso tsa t’sehetso ea HIV ha karabo ele che.',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
@@ -632,28 +737,52 @@ class OvcServicesWellbeingAssessment {
                   InputFieldOption(
                       code: 'No', name: 'No', translatedName: 'Che'),
                   InputFieldOption(
-                      code: 'I don\'t know',
-                      name: 'I don\'t know',
-                      translatedName: 'Ha ke tsebe'),
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha hona Karabo'),
+                  InputFieldOption(
+                      code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
             InputField(
-                id: 'AcAWUuDae0A',
-                name:
-                    '9. In the last month, have you gone more than three days when you were too sick or too tired to participate in daily activities?',
+                id: 'ToWhhydys',
+                name: '12. Who knows about your HIV status?',
                 translatedName:
-                    ' 9. Khoeling e fetileng, na u kile oa qeta matsatsi a fetang a mararo u kula haholo kapa u khathetse haholo oa ba oa sitoa ho oa nka karolo mesebetsing ea letsatsi le letsatsi?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'ETI9FukQuNo',
-                name:
-                    '10. The last time that you were sick, were you taken to the doctor or the hospital?',
-                translatedName:
-                    '10. Lekhetlo la ho qetela ha une u kula, na u ile oa lo bona ngaka kapa oa ea sepetlele?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
+                '12. Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
+                valueType: 'CHECK_BOX',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Dl3tIlQxsrd',
+                      name: 'My child',
+                      translatedName: 'Ngoana oaka'),
+                  InputFieldOption(
+                      code: 'CHuwbETwj8o',
+                      name: 'My spouse',
+                      translatedName: 'Molekane oaka'),
+                  InputFieldOption(
+                      code: 'MJGmlQevBsM',
+                      name: 'A friend/neighbor',
+                      translatedName: 'Motsoalle/Moahisane '),
+                  InputFieldOption(
+                      code: 'pCHKaQptcwn',
+                      name: 'Boyfriend/ girlfriend',
+                      translatedName: 'Mohlankana oaka/Kharebe eaka'),
+                  // InputFieldOption(
+                  //     code: 'Wfu966TC3M5',
+                  //     name: 'Member of the family',
+                  //     translatedName: 'Moruti'),
+                  InputFieldOption(
+                      code: 'J5hjKDmiE6a',
+                      name: 'Pastor or priest',
+                      translatedName: 'Moruti kapa moprista'),
+                  InputFieldOption(
+                      code: 'HLPSkYfLYlS',
+                      name: 'Other',
+                      translatedName: 'Tse ling'),
+                  InputFieldOption(
+                      code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
+                ]),
             InputField(
                 id: 'Vc7Q23oTNhu',
                 name:
@@ -661,20 +790,6 @@ class OvcServicesWellbeingAssessment {
                 translatedName:
                     '59. ngoana o na le bokuli kapa bokooa boo u ka ratang ho mpolella ka bona?',
                 valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'qI9a8II1g54',
-                name: 'List illness or disability',
-                translatedName: 'Thathamisa ho kula kapa bokooa',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'ToOqcUP9338',
-                name: 'What kind of illness?',
-                translatedName: 'Ke bokulo bofe?',
-                valueType: 'TEXT',
                 inputColor: const Color(0xFF2895F0),
                 labelColor: const Color(0xFF1A3518)),
             InputField(
@@ -687,81 +802,18 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFF2895F0),
                 labelColor: const Color(0xFF1A3518)),
             InputField(
-                id: 'lz56QGytZkD',
-                name:
-                    '61. What kind of services or treatment does the child receive?',
-                translatedName:
-                    '61. Ke litšebeletso tsa mofuta ofe kapa kalafo eo ngoana a e fumanang?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'lxF2SNfIGa0',
-                name: 'From whom does the child receive these services?',
-                translatedName: 'Ngoana o fumana litšebeletso tsee ho mang?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'YZ9ORZBKzHk',
-                name: 'From whom do you receive treatment for your illness?',
-                translatedName: 'O fumana kalafo ho mang ho kula ha hao?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'RC28ZyOhzUQ',
-                name: '12. Do you have any disability?',
-                translatedName: '12. Na u phela le bokooa? ',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'RC28ZyOhzUQ_checkbox',
-                name: 'Which disability do you have?',
-                translatedName: 'U na le bokooa bofe?',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'rVAImAgvrYe',
-                      name: 'Hearing disiability',
-                      translatedName: 'Kutlo'),
-                  InputFieldOption(
-                      code: 'br8TVOKf1ZI',
-                      name: 'Speech disability',
-                      translatedName: 'Puo'),
-                  InputFieldOption(
-                      code: 'DExMWJ61fKp',
-                      name: 'Physical disability',
-                      translatedName: '’Meleng '),
-                  InputFieldOption(
-                      code: 'LJO2Ar9YytV',
-                      name: 'Visual disability',
-                      translatedName: 'Pono'),
-                  InputFieldOption(
-                      code: 'e1KcALoo1ZJ',
-                      name: 'Intellectual disability',
-                      translatedName: 'Kelello'),
-                  InputFieldOption(
-                      code: 'YRWFyAhfhRP',
-                      name: 'Other',
-                      translatedName: 'Tse ling')
-                ]),
-            InputField(
-                id: 'YQVQRnN30O6',
-                name: 'Specify other disability',
-                translatedName: 'Qaqisa bokooa bo bong',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
                 id: 'puLHlflNeg6',
                 name: '62. Do you know child’s HIV status?',
                 translatedName: '62. Na u tseba boemo ba ngoana ba HIV?',
                 valueType: 'BOOLEAN',
                 isReadOnly: true,
+                inputColor: const Color(0xFF2895F0),
+                labelColor: const Color(0xFF1A3518)),
+            InputField(
+                id: 'ef1ixon3YBh',
+                name: '5. OVC ever been tested for HIV?',
+                translatedName: '5. Na ngoana o kile a hlahlobela HIV?',
+                valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF2895F0),
                 labelColor: const Color(0xFF1A3518)),
             InputField(
@@ -778,55 +830,7 @@ class OvcServicesWellbeingAssessment {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF2895F0),
                 labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'ef1ixon3YBh',
-                name: '63. OVC ever been tested for HIV?',
-                translatedName: '63. Na ngoana o kile a hlahlobela HIV?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'J4ozQS4koE8',
-                name: 'When were you tested?',
-                translatedName: 'U ile oa lekoa neng?',
-                valueType: 'DATE',
-                firstDate: firstDate,
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'o2XWRHW5zwb',
-                name: 'Do you know the results of your test?',
-                translatedName: 'O tseba sephetho sa tlhahlobo eo?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'eSJhbqT1NQb',
-                name: '64. Latest HIV test result?',
-                translatedName:
-                    '64. Liphetho tsa liteko tsa HIV tsa morao-rao?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518),
-                isReadOnly: true,
-                options: [
-                  InputFieldOption(
-                      code: 'Positive',
-                      name: 'Positive',
-                      translatedName: 'T’soaetso e teng'),
-                  InputFieldOption(
-                      code: 'Negative',
-                      name: 'Negative',
-                      translatedName: 'T’soaetso haeo'),
-                  InputFieldOption(
-                      code: 'Unknown',
-                      name: 'Unknown',
-                      translatedName: 'Ha e tsejoe'),
-                  InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha ho karabo')
-                ]),
+
             InputField(
                 id: 'c5TMWtM4VVJ',
                 name: '14. Could you share the results of the test with me?',
@@ -1626,7 +1630,254 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFFEE6E22),
                 labelColor: const Color(0xFF1A3518))
           ]),
+      FormSection(
+          name: 'TB Screening',
+          id:'tbsection_adolescent',
 
+          color: const Color(0xFF2895F0),
+          borderColor: const Color(0xFF2895F0),
+          inputFields: [
+
+          ],
+          subSections: [
+            FormSection(
+                name: '',
+
+                color: const Color(0xFF4B9F46),
+                inputFields: [
+                  InputField(
+                      id: 'tMvluCbiiUm',
+                      name:
+                      '1.	Are you coughing?',
+                      translatedName:
+                      '1.	Are you coughing?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'P9hiqrTjAdg',
+                      name: '2.	Have you lost weight (without trying)?',
+                      translatedName:
+                      '2.	Have you lost weight (without trying)?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'Y8Xzy7bEWsi',
+                      name: '3.	Do you have drenching/soaking sweats at night?',
+                      translatedName: '3.	Do you have drenching/soaking sweats at night?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'VETgonq6tFr',
+                      name: '4.	Do you have fevers?',
+                      translatedName: '4.	Do you have fevers?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+
+                ])
+          ]),
+      FormSection(
+          name: 'TB Screening',
+          id:'tbsection_child',
+          color: const Color(0xFF2895F0),
+          borderColor: const Color(0xFF2895F0),
+          inputFields: [
+
+          ],
+          subSections: [
+            FormSection(
+                name: '',
+                color: const Color(0xFF4B9F46),
+                inputFields: [
+                  InputField(
+                      id: 'C9cpFDvwOUJ',
+                      name:
+                      '1.	Has the child been coughing?',
+                      translatedName:
+                      '1.	Has the child been coughing?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'TpyePxydX6K',
+                      name: '2.	Has the child had a fever?',
+                      translatedName:
+                      '2.	Has the child had a fever?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'dlWawszpssl',
+                      name: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
+                      translatedName: '3.	Failure to thrive/faltering growth or signs of severe malnutrition?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'GTIxkgzrJgS',
+                      name: '4.	Has the child been in contact with someone with TB disease?',
+                      translatedName: '4. Has the child been in contact with someone with TB disease?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+
+                ])
+          ]),
+      FormSection(
+          name: 'NUTRITION',
+          id:'nutritionsection',
+          color: const Color(0xFF2895F0),
+          borderColor: const Color(0xFF2895F0),
+          inputFields: [
+
+          ],
+          subSections: [
+            FormSection(
+                name: 'Nutrition Section',
+                id: 'generalnutrition',
+                color: const Color(0xFF4B9F46),
+                inputFields: [
+                  InputField(
+                      id: 'UDyg5PFj12b',
+                      name: 'Which food groups do you regularly eat?',
+                      translatedName: 'Which food groups do you regularly eat?',
+                      description: 'Energy foods,Body BUiding foods or Protective foods',
+                      translatedDescription: 'Energy foods,Body BUiding foods or Protective foods',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF1A3518),
+                      options: [
+                        InputFieldOption(code: '1', name: 'One type of food group', translatedName: 'One types of food groups'),
+                        InputFieldOption(
+                            code: '2', name: 'Two types of food groups', translatedName: 'Two types of food groups'),
+                        InputFieldOption(
+                            code: '3', name: 'All types of food groups', translatedName: 'All types of food groups')
+                      ]),
+                ]),
+            FormSection(
+                name: 'Child Nutrion Screening',
+                id: 'childnutrition',
+                color: const Color(0xFF4B9F46),
+                inputFields: [
+                  InputField(
+                      id: 'JnCFOeouVIy',
+                      name: '1. Check weight on the growth chart',
+                      translatedName: '1. Khetha boima ba ngoana bukaneng',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373),
+                      options: [
+                        InputFieldOption(
+                            code:
+                            'Normal',
+                            name:
+                            'Normal',
+                            translatedName:
+                            'Normal'),
+                        InputFieldOption(
+                            code: 'Flat',
+                            name: 'Flat',
+                            translatedName: 'Flat'),
+                        InputFieldOption(
+                            code: 'Falling',
+                            name: 'Falling',
+                            translatedName: 'Falling'),
+                        InputFieldOption(
+                            code: 'Above Normal',
+                            name: 'Above Normal',
+                            translatedName: 'Above Normal'),
+                      ]),
+                  InputField(
+                      id: 'lbr7YOB6HJ1',
+                      name: '2. How would you describe feeding time with your baby? ',
+                      translatedName: '2. How would you describe feeding time with your baby? ',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373),
+                      options: [
+                        InputFieldOption(
+                            code:
+                            'Always Pleasant',
+                            name:
+                            'Always Pleasant',
+                            translatedName:
+                            'Always Pleasant'),
+                        InputFieldOption(
+                            code: 'Sometimes Pleasant',
+                            name: 'Sometimes Pleasant',
+                            translatedName: 'Sometimes pleasant'),
+                        InputFieldOption(
+                            code: 'Never Pleasant',
+                            name: 'Never Pleasant',
+                            translatedName: 'Never Pleasant'),
+
+                      ]),
+                  InputField(
+                      id: 'ATWzSRHBmuF',
+                      name:
+                      '3. Has the child unintentionally lost weight?',
+                      translatedName:
+                      '3.	Has the child unintentionally lost weight? ',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'uINNVU0OeRP',
+                      name:
+                      '4.	Has the child had poor weight gain over the last few months? ',
+                      translatedName:
+                      '4. Has the child had poor weight gain over the last few months?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'bMNyAIWumx1',
+                      name:
+                      '5.	Has the child been eating/feeding less in the last few weeks ',
+                      translatedName:
+                      '5. Has the child been eating/feeding less in the last few weeks',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'OUPk2e9DoMe',
+                      name:
+                      '6. Is the child obviously looking underweight? Thin, Ribs protruding from the body, etc.',
+                      translatedName:
+                      '6. Is the child obviously looking underweight? Thin, Ribs protruding from the body, etc.',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'eQM7VOlr5hG',
+                      name:
+                      '7.	Were there any days last month when your family didn’t have enough food to eat or enough money to buy food?',
+                      translatedName:
+                      '7. Were there any days last month when your family didn’t have enough food to eat or enough money to buy food?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'yVTsRM4eMHA',
+                      name:
+                      '8.	Are there concerns about the general health of a child ',
+                      translatedName:
+                      '8.	Are there concerns about the general health of a child ',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'OBugEkynJG0',
+                      name: 'Are there any signs of malnutrition?',
+                      translatedName: 'Are there any signs of malnutrition?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF455B44)),
+                ]),
+          ]),
     ];
   }
 }
