@@ -214,6 +214,19 @@ class OvcEnrollmentHousehold {
                     code: 'Divorced/separated',
                     name: 'Divorced/separated'),
               ]),
+
+          InputField(
+              id: 'UffKzmI4698',
+              name: '7. Have you been tested for HIV?',
+              translatedName: '7. U kile oa hlahlobela HIV?',
+              description: 'If no refer for testing',
+              translatedDescription: 'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+          //    isReadOnly: true
+          ),
+
           InputField(
               id: 'oSKX8fFQdWc',
               name: 'Caregiver HIV status',

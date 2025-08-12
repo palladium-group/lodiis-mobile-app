@@ -25,6 +25,7 @@ class OvcHousehold {
   String? houseHoldCategorization;
   String? implementingPartner;
   String? searchableValue;
+  bool? artStatus;
   bool? enrollmentOuAccessible;
   bool? primaryChildExist;
   bool? primaryChildHasExited;
@@ -32,6 +33,8 @@ class OvcHousehold {
   List<OvcHouseholdChild>? children;
   Map? dataObject;
   TrackedEntityInstance? teiData;
+
+
 
   OvcHousehold({
     this.id,
@@ -60,6 +63,7 @@ class OvcHousehold {
     this.primaryChildHasExited,
     this.hasExitedProgram,
     this.dataObject,
+    this.artStatus,
   });
 
   OvcHousehold fromTeiModel(
@@ -100,6 +104,7 @@ class OvcHousehold {
     }
     String village = data['RB8Wx75hGa4'] ?? '';
     String hivStatus = data['oSKX8fFQdWc'] ?? '';
+    bool artStatus = data['l7op0btSqSc'] ?? '';
     String phoneNumber = getPhoneNumbers(data, phoneNumberIds);
     int maleCount = getChildCountBySex(children, 'male');
     int femaleCount = getChildCountBySex(children, 'female');
@@ -118,6 +123,7 @@ class OvcHousehold {
       ovcMaleCount: '$maleCount',
       ovcFemaleCount: '$femaleCount',
       hivStatus: hivStatus,
+      artStatus: artStatus,
       primaryUIC: data[BeneficiaryIdentification.primaryUIC] ?? '',
       secondaryUIC: data[BeneficiaryIdentification.secondaryUIC] ?? '',
       houseHoldStatus: data['PN92g65TkVI'] ?? '',

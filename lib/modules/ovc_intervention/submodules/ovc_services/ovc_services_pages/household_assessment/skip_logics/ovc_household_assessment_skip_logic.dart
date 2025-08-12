@@ -12,7 +12,7 @@ class OvchouseHoldAssessmentSkipLogic {
   static Map hiddenInputFieldOptions = {};
 
   static Future evaluateSkipLogics(BuildContext context,
-      List<FormSection> formSections, Map dataObject, String? hivStatus) async {
+      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? artStatus) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
@@ -78,18 +78,42 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['HKCv7lkLexo'] = true;
         hiddenFields['JzlLk2tW4xh'] = true;
       }
-      if (inputFieldId == 'AccHyrWqhI0' && value != '1') {
+      if (inputFieldId == 'dE3bwyB7guF' && value != '1') {
 
         hiddenFields['w6xeZ47TwwI'] = true;
-
-
       }
+
+      if (inputFieldId == 'NdvnM08tekD' && value != '1') {
+
+        hiddenFields['sVpDAdtsGR6'] = true;
+      }
+
+      if (inputFieldId == 'eAVGC2zqUjP' && value != '1') {
+
+        hiddenFields['ir5Pzw7MyIT'] = true;
+      }
+
+      if (inputFieldId == 'ehtYoYKxATO' && value != '1') {
+
+        hiddenFields['crEW7U1Tbqg'] = true;
+      }
+
+      if (inputFieldId == 'z9StVriYu0Q' && value != '1') {
+
+        hiddenFields['kn1dKAwP5wD'] = true;
+      }
+
+      if (inputFieldId == 'HQdMUzgaIXr' && value != '1') {
+
+        hiddenFields['mH9DgJoa0nT'] = true;
+      }
+
       if (inputFieldId == 'BvNaiaoxc6w') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = 'true';
         } else if (hivStatus == null) {
           hiddenFields['Uv26fX0HQvO'] = true;
-          hiddenFields['T4grVrCVDkk'] = true;
+         // hiddenFields['T4grVrCVDkk'] = true;
           dataObject[inputFieldId] = 'false';
         }
       }
@@ -132,6 +156,7 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = hivStatus;
+
           if (dataObject[inputFieldId] != 'Positive') {
             hiddenFields['blod3xZ2dPP'] = true;
             hiddenFields['ubin7MjQ5OI'] = true;
@@ -139,6 +164,13 @@ class OvchouseHoldAssessmentSkipLogic {
           }
         }
       }
+      if (inputFieldId == 'Icgkv0xkUow') {
+        if (artStatus != null) {
+          print('ART satatus at Assessment== $artStatus');
+          dataObject[inputFieldId] = artStatus;
+        }
+      }
+
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
@@ -156,6 +188,8 @@ class OvchouseHoldAssessmentSkipLogic {
             hiddenFields['aUZ2HTFvI4A'] = true;
             hiddenFields['WUwcEkmhaan'] = true;
             hiddenFields['beztnfLGhxi'] = true;
+            hiddenFields['Icgkv0xkUow'] = true;
+
           }
         }
       }
@@ -174,6 +208,38 @@ class OvchouseHoldAssessmentSkipLogic {
 
       if (inputFieldId == 'Js9auywpL0O' && value != 'true') {
         hiddenFields['SQUodtvxYLs'] = true;
+      }
+
+      if (inputFieldId == 'WYUkGeSWaZY' && value != 'true') {
+        hiddenFields['dE3bwyB7guF'] = true;
+      }
+
+      if (inputFieldId == 'KA3l4V5NDWu' && value != 'true') {
+        hiddenFields['NdvnM08tekD'] = true;
+      }
+
+      if (inputFieldId == 'NpxDYjUFlKS' && value != 'true') {
+        hiddenFields['eAVGC2zqUjP'] = true;
+      }
+
+      if (inputFieldId == 'sftyaTdwBKz' && value != 'true') {
+        hiddenFields['ehtYoYKxATO'] = true;
+      }
+
+      if (inputFieldId == 'bEXtDfYHP4B' && value != 'true') {
+        hiddenFields['z9StVriYu0Q'] = true;
+      }
+
+      if (inputFieldId == 'gcW6652C8Bt' && value != 'true') {
+        hiddenFields['bmJjZctbkhX'] = true;
+      }
+
+      if (inputFieldId == 'bmJjZctbkhX' && (value == null || value.isEmpty)) {
+        hiddenFields['HQdMUzgaIXr'] = true;
+      }
+
+      if (inputFieldId == 'cqusz74t5OH' && value != 'true') {
+        hiddenFields['ZuCnNb9G6EM'] = true;
       }
 
       if (inputFieldId == 'sLyfb45aLkl' && value != '1') {
