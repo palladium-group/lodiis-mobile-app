@@ -116,7 +116,7 @@ class OvcHousehold {
     }
     String village = data['RB8Wx75hGa4'] ?? '';
     String hivStatus = data['oSKX8fFQdWc'] ?? '';
-    bool? artStatus = (_parseBool(data['l7op0btSqSc']) ?? '') as bool?;
+    Object artStatus = (_parseBool(data['l7op0btSqSc']) ?? '');
     String phoneNumber = getPhoneNumbers(data, phoneNumberIds);
     int maleCount = getChildCountBySex(children, 'male');
     int femaleCount = getChildCountBySex(children, 'female');
