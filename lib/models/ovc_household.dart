@@ -74,6 +74,17 @@ class OvcHousehold {
     bool? enrollmentOuAccessible,
     List<OvcHouseholdChild> children,
   ) {
+
+    // Helper to parse booleans from "true/false", "Yes/No", "1/0"
+    bool? _parseBool(dynamic v) {
+      if (v == null) return null;
+      final s = v.toString().trim().toLowerCase();
+      if (s.isEmpty) return null;
+      if (s == 'true' || s == 'yes' || s == '1') return true;
+      if (s == 'false' || s == 'no' || s == '0') return false;
+      return null;
+    }
+
     List<String> phoneNumberIds = ['tNdoR0jYr7R', 'cvrdI9t4rtN'];
     List<String> keys = [
       'tNdoR0jYr7R',
@@ -88,6 +99,7 @@ class OvcHousehold {
       'RB8Wx75hGa4',
       'qZP982qpSPS',
       'oSKX8fFQdWc',
+      'l7op0btSqSc',
       OvcInterventionConstant.programStatus,
       BeneficiaryIdentification.householdCategorization,
       UserAccountReference.implementingPartnerAttribute,
@@ -104,7 +116,7 @@ class OvcHousehold {
     }
     String village = data['RB8Wx75hGa4'] ?? '';
     String hivStatus = data['oSKX8fFQdWc'] ?? '';
-    bool artStatus = data['l7op0btSqSc'] ?? '';
+    bool? artStatus = (_parseBool(data['l7op0btSqSc']) ?? '') as bool?;
     String phoneNumber = getPhoneNumbers(data, phoneNumberIds);
     int maleCount = getChildCountBySex(children, 'male');
     int femaleCount = getChildCountBySex(children, 'female');
@@ -123,7 +135,7 @@ class OvcHousehold {
       ovcMaleCount: '$maleCount',
       ovcFemaleCount: '$femaleCount',
       hivStatus: hivStatus,
-      artStatus: artStatus,
+      artStatus: artStatus is bool ? artStatus : null,
       primaryUIC: data[BeneficiaryIdentification.primaryUIC] ?? '',
       secondaryUIC: data[BeneficiaryIdentification.secondaryUIC] ?? '',
       houseHoldStatus: data['PN92g65TkVI'] ?? '',
