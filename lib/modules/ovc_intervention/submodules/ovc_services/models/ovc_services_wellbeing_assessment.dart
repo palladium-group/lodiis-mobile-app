@@ -488,7 +488,7 @@ class OvcServicesWellbeingAssessment {
           inputFields: [
             InputField(
                 id: 'MkoDGBOBo06',
-                name: '1. Where do you access health services?',
+                name: '1.Where do you access health services?',
                 translatedName:
                 "1.U fumana litsebeletso tsa bophelo hokae?",
                 allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
