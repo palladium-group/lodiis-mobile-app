@@ -36,8 +36,8 @@ class OvcHouseholdServiceAdultWellbeing {
           inputFields: [
             InputField(
                 id: 'income_source',
-                translatedName: '1. U fumana chelete joang?',
-                name: '1. What is your source of income?',
+                translatedName: 'U fumana chelete joang?',
+                name: 'What is your source of income?',
                 valueType: 'CHECK_BOX',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -74,8 +74,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'time_for_visit',
-                translatedName: '2. Nako e nepahetseng hore re etele lelapa?',
-                name: '2. Appropriate time for us to visit your home?',
+                translatedName: 'Nako e nepahetseng hore re etele lelapa?',
+                name: 'Appropriate time for us to visit your home?',
                 valueType: 'CHECK_BOX',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -109,9 +109,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
               id: 'PpghWNFLAF3',
-              name: '3. As a family, where do you access health services?',
-              translatedName:
-              "3. Lele lelapa le fumana litsebeletso tsa bophelo hokae?",
+              name: 'As a family, where do you access health services?',
+              translatedName: 'Lele lelapa le fumana litsebeletso tsa bophelo hokae?',
               allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
               showCountryLevelTree: true,
               valueType: 'ORGANISATION_UNIT',
@@ -122,9 +121,9 @@ class OvcHouseholdServiceAdultWellbeing {
             InputField(
                 id: 'ut8LqpHyZnR',
                 name:
-                    '4. Do you or anyone have a long-term illness that you would like to share with me',
+                    'Do you or anyone have a long-term illness that you would like to share with me',
                 translatedName:
-                    '4. Na oena kapa emong oa ba lelapa o na le bokulo ba nako e telele bo u ka lakatsang ho mpolella bona?',
+                    'Na oena kapa emong oa ba lelapa o na le bokulo ba nako e telele bo u ka lakatsang ho mpolella bona?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -157,9 +156,9 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'ut8LqpHyZnR_checkbox',
-                name: '5. What is the long-term illness?',
+                name: 'What is the long-term illness?',
                 translatedName:
-                    '5. Ke bokuli bo fe ba nako e telele?',
+                    'Ke bokuli bo fe ba nako e telele?',
                 valueType: 'CHECK_BOX',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -201,8 +200,8 @@ class OvcHouseholdServiceAdultWellbeing {
                 labelColor: const Color(0xFF1A3518)),
             InputField(
                 id: 'dE3bwyB7guF',
-                name: '6. Are they receiving treatment for Cancer?',
-                translatedName: '6. Na o fumana kalafo ea lefu leo la Kankere?',
+                name: 'Are they receiving treatment for Cancer?',
+                translatedName: 'Na o fumana kalafo ea lefu leo la Kankere?',
                 description: 'If no, Refer to appropriate health service',
                 translatedDescription: 'Fetisetsa litsebeletsong tsa bophel',
                 valueType: 'TEXT',
@@ -241,8 +240,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'NdvnM08tekD',
-                name: '6. Are they receiving treatment for Epilepsy?',
-                translatedName: '6. Na o fumana kalafo ea lefu leo la Sethoathoa?',
+                name: 'Are they receiving treatment for Epilepsy?',
+                translatedName: 'Na o fumana kalafo ea lefu leo la Sethoathoa?',
                 description: 'If no, Refer to appropriate health service',
                 translatedDescription: 'Fetisetsa litsebeletsong tsa bophel',
                 valueType: 'TEXT',
@@ -281,8 +280,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'eAVGC2zqUjP',
-                name: '6. Are they receiving treatment for Mental Illness?',
-                translatedName: '6. Na o fumana kalafo ea lefu leo la kelello?',
+                name: 'Are they receiving treatment for Mental Illness?',
+                translatedName: 'Na o fumana kalafo ea lefu leo la kelello?',
                 description: 'If no, Refer to appropriate health service',
                 translatedDescription: 'Fetisetsa litsebeletsong tsa bophel',
                 valueType: 'TEXT',
@@ -321,8 +320,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'ehtYoYKxATO',
-                name: '6. Are they receiving treatment for Diabetes?',
-                translatedName: '6. Na o fumana kalafo ea lefu leo la tsoekere?',
+                name: 'Are they receiving treatment for Diabetes?',
+                translatedName: 'Na o fumana kalafo ea lefu leo la tsoekere?',
                 description: 'If no, Refer to appropriate health service',
                 translatedDescription: 'Fetisetsa litsebeletsong tsa bophel',
                 valueType: 'TEXT',
@@ -361,8 +360,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'z9StVriYu0Q',
-                name: '6. Are they receiving treatment for Hypertension?',
-                translatedName: '6. Na o fumana kalafo ea lefu leo la phallo e phahameng ea mali',
+                name: 'Are they receiving treatment for Hypertension?',
+                translatedName: 'Na o fumana kalafo ea lefu leo la phallo e phahameng ea mali',
                 description: 'If no, Refer to appropriate health service',
                 translatedDescription: 'Fetisetsa litsebeletsong tsa bophel',
                 valueType: 'TEXT',
@@ -401,8 +400,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'HQdMUzgaIXr',
-                name: '6. Are they receiving treatment for the other illness?',
-                translatedName: '6. Na o fumana kalafo ea lefu leo le leng?',
+                name: 'Are they receiving treatment for the other illness?',
+                translatedName: 'Na o fumana kalafo ea lefu leo le leng?',
                 description: 'If no, Refer to appropriate health service',
                 translatedDescription: 'Fetisetsa litsebeletsong tsa bophel',
                 valueType: 'TEXT',
@@ -495,7 +494,7 @@ class OvcHouseholdServiceAdultWellbeing {
                 isReadOnly: true), */
             InputField(
                 id: 'vNeOE9abQBB',
-                name: '8. What were the results of your last HIV test?',
+                name: 'What were the results of your last HIV test?',
                 translatedName: 'Boemo ba hau ba HIV ke bofe?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
@@ -540,9 +539,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
               id: 'Icgkv0xkUow',
-              name: '9. Are you currently taking ART to treat HIV?',
-              translatedName:
-              '9. Na u tlasa kalafo ea lefu la HIV ha joale?',
+              name: 'Are you currently taking ART to treat HIV?',
+              translatedName: 'Na u tlasa kalafo ea lefu la HIV ha joale?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF1A3518),
@@ -551,7 +549,7 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
                 id: 'ubin7MjQ5OI',
-                name: '10. How long have you been on ART?',
+                name: 'How long have you been on ART?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -621,13 +619,10 @@ class OvcHouseholdServiceAdultWellbeing {
                 labelColor: const Color(0xFF1A3518)), */
             InputField(
                 id: 'sLyfb45aLkl',
-                name: '11. Have you ever had a blood test called viral load?',
-                translatedName:
-                    '11. U kile oa etsa hlahlobo ea mali bakeng sa boemo ba t’soaetso bo maling (viral load)?',
-                description:
-                    'If taking ART for over six months and not tested refer to viral load test.',
-                translatedDescription:
-                    'Haeba a le litlhareng ho feta khoeli tse tseletseng eba ha a so hlahlobe mali, fetisetsa setsing bakeng sa tlahobo.',
+                name: 'Have you ever had a blood test called viral load?',
+                translatedName: 'U kile oa etsa hlahlobo ea mali bakeng sa boemo ba t’soaetso bo maling (viral load)?',
+                description: 'If taking ART for over six months and not tested refer to viral load test.',
+                translatedDescription: 'Haeba a le litlhareng ho feta khoeli tse tseletseng eba ha a so hlahlobe mali, fetisetsa setsing bakeng sa tlahobo.',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -638,13 +633,10 @@ class OvcHouseholdServiceAdultWellbeing {
                 ]),
             InputField(
                 id: 'aRNGDZcwWmS',
-                name: '12. What was the result of your viral load test?',
-                translatedName:
-                    '12. Sephetho sa tlhahlobo eo ea mali se ne se reng?',
-                description:
-                    'Note to Case Management Workers, they do not have to know exact numbers just whether it was high, low or undetectable.',
-                translatedDescription:
-                    'Tlhokomeliso ho Mosebeletsi oa morero, ha ba tlameha ho tseba palo tse nepahetseng empa hore na e holimo kapa e tlase.',
+                name: 'What was the result of your viral load test?',
+                translatedName: 'Sephetho sa tlhahlobo eo ea mali se ne se reng?',
+                description: 'Note to Case Management Workers, they do not have to know exact numbers just whether it was high, low or undetectable.',
+                translatedDescription: 'Tlhokomeliso ho Mosebeletsi oa morero, ha ba tlameha ho tseba palo tse nepahetseng empa hore na e holimo kapa e tlase.',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -672,11 +664,55 @@ class OvcHouseholdServiceAdultWellbeing {
                   InputFieldOption(
                       code: 'NA', name: 'NA', translatedName: 'N/A') */
                 ]),
+
+            InputField(
+              id: 'Have you received VL testing as per schedule?',
+              name: 'Have you received VL testing as per schedule?',
+              translatedName: 'Na u ntse u fumana liphetho tsa liteko tsa VL ka nako e nepahetseng?',
+              description: 'Normal: 6 months then annual; Pregnant every 3 months; Breastfeeding every 3 months',
+              translatedDescription: 'Normal: 6 months then annual; Pregnant every 3 months; Breastfeeding every 3 months',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+
+            InputField(
+              id: 'If virally unsuppressed, do you have CD4 results?',
+              name: 'If virally unsuppressed, do you have CD4 results?',
+              translatedName: 'U na le sephetho sa CD4 na?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+
+            InputField(
+                id: 'What are the CD4 results?',
+                name: 'What are the CD4 results?',
+                translatedName: 'Sephetho sa tlhahlobo eo ea CD4 se ne se reng?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Less than 200cells',
+                      name: 'Less than 200cells',
+                      /* translatedName: 'E holimo'*/),
+                  InputFieldOption(
+                      code: 'More than 200cells',
+                      name: 'More than 200cells',
+                      /* translatedName: 'E tlase'*/),
+                  InputFieldOption(
+                      code: 'Not documented',
+                      name: 'Not documented',
+                      /*translatedName: 'Ha a tsebe'*/),
+                ]),
+
+
            InputField(
                 id: 'BYZu8p33lzP',
-                name: '13. Have you disclosed your status to anyone?',
+                name: 'Have you disclosed your status to anyone?',
                 translatedName:
-                    '13. Na ho na le motho eo u kileng oa mojoetsa boemo ba hau ba HIV?',
+                    'Na ho na le motho eo u kileng oa mojoetsa boemo ba hau ba HIV?',
                 description: 'Refer to HIV support services if no',
                 translatedDescription:
                     'Fetisetsa setsing bakeng sa litsebeletso tsa t’sehetso ea HIV ha karabo ele che.',
@@ -692,14 +728,14 @@ class OvcHouseholdServiceAdultWellbeing {
                       code: 'No Response',
                       name: 'No Response',
                       translatedName: 'Ha hona Karabo'),
-                  InputFieldOption(
-                      code: 'NA', name: 'NA', translatedName: 'N/A')
+                  // InputFieldOption(
+                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
             InputField(
                 id: 'ToWhhydys',
-                name: '15. To whom have you disclosed your status?',
+                name: 'To whom have you disclosed your status?',
                 translatedName:
-                    '15. Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
+                    'Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
                 valueType: 'CHECK_BOX',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -720,10 +756,10 @@ class OvcHouseholdServiceAdultWellbeing {
                       code: 'pCHKaQptcwn',
                       name: 'Boyfriend/ girlfriend',
                       translatedName: 'Mohlankana oaka/Kharebe eaka'),
-                  // InputFieldOption(
-                  //     code: 'Wfu966TC3M5',
-                  //     name: 'Member of the family',
-                  //     translatedName: 'Moruti'),
+                   InputFieldOption(
+                      code: 'Wfu966TC3M5',
+                      name: 'Member of the family',
+                      translatedName: 'Moruti'),
                   InputFieldOption(
                       code: 'J5hjKDmiE6a',
                       name: 'Pastor or priest',
@@ -732,8 +768,8 @@ class OvcHouseholdServiceAdultWellbeing {
                       code: 'HLPSkYfLYlS',
                       name: 'Other',
                       translatedName: 'Tse ling'),
-                  InputFieldOption(
-                      code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
+                  // InputFieldOption(
+                  //     code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
                 ]),
             InputField(
                 id: 'I3hI2UTkKyx',
@@ -742,16 +778,53 @@ class OvcHouseholdServiceAdultWellbeing {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
+
             InputField(
-                id: 'jzmOXiyGGgw',
+              id: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
+              name: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
+              translatedName: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+
+
+            // InputField(
+            //     id: 'jzmOXiyGGgw',
+            //     name:
+            //         'Do you feel like people treat you differently because you are HIV positive?',
+            //     translatedName:
+            //         'Na o nahana hore batho ba o khetholla hobane unale le tso’oaetso ea HIV?',
+            //     description:
+            //         'Refer to Village Health Workers or Social Workers or psychosocial support.',
+            //     translatedDescription:
+            //         'Fetisetsa ho mosebeletsi oa tsa bophelo Motseng kapa mosebeltsi oa sechaba kapa tlabollong ea maikutlo.',
+            //     valueType: 'TEXT',
+            //     inputColor: const Color(0xFF4B9F46),
+            //     labelColor: const Color(0xFF1A3518),
+            //     options: [
+            //       InputFieldOption(
+            //           code: 'Yes', name: 'Yes', translatedName: 'E'),
+            //       InputFieldOption(
+            //           code: 'No', name: 'No', translatedName: 'Che'),
+            //       InputFieldOption(
+            //           code: 'No Response',
+            //           name: 'No Response',
+            //           translatedName: 'Ha hona Karabo'),
+            //       // InputFieldOption(
+            //       //     code: 'NA', name: 'NA', translatedName: 'N/A')
+            //     ]),
+
+            InputField(
+                id: 'Do you feel like you are supported enough regarding your HIV status?',
                 name:
-                    '16. Do you feel like people treat you differently because you are HIV positive?',
+                'Do you feel like you are supported enough regarding your HIV status?',
                 translatedName:
-                    '16. Na o nahana hore batho ba o khetholla hobane unale le tso’oaetso ea HIV?',
+                'Na u utloa u tshehelitsoe mabapi le boemo ba hao ba HIV?',
                 description:
-                    'Refer to Village Health Workers or Social Workers or psychosocial support.',
+                'If yes, voluntarily offer family psychosocial support (Parenting tips)',
                 translatedDescription:
-                    'Fetisetsa ho mosebeletsi oa tsa bophelo Motseng kapa mosebeltsi oa sechaba kapa tlabollong ea maikutlo.',
+                'Fetisetsa ho mosebeletsi oa tsa bophelo Motseng kapa mosebeltsi oa sechaba kapa tlabollong ea maikutlo.',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -764,85 +837,86 @@ class OvcHouseholdServiceAdultWellbeing {
                       code: 'No Response',
                       name: 'No Response',
                       translatedName: 'Ha hona Karabo'),
-                  InputFieldOption(
-                      code: 'NA', name: 'NA', translatedName: 'N/A')
+                  // InputFieldOption(
+                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
-            InputField(
-                id: 'How-have-you-coped-with-HIV-related-stigma',
-                name: '17. How have you coped with HIV-related stigma?',
-                translatedName:
-                    '17. U atleha ho phela joang tlaasa maemo a ho nenoa kapa ho khetholla ka baka la boemo ba hau ba HIV?',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'QPcCByPcMpz',
-                      name: 'I am part of a support group',
-                      translatedName: 'Ke karolo ea support group '),
-                  InputFieldOption(
-                      code: 'klE3cj35whZ',
-                      name:
-                          'I speak with people who I am close with or my family',
-                      translatedName:
-                          'Ke bua le batho ba haufi le nna kapa lelapa laka '),
-                  InputFieldOption(
-                      code: 'FitzDd4bmS6',
-                      name: 'I speak with my doctor',
-                      translatedName: 'Ke bua le ngaka eaka'),
-                  InputFieldOption(
-                      code: 'PXZm9X9pG01',
-                      name: 'I speak with my pastor or priest',
-                      translatedName: 'Ke bua le moruti oaka'),
-                  InputFieldOption(
-                      code: 'XPplaRA9hzd',
-                      name: 'I face it all',
-                      translatedName: 'Ke tobane le bothata bona ke le mong '),
-                  InputFieldOption(
-                      code: 'zNYrqDOIhGO',
-                      name:
-                          'I avoid thinking about it because it’s too difficult',
-                      translatedName:
-                          'Ke qoba ho nahana ka eona hobane e nkimetse.'),
-                  InputFieldOption(
-                      code: 'LGhJJz12mWP',
-                      name: 'I do not face stigma',
-                      translatedName: 'Ha ke so tobane le sekhobo'),
-                  InputFieldOption(
-                      code: 'loGTnsw9R9G',
-                      name: 'Other',
-                      translatedName: 'Tse ling'),
-                  InputFieldOption(
-                      code: 'YT79ydtEOZj', name: 'NA', translatedName: 'N/A')
-                ]),
-            InputField(
-                id: 'dfdeOt1y7me',
-                name: 'Please specify',
-                translatedName: 'Tse ling, hlakisa',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'JYPmeC1Zbwf',
-                name:
-                    '28. If you have a child or children 10 or over, have you talked to them about how to protect themselves from HIV?',
-                translatedName:
-                    '28. Haeba u na le ngoana kapa bana ba ka holimo ho lilemo li 10, u kile oa bua le bona ka ho itsireletsa khahlanong le tsoaetso ea HIV?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha hona Karabo'),
-                  InputFieldOption(
-                      code: 'NA', name: 'NA', translatedName: 'N/A')
-                ]),
+
+            // InputField(
+            //     id: 'How-have-you-coped-with-HIV-related-stigma',
+            //     name: '17. How have you coped with HIV-related stigma?',
+            //     translatedName:
+            //         '17. U atleha ho phela joang tlaasa maemo a ho nenoa kapa ho khetholla ka baka la boemo ba hau ba HIV?',
+            //     valueType: 'CHECK_BOX',
+            //     inputColor: const Color(0xFF4B9F46),
+            //     labelColor: const Color(0xFF1A3518),
+            //     options: [
+            //       InputFieldOption(
+            //           code: 'QPcCByPcMpz',
+            //           name: 'I am part of a support group',
+            //           translatedName: 'Ke karolo ea support group '),
+            //       InputFieldOption(
+            //           code: 'klE3cj35whZ',
+            //           name:
+            //               'I speak with people who I am close with or my family',
+            //           translatedName:
+            //               'Ke bua le batho ba haufi le nna kapa lelapa laka '),
+            //       InputFieldOption(
+            //           code: 'FitzDd4bmS6',
+            //           name: 'I speak with my doctor',
+            //           translatedName: 'Ke bua le ngaka eaka'),
+            //       InputFieldOption(
+            //           code: 'PXZm9X9pG01',
+            //           name: 'I speak with my pastor or priest',
+            //           translatedName: 'Ke bua le moruti oaka'),
+            //       InputFieldOption(
+            //           code: 'XPplaRA9hzd',
+            //           name: 'I face it all',
+            //           translatedName: 'Ke tobane le bothata bona ke le mong '),
+            //       InputFieldOption(
+            //           code: 'zNYrqDOIhGO',
+            //           name:
+            //               'I avoid thinking about it because it’s too difficult',
+            //           translatedName:
+            //               'Ke qoba ho nahana ka eona hobane e nkimetse.'),
+            //       InputFieldOption(
+            //           code: 'LGhJJz12mWP',
+            //           name: 'I do not face stigma',
+            //           translatedName: 'Ha ke so tobane le sekhobo'),
+            //       InputFieldOption(
+            //           code: 'loGTnsw9R9G',
+            //           name: 'Other',
+            //           translatedName: 'Tse ling'),
+            //       InputFieldOption(
+            //           code: 'YT79ydtEOZj', name: 'NA', translatedName: 'N/A')
+            //     ]),
+            // InputField(
+            //     id: 'dfdeOt1y7me',
+            //     name: 'Please specify',
+            //     translatedName: 'Tse ling, hlakisa',
+            //     valueType: 'TEXT',
+            //     inputColor: const Color(0xFF4B9F46),
+            //     labelColor: const Color(0xFF1A3518)),
+            // InputField(
+            //     id: 'JYPmeC1Zbwf',
+            //     name:
+            //         '28. If you have a child or children 10 or over, have you talked to them about how to protect themselves from HIV?',
+            //     translatedName:
+            //         '28. Haeba u na le ngoana kapa bana ba ka holimo ho lilemo li 10, u kile oa bua le bona ka ho itsireletsa khahlanong le tsoaetso ea HIV?',
+            //     valueType: 'TEXT',
+            //     inputColor: const Color(0xFF4B9F46),
+            //     labelColor: const Color(0xFF1A3518),
+            //     options: [
+            //       InputFieldOption(
+            //           code: 'Yes', name: 'Yes', translatedName: 'E'),
+            //       InputFieldOption(
+            //           code: 'No', name: 'No', translatedName: 'Che'),
+            //       InputFieldOption(
+            //           code: 'No Response',
+            //           name: 'No Response',
+            //           translatedName: 'Ha hona Karabo'),
+            //       InputFieldOption(
+            //           code: 'NA', name: 'NA', translatedName: 'N/A')
+            //     ]),
           ]),
       FormSection(
           name: 'Other Household details',

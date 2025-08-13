@@ -19,6 +19,7 @@ class OvchouseHoldAssessmentSkipLogic {
 
     hiddenSections['domainsafe'] = true;
     hiddenSections['healthcaseplangaps'] = true;
+    hiddenSections['otherdetails'] = true;
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -65,13 +66,35 @@ class OvchouseHoldAssessmentSkipLogic {
       }
       if (inputFieldId == 'gcW6652C8Bt' && value != 'true') {
         hiddenFields['bmJjZctbkhX'] = true;
+        hiddenFields['HQdMUzgaIXr'] = true;
       }
       if (inputFieldId == 'blod3xZ2dPP' && value == '1') {
         dataObject['HKCv7lkLexo'] = 'true';
         hiddenFields['ubin7MjQ5OI'] = true;
         hiddenFields['JzlLk2tW4xh'] = false;
-
       }
+
+      if (inputFieldId == 'sLyfb45aLkl') {
+        if (value == '1') { // Yes
+          hiddenFields.remove('Have you received VL testing as per schedule?');
+        } else {            // No or empty
+          hiddenFields['Have you received VL testing as per schedule?'] = true;
+        }
+      }
+
+      if (inputFieldId == 'aRNGDZcwWmS' && value != "High (above 1,000 copies/ml)") {
+        hiddenFields['If virally unsuppressed, do you have CD4 results?'] = true;
+      }
+
+      if (inputFieldId == 'If virally unsuppressed, do you have CD4 results?' && value != 'true') {
+        hiddenFields['What are the CD4 results?'] = true;
+      }
+
+      if (inputFieldId == 'vNeOE9abQBB' && value != 'Positive') {
+        hiddenFields['BYZu8p33lzP'] = true;
+        hiddenFields['Do you feel like you are supported enough regarding your HIV status?'] = true;
+      }
+
       else if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
         dataObject['HKCv7lkLexo'] = 'false';
         hiddenFields['ubin7MjQ5OI'] = true;
@@ -153,6 +176,52 @@ class OvchouseHoldAssessmentSkipLogic {
         }
       }
 
+      // === Helper: bucket by months (<6 vs >=6) ===
+      String? artDurationBucket(DateTime? initiationDate, {DateTime? now}) {
+        if (initiationDate == null) return null;
+        final today = now ?? DateTime.now();
+        int months = (today.year - initiationDate.year) * 12 + (today.month - initiationDate.month);
+        if (today.day < initiationDate.day) months -= 1; // adjust by day
+        return months < 6 ? 'less than six months' : 'more than six months';
+      }
+
+      // === Helper: recompute Q10 (ubin7MjQ5OI) from EIMgHQW61kx ===
+      void _recomputeArtDuration(Map dataObject, Map hiddenFields) {
+        DateTime? initiationDate;
+        final raw = dataObject['EIMgHQW61kx']?.toString().trim(); // ART initiation date (yyyy-MM-dd)
+        if (raw != null && raw.isNotEmpty) {
+          initiationDate = DateTime.tryParse(raw);
+        }
+
+        final bucket = artDurationBucket(initiationDate);
+        if (bucket != null) {
+          dataObject['ubin7MjQ5OI'] = bucket;   // 'less than six months' | 'more than six months'
+          hiddenFields.remove('ubin7MjQ5OI');    // ensure visible
+        } else {
+          dataObject.remove('ubin7MjQ5OI');      // clear if no valid date
+          // hiddenFields['ubin7MjQ5OI'] = true; // (optional) hide if you prefer
+        }
+      }
+
+      // Trigger the recompute in ALL the right moments:
+
+      // 1) When ART initiation date changes
+      if (inputFieldId == 'EIMgHQW61kx') {
+        _recomputeArtDuration(dataObject, hiddenFields);
+      }
+
+      // 2) When Q10 itself is touched (keeps it computed-only)
+      if (inputFieldId == 'ubin7MjQ5OI') {
+        _recomputeArtDuration(dataObject, hiddenFields);
+      }
+
+      // 3) Also run once on initial evaluation (so it shows on load)
+      if (inputFieldId == null || '$inputFieldId'.isEmpty) {
+        _recomputeArtDuration(dataObject, hiddenFields);
+      }
+
+
+
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = hivStatus;
@@ -164,9 +233,10 @@ class OvchouseHoldAssessmentSkipLogic {
           }
         }
       }
+
       if (inputFieldId == 'Icgkv0xkUow') {
         if (artStatus != null) {
-          print('ART satatus at Assessment== $artStatus');
+       //   print('ART satatus at Assessment== $artStatus');
           dataObject[inputFieldId] = artStatus;
         }
       }
