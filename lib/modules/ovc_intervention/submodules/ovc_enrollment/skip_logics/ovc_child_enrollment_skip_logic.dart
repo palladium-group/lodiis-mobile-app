@@ -209,6 +209,16 @@ class OvcChildEnrollmentSkipLogic {
         hiddenFields['i6Y27IFBR9b'] = true;
 
 
+      } else if(inputFieldId == 'WAlaenCYazT' && value != 'true'){
+        hiddenFields['oSKX8fFQdWc'] = true;
+        hiddenFields['l7op0btSqSc'] = true;
+        hiddenFields['iBws3HMjiUT'] = true;
+        hiddenFields['aX0niP9AH6t'] = true;
+        hiddenFields['EIMgHQW61kx'] = true;
+
+
+
+
       }
 
       else if (inputFieldId == 'f7WkgoF9uib' && value == 'SecondaryLevel') {

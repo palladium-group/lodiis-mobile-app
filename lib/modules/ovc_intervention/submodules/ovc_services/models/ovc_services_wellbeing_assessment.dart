@@ -570,17 +570,6 @@ class OvcServicesWellbeingAssessment {
                       code: '0.000001', name: 'NA', translatedName: 'N/A')
                 ]),
             InputField(
-                id: 'BvNaiaoxc6w',
-                name: '5. Have you been tested for HIV?',
-                translatedName: '5. U kile oa hlahlobela HIV?',
-                description: 'If no refer for testing',
-                translatedDescription:
-                'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                ),
-            InputField(
                 id: 'Uv26fX0HQvO',
                 name: 'If Yes when?',
                 translatedName: 'Haeba Karabo le “E”, neng',

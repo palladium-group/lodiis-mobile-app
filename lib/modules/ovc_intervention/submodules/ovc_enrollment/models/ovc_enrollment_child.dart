@@ -384,6 +384,19 @@ class OvcEnrollmentChild {
             translatedName: 'C. Litaba tsa bophelo ba ngoana',
             color: const Color(0xFF4B9F46),
             inputFields: [
+
+              InputField(
+                id: 'WAlaenCYazT',
+                name: 'Have you been tested for HIV?',
+                translatedName: 'U kile oa hlahlobela HIV?',
+                description: 'If no refer for testing',
+                translatedDescription:
+                'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+              ),
+
               InputField(
                 id: 'oSKX8fFQdWc',
                 name: "Child's HIV status",
@@ -447,6 +460,63 @@ class OvcEnrollmentChild {
                 labelColor: const Color(0xFF737373),
                 valueType: 'DATE',
               ),
+
+
+              InputField(
+              id: 'psMvy1sqWwf',
+              name: 'Has your mensuration cycle started?',
+              translatedName: 'Has your mensuration cycle started?',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+              valueType: 'BOOLEAN'),
+              InputField(
+                id: 'mrODVshHUli',
+                name: 'Last menstruation date? ',
+                translatedName:
+                'Last menstruation date?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373),
+                valueType: 'DATE',
+              ),
+
+
+
+
+
+
+              InputField(
+                id: 'XYPRtYgQUF8',
+                name: 'Do you suspect that you are pregnant?',
+                translatedName: 'Do you suspect that you are pregnant?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373),
+              options: [
+              InputFieldOption(code: 'Yes', name: 'Yes', translatedName: 'E'),
+              InputFieldOption(code: 'No', name: 'No', translatedName: 'Che'),
+              InputFieldOption(
+                  code: 'Don\'t Know',
+                  name: 'Don\'t Know',
+                  translatedName: 'Ha ke tsebe')
+            ],
+              ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
               InputField(
                 id: 'KO5NC4pfBmv',
@@ -659,6 +729,7 @@ class OvcEnrollmentChild {
             inputColor: const Color(0xFFFE7503),
             labelColor: const Color(0xFF737373),
           ),
+
           InputField(
             id: 'nO38lKlKHYi',
             name: 'HIV status',
