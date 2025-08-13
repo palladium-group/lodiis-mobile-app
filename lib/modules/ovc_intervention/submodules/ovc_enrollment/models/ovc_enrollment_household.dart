@@ -217,8 +217,8 @@ class OvcEnrollmentHousehold {
 
           InputField(
               id: 'UffKzmI4698',
-              name: '7. Have you been tested for HIV?',
-              translatedName: '7. U kile oa hlahlobela HIV?',
+              name: 'Has the caregiver ever been tested for HIV?',
+              translatedName: 'Mohlokomeli o kile a hlahlobela HIV?',
               description: 'If no refer for testing',
               translatedDescription: 'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
               valueType: 'BOOLEAN',
