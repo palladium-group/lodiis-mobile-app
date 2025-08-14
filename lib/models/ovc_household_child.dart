@@ -21,6 +21,7 @@ class OvcHouseholdChild {
   bool? isChildPrimary;
   bool? hasExitedProgram;
   String? artInitiationDate;
+  bool? tested;
   TrackedEntityInstance? teiData;
 
   OvcHouseholdChild({
@@ -42,6 +43,7 @@ class OvcHouseholdChild {
     this.teiData,
     this.artInitiationDate,
     this.hasExitedProgram,
+    this.tested,
   });
 
   bool get isClHiv => '$hivStatus' == 'Positive';
@@ -67,7 +69,23 @@ class OvcHouseholdChild {
     String? orgUnit,
     String? createdDate,
     bool? enrollmentOuAccessible,
-  ) {
+  )
+
+
+
+  {
+
+    // Helper to parse booleans from "true/false", "Yes/No", "1/0"
+    bool? _parseBool(dynamic v) {
+      if (v == null) return null;
+      final s = v.toString().trim().toLowerCase();
+      if (s.isEmpty) return null;
+      if (s == 'true' || s == 'yes' || s == '1') return true;
+      if (s == 'false' || s == 'no' || s == '0') return false;
+      return null;
+    }
+
+
     List keys = [
       'WTZ7GLTrE8Q',
       's1HaiT6OllL',
@@ -79,6 +97,7 @@ class OvcHouseholdChild {
       'KO5NC4pfBmv',
       'qZP982qpSPS',
       'EIMgHQW61kx',
+      'WAlaenCYazT',
       BeneficiaryIdentification.phoneNumber,
       BeneficiaryIdentification.primaryUIC,
       BeneficiaryIdentification.secondaryUIC,
@@ -92,6 +111,7 @@ class OvcHouseholdChild {
       }
     }
     int age = AppUtil.getAgeInYear(data['qZP982qpSPS']);
+    Object tested = (_parseBool(data['WAlaenCYazT']) ?? '');
     return OvcHouseholdChild(
         id: tei.trackedEntityInstance,
         firstName: data['WTZ7GLTrE8Q'] ?? '',
@@ -114,6 +134,7 @@ class OvcHouseholdChild {
         ovcStatus: data['PN92g65TkVI'] ?? '',
         orgUnit: orgUnit,
         teiData: tei,
+        tested: tested is bool ? tested : null,
         hasExitedProgram:
             data[OvcInterventionConstant.programStatus] == 'Exit');
   }

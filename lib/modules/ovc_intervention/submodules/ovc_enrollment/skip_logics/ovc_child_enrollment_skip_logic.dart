@@ -108,7 +108,40 @@ class OvcChildEnrollmentSkipLogic {
           hiddenFields['ZGH70UbL2O1'] = true;
           hiddenFields['tHbPB5hrbOc'] = true;
         }
-      } else if (inputFieldId == 'nOgf8LKXS4k') {
+        if (age < 10) {
+          hiddenFields['psMvy1sqWwf'] = true;
+          hiddenFields['mrODVshHUli'] = true;
+          hiddenFields['XYPRtYgQUF8'] = true;
+          hiddenFields['xSd3LPUf8Tf'] = true;
+          hiddenFields['wGFmu7DhNGV'] = true;
+          hiddenFields['d9E1aPQ4MKa'] = true;
+          hiddenFields['OcY02VcD7fm'] = true;
+        }
+
+      } else if (inputFieldId == 'vIX4GTSCX4P' && value == 'Male') {
+
+          hiddenFields['psMvy1sqWwf'] = true;
+          hiddenFields['mrODVshHUli'] = true;
+          hiddenFields['XYPRtYgQUF8'] = true;
+          hiddenFields['xSd3LPUf8Tf'] = true;
+          hiddenFields['wGFmu7DhNGV'] = true;
+          hiddenFields['d9E1aPQ4MKa'] = true;
+          hiddenFields['OcY02VcD7fm'] = true;
+          hiddenFields['ZGH70UbL2O1'] = true;
+
+
+
+      }
+      else if (inputFieldId == 'wGFmu7DhNGV' && value != 'true'){
+        hiddenFields['ZGH70UbL2O1'] = true;
+        hiddenFields['d9E1aPQ4MKa'] = true;
+        hiddenFields['OcY02VcD7fm'] = true;
+
+
+      }
+
+
+      else if (inputFieldId == 'nOgf8LKXS4k') {
         Map hiddenOptions = {};
         String relationShipToCaregiver = '${dataObject['iS9mAp3jDaU']}';
         if (relationShipToCaregiver == 'Biological mother') {
@@ -203,7 +236,7 @@ class OvcChildEnrollmentSkipLogic {
 
 
       }
-      else if (inputFieldId == 'iQdwzVfZdml' && value == 'Informal') {
+      else if (inputFieldId == 'iQdwzVfZdml' && value != 'Formal') {
         hiddenFields['f7WkgoF9uib'] = true;
         hiddenFields['cFDqjIXQucQ'] = true;
         hiddenFields['i6Y27IFBR9b'] = true;

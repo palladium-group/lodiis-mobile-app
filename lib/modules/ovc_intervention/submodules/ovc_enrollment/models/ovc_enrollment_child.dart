@@ -469,6 +469,8 @@ class OvcEnrollmentChild {
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF737373),
               valueType: 'BOOLEAN'),
+
+
               InputField(
                 id: 'mrODVshHUli',
                 name: 'Last menstruation date? ',
@@ -500,13 +502,45 @@ class OvcEnrollmentChild {
                   translatedName: 'Ha ke tsebe')
             ],
               ),
+              InputField(
+                  id: 'xSd3LPUf8Tf',
+                  name: 'Did you confirm with a pregnancy test? ',
+                  translatedName: 'Did you confirm with a pregnancy test? ',
+                  inputColor: const Color(0xFF4B9F46),
+                  labelColor: const Color(0xFF737373),
+                  valueType: 'BOOLEAN'),
+
+              InputField(
+                  id: 'wGFmu7DhNGV',
+                  name: 'Do you have a child?',
+                  translatedName: 'Do you have a child?',
+                  inputColor: const Color(0xFF4B9F46),
+                  labelColor: const Color(0xFF737373),
+                  valueType: 'BOOLEAN'),
+              InputField(
+                id: 'd9E1aPQ4MKa',
+                name: 'How old is your child?',
+                valueType: 'INTEGER_ZERO_OR_POSITIVE',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373),
+              ),
+              InputField(
+                  id: 'ZGH70UbL2O1',
+                  name: 'Are you still breastfeeding? ',
+                  translatedName: 'Do you have a child?',
+                  inputColor: const Color(0xFF4B9F46),
+                  labelColor: const Color(0xFF737373),
+                  valueType: 'BOOLEAN'),
 
 
 
-
-
-
-
+              InputField(
+                  id: 'OcY02VcD7fm',
+                  name: 'Child Health Card available?',
+                  translatedName: 'Do you have a child?',
+                  inputColor: const Color(0xFF4B9F46),
+                  labelColor: const Color(0xFF737373),
+                  valueType: 'BOOLEAN'),
 
 
 
