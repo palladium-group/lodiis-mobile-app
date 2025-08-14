@@ -1250,83 +1250,27 @@ class OvcHouseholdServiceAdultWellbeing {
       FormSection(
           name: 'NUTRITION SECTION',
           id: 'ntsection',
-          description: 'TB SCREENING',
+          description: 'NUTRITION',
           color: const Color(0xFF4B9F46),
           borderColor: const Color(0xFF4B9F46),
           inputFields: [
             InputField(
-                id: 'tMvluCbiiUm',
-                name:
-                '1.	Are you coughing?',
-                translatedName:
-                '1.	Are you coughing?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'P9hiqrTjAdg',
-                name: '2.	Have you lost weight (without trying)?',
-                translatedName:
-                '2.	Have you lost weight (without trying)?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'Y8Xzy7bEWsi',
-                name: '3.	Do you have drenching/soaking sweats at night?',
-                translatedName: '3.	Do you have drenching/soaking sweats at night?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'VETgonq6tFr',
-                name: '4.	Do you have fevers?',
-                translatedName: '4.	Do you have fevers?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-
-          ]),
-      FormSection(
-          name: 'NUTRITION SECTION',
-          id: 'ntsection',
-          description: 'TB SCREENING',
-          color: const Color(0xFF4B9F46),
-          borderColor: const Color(0xFF4B9F46),
-          inputFields: [
-            InputField(
-                id: 'tMvluCbiiUm',
-                name:
-                '1.	Are you coughing?',
-                translatedName:
-                '1.	Are you coughing?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'P9hiqrTjAdg',
-                name: '2.	Have you lost weight (without trying)?',
-                translatedName:
-                '2.	Have you lost weight (without trying)?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'Y8Xzy7bEWsi',
-                name: '3.	Do you have drenching/soaking sweats at night?',
-                translatedName: '3.	Do you have drenching/soaking sweats at night?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'VETgonq6tFr',
-                name: '4.	Do you have fevers?',
-                translatedName: '4.	Do you have fevers?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF737373)),
-
-          ]),
+            id: 'UDyg5PFj12b',
+            name: 'Which food groups do you regularly eat?',
+            translatedName: 'Which food groups do you regularly eat?',
+            description: 'Energy foods,Body BUiding foods or Protective foods',
+            translatedDescription: 'Energy foods,Body BUiding foods or Protective foods',
+            valueType: 'TEXT',
+            inputColor: const Color(0xFF4B9F46),
+            labelColor: const Color(0xFF1A3518),
+            options: [
+            InputFieldOption(code: '1', name: 'One type of food group', translatedName: 'One types of food groups'),
+            InputFieldOption(
+            code: '2', name: 'Two types of food groups', translatedName: 'Two types of food groups'),
+            InputFieldOption(
+            code: '3', name: 'All types of food groups', translatedName: 'All types of food groups')
+            ]),
+      ]),
 
       FormSection(
           name: 'HIV ASSESSMENT',
