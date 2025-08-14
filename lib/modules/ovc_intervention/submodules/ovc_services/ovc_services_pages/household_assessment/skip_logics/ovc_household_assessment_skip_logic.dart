@@ -12,7 +12,7 @@ class OvchouseHoldAssessmentSkipLogic {
   static Map hiddenInputFieldOptions = {};
 
   static Future evaluateSkipLogics(BuildContext context,
-      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? artStatus) async {
+      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? artStatus,String? sex, bool? caregiverTestedForHiv, DateTime? artInitiationDate) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
@@ -131,9 +131,40 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['mH9DgJoa0nT'] = true;
       }
 
+      if (sex != 'Female'){
+        hiddenFields['pJ1UrnLU9mh'] = true; // Pregnant
+        hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
+
+      }
+
+      if (caregiverTestedForHiv != true){
+        hiddenFields['Uv26fX0HQvO'] = true;
+        hiddenFields['vNeOE9abQBB'] = true;
+        hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['sLyfb45aLkl'] = true;
+        print(' Na o kila hlahloba: $caregiverTestedForHiv');
+        print('Perffrom HIV screening');
+      }
+
+      if (artInitiationDate != null) {
+        final now = DateTime.now();
+        final sixMonthsFromNow = DateTime(now.year, now.month - 6, now.day);
+
+        // Check if ART start date is before six months from now
+        if (artInitiationDate.isBefore(sixMonthsFromNow)) {
+          dataObject['ubin7MjQ5OI'] = 'more than six months';
+        } else {
+          dataObject['ubin7MjQ5OI'] = 'less than six months';
+        }
+      }
+
+
+
+
       if (inputFieldId == 'BvNaiaoxc6w') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = 'true';
+
         } else if (hivStatus == null) {
           hiddenFields['Uv26fX0HQvO'] = true;
          // hiddenFields['T4grVrCVDkk'] = true;
@@ -171,54 +202,12 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'T4grVrCVDkk') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = "true";
+
         } else {
           hiddenFields['vNeOE9abQBB'] = true;
         }
       }
 
-      // === Helper: bucket by months (<6 vs >=6) ===
-      String? artDurationBucket(DateTime? initiationDate, {DateTime? now}) {
-        if (initiationDate == null) return null;
-        final today = now ?? DateTime.now();
-        int months = (today.year - initiationDate.year) * 12 + (today.month - initiationDate.month);
-        if (today.day < initiationDate.day) months -= 1; // adjust by day
-        return months < 6 ? 'less than six months' : 'more than six months';
-      }
-
-      // === Helper: recompute Q10 (ubin7MjQ5OI) from EIMgHQW61kx ===
-      void _recomputeArtDuration(Map dataObject, Map hiddenFields) {
-        DateTime? initiationDate;
-        final raw = dataObject['EIMgHQW61kx']?.toString().trim(); // ART initiation date (yyyy-MM-dd)
-        if (raw != null && raw.isNotEmpty) {
-          initiationDate = DateTime.tryParse(raw);
-        }
-
-        final bucket = artDurationBucket(initiationDate);
-        if (bucket != null) {
-          dataObject['ubin7MjQ5OI'] = bucket;   // 'less than six months' | 'more than six months'
-          hiddenFields.remove('ubin7MjQ5OI');    // ensure visible
-        } else {
-          dataObject.remove('ubin7MjQ5OI');      // clear if no valid date
-          // hiddenFields['ubin7MjQ5OI'] = true; // (optional) hide if you prefer
-        }
-      }
-
-      // Trigger the recompute in ALL the right moments:
-
-      // 1) When ART initiation date changes
-      if (inputFieldId == 'EIMgHQW61kx') {
-        _recomputeArtDuration(dataObject, hiddenFields);
-      }
-
-      // 2) When Q10 itself is touched (keeps it computed-only)
-      if (inputFieldId == 'ubin7MjQ5OI') {
-        _recomputeArtDuration(dataObject, hiddenFields);
-      }
-
-      // 3) Also run once on initial evaluation (so it shows on load)
-      if (inputFieldId == null || '$inputFieldId'.isEmpty) {
-        _recomputeArtDuration(dataObject, hiddenFields);
-      }
 
 
 
@@ -236,11 +225,19 @@ class OvchouseHoldAssessmentSkipLogic {
 
       if (inputFieldId == 'Icgkv0xkUow') {
         if (artStatus != null) {
-       //   print('ART satatus at Assessment== $artStatus');
+         // print('ART satatus at Assessment== $artStatus');
+         //  print('Boelng: $sex');
+         //  print(' Na o kila hlahloba: $caregiverTestedForHiv');
+         // print(' Date: $artInitiationDate');
           dataObject[inputFieldId] = artStatus;
         }
       }
 
+
+      if (inputFieldId == 'UffKzmI4698' && value != 'true') {
+        hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['ubin7MjQ5OI'] = true;
+      }
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
@@ -275,6 +272,25 @@ class OvchouseHoldAssessmentSkipLogic {
           }
         }
       }
+
+
+      // if (inputFieldId == 'BvNaiaoxc6w') {
+      //   // Grab value from registration
+      //   final bool? caregiverEverTested = dataObject['BvNaiaoxc6w'] as bool?;
+      //
+      //   if (caregiverEverTested != null) {
+      //     dataObject[inputFieldId] = caregiverEverTested;
+      //
+      //     // If false (No), hide fields
+      //     if (caregiverEverTested == false) {
+      //       hiddenFields['Icgkv0xkUow'] = true; // Hide ART question
+      //       hiddenFields['ubin7MjQ5OI'] = true; // Hide ART duration question
+      //     }
+      //   }
+      //
+      // }
+
+
 
       if (inputFieldId == 'Js9auywpL0O' && value != 'true') {
         hiddenFields['SQUodtvxYLs'] = true;

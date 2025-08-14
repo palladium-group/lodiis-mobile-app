@@ -438,17 +438,17 @@ class OvcHouseholdServiceAdultWellbeing {
                   //     code: 'Other', name: 'Other', translatedName: 'Tse ling')
                 ]),
 
-      /*      InputField(
-                id: 'BvNaiaoxc6w',
-                name: '7. Have you been tested for HIV?',
-                translatedName: '7. U kile oa hlahlobela HIV?',
-                description: 'If no refer for testing',
-                translatedDescription:
-                    'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                isReadOnly: true), */
+            // InputField(
+            //     id: 'BvNaiaoxc6w',
+            //     name: 'Have you been tested for HIV?',
+            //     translatedName: 'U kile oa hlahlobela HIV?',
+            //     description: 'If no refer for testing',
+            //     translatedDescription:
+            //         'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+            //     valueType: 'BOOLEAN',
+            //     inputColor: const Color(0xFF4B9F46),
+            //     labelColor: const Color(0xFF1A3518),
+            //     isReadOnly: true),
             InputField(
                 id: 'Uv26fX0HQvO',
                 name: 'If ever tested, when?',
@@ -778,6 +778,26 @@ class OvcHouseholdServiceAdultWellbeing {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+              id: 'pJ1UrnLU9mh',
+              name: 'Is the caregiver Preganant?',
+              translatedName:
+              "Na mohlokomeli o mmeleng?",
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+            ),
+
+            InputField(
+              id: 'dCIDHw3RrQ9',
+              name: 'Is the caregiver Breastfeeding?',
+              translatedName:
+              "Na mohlokomeli oa ants'a?",
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+            ),
 
             InputField(
               id: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
@@ -1265,6 +1285,47 @@ class OvcHouseholdServiceAdultWellbeing {
                 labelColor: const Color(0xFF737373)),
 
           ]),
+
+      FormSection(
+          name: 'HIV ASSESSMENT',
+          id: 'hivscreening',
+          description: 'HIV SCREENING',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+          inputFields: [
+            InputField(
+                id: 'tMvluCbiiUm',
+                name:
+                '1.	Are you coughing?',
+                translatedName:
+                '1.	Are you coughing?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'P9hiqrTjAdg',
+                name: '2.	Have you lost weight (without trying)?',
+                translatedName:
+                '2.	Have you lost weight (without trying)?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'Y8Xzy7bEWsi',
+                name: '3.	Do you have drenching/soaking sweats at night?',
+                translatedName: '3.	Do you have drenching/soaking sweats at night?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'VETgonq6tFr',
+                name: '4.	Do you have fevers?',
+                translatedName: '4.	Do you have fevers?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+
+          ])
     ];
   }
 }
