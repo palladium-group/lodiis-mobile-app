@@ -41,6 +41,8 @@ class OvcHouseholdEnrollmentSkipLogic {
         hiddenFields['l7op0btSqSc'] = true;
       }
 
+
+
       if (inputFieldId == 'oSKX8fFQdWc' && value != 'Positive') {
         hiddenFields['l7op0btSqSc'] = true;
       }
