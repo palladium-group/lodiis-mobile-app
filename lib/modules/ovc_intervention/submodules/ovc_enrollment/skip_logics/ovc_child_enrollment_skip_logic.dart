@@ -197,6 +197,18 @@ class OvcChildEnrollmentSkipLogic {
           var isOvcHIVExposedInfant = (age >= 0 && age <= 3) &&
               '${dataObject["nO38lKlKHYi"]}' == 'Positive';
           assignedFields[inputFieldId] = '$isOvcHIVExposedInfant';
+          if(isOvcHIVExposedInfant == true || !isOvcHIVExposedInfant ){
+
+            hiddenFields['WAlaenCYazT']=true;
+
+
+          }else {
+            hiddenFields['IQX90Pjcrdh']=true;
+            hiddenFields['oSKX8fFQdWc']=false;
+
+
+
+          }
         }
       } else if (inputFieldId == 'Mc3k3bSwXNe' &&
           (value.isEmpty || value.trim() != 'true')) {

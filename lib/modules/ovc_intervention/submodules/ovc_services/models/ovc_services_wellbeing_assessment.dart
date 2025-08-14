@@ -487,6 +487,46 @@ class OvcServicesWellbeingAssessment {
           borderColor: const Color(0xFF4D9E49),
           inputFields: [
             InputField(
+                id: 'GN85Cf2mOmw',
+                name:
+                'Child have health card?',
+                translatedName:
+                'Child have health card?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+            InputField(
+                id: 'eDuHTPn7rhh',
+                name:
+                'Does the child attend under 5 clinic?',
+                translatedName:
+                'Does the child attend under 5 clinic?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+                id: 'H84JX4fQWsK',
+                name:
+                'Child been sick/tired for daily works?',
+                translatedName:
+                'Child been sick/tired for daily works?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+                id: 'TQGFUJ7MTPu',
+                name:
+                'Is the OVC currently receiving treatment for the illness?',
+                translatedName:
+                'Na ngoana o fumana kalafo ea ho kula kapa ho holofala?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+
+            InputField(
                 id: 'MkoDGBOBo06',
                 name: '1. Where do you access health services?',
                 translatedName:
@@ -1038,15 +1078,7 @@ class OvcServicesWellbeingAssessment {
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'TQGFUJ7MTPu',
-                name:
-                    '60. Is the OVC currently receiving treatment for the illness or disability?',
-                translatedName:
-                    '60. Na ngoana o fumana kalafo ea ho kula kapa ho holofala?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)),
+
             InputField(
                 id: 'puLHlflNeg6',
                 name: '62. Do you know child’s HIV status?',
@@ -1055,14 +1087,22 @@ class OvcServicesWellbeingAssessment {
                 isReadOnly: true,
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
-            InputField(
+            /*InputField(
                 id: 'ef1ixon3YBh',
                 name: '5. OVC ever been tested for HIV?',
                 translatedName: '5. Na ngoana o kile a hlahlobela HIV?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)),
-
+                labelColor: const Color(0xFF1A3518)),*/
+            InputField(
+              id: 'Icgkv0xkUow',
+              name: '9. Are you currently taking ART to treat HIV?',
+              translatedName:
+              '9. Na u tlasa kalafo ea lefu la HIV ha joale?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
             InputField(
                 id: 'wv3YAGLZlev',
                 name: '17. Which health facility do you visit?',
@@ -1227,14 +1267,6 @@ class OvcServicesWellbeingAssessment {
                 name: 'Other, Specify',
                 translatedName: 'Tse ling, hlakisa',
                 valueType: 'TEXT'),
-            InputField(
-                id: 'iZGQ4iWkWNu',
-                name: '68. Has the child’s status been shared with the child?',
-                translatedName:
-                    '68. Na ngoana o ile a bolelloa ka boemo ba hae?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
             InputField(
                 id: 'f2GIuwu1LGh',
                 name: '69. What was their response?',

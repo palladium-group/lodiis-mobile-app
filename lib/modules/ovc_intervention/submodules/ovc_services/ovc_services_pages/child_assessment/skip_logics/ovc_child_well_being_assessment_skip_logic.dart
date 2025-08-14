@@ -54,6 +54,11 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['SGCjKsX1Mzl'] = true;
       hiddenFields['YKuTfp8LIRr_checkboxes'] = true;
       hiddenFields['Ey6WeeJVCI7'] = true;
+      hiddenFields['GN85Cf2mOmw'] = true;
+      hiddenFields['H84JX4fQWsK'] = true;
+
+
+
 
       //Domain Stable
       hiddenFields['aaERjQ9jSZn'] = true;
@@ -114,6 +119,10 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['eQM7VOlr5hG'] = true;
       hiddenFields['yVTsRM4eMHA'] = true;
       hiddenSections['childnutrition']=true;
+      hiddenFields['eDuHTPn7rhh'] = true;
+
+
+
     }
 
     void hideForCaregiver() {
