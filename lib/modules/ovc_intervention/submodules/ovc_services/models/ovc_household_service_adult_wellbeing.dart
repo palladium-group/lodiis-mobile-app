@@ -800,6 +800,32 @@ class OvcHouseholdServiceAdultWellbeing {
             ),
 
             InputField(
+                id: 'idd',
+                name:
+                'Do you feel like you are supported enough regarding your HIV status?',
+                translatedName:
+                'Na u utloa u tshehelitsoe mabapi le boemo ba hao ba HIV?',
+                description:
+                'If yes, voluntarily offer family psychosocial support (Parenting tips)',
+                translatedDescription:
+                'Fetisetsa ho mosebeletsi oa tsa bophelo Motseng kapa mosebeltsi oa sechaba kapa tlabollong ea maikutlo.',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Yes', name: 'Yes', translatedName: 'E'),
+                  InputFieldOption(
+                      code: 'No', name: 'No', translatedName: 'Che'),
+                  InputFieldOption(
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha hona Karabo'),
+                  // InputFieldOption(
+                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
+                ]),
+
+            InputField(
               id: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
               name: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
               translatedName: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
@@ -835,31 +861,7 @@ class OvcHouseholdServiceAdultWellbeing {
             //       //     code: 'NA', name: 'NA', translatedName: 'N/A')
             //     ]),
 
-            InputField(
-                id: 'Do you feel like you are supported enough regarding your HIV status?',
-                name:
-                'Do you feel like you are supported enough regarding your HIV status?',
-                translatedName:
-                'Na u utloa u tshehelitsoe mabapi le boemo ba hao ba HIV?',
-                description:
-                'If yes, voluntarily offer family psychosocial support (Parenting tips)',
-                translatedDescription:
-                'Fetisetsa ho mosebeletsi oa tsa bophelo Motseng kapa mosebeltsi oa sechaba kapa tlabollong ea maikutlo.',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha hona Karabo'),
-                  // InputFieldOption(
-                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
-                ]),
+
 
             // InputField(
             //     id: 'How-have-you-coped-with-HIV-related-stigma',
@@ -1285,11 +1287,10 @@ class OvcHouseholdServiceAdultWellbeing {
                 labelColor: const Color(0xFF737373)),
 
           ]),
-
       FormSection(
-          name: 'HIV ASSESSMENT',
-          id: 'hivscreening',
-          description: 'HIV SCREENING',
+          name: 'NUTRITION SECTION',
+          id: 'ntsection',
+          description: 'TB SCREENING',
           color: const Color(0xFF4B9F46),
           borderColor: const Color(0xFF4B9F46),
           inputFields: [
@@ -1324,6 +1325,48 @@ class OvcHouseholdServiceAdultWellbeing {
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF737373)),
+
+          ]),
+
+      FormSection(
+          name: 'HIV ASSESSMENT',
+          id: 'hivscreening',
+          description: 'HIV SCREENING',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+          inputFields: [
+            InputField(
+              id: 'upkFeuyd1fX',
+              name: 'Had sex with more than 1 sexual partner?',
+              translatedName: 'Had sex with more than 1 sexual partner?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'R38Mm0YgXcx',
+              name: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              translatedName: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'qoKPxEkgfdh',
+              name: 'In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              translatedName: '7. In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'B46Zeuzafkg',
+              name: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              translatedName: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
 
           ])
     ];

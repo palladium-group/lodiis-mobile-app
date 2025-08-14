@@ -90,12 +90,18 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['What are the CD4 results?'] = true;
       }
 
-      if (inputFieldId == 'vNeOE9abQBB' && value != 'Positive') {
+      if (hivStatus!='Positive') {
         hiddenFields['BYZu8p33lzP'] = true;
-        hiddenFields['Do you feel like you are supported enough regarding your HIV status?'] = true;
+        hiddenFields['idd'] = true;
+        hiddenFields['Uv26fX0HQvO'] = false;
+      }else{
+        hiddenFields['Uv26fX0HQvO'] = true;
+      }
+      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null')) {
+        hiddenSections['hivscreening'] = true;
       }
 
-      else if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
+      if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
         dataObject['HKCv7lkLexo'] = 'false';
         hiddenFields['ubin7MjQ5OI'] = true;
         hiddenFields['HKCv7lkLexo'] = true;
