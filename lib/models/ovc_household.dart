@@ -29,10 +29,12 @@ class OvcHousehold {
   String? artFacilityOrgUnitId;       // iBws3HMjiUT
   String? artNumber;                  // aX0niP9AH6t
   DateTime? artInitiationDate;        // EIMgHQW61kx
+  bool? caregiverTestedForHiv;
   bool? enrollmentOuAccessible;
   bool? primaryChildExist;
   bool? primaryChildHasExited;
   bool? hasExitedProgram;
+  String? sex;
   List<OvcHouseholdChild>? children;
   Map? dataObject;
   TrackedEntityInstance? teiData;
@@ -70,6 +72,8 @@ class OvcHousehold {
     this.artFacilityOrgUnitId,
     this.artNumber,
     this.artInitiationDate,
+    this.caregiverTestedForHiv,
+    this.sex,
   });
 
   OvcHousehold fromTeiModel(
@@ -110,6 +114,8 @@ class OvcHousehold {
       'iBws3HMjiUT',
       'aX0niP9AH6t',
       'EIMgHQW61kx',
+      'vIX4GTSCX4P',
+      'UffKzmI4698',
       OvcInterventionConstant.programStatus,
       BeneficiaryIdentification.householdCategorization,
       UserAccountReference.implementingPartnerAttribute,
@@ -130,6 +136,11 @@ class OvcHousehold {
     final artFacilityOrgUnit  = data['iBws3HMjiUT'] ?? ''; // ORG UNIT ID
     final artNumber           = data['aX0niP9AH6t'] ?? ''; // TEXT
     final artInitRaw          = data['EIMgHQW61kx'];       // DATE (yyyy-MM-dd)
+
+
+    Object caregiverTestedForHiv = (_parseBool(data['UffKzmI4698']) ?? '');
+
+    String? sex = data['vIX4GTSCX4P'] ?? '';
 
     DateTime? artInitiationDate;
     if (artInitRaw != null && artInitRaw.toString().trim().isNotEmpty) {
@@ -154,7 +165,9 @@ class OvcHousehold {
       ovcMaleCount: '$maleCount',
       ovcFemaleCount: '$femaleCount',
       hivStatus: hivStatus,
+      sex: sex,
       artStatus: artStatus is bool ? artStatus : null,
+      caregiverTestedForHiv: caregiverTestedForHiv is bool ? caregiverTestedForHiv : null,
       primaryUIC: data[BeneficiaryIdentification.primaryUIC] ?? '',
       secondaryUIC: data[BeneficiaryIdentification.secondaryUIC] ?? '',
       artFacilityOrgUnitId: artFacilityOrgUnit,        // iBws3HMjiUT
