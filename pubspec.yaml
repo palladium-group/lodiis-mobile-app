@@ -29,11 +29,7 @@ dependencies:
   collection: ^1.17.1
   new_version_plus: ^0.1.0
   device_info_plus: ^9.0.3
-  workmanager:
-    git:
-      url: https://github.com/fluttercommunity/flutter_workmanager.git
-      path: workmanager
-      ref: main
+  workmanager: 0.8.0
   flutter_local_notifications: ^18.0.1
 
 dev_dependencies:

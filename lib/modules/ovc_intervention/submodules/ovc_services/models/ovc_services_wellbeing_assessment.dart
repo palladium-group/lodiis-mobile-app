@@ -1105,8 +1105,8 @@ class OvcServicesWellbeingAssessment {
             ),
             InputField(
                 id: 'wv3YAGLZlev',
-                name: '17. Which health facility do you visit?',
-                translatedName: '17.U nka litlhare setsing sefe sa bophelo?',
+                name: 'Which health facility do you visit for ART services?',
+                translatedName: 'Which health facility do you visit for ART services?',
                 valueType: 'ORGANISATION_UNIT',
                 showCountryLevelTree: true,
                 allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
@@ -1181,39 +1181,6 @@ class OvcServicesWellbeingAssessment {
                       name: 'Supporting',
                       translatedName: 'Ho tšehetsa')
                 ]),
-            InputField(
-                id: 'sHUjPZTqpy2',
-                name: '65. Is the child currently on ART?',
-                translatedName: '65. Na hona joale ngoana o sebelisa li-ART?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'I don\'t know',
-                      name: 'I don\'t know',
-                      translatedName: 'Ha ke tsebe'),
-                  InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha hona Karabo'),
-                  InputFieldOption(
-                      code: 'Refuse', name: 'Refuse', translatedName: 'Hana')
-                ]),
-            InputField(
-                id: 'VFLlpMdPCTX',
-                name: '66. Which health clinic do you take the child?',
-                translatedName:
-                    '66. U mo isa setsing sefe sa bophelo bakeng sa litlharo?',
-                valueType: 'ORGANISATION_UNIT',
-                showCountryLevelTree: true,
-                allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
             InputField(
                 id: 'VFLlpMdPCTX_checkboxes',
                 name: '67. Why do you take the child in that health facility?',
