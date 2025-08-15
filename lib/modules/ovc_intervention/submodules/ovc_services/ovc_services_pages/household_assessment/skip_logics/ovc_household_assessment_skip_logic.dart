@@ -76,28 +76,29 @@ class OvchouseHoldAssessmentSkipLogic {
 
       if (inputFieldId == 'sLyfb45aLkl') {
         if (value == '1') { // Yes
-          hiddenFields.remove('Have you received VL testing as per schedule?');
+          hiddenFields.remove('P52dMXyK4eA');
         } else {            // No or empty
-          hiddenFields['Have you received VL testing as per schedule?'] = true;
+          hiddenFields['P52dMXyK4eA'] = true;
         }
       }
 
       if (inputFieldId == 'aRNGDZcwWmS' && value != "High (above 1,000 copies/ml)") {
-        hiddenFields['If virally unsuppressed, do you have CD4 results?'] = true;
+        hiddenFields['tYN12Es3707'] = true;
       }
 
-      if (inputFieldId == 'If virally unsuppressed, do you have CD4 results?' && value != 'true') {
-        hiddenFields['What are the CD4 results?'] = true;
+      if (inputFieldId == 'tYN12Es3707' && value != 'true') {
+        hiddenFields['o1GBFscjs4y'] = true;
       }
 
       if (hivStatus!='Positive') {
         hiddenFields['BYZu8p33lzP'] = true;
-        hiddenFields['idd'] = true;
+        hiddenFields['KFCBwn7ypws'] = true;
         hiddenFields['Uv26fX0HQvO'] = false;
+
       }else{
         hiddenFields['Uv26fX0HQvO'] = true;
       }
-      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null')) {
+      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus!='Positive')) {
         hiddenSections['hivscreening'] = true;
       }
 
