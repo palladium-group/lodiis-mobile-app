@@ -9,7 +9,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
   static Map hiddenSections = {};
 
   static Future evaluateSkipLogics(BuildContext context,
-      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? isTested) async {
+      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? isTested, bool? isHei, bool? artStatus) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenSections['domainschooltsasekolo'] = true;
@@ -26,7 +26,6 @@ class OvcChildWellBeingAssessmentSkipLogic {
 
     void hideHivQuestions(){
 
-      hiddenFields['Uv26fX0HQvO'] =true;
       hiddenFields['c5TMWtM4VVJ'] =true;
       hiddenFields['blod3xZ2dPP'] =true;
       hiddenFields['ubin7MjQ5OI'] =true;
@@ -69,7 +68,6 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['Vc7Q23oTNhu'] = true;
       hiddenFields['lxF2SNfIGa0'] = true;
       hiddenFields['lz56QGytZkD'] = true;
-      hiddenFields['TQGFUJ7MTPu'] = true;
       hiddenFields['ToOqcUP9338'] = true;
       hiddenFields['qI9a8II1g54'] = true;
       hiddenFields['puLHlflNeg6'] = true;
@@ -155,7 +153,6 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['pU5ywj3cjSA'] = true;
       hiddenFields['HXk5d3kxy37'] = true;
       hiddenFields['ndK4JCMORL0'] = true;
-      hiddenFields['wv3YAGLZlev'] = true;
       hiddenFields['Tr5lrn4ctTN'] = true;
       hiddenFields['YTa10rE1vtd'] = true;
       hiddenFields['wi6Iq4yVdXV'] = true;
@@ -176,7 +173,6 @@ class OvcChildWellBeingAssessmentSkipLogic {
     }
 
     if(isTested != true){
-
       hideHivQuestions();
     }
 
@@ -191,6 +187,19 @@ class OvcChildWellBeingAssessmentSkipLogic {
 
     } else if (age < 2) {
       hiddenSections['domainschooltsasekolo'] = true;
+    }else if (age > 3 || isHei == false || hivStatus == 'Positive') {
+      hiddenFields['zqVpkaulH2m']=true;
+    }
+
+    if(hivStatus != null){
+      if(hivStatus !='Positive' && artStatus == true ){
+
+
+hiddenFields['sLyfb45aLkl']=true;
+hiddenFields['aRNGDZcwWmS']=true;
+
+
+      }
     }
 
     for (String inputFieldId in inputFieldIds) {
@@ -205,16 +214,33 @@ class OvcChildWellBeingAssessmentSkipLogic {
           dataObject[inputFieldId] = 'false';
         }
       }
+
+      if(inputFieldId=='blod3xZ2dPP' && value != '1'){
+        hiddenFields['wv3YAGLZlev'] = true;
+
+
+      }
+      if (inputFieldId == 'H84JX4fQWsK' && value != 'Yes' ){
+        hiddenFields['BQYp4iDUqzN'] = true;
+        hiddenFields['TQGFUJ7MTPu'] = true;
+      }
+      if (inputFieldId == 'BQYp4iDUqzN' && value != 'Yes' ){
+
+        hiddenFields['TQGFUJ7MTPu'] = true;
+      }
+
       if (inputFieldId == 'c5TMWtM4VVJ'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;
+          if(hivStatus != 'Positive'){
+            hiddenFields['blod3xZ2dPP'] = true;
+
+          }
         }
 
       }
       if (inputFieldId == 'c5TMWtM4VVJ' && value != 'Positive'){
 
-        hiddenFields['blod3xZ2dPP'] = true;
-        hiddenFields['ubin7MjQ5OI'] = true;
         hiddenFields['BYZu8p33lzP'] = true;
         hiddenFields['ToWhhydys'] = true;
 
@@ -367,14 +393,8 @@ class OvcChildWellBeingAssessmentSkipLogic {
         if (inputFieldId == 'Vc7Q23oTNhu' && value != 'true') {
           hiddenFields['qI9a8II1g54'] = true;
           hiddenFields['ToOqcUP9338'] = true;
-          hiddenFields['TQGFUJ7MTPu'] = true;
           hiddenFields['lxF2SNfIGa0'] = true;
           hiddenFields['lz56QGytZkD'] = true;
-        }
-        if (inputFieldId == 'TQGFUJ7MTPu' && value != 'true') {
-          hiddenFields['lz56QGytZkD'] = true;
-          hiddenFields['lxF2SNfIGa0'] = true;
-          hiddenFields['YZ9ORZBKzHk'] = true;
         }
         if (inputFieldId == 'RC28ZyOhzUQ' && value != 'true') {
           hiddenFields['RC28ZyOhzUQ_checkbox'] = true;
@@ -627,5 +647,8 @@ class OvcChildWellBeingAssessmentSkipLogic {
       value,
       isChangesBasedOnSkipLogic: true,
     );
+  }
+
+  static void hideHeiQuestions() {
   }
 }

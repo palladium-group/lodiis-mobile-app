@@ -22,6 +22,8 @@ class OvcHouseholdChild {
   bool? hasExitedProgram;
   String? artInitiationDate;
   bool? tested;
+  bool? isHei;
+  bool? artStatus;
   TrackedEntityInstance? teiData;
 
   OvcHouseholdChild({
@@ -44,6 +46,8 @@ class OvcHouseholdChild {
     this.artInitiationDate,
     this.hasExitedProgram,
     this.tested,
+    this.isHei,
+    this.artStatus,
   });
 
   bool get isClHiv => '$hivStatus' == 'Positive';
@@ -98,6 +102,7 @@ class OvcHouseholdChild {
       'qZP982qpSPS',
       'EIMgHQW61kx',
       'WAlaenCYazT',
+      'GMcljM7jbNG',
       BeneficiaryIdentification.phoneNumber,
       BeneficiaryIdentification.primaryUIC,
       BeneficiaryIdentification.secondaryUIC,
@@ -112,6 +117,9 @@ class OvcHouseholdChild {
     }
     int age = AppUtil.getAgeInYear(data['qZP982qpSPS']);
     Object tested = (_parseBool(data['WAlaenCYazT']) ?? '');
+    Object isHei = (_parseBool(data['GMcljM7jbNG']) ?? '');
+    Object artStatus = (_parseBool(data['l7op0btSqSc']) ?? '');
+
     return OvcHouseholdChild(
         id: tei.trackedEntityInstance,
         firstName: data['WTZ7GLTrE8Q'] ?? '',
@@ -135,6 +143,9 @@ class OvcHouseholdChild {
         orgUnit: orgUnit,
         teiData: tei,
         tested: tested is bool ? tested : null,
+        isHei: isHei is bool ? isHei  : null,
+        artStatus:artStatus is bool ? artStatus : null,
+
         hasExitedProgram:
             data[OvcInterventionConstant.programStatus] == 'Exit');
   }
