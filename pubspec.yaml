@@ -29,7 +29,7 @@ dependencies:
   collection: ^1.17.1
   new_version_plus: ^0.1.0
   device_info_plus: ^9.0.3
-  workmanager: 0.8.0
+  workmanager: ^0.8.0
   flutter_local_notifications: ^18.0.1
 
 dev_dependencies:
