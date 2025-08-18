@@ -4,12 +4,12 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:provider/provider.dart';
 
-class OvcChildWellBeingAssessmentSkipLogic {
+class OvcAdolescentWellBeingAssessmentSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
 
   static Future evaluateSkipLogics(BuildContext context,
-      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? isTested, bool? isHei, bool? artStatus) async {
+      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? isTested) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenSections['domainschooltsasekolo'] = true;
@@ -26,8 +26,9 @@ class OvcChildWellBeingAssessmentSkipLogic {
 
     void hideHivQuestions(){
 
+      hiddenFields['Uv26fX0HQvO'] =true;
       hiddenFields['c5TMWtM4VVJ'] =true;
-      hiddenFields['Icgkv0xkUow'] =true;
+      hiddenFields['blod3xZ2dPP'] =true;
       hiddenFields['ubin7MjQ5OI'] =true;
       hiddenFields['ToWhhydys'] =true;
       hiddenFields['BYZu8p33lzP'] =true;
@@ -68,6 +69,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['Vc7Q23oTNhu'] = true;
       hiddenFields['lxF2SNfIGa0'] = true;
       hiddenFields['lz56QGytZkD'] = true;
+      hiddenFields['TQGFUJ7MTPu'] = true;
       hiddenFields['ToOqcUP9338'] = true;
       hiddenFields['qI9a8II1g54'] = true;
       hiddenFields['puLHlflNeg6'] = true;
@@ -153,6 +155,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['pU5ywj3cjSA'] = true;
       hiddenFields['HXk5d3kxy37'] = true;
       hiddenFields['ndK4JCMORL0'] = true;
+      hiddenFields['wv3YAGLZlev'] = true;
       hiddenFields['Tr5lrn4ctTN'] = true;
       hiddenFields['YTa10rE1vtd'] = true;
       hiddenFields['wi6Iq4yVdXV'] = true;
@@ -173,6 +176,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
     }
 
     if(isTested != true){
+
       hideHivQuestions();
     }
 
@@ -187,31 +191,11 @@ class OvcChildWellBeingAssessmentSkipLogic {
 
     } else if (age < 2) {
       hiddenSections['domainschooltsasekolo'] = true;
-    }else if (age > 3 || isHei == false || hivStatus == 'Positive') {
-      hiddenFields['zqVpkaulH2m']=true;
     }
-
-    if(hivStatus != null){
-      if(hivStatus !='Positive' || artStatus != true){
-hiddenFields['sLyfb45aLkl']=true;
-hiddenFields['aRNGDZcwWmS']=true;
-hiddenFields['f2GIuwu1LGh']=true;
-hiddenFields['EYb2XmgHt58']=true;
-hiddenFields['gAzb8e8cLga']=true;
-
-
-
-      }
-
-
-    }
-
-
 
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
       bool isFieldHidden = hiddenFields[inputFieldId] ?? false;
-
       if (inputFieldId == 'puLHlflNeg6') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = 'true';
@@ -220,63 +204,16 @@ hiddenFields['gAzb8e8cLga']=true;
           dataObject[inputFieldId] = 'false';
         }
       }
-      if(inputFieldId == 'sLyfb45aLkl' && value != '1'){
-        hiddenFields['aRNGDZcwWmS']= true;
-      }
-    if(inputFieldId == 'aRNGDZcwWmS' && (value == 'Undetectable' || value == 'Not documented' || value == 'null')){
-
-      hiddenFields['tYN12Es3707']= true;
-
-    }
-
-    if(inputFieldId== 'tYN12Es3707' && value != true){
-      hiddenFields['o1GBFscjs4y']= true;
-
-
-    }
-
-      if (inputFieldId == 'Icgkv0xkUow'){
-        if(hivStatus != null){
-          dataObject[inputFieldId] = artStatus;
-
-        }
-
-      }
-      if (inputFieldId == 'H84JX4fQWsK' && value != 'Yes' ){
-        hiddenFields['BQYp4iDUqzN'] = true;
-        hiddenFields['TQGFUJ7MTPu'] = true;
-      }
-      if (inputFieldId == 'BQYp4iDUqzN' && value != 'Yes' ){
-
-        hiddenFields['TQGFUJ7MTPu'] = true;
-      }
-      if(inputFieldId == 'ubin7MjQ5OI' && (value == 'less than six months' || value == 'null')){
-
-        hiddenFields['sLyfb45aLkl']=true;
-        hiddenFields['aRNGDZcwWmS']=true;
-
-      }
       if (inputFieldId == 'c5TMWtM4VVJ'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;
-          if(hivStatus != 'Positive'){
-            hiddenFields['Icgkv0xkUow'] = true;
-            hiddenFields['wv3YAGLZlev'] = true;
-
-          }
         }
-
-      }
-      if(artStatus != true){
-        hiddenFields['wv3YAGLZlev'] = true;
-        hiddenFields['ubin7MjQ5OI'] = true;
-
-
-
 
       }
       if (inputFieldId == 'c5TMWtM4VVJ' && value != 'Positive'){
 
+        hiddenFields['blod3xZ2dPP'] = true;
+        hiddenFields['ubin7MjQ5OI'] = true;
         hiddenFields['BYZu8p33lzP'] = true;
         hiddenFields['ToWhhydys'] = true;
 
@@ -284,7 +221,7 @@ hiddenFields['gAzb8e8cLga']=true;
 
       }
 
-        if (inputFieldId == 'sHUjPZTqpy2' && value != 'Yes') {
+      if (inputFieldId == 'sHUjPZTqpy2' && value != 'Yes') {
         hiddenFields['VFLlpMdPCTX'] = true;
         hiddenFields['VFLlpMdPCTX_checkboxes'] = true;
         hiddenFields['FeL9c9Grwlx'] = true;
@@ -429,8 +366,14 @@ hiddenFields['gAzb8e8cLga']=true;
         if (inputFieldId == 'Vc7Q23oTNhu' && value != 'true') {
           hiddenFields['qI9a8II1g54'] = true;
           hiddenFields['ToOqcUP9338'] = true;
+          hiddenFields['TQGFUJ7MTPu'] = true;
           hiddenFields['lxF2SNfIGa0'] = true;
           hiddenFields['lz56QGytZkD'] = true;
+        }
+        if (inputFieldId == 'TQGFUJ7MTPu' && value != 'true') {
+          hiddenFields['lz56QGytZkD'] = true;
+          hiddenFields['lxF2SNfIGa0'] = true;
+          hiddenFields['YZ9ORZBKzHk'] = true;
         }
         if (inputFieldId == 'RC28ZyOhzUQ' && value != 'true') {
           hiddenFields['RC28ZyOhzUQ_checkbox'] = true;
@@ -642,7 +585,7 @@ hiddenFields['gAzb8e8cLga']=true;
     }
     for (String sectionId in hiddenSections.keys) {
       List<FormSection> allFormSections =
-          FormUtil.getFlattenFormSections(formSections);
+      FormUtil.getFlattenFormSections(formSections);
       List<String> hiddenSectionInputFieldIds = FormUtil.getFormFieldIds(
           allFormSections
               .where((formSection) => formSection.id == sectionId)
@@ -666,25 +609,22 @@ hiddenFields['gAzb8e8cLga']=true;
   }
 
   static resetValuesForHiddenSections(
-    BuildContext context,
-    List<FormSection> formSections,
-  ) {
+      BuildContext context,
+      List<FormSection> formSections,
+      ) {
     Provider.of<ServiceFormState>(context, listen: false)
         .setHiddenSections(hiddenSections);
   }
 
   static assignInputFieldValue(
-    BuildContext context,
-    String inputFieldId,
-    String? value,
-  ) {
+      BuildContext context,
+      String inputFieldId,
+      String? value,
+      ) {
     Provider.of<ServiceFormState>(context, listen: false).setFormFieldState(
       inputFieldId,
       value,
       isChangesBasedOnSkipLogic: true,
     );
-  }
-
-  static void hideHeiQuestions() {
   }
 }
