@@ -33,6 +33,16 @@ class OvcHouseholdEnrollmentSkipLogic {
           assignInputFieldValue(context, 'oF2lwagPkQA', 'false');
         }
       }
+      if (inputFieldId == 'WAlaenCYazT' && value != 'true') {
+        hiddenFields['oSKX8fFQdWc'] = true;
+        hiddenFields['iBws3HMjiUT'] = true;
+        hiddenFields['aX0niP9AH6t'] = true;
+        hiddenFields['EIMgHQW61kx'] = true;
+        hiddenFields['l7op0btSqSc'] = true;
+      }
+
+
+
       if (inputFieldId == 'oSKX8fFQdWc' && value != 'Positive') {
         hiddenFields['l7op0btSqSc'] = true;
       }
