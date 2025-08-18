@@ -30,7 +30,6 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['Icgkv0xkUow'] =true;
       hiddenFields['ubin7MjQ5OI'] =true;
       hiddenFields['ToWhhydys'] =true;
-      hiddenFields['BYZu8p33lzP'] =true;
 
     }
 
@@ -177,11 +176,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
     }
 
     int age = int.parse(dataObject['age']);
-    if (age >= 9) {
-      hideForChild();
-    } else {
-      hideForCaregiver();
-    }
+
     if (age > 5) {
       hideMalnutritionQuestions();
 
@@ -262,6 +257,10 @@ hiddenFields['gAzb8e8cLga']=true;
           if(hivStatus != 'Positive'){
             hiddenFields['Icgkv0xkUow'] = true;
             hiddenFields['wv3YAGLZlev'] = true;
+            hiddenFields['YTa10rE1vtd'] = true;
+            hiddenFields['wi6Iq4yVdXV'] = true;
+            hiddenFields['KFCBwn7ypws'] = true;
+
 
           }
         }
@@ -275,12 +274,9 @@ hiddenFields['gAzb8e8cLga']=true;
 
 
       }
-      if (inputFieldId == 'c5TMWtM4VVJ' && value != 'Positive'){
-
+      if (hivStatus != 'Positive'){
         hiddenFields['BYZu8p33lzP'] = true;
         hiddenFields['ToWhhydys'] = true;
-
-
 
       }
 
@@ -492,6 +488,7 @@ hiddenFields['gAzb8e8cLga']=true;
         if (inputFieldId == 'ebeAKSCVsYo' && value != 'false') {
           hiddenFields['XXHMvERCGLn'] = true;
         }
+
 
         //This section needs to be worked on when skip logic level 2 is in place
         if (inputFieldId == 'xYdWjIv5eup' && value != 'Primary') {

@@ -192,8 +192,16 @@ class OvcChildEnrollmentSkipLogic {
       } else if (inputFieldId == 'GMcljM7jbNG') {
         int age =
             AppUtil.getAgeInYear('${dataObject["qZP982qpSPS"]}', ceil: true);
+        if (age < 3){
+          hiddenFields['WAlaenCYazT']=true;
+
+
+        }
+
+
         if (age > 3) {
           hiddenFields[inputFieldId] = true;
+          hiddenFields['IQX90Pjcrdh']=true;
         } else {
           var isOvcHIVExposedInfant = (age >= 0 && age <= 3) &&
               '${dataObject["nO38lKlKHYi"]}' == 'Positive';
@@ -202,14 +210,18 @@ class OvcChildEnrollmentSkipLogic {
 
             hiddenFields['WAlaenCYazT']=true;
 
-          }else {
-            hiddenFields['IQX90Pjcrdh']=true;
-            hiddenFields['oSKX8fFQdWc']=false;
-
-
-
           }
         }
+        if(age < 3 ){
+          if(inputFieldId == 'IQX90Pjcrdh' && value != 'true'){
+            hiddenFields['oSKX8fFQdWc'] = true;
+          }
+
+        }
+        if(age > 3 && (inputFieldId == 'WAlaenCYazT' && value != 'true')){
+          hiddenFields['oSKX8fFQdWc']=true;
+        }
+
       } else if (inputFieldId == 'Mc3k3bSwXNe' &&
           (value.isEmpty || value.trim() != 'true')) {
         hiddenFields['CePNVGSnj00'] = true;
@@ -242,7 +254,21 @@ class OvcChildEnrollmentSkipLogic {
         hiddenFields['oioDyk1WK1j'] = true;
         hiddenFields['cFDqjIXQucQ'] = true;
         hiddenFields['i6Y27IFBR9b'] = true;
-      }else if (inputFieldId == 'f7WkgoF9uib' && value == 'Preschool' || value=='TertiaryLevel'|| value=='VocationalLevel') {
+      }
+
+      else if  (inputFieldId == 'IQX90Pjcrdh') {
+        int age =
+        AppUtil.getAgeInYear('${dataObject["qZP982qpSPS"]}', ceil: true);
+      if(age < 3 && (inputFieldId == 'IQX90Pjcrdh'  && value != 'true')){
+        hiddenFields['oSKX8fFQdWc'] = true;
+      }
+
+
+
+      }
+
+
+      else if (inputFieldId == 'f7WkgoF9uib' && value == 'Preschool' || value=='TertiaryLevel'|| value=='VocationalLevel') {
         hiddenFields['cFDqjIXQucQ'] = true;
         hiddenFields['i6Y27IFBR9b'] = true;
 
@@ -255,15 +281,10 @@ class OvcChildEnrollmentSkipLogic {
 
 
       } else if(inputFieldId == 'WAlaenCYazT' && value != 'true'){
-        hiddenFields['oSKX8fFQdWc'] = true;
         hiddenFields['l7op0btSqSc'] = true;
         hiddenFields['iBws3HMjiUT'] = true;
         hiddenFields['aX0niP9AH6t'] = true;
         hiddenFields['EIMgHQW61kx'] = true;
-
-
-
-
       }
 
       else if (inputFieldId == 'f7WkgoF9uib' && value == 'SecondaryLevel') {
