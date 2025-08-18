@@ -103,6 +103,7 @@ class OvcHouseholdChild {
       'EIMgHQW61kx',
       'WAlaenCYazT',
       'GMcljM7jbNG',
+      'l7op0btSqSc',
       BeneficiaryIdentification.phoneNumber,
       BeneficiaryIdentification.primaryUIC,
       BeneficiaryIdentification.secondaryUIC,
@@ -144,7 +145,7 @@ class OvcHouseholdChild {
         teiData: tei,
         tested: tested is bool ? tested : null,
         isHei: isHei is bool ? isHei  : null,
-        artStatus:artStatus is bool ? artStatus : null,
+        artStatus: artStatus is bool ? artStatus : null,
 
         hasExitedProgram:
             data[OvcInterventionConstant.programStatus] == 'Exit');
