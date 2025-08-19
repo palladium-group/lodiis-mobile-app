@@ -98,7 +98,7 @@ class OvchouseHoldAssessmentSkipLogic {
       }else{
         hiddenFields['Uv26fX0HQvO'] = true;
       }
-      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus!='Positive')) {
+      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus =='Positive')) {
         hiddenSections['hivscreening'] = true;
       }
 

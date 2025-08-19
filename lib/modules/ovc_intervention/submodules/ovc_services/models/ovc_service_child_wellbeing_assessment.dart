@@ -738,42 +738,37 @@ class OvcServicesChildWellbeingAssessment {
                 labelColor: const Color(0xFF1A3518)),*/
 
             InputField(
-                id: 'Tr5lrn4ctTN',
-                name:
-                'Who in your household or your life knows about your HIV status?',
+                id: 'ToWhhydys',
+                name: 'Who knows about your HIV status?',
                 translatedName:
-                'Ke bo-mang ka lapeng la hao kapa bophelong ba hao ba tsebang boemo ba hao ba HIV?',
-                valueType: 'TEXT',
+                '12. Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
+                valueType: 'CHECK_BOX',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
-                      code: 'Mother', name: 'Mother', translatedName: 'Mè'),
+                      code: 'MJGmlQevBsM',
+                      name: 'A friend/neighbor',
+                      translatedName: 'Motsoalle/Moahisane '),
+
+                   InputFieldOption(
+                       code: 'Wfu966TC3M5',
+                     name: 'Member of the family',
+                      translatedName: 'Moruti'),
                   InputFieldOption(
-                      code: 'Father', name: 'Father', translatedName: 'Ntate'),
+                      code: 'J5hjKDmiE6a',
+                      name: 'Pastor or priest',
+                      translatedName: 'Moruti kapa moprista'),
                   InputFieldOption(
-                      code: 'Other caregiver',
-                      name: 'Other caregiver',
-                      translatedName: 'Mohlokomeli e mong'),
+                      code: 'HLPSkYfLYlS',
+                      name: 'Other',
+                      translatedName: 'Tse ling'),
                   InputFieldOption(
-                      code: 'Sibling',
-                      name: 'Sibling',
-                      translatedName: 'Ngoana e mong ka lapeng'),
-                  InputFieldOption(
-                      code: 'Teacher',
-                      name: 'Teacher',
-                      translatedName: 'Mosuoe'),
-                  InputFieldOption(
-                      code: 'Friend',
-                      name: 'Friend',
-                      translatedName: 'Mohaisane'),
-                  InputFieldOption(
-                      code: 'Neighbor',
-                      name: 'Neighbor',
-                      translatedName: 'Baahelani'),
-                  InputFieldOption(
-                      code: 'Other', name: 'Other', translatedName: 'Tse ling')
+                      code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
                 ]),
+
+
+
             InputField(
                 id: 'YTa10rE1vtd',
                 name: 'Specify other people know about your HIV status',
@@ -807,107 +802,32 @@ class OvcServicesChildWellbeingAssessment {
                       translatedName: 'Ho tšehetsa')
                 ]),
             InputField(
-                id: 'f2GIuwu1LGh',
-                name: 'What was their response?',
-                translatedName: '69. Ha a bolelletsoe, o ile a reng?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Positive/neutral reaction',
-                      name: 'Positive/neutral reaction',
-                      translatedName:
-                      'Ngoana o na khothetse a sa bontse ho thaba kapa ho koata; '),
-                  InputFieldOption(
-                      code: 'Experienced denial,but is ok now',
-                      name: 'Experienced denial,but is ok now',
-                      translatedName:
-                      'Ngoana o ne a sa kholoe/lumele, fela o hantle hona joale;'),
-                  InputFieldOption(
-                      code: 'Angry, sad or depressed,but is ok now',
-                      name: 'Angry, sad or depressed,but is ok now',
-                      translatedName:
-                      'Ngoana o ile a koata aba le khatello ea maikutlo;'),
-                  InputFieldOption(
-                      code:
-                      'Still dealing with denial,anger,sadness/depression',
-                      name:
-                      'Still dealing with denial,anger,sadness/depression',
-                      translatedName:
-                      'Ngoana o ntsa sa lumele, o koatile, o na le khatello ea maikutlo;'),
-                  InputFieldOption(
-                      code: 'Other', name: 'Other', translatedName: 'Tse ling')
-                ]),
-            InputField(
-                id: 'EYb2XmgHt58',
-                name: 'Why was the status not shared with the child?',
-                translatedName:
-                '70. hobaneng ngoana a sa bolelloa ka boemo ba hae?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'They are too young',
-                      name: 'They are too young',
-                      translatedName: 'O monyane haholo'),
-                  InputFieldOption(
-                      code: 'Worried about child experiencing stigma',
-                      name: 'Worried about child experiencing stigma',
-                      translatedName:
-                      'Ke tsoengoa ke hore ngoana o tla tojoa ke sekhobo'),
-                  InputFieldOption(
-                      code: 'Worried about child having a -ve response',
-                      name: 'Worried about child having a -ve response',
-                      translatedName:
-                      'Ke tsoengoa ke hore ngoana ha atlo thabela sephetho'),
-                  InputFieldOption(
-                      code: 'Worried about parent/family experiencing stigma',
-                      name: 'Worried about parent/family experiencing stigma',
-                      translatedName:
-                      'Ke tsoengoa ke hore motsoali kapa lelapa le le tla tojoa sekhobo;'),
-                  InputFieldOption(
-                      code: 'Other', name: 'Other', translatedName: 'Tse ling')
-                ]),
-            InputField(
-                id: 'kcG670LJt3J',
+                id: 'KFCBwn7ypws',
                 name:
-                '71. Has the status of the child been disclosed to any family members?',
-                valueType: 'BOOLEAN',
+                'Do you feel like you are supported enough regarding your HIV status?',
                 translatedName:
-                '71. Na boemo ba ngoana bo ile ba bolelloa litho tse ling tsa lelapa?',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'gAzb8e8cLga',
-                name:
-                '72. Family response to child HIV status disclosure to them',
-                translatedName: '72. ba ile ba reng?',
+                'Na u utloa u tshehelitsoe mabapi le boemo ba hao ba HIV?',
                 valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
+                inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
-                      code: 'Neutral/ no reaction',
-                      name: 'Neutral/ no reaction',
-                      translatedName: 'Ha ba re letho'),
+                      code: 'Yes', name: 'Yes', translatedName: 'E'),
                   InputFieldOption(
-                      code: 'Rejected the child',
-                      name: 'Rejected the child',
-                      translatedName: 'Ba nena ngoana'),
+                      code: 'No', name: 'No', translatedName: 'Che'),
                   InputFieldOption(
-                      code: 'Other, specify',
-                      name: 'Other',
-                      translatedName: 'Tse ling'),
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha hona Karabo'),
+                  // InputFieldOption(
+                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
-
             InputField(
                 id: 'EDgB0kYWS3v',
                 name:
-                '2. Do you have a long-term illness that you would like to share with me',
+                'Do you have a long-term illness that you would like to share with me',
                 translatedName:
-                '2. Na oena kapa emong oa ba lelapa o na le bokulo ba nako e telele bo u ka lakatsang ho mpolella bona?',
+                'Na oena kapa emong oa ba lelapa o na le bokulo ba nako e telele bo u ka lakatsang ho mpolella bona?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
@@ -1220,69 +1140,8 @@ class OvcServicesChildWellbeingAssessment {
                       translatedName: 'Ha e tsejoe'),
                 ]),*/
 
-            InputField(
-                id: 'BYZu8p33lzP',
-                name: '11. Ever disclosed your status to anyone?',
-                translatedName:
-                '11. Na ho na le motho eo u kileng oa mojoetsa boemo ba hau ba HIV?',
-                description: 'Refer to HIV support services if no',
-                translatedDescription:
-                'Fetisetsa setsing bakeng sa litsebeletso tsa t’sehetso ea HIV ha karabo ele che.',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha hona Karabo'),
-                  InputFieldOption(
-                      code: 'NA', name: 'NA', translatedName: 'N/A')
-                ]),
-            InputField(
-                id: 'ToWhhydys',
-                name: '12. Who knows about your HIV status?',
-                translatedName:
-                '12. Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Dl3tIlQxsrd',
-                      name: 'My child',
-                      translatedName: 'Ngoana oaka'),
-                  InputFieldOption(
-                      code: 'CHuwbETwj8o',
-                      name: 'My spouse',
-                      translatedName: 'Molekane oaka'),
-                  InputFieldOption(
-                      code: 'MJGmlQevBsM',
-                      name: 'A friend/neighbor',
-                      translatedName: 'Motsoalle/Moahisane '),
-                  InputFieldOption(
-                      code: 'pCHKaQptcwn',
-                      name: 'Boyfriend/ girlfriend',
-                      translatedName: 'Mohlankana oaka/Kharebe eaka'),
-                  // InputFieldOption(
-                  //     code: 'Wfu966TC3M5',
-                  //     name: 'Member of the family',
-                  //     translatedName: 'Moruti'),
-                  InputFieldOption(
-                      code: 'J5hjKDmiE6a',
-                      name: 'Pastor or priest',
-                      translatedName: 'Moruti kapa moprista'),
-                  InputFieldOption(
-                      code: 'HLPSkYfLYlS',
-                      name: 'Other',
-                      translatedName: 'Tse ling'),
-                  InputFieldOption(
-                      code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
-                ]),
+
+
 
           ]),
       FormSection(
@@ -1692,55 +1551,6 @@ class OvcServicesChildWellbeingAssessment {
           ]),
       FormSection(
           name: 'TB Screening',
-          id:'tbsection_adolescent',
-
-          color: const Color(0xFF4D9E49),
-          borderColor: const Color(0xFF4D9E49),
-          inputFields: [
-
-          ],
-          subSections: [
-            FormSection(
-                name: '',
-
-                color: const Color(0xFF4B9F46),
-                inputFields: [
-                  InputField(
-                      id: 'tMvluCbiiUm',
-                      name:
-                      '1.	Are you coughing?',
-                      translatedName:
-                      '1.	Are you coughing?',
-                      valueType: 'BOOLEAN',
-                      inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF737373)),
-                  InputField(
-                      id: 'P9hiqrTjAdg',
-                      name: '2.	Have you lost weight (without trying)?',
-                      translatedName:
-                      '2.	Have you lost weight (without trying)?',
-                      valueType: 'BOOLEAN',
-                      inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF737373)),
-                  InputField(
-                      id: 'Y8Xzy7bEWsi',
-                      name: '3.	Do you have drenching/soaking sweats at night?',
-                      translatedName: '3.	Do you have drenching/soaking sweats at night?',
-                      valueType: 'BOOLEAN',
-                      inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF737373)),
-                  InputField(
-                      id: 'VETgonq6tFr',
-                      name: '4.	Do you have fevers?',
-                      translatedName: '4.	Do you have fevers?',
-                      valueType: 'BOOLEAN',
-                      inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF737373)),
-
-                ])
-          ]),
-      FormSection(
-          name: 'TB Screening',
           id:'tbsection_child',
           color: const Color(0xFF4D9E49),
           borderColor: const Color(0xFF4D9E49),
@@ -1933,6 +1743,36 @@ class OvcServicesChildWellbeingAssessment {
                       id: 'OBugEkynJG0',
                       name: 'Are there any signs of malnutrition?',
                       translatedName: 'Are there any signs of malnutrition?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF455B44)),
+
+                  InputField(
+                      id: 'XLpBcDQ3p7I',
+                      name: 'Child MUAC score',
+                      translatedName: 'Child MUAC score',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF1A3518),
+                      options: [
+                        InputFieldOption(
+                            code: '11.5 cm or less',
+                            name: '11.5 cm or less',
+                            translatedName: '11.5 cm or less'),
+                        InputFieldOption(
+                            code: '11.5-12.5cm ',
+                            name: '11.5-12.5cm ',
+                            translatedName: '11.5-12.5cm '),
+                        InputFieldOption(
+                            code: '12.5cm or more ',
+                            name: '12.5cm or more ',
+                            translatedName: '12.5cm or more '),
+                      ]),
+
+                  InputField(
+                      id: 'R8SyKEnNi2q',
+                      name: 'Does the child attend growth monitoring services?',
+                      translatedName: 'Does the child attend growth monitoring services?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF455B44)),
