@@ -566,12 +566,36 @@ class OvcServicesChildWellbeingAssessment {
             ),
 
             InputField(
-                id: 'zqVpkaulH2m',
-                name:
-                'Has the child tested as per HEI testing algorithm?',
-                translatedName:
-                'Has the child tested as per HEI testing algorithm?',
-                valueType: 'BOOLEAN',
+                id: 'Uv26fX0HQvO',
+                name: 'If ever tested, when?',
+                translatedName: 'Haeba Karabo le “E”, neng',
+                description:
+                'If over six months (or their window period) refer for testing ',
+                translatedDescription:
+                'Ha sephetho se feta khoeli tse 6 fetesitsa setsing sa tlhabollo',
+                valueType: 'TEXT',
+                options: [
+                  InputFieldOption(
+                    code: 'Less than 3 months',
+                    name: 'Less than 3 months',
+                    translatedName: 'Ka tlasa likhoeli tse 3',
+                  ),
+                  InputFieldOption(
+                    code: 'Three months to twelve months',
+                    name: 'Three months to twelve months',
+                    translatedName: 'Likhoeling tse 3 ho isa ho tse 12',
+                  ),
+                  InputFieldOption(
+                    code: 'More than 1 year',
+                    name: 'More than 1 year',
+                    translatedName: 'Ho feta selemo',
+                  ),
+                  /*        InputFieldOption(
+                      code: 'Above 12 months ago',
+                      name: 'Above 12 months ago',
+                      translatedName:
+                          'Ka holimo ho likhoeli tse 12 tse fetileng'), */
+                ],
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
             InputField(
@@ -614,9 +638,9 @@ class OvcServicesChildWellbeingAssessment {
 
             InputField(
               id: 'Icgkv0xkUow',
-              name: 'Is the child currently taking ART to treat HIV?',
+              name: 'Currently taking ART to treat HIV?',
               translatedName:
-              '9. Na u tlasa kalafo ea lefu la HIV ha joale?',
+              'Na u tlasa kalafo ea lefu la HIV ha joale?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF1A3518),
@@ -703,8 +727,8 @@ class OvcServicesChildWellbeingAssessment {
                 valueType: 'BOOLEAN',
                 translatedName:
                 'If virally unsuppressed, do you have CD4 results?',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518)),
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518)),
 
 
             InputField(
@@ -741,7 +765,7 @@ class OvcServicesChildWellbeingAssessment {
                 id: 'ToWhhydys',
                 name: 'Who knows about your HIV status?',
                 translatedName:
-                '12. Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
+                'Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
                 valueType: 'CHECK_BOX',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -1143,411 +1167,6 @@ class OvcServicesChildWellbeingAssessment {
 
 
 
-          ]),
-      FormSection(
-          name: 'DOMAIN SAFE',
-          translatedName: 'TSIRELETSO',
-          id:'domainsafe',
-          color: const Color(0xFFEE6E21),
-          borderColor: const Color(0xFFEE6E21),
-          inputFields: [
-            InputField(
-                id: 'zjjAVMVuvxe',
-                name: '73. Has the child ever experienced violence?',
-                translatedName: '73. Na ngoana o kile a ba le pefo?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'wP7nZkrJIlp',
-                name:
-                '74. Did the child receive or is currently receiving services to help with the abuse problem?',
-                translatedName:
-                '74. Na ngoana o fumane kapa o ntsa fumana litsebeletso ho mo thusa ka toantso/tlhekefetso eo?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'I don\'t know',
-                      name: 'I don\t know',
-                      translatedName: 'Ha ke tsebe'),
-                  InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha hona Karabo')
-                ]),
-            InputField(
-                id: 'jxOMACHmXXO',
-                name: 'From whom?',
-                translatedName: 'Ho tsoa ho mang?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'M0lo7wANrwN',
-                name:
-                '75. Does the child feel that the abuse problem has been resolved?',
-                translatedName:
-                '75. Na ngoana o utloa eka bothata ba tlhekefetso bo felile?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'D1ebTZQurSL',
-                name:
-                '76. How often do you engage with the child by talking, telling stories, singing, playing, assisting with school work?',
-                valueType: 'TEXT',
-                translatedName:
-                '76. Ke ha ngata hakae u qoqang kapa u qoqelang, u binang, u bapalang kapa u thusang ngoana ka mosebetsi oa sekolo',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'All the time',
-                      name: 'All the time',
-                      translatedName: 'Nako eohle'),
-                  InputFieldOption(
-                      code: 'Often', name: 'Often', translatedName: 'Ha ngata'),
-                  InputFieldOption(
-                      code: 'Sometimes',
-                      name: 'Sometimes',
-                      translatedName: 'Ka nako tse ling'),
-                  InputFieldOption(
-                      code: 'Rarely',
-                      name: 'Rarely',
-                      translatedName: 'Ka thata'),
-                  InputFieldOption(
-                      code: 'Never', name: 'Never', translatedName: 'Hohang')
-                ]),
-            InputField(
-                id: 'hidZMdXFxvR',
-                name: '77. Who else would you say the child is close to?',
-                translatedName:
-                '77. Ho latela bohlokoa ba likamano le likhokahanyo ke mang eo u ka reng ngoano o mo tloaetse haholo?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Grandfather',
-                      name: 'Grandfather',
-                      translatedName: 'Ntate moholo'),
-                  InputFieldOption(
-                      code: 'Grandmother',
-                      name: 'Grandmother',
-                      translatedName: 'Nkhono'),
-                  InputFieldOption(
-                      code: 'Uncle',
-                      name: 'Uncle',
-                      translatedName: 'Malome/Rangoane'),
-                  InputFieldOption(
-                      code: 'Aunt',
-                      name: 'Aunt',
-                      translatedName: 'Rakhali/Mangoane'),
-                  InputFieldOption(
-                      code: 'Sibling',
-                      name: 'Sibling',
-                      translatedName: 'Ngoana oa bo'),
-                  InputFieldOption(
-                      code: 'Other', name: 'Other', translatedName: 'Ba bang')
-                ]),
-            InputField(
-                id: 'p82MlDNDGxs',
-                name: 'Specify other person close to the child',
-                translatedName: 'Tse ling, hlakisa.',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'XG1a90T7iBF',
-                name: '78. Does the child have a birth certificate?',
-                translatedName: '78. Na ngoana o na le lengolo la tlhaho?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'iQcx8GPINN0',
-                name:
-                '79. How often does this child play with other friends and family members?',
-                translatedName:
-                '79. Ke ha ngata hakae ngoana eo a bapalang le metsoalle ea hae kapa ba lelapa?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'All the time',
-                      name: 'All the time',
-                      translatedName: 'Nako eohle'),
-                  InputFieldOption(
-                      code: 'Often', name: 'Often', translatedName: 'Ha ngata'),
-                  InputFieldOption(
-                      code: 'Sometimes',
-                      name: 'Sometimes',
-                      translatedName: 'Ka nako tse ling'),
-                  InputFieldOption(
-                      code: 'Rarely',
-                      name: 'Rarely',
-                      translatedName: 'Ka thata'),
-                  InputFieldOption(
-                      code: 'Never', name: 'Never', translatedName: 'Hohang')
-                ]),
-            InputField(
-                id: 'RykOGTu3wcd',
-                name:
-                '80. Has anyone ever beaten/slapped/spanked or hit the child with a belt, a stick or something hard?',
-                translatedName:
-                '80. Na ho na le motho ea kileng a otla kapa a otla ngoana ka lebanta, molamu kapa ntho e \'ngoe e thata?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha hona Karabo')
-                ]),
-            InputField(
-                id: 'iUO02DiUftg',
-                name:
-                '81. How often has someone beaten/slapped/spanked the child, or hit them with a belt, a stick or something hard?',
-                valueType: 'TEXT',
-                translatedName:
-                '81. Ke hangata hakae motho a otlang kapa a otlang ngoana ka lebanta, thupa kapa ntho e \'ngoe e thata? U ka re ho joalo',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Almost everyday',
-                      name: 'Almost everyday',
-                      translatedName: 'Nako eohle'),
-                  InputFieldOption(
-                      code: 'Once in a while',
-                      name: 'Once in a while',
-                      translatedName: 'Hangata'),
-                  InputFieldOption(
-                      code: 'Long time ago',
-                      name: 'Long time ago',
-                      translatedName: 'Ka linako tse ling'),
-                  InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha ho Karabo')
-                ]),
-            InputField(
-                id: 'HqNP6ovZw3p',
-                name:
-                '82. Was the child ever left with bruises, burns, broken bones or teeth, or other injury?',
-                translatedName:
-                '82. na ngoana ola sala ale metopa, eka o chele kapa a robehile masapo kapa meno, kapa maqeba a mang?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'No response',
-                      name: 'No response',
-                      translatedName: 'Ha hona Karabo')
-                ]),
-            InputField(
-                id: 'fe0pgVexVbx',
-                name:
-                '83. Did the child receive or is currently receiving services to help with this problem?',
-                translatedName:
-                '83. na ngoana o ntsa fumana litsebeletso bakeng sa bothata bo?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'kslj60leTJf',
-                name:
-                '84. Is there someone in the household /neighbourhood who is or has behaved inappropriately with the child?',
-                translatedName:
-                '84. hona le motho ka hara lelapa kapa baahisane a kileng a itsoara ka tsela e sa tloaelehang ka pela ngoana eo? ',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'LjhWZuKCIJu',
-                name: 'Who has behaved inappropriately with the child?',
-                translatedName: 'Ke mang ea itšoereng hampe ka ngoana?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'gdooctJzx2o',
-                name:
-                '23. Would you say that your caregiver listens when you talk to him/her?',
-                translatedName:
-                '23. Na u ka re mohlokomeli oa hao oa mamela ha u bua le eena?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'All the time',
-                      name: 'All the time',
-                      translatedName: 'Nako eohle'),
-                  InputFieldOption(
-                      code: 'Often',
-                      name: 'Often',
-                      translatedName: 'Hangata'),
-                  InputFieldOption(
-                      code: 'Sometimes',
-                      name: 'Sometimes',
-                      translatedName: 'Ka linako tse ling'),
-                  InputFieldOption(
-                      code: 'Rarely',
-                      name: 'Rarely',
-                      translatedName: 'Hase ka mehla'),
-                  InputFieldOption(
-                      code: 'Never',
-                      name: 'Never',
-                      translatedName: 'Hohang')
-                ]),
-            InputField(
-                id: 't1VRnFuBb7I',
-                name:
-                '22. Are you receiving any child or social protection support?',
-                translatedName:
-                '22. Na ho nale ts’ehetso/thuso eo u e fumanang ea sechaba?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 't1VRnFuBb7I_checkbox',
-                name: 'Child or social protection support received',
-                valueType: 'CHECK_BOX',
-                translatedName:
-                'Ts\'ehetso ea ts\'ireletso ea bana kapa ea sechaba e amohetse',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'seiWBkesnnc',
-                      name: 'Social Grant',
-                      translatedName: 'Thuso ea lichelete'),
-                  InputFieldOption(
-                      code: 'pQ4cUirRxqK',
-                      name: 'Public Assistance',
-                      translatedName: 'Thuso ea Sechaba'),
-                  InputFieldOption(
-                      code: 'GI0cqcBMSUV', name: 'School Bursaries'),
-                  InputFieldOption(
-                      code: 'MMOeHPgpVj5',
-                      name: 'Food Packages',
-                      translatedName: 'Lijo'),
-                  InputFieldOption(
-                      code: 'CmJLjd2HxD7',
-                      name: 'Other',
-                      translatedName: 'Tse ling'),
-                ]),
-            InputField(
-                id: 'nLoEbs7cRIu',
-                name: 'Specify which public Assistance',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'LU0OIdYmV7K',
-                name: 'Specify other child or social supports',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'ahAIJZ9IkCV',
-                name:
-                '23. Are you comfortable to seek help and advice with problems (emotional) and he/she will help to solve them?',
-                valueType: 'TEXT',
-                translatedName:
-                '24.  Na u phutholohile ho batla thuso le likeletso ka mathata (maikutlo) mme o fumane thuso ea ho rarolla mathata a hau?',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'All the time',
-                      name: 'All the time',
-                      translatedName: 'Nako eohle'),
-                  InputFieldOption(
-                      code: 'Often',
-                      name: 'Often',
-                      translatedName: 'Hangata'),
-                  InputFieldOption(
-                      code: 'Sometimes',
-                      name: 'Sometimes',
-                      translatedName: 'Ka linako tse ling'),
-                  InputFieldOption(
-                      code: 'Rarely',
-                      name: 'Rarely',
-                      translatedName: 'Hase ka mehla'),
-                  InputFieldOption(
-                      code: 'Never',
-                      name: 'Never',
-                      translatedName: 'Hohang')
-                ]),
-            InputField(
-                id: 'MxioydJaOgX',
-                name:
-                '24. Do you feel like your opinion is heard about you and your life?',
-                translatedName:
-                '25. Na u ikutloa eka maikutlo a hao a utloahala ka oena le ka bophelo ba hao?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'ebeAKSCVsYo',
-                name: '25. Can you cope in difficult situations?',
-                translatedName: '26. Na u ka sebetsana le maemo a thata?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'XXHMvERCGLn',
-                name: 'Why can\'t you cope in difficult situations?',
-                translatedName:
-                'Hobaneng o sa khone ho sebetsana le maemo a thata?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'MlcK6DAGoCx',
-                name:
-                '26. Do you have friends that are older than you who buy or give you gifts?',
-                valueType: 'BOOLEAN',
-                translatedName:
-                '27. Na u na le metsoalle e ka holimo ho oena ka lilemo e u rekelang kapa e u fang limpho?',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'W91GgtMqWnl',
-                name:
-                'Do you feel pressure to do anything in exchange for the gifts?',
-                translatedName:
-                'Na u ikutloa u hatelloa ho etsa ntho efe kapa efe e le phapanyetsano bakeng sa limpho?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518)),
-            InputField(
-                id: 'sM8amXv7Nck',
-                name: 'Who helped with child abuse problem?',
-                translatedName:
-                'Ke mang ea thusitseng ka bothata ba tlhekefetso ea bana?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFFEE6E22),
-                labelColor: const Color(0xFF1A3518))
           ]),
       FormSection(
           name: 'TB Screening',
