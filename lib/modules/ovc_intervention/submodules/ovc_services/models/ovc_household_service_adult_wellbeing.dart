@@ -438,6 +438,26 @@ class OvcHouseholdServiceAdultWellbeing {
                   //     code: 'Other', name: 'Other', translatedName: 'Tse ling')
                 ]),
 
+            InputField(
+              id: 'pJ1UrnLU9mh',
+              name: 'Are you Preganant?',
+              translatedName:
+              "Na u mmeleng?",
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+            ),
+
+            InputField(
+              id: 'dCIDHw3RrQ9',
+              name: 'Are you Breastfeeding?',
+              translatedName:
+              "Na ua ants'a?",
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+            ),
+
             // InputField(
             //     id: 'BvNaiaoxc6w',
             //     name: 'Have you been tested for HIV?',
@@ -560,12 +580,12 @@ class OvcHouseholdServiceAdultWellbeing {
                   InputFieldOption(
                       code: 'more than six months',
                       name: 'more than six months'),
-      /*            InputFieldOption(
+        /*            InputFieldOption(
                       code: 'more than one year',
                       name: 'more than one year'),
                   InputFieldOption(code: 'NA', name: 'NA') */
                 ]),
-     /*       InputField(
+        /*      InputField(
                 id: 'Icb6vUJXVDX',
                 name: '11. Do you take your treatments daily and on time?',
                 translatedName:
@@ -779,25 +799,7 @@ class OvcHouseholdServiceAdultWellbeing {
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
 
-            InputField(
-              id: 'pJ1UrnLU9mh',
-              name: 'Is the caregiver Preganant?',
-              translatedName:
-              "Na mohlokomeli o mmeleng?",
-              valueType: 'BOOLEAN',
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF737373),
-            ),
 
-            InputField(
-              id: 'dCIDHw3RrQ9',
-              name: 'Is the caregiver Breastfeeding?',
-              translatedName:
-              "Na mohlokomeli oa ants'a?",
-              valueType: 'BOOLEAN',
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF737373),
-            ),
 
             InputField(
                 id: 'KFCBwn7ypws',
@@ -833,7 +835,6 @@ class OvcHouseholdServiceAdultWellbeing {
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF1A3518),
             ),
-
 
             // InputField(
             //     id: 'jzmOXiyGGgw',
