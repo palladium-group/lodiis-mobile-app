@@ -192,7 +192,7 @@ class OvcChildEnrollmentSkipLogic {
       } else if (inputFieldId == 'GMcljM7jbNG') {
         int age =
             AppUtil.getAgeInYear('${dataObject["qZP982qpSPS"]}', ceil: true);
-        if (age < 3){
+        if (age <= 3){
           hiddenFields['WAlaenCYazT']=true;
 
 
@@ -212,7 +212,7 @@ class OvcChildEnrollmentSkipLogic {
 
           }
         }
-        if(age < 3 ){
+        if(age <= 3 ){
           if(inputFieldId == 'IQX90Pjcrdh' && value != 'true'){
             hiddenFields['oSKX8fFQdWc'] = true;
           }
@@ -259,9 +259,20 @@ class OvcChildEnrollmentSkipLogic {
       else if  (inputFieldId == 'IQX90Pjcrdh') {
         int age =
         AppUtil.getAgeInYear('${dataObject["qZP982qpSPS"]}', ceil: true);
-      if(age < 3 && (inputFieldId == 'IQX90Pjcrdh'  && value != 'true')){
+      if(age <= 3 && (inputFieldId == 'IQX90Pjcrdh'  && value != 'true')){
         hiddenFields['oSKX8fFQdWc'] = true;
       }
+
+
+
+      }
+
+      else if  (inputFieldId == 'WAlaenCYazT') {
+        int age =
+        AppUtil.getAgeInYear('${dataObject["qZP982qpSPS"]}', ceil: true);
+        if(age > 3 && (inputFieldId == 'WAlaenCYazT'  && value != 'true')){
+          hiddenFields['oSKX8fFQdWc'] = true;
+        }
 
 
 
