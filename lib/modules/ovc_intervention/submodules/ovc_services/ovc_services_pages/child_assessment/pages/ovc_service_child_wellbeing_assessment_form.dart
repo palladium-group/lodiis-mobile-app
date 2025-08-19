@@ -102,7 +102,7 @@ class _OvcServiceChildWellBeingAssessmentFormState
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
         await OvcChildWellBeingAssessmentSkipLogic.evaluateSkipLogics(
-            context, formSections!, dataObject, child?.hivStatus, child?.tested, child?.isHei, child?.artStatus);
+            context, formSections!, dataObject, child?.hivStatus, child?.tested, child?.isHei, child?.artStatus, child?.testedHeiAlgorithm);
       },
     );
   }
