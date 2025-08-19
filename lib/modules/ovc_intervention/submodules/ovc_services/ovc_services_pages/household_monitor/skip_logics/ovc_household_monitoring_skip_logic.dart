@@ -8,6 +8,7 @@ class OvcHouseholdMonitoringSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
 
+
   static Future evaluateSkipLogics(
     BuildContext context,
     List<FormSection> formSections,
