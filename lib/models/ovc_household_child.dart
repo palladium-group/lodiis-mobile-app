@@ -24,6 +24,7 @@ class OvcHouseholdChild {
   bool? tested;
   bool? isHei;
   bool? artStatus;
+  bool? testedHeiAlgorithm;
   TrackedEntityInstance? teiData;
 
   OvcHouseholdChild({
@@ -48,6 +49,7 @@ class OvcHouseholdChild {
     this.tested,
     this.isHei,
     this.artStatus,
+    this.testedHeiAlgorithm
   });
 
   bool get isClHiv => '$hivStatus' == 'Positive';
@@ -104,6 +106,7 @@ class OvcHouseholdChild {
       'WAlaenCYazT',
       'GMcljM7jbNG',
       'l7op0btSqSc',
+      'IQX90Pjcrdh',
       BeneficiaryIdentification.phoneNumber,
       BeneficiaryIdentification.primaryUIC,
       BeneficiaryIdentification.secondaryUIC,
@@ -120,6 +123,7 @@ class OvcHouseholdChild {
     Object tested = (_parseBool(data['WAlaenCYazT']) ?? '');
     Object isHei = (_parseBool(data['GMcljM7jbNG']) ?? '');
     Object artStatus = (_parseBool(data['l7op0btSqSc']) ?? '');
+    Object testedHeiAlgorithm = (_parseBool(data['IQX90Pjcrdh']) ?? '');
 
     return OvcHouseholdChild(
         id: tei.trackedEntityInstance,
@@ -146,6 +150,7 @@ class OvcHouseholdChild {
         tested: tested is bool ? tested : null,
         isHei: isHei is bool ? isHei  : null,
         artStatus: artStatus is bool ? artStatus : null,
+        testedHeiAlgorithm: testedHeiAlgorithm is bool ? testedHeiAlgorithm : null,
 
         hasExitedProgram:
             data[OvcInterventionConstant.programStatus] == 'Exit');
