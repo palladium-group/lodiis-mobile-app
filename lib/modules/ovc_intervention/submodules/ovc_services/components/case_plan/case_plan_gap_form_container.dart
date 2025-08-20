@@ -12,6 +12,9 @@ import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/skip_logics/ovc_case_plan_gap_skip_logic.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../app_state/enrollment_service_form_state/service_event_data_state.dart';
+import '../../constants/ovc_household_assessment_constant.dart';
+
 class CasePlanGapFormContainer extends StatefulWidget {
   const CasePlanGapFormContainer({
     Key? key,
@@ -41,17 +44,48 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
   @override
   void initState() {
     super.initState();
-    _setFormMetadata();
+    _prepareForm();
   }
 
-  void _setFormMetadata() {
+  void _prepareForm() {
     dataObject = widget.dataObject;
-    for (String id in mandatoryFields) {
+
+    // 1) Pull latest Assessment values
+    final assessmentVals = context
+        .read<ServiceEventDataState>()
+        .latestValuesForStage(OvcHouseholdAssessmentConstant.programStage);
+    debugPrint('Assessment latest values: $assessmentVals');
+    // 2) Apply mapping rules (Assessment -> Case Plan Gaps)
+    _applyAssessmentToGaps(assessmentVals);
+
+    // 3) Continue with normal setup
+    for (final id in mandatoryFields) {
       mandatoryFieldObject[id] = true;
     }
     _evaluateSkipLogics();
     setState(() {});
   }
+  void _applyAssessmentToGaps(Map<String, String?> a) {
+    // --- UIDs from you ---
+    const hivStatusDE = 'vNeOE9abQBB';      // Assessment: HIV status
+    const hivAdherenceGapDE = 'HKCv7lkLexo'; // Case Plan Gap: HIV Adherence Support
+
+    final raw = (a[hivStatusDE] ?? '').trim().toLowerCase();
+  print(raw);
+    // If your option set uses codes (e.g. POS), include them here
+    final positiveValues = <String> {
+      'positive',
+      'pos',
+      'positive (known)',
+      'true',
+      '1',
+    };
+
+    if (positiveValues.contains(raw)) {
+      dataObject[hivAdherenceGapDE] = 'true';
+    }
+  }
+
 
   void _evaluateSkipLogics() {
     OvcHouseholdChild? currentHouseholdChild =
