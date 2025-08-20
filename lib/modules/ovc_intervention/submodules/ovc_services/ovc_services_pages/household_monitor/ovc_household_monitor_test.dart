@@ -26,77 +26,134 @@ import 'package:provider/provider.dart';
 
 import 'components/ovc_household_home_monitoring_list_container.dart';
 import 'ovc_household_mornitoring_form.dart';
-
 class OvcHouseholdMonitorTest extends StatefulWidget {
   const OvcHouseholdMonitorTest({Key? key}) : super(key: key);
 
   @override
-  State<OvcHouseholdMonitorTest> createState() => _OvcHouseholdMonitorState();
+  State<OvcHouseholdMonitorTest> createState() =>
+      _OvcHouseholdMonitorState();
 }
 
 class _OvcHouseholdMonitorState extends State<OvcHouseholdMonitorTest> {
-  final String label = 'Household Morning';
+  final String label = 'Household Monitoring';
   final String translatedName = 'Hlahlobo ea lelapa';
-  final List<String> programStageIds = [
-  //  OvcHouseholdAssessmentConstant.programStage
-    OvcHouseholdMonitorConstant.programStage
+  Map dataObject = {};
+  /// Stages shown in the monitoring list
+  final List<String> programStageIds = <String>[
+    OvcHouseholdMonitorConstant.programStage,
   ];
-  void updateFormState(BuildContext context, bool isEditableMode,
-      Events? assessment, OvcHousehold? household) async {
-    Provider.of<ServiceFormState>(context, listen: false).resetFormState();
-    Provider.of<ServiceFormState>(context, listen: false)
-        .updateFormEditabilityState(isEditableMode: isEditableMode);
 
-    if (assessment != null) {
-      Provider.of<ServiceFormState>(context, listen: false);
+  /// Map Assessment -> default Monitoring values (called when creating NEW event)
+  void _applyAssessmentDefaultsToMonitoring(
+      BuildContext context,
+      Map<String, String?> assessmentVals,
+      ) {
+    // UIDs provided by you:
+    const String hivStatusDE = 'vNeOE9abQBB'; // Assessment: HIV status
+    const String hivAdherenceSupportDE = 'vNeOE9abQBB'; // Monitoring field: HIV Adherence Support
+
+    final String raw = (assessmentVals['vNeOE9abQBB'] ?? '')
+        .trim()
+        .toLowerCase();
+print('HIV Status: $raw');
+    // Add option codes/labels your HIV status actually uses
+    const Set<String> positiveValues = {
+      'positive',
+      'pos',
+      'positive (known)',
+      'true',
+      '1',
+    };
+
+    {
       Provider.of<ServiceFormState>(context, listen: false)
-          .setFormFieldState('eventDate', assessment.eventDate);
-      Provider.of<ServiceFormState>(context, listen: false)
-          .setFormFieldState('eventId', assessment.event);
-      Provider.of<ServiceFormState>(context, listen: false)
-          .setFormFieldState('location', assessment.orgUnit);
-      for (Map dataValue in assessment.dataValues) {
-        if (dataValue['value'] != '') {
-          Provider.of<ServiceFormState>(context, listen: false)
-              .setFormFieldState(dataValue['dataElement'], dataValue['value']);
-        }
-      }
+          .setFormFieldState('vNeOE9abQBB', raw);
     }
 
-    String? beneficiaryId = household!.id;
-    String eventId = assessment == null ? '' : assessment.event ?? '';
-    String formAutoSaveId =
+    // 👉 Extend here with more Assessment → Monitoring mappings if needed.
+  }
+
+  /// Central place to prepare form state for NEW/EDIT/VIEW
+  void updateFormState(
+      BuildContext context,
+      bool isEditableMode,
+      Events? event, // existing monitoring event or null for NEW
+      OvcHousehold? household,
+      ) async {
+    final formState = Provider.of<ServiceFormState>(context, listen: false);
+    formState.resetFormState();
+    formState.updateFormEditabilityState(isEditableMode: isEditableMode);
+
+    if (event != null) {
+      // Editing or viewing existing Monitoring event → hydrate fields from event
+      formState.setFormFieldState('eventDate', event.eventDate);
+      formState.setFormFieldState('eventId', event.event);
+      formState.setFormFieldState('location', event.orgUnit);
+      for (final Map dataValue in (event.dataValues as List)) {
+        final value = (dataValue['value'] ?? '').toString();
+        if (value.isNotEmpty) {
+          formState.setFormFieldState(
+            dataValue['dataElement'],
+            value,
+          );
+        }
+      }
+    } else {
+      // NEW Monitoring event → prefill from latest Assessment
+      final Map<String, String?> assessmentVals = context
+          .read<ServiceEventDataState>()
+          .latestValuesForStage(
+        OvcHouseholdAssessmentConstant.programStage,
+      );
+
+      _applyAssessmentDefaultsToMonitoring(context, assessmentVals);
+    }
+
+    // Auto-save and resume logic (kept as in your original flow)
+    final String? beneficiaryId = household!.id;
+    final String eventId = event?.event ?? '';
+    final String formAutoSaveId =
         "${OvcRoutesConstant.houseHoldAssessmentFormPage}_${beneficiaryId}_$eventId";
-    FormAutoSave formAutoSave =
-    await FormAutoSaveOfflineService().getSavedFormAutoData(formAutoSaveId);
-    bool shouldResumeWithUnSavedChanges = await AppResumeRoute()
+
+    final formAutoSave = await FormAutoSaveOfflineService()
+        .getSavedFormAutoData(formAutoSaveId);
+
+    final bool shouldResumeWithUnSavedChanges = await AppResumeRoute()
         .shouldResumeWithUnSavedChanges(context, formAutoSave);
 
     if (shouldResumeWithUnSavedChanges) {
       AppResumeRoute().redirectToPages(context, formAutoSave);
     } else {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const OvcHouseholdMornitoringForm()));
+        context,
+        MaterialPageRoute(
+          builder: (context) => const OvcHouseholdMornitoringForm(),
+        ),
+      );
     }
   }
 
-  void onAddNewHouseholdAssessment(
+  void onAddNewHouseholdMonitoring(
       BuildContext context,
       OvcHousehold? houseHold,
       ) {
     updateFormState(context, true, null, houseHold);
   }
 
-  void onViewHouseholdAssessment(
-      BuildContext context, OvcHousehold? houseHold, Events assessment) {
-    updateFormState(context, false, assessment, houseHold);
+  void onViewHouseholdMonitoring(
+      BuildContext context,
+      OvcHousehold? houseHold,
+      Events event,
+      ) {
+    updateFormState(context, false, event, houseHold);
   }
 
-  void onEditHouseholdAssessment(
-      BuildContext context, OvcHousehold? houseHold, Events assessment) {
-    updateFormState(context, true, assessment, houseHold);
+  void onEditHouseholdMonitoring(
+      BuildContext context,
+      OvcHousehold? houseHold,
+      Events event,
+      ) {
+    updateFormState(context, true, event, houseHold);
   }
 
   @override
@@ -106,7 +163,7 @@ class _OvcHouseholdMonitorState extends State<OvcHouseholdMonitorTest> {
         preferredSize: const Size.fromHeight(65.0),
         child: Consumer<InterventionCardState>(
           builder: (context, interventionCardState, child) {
-            InterventionCard activeInterventionProgram =
+            final InterventionCard activeInterventionProgram =
                 interventionCardState.currentInterventionProgram;
             return SubPageAppBar(
               label: label,
@@ -119,8 +176,9 @@ class _OvcHouseholdMonitorState extends State<OvcHouseholdMonitorTest> {
       body: SubPageBody(
         body: Consumer<OvcHouseholdCurrentSelectionState>(
           builder: (context, ovcHouseholdCurrentSelectionState, child) {
-            var currentOvcHousehold =
+            final OvcHousehold? currentOvcHousehold =
                 ovcHouseholdCurrentSelectionState.currentOvcHousehold;
+
             return Column(
               children: [
                 OvcHouseholdInfoTopHeader(
@@ -128,85 +186,81 @@ class _OvcHouseholdMonitorState extends State<OvcHouseholdMonitorTest> {
                 ),
                 Consumer<LanguageTranslationState>(
                   builder: (context, languageTranslationState, child) =>
-                      Consumer<OvcHouseholdCurrentSelectionState>(
-                        builder:
-                            (context, ovcHouseholdCurrentSelectionState, child) {
-                          OvcHousehold? currentOvcHousehold =
-                              ovcHouseholdCurrentSelectionState.currentOvcHousehold;
-                          return Consumer<ServiceEventDataState>(
-                            builder: (context, serviceEventDataState, child) {
-                              bool isLoading = serviceEventDataState.isLoading;
-                              return isLoading
-                                  ? const CircularProcessLoader(
-                                color: Colors.blueGrey,
-                              )
-                                  : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                      top: 10.0,
-                                      right: 13.0,
-                                      left: 13.0,
+                      Consumer<ServiceEventDataState>(
+                        builder: (context, serviceEventDataState, child) {
+                          final bool isLoading =
+                              serviceEventDataState.isLoading;
+
+                          if (isLoading) {
+                            return const CircularProcessLoader(
+                              color: Colors.blueGrey,
+                            );
+                          }
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  right: 13.0,
+                                  left: 13.0,
+                                ),
+                                child: OvcHouseholdMonitoringListContainer(
+                                  programStageIds: programStageIds,
+                                  onEditHouseholdAssessment: (Events e) =>
+                                      onEditHouseholdMonitoring(
+                                        context,
+                                        currentOvcHousehold,
+                                        e,
+                                      ),
+                                  onViewHouseholdAssessment: (Events e) =>
+                                      onViewHouseholdMonitoring(
+                                        context,
+                                        currentOvcHousehold,
+                                        e,
+                                      ),
+                                ),
+                              ),
+                              Consumer<CurrentUserState>(
+                                builder:
+                                    (context, currentUserState, child) =>
+                                    Visibility(
+                                      visible: !currentUserState
+                                          .isKbFacilitySocialWorker &&
+                                          !isLoading &&
+                                          currentOvcHousehold
+                                              ?.hasExitedProgram !=
+                                              true,
+                                      child: EntryFormSaveButton(
+                                        label:
+                                        languageTranslationState.currentLanguage ==
+                                            'lesotho'
+                                            ? 'HLAHLOBO E NCHA'
+                                            : 'NEW MONITORING',
+                                        labelColor: Colors.white,
+                                        fontSize: 10,
+                                        buttonColor: const Color(0xFF4B9F46),
+                                        onPressButton: () =>
+                                            onAddNewHouseholdMonitoring(
+                                              context,
+                                              currentOvcHousehold,
+                                            ),
+                                      ),
                                     ),
-                                    child:
-                                    OvcHouseholdMonitoringListContainer(
-                                      programStageIds: programStageIds,
-                                      onEditHouseholdAssessment:
-                                          (Events assessment) =>
-                                          onEditHouseholdAssessment(
-                                            context,
-                                            currentOvcHousehold,
-                                            assessment,
-                                          ),
-                                      onViewHouseholdAssessment:
-                                          (Events assessment) =>
-                                          onViewHouseholdAssessment(
-                                            context,
-                                            currentOvcHousehold,
-                                            assessment,
-                                          ),
-                                    ),
-                                  ),
-                                  Consumer<CurrentUserState>(
-                                    builder:
-                                        (context, curentUserState, child) =>
-                                        Visibility(
-                                          visible: !curentUserState
-                                              .isKbFacilitySocialWorker &&
-                                              !isLoading &&
-                                              currentOvcHousehold
-                                                  ?.hasExitedProgram !=
-                                                  true,
-                                          child: EntryFormSaveButton(
-                                            label: languageTranslationState
-                                                .currentLanguage ==
-                                                'lesotho'
-                                                ? 'HLAHLOBO E NCHA'
-                                                : "NEW MONITORING",
-                                            labelColor: Colors.white,
-                                            fontSize: 10,
-                                            buttonColor: const Color(0xFF4B9F46),
-                                            onPressButton: () =>
-                                                onAddNewHouseholdAssessment(
-                                                    context, currentOvcHousehold),
-                                          ),
-                                        ),
-                                  ),
-                                ],
-                              );
-                            },
+                              ),
+                            ],
                           );
                         },
                       ),
-                )
+                ),
               ],
             );
           },
         ),
       ),
-      bottomNavigationBar: const InterventionBottomNavigationBarContainer(),
+      bottomNavigationBar:
+      const InterventionBottomNavigationBarContainer(),
     );
   }
 }

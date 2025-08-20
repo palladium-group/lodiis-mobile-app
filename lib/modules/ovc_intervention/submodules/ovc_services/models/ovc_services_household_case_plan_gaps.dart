@@ -23,10 +23,65 @@ class OvcHouseholdServicesCasePlanGaps {
                 valueType: 'TRUE_ONLY',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
+
             InputField(
                 id: 'JzlLk2tW4xh',
                 allowFuturePeriod: true,
                 name: '( HIV ADHERANCE SUPPORT ) Projected date for completion',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'bRv4ZZy5MDH',
+                name: 'TB Treatment',
+                translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
+                valueType: 'TRUE_ONLY',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'mvDI6Jr40kI',
+                allowFuturePeriod: true,
+                name: '( TB Treatment ) Projected date for completion',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'ylSjcj6cv42',
+                name: 'HIV Treatment',
+                translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
+                valueType: 'TRUE_ONLY',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'qMrZcC7VvCV',
+                allowFuturePeriod: true,
+                name: 'Date for HIVTREAT to be completed',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'cx4xBY4jZXM',
+                name: 'HIVS&D',
+                translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
+                valueType: 'TRUE_ONLY',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'SIEeRmPm0Q0',
+                allowFuturePeriod: true,
+                name: 'Date for HIVS&D to be completed',
                 translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
                 valueType: 'DATE',
                 firstDate: firstDate,
