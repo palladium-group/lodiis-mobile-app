@@ -1,11 +1,27 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_status_state.dart';
 import 'package:kb_mobile_app/core/services/organisation_unit_service.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
 import 'package:kb_mobile_app/models/events.dart';
 import 'package:provider/provider.dart';
+
+
+
+extension EventValueHelpers on Events {
+  Map<String, String?> valueMap() {
+    final values = <String, String?>{};
+    final list = (dataValues as List?) ?? const [];
+    for (final dv in list) {
+      if (dv is Map && dv['dataElement'] != null) {
+        values[dv['dataElement'] as String] = dv['value']?.toString();
+      }
+    }
+    return values;
+  }
+}
 
 class ServiceEventDataState with ChangeNotifier {
   final BuildContext? context;
@@ -51,4 +67,22 @@ class ServiceEventDataState with ChangeNotifier {
       notifyListeners();
     });
   }
+
+
+  List<Events> eventsForStage(String? programStage) {
+    final list = _eventListByProgramStage[programStage];
+    return (list is List<Events>) ? list : const [];
+  }
+
+  Events? latestEventForStage(String? programStage) {
+    final list = eventsForStage(programStage);
+    return list
+        .sorted((a, b) => (b.eventDate ?? '').compareTo(a.eventDate ?? ''))
+        .firstOrNull;
+  }
+
+  Map<String, String?> latestValuesForStage(String? programStage) {
+    return latestEventForStage(programStage)?.valueMap() ?? const {};
+  }
+
 }
