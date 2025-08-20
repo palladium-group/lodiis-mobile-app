@@ -84,7 +84,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['iZGQ4iWkWNu'] = true;
       hiddenFields['f2GIuwu1LGh'] = true;
       hiddenFields['DrPdwo3pKfN'] = true;
-      hiddenFields['EYb2XmgHt58'] = true;
+      //hiddenFields['EYb2XmgHt58'] = true;
       hiddenFields['kcG670LJt3J'] = true;
       hiddenFields['gAzb8e8cLga'] = true;
       hiddenFields['oJVaLuSykXO'] = true;
@@ -203,7 +203,10 @@ class OvcChildWellBeingAssessmentSkipLogic {
 
       }
     }
-
+    if (age < 6) {
+      hiddenFields['hgQXrOd7iuH'] = true;
+      hiddenFields['Qisosyae92z'] = true;
+    }
     if (age > 5) {
       hideMalnutritionQuestions();
 
@@ -218,6 +221,8 @@ hiddenFields['aRNGDZcwWmS']=true;
 hiddenFields['f2GIuwu1LGh']=true;
 hiddenFields['EYb2XmgHt58']=true;
 hiddenFields['gAzb8e8cLga']=true;
+hiddenFields['kcG670LJt3J']=true;
+
 
 
 
@@ -244,13 +249,17 @@ hiddenFields['gAzb8e8cLga']=true;
       }
       if(inputFieldId == 'sLyfb45aLkl' && value != '1'){
         hiddenFields['aRNGDZcwWmS']= true;
+        hiddenFields['tYN12Es3707']= true;
       }
-    if(inputFieldId == 'aRNGDZcwWmS' && (value == 'Undetectable' || value == 'Not documented' || value == 'null')){
+    if(inputFieldId == 'aRNGDZcwWmS' && (value == 'Undetectable' || value == 'Not documented' || value == 'Low (less than 1,000 copies/ml)' || value == 'null')){
 
       hiddenFields['tYN12Es3707']= true;
+      hiddenFields['o1GBFscjs4y']= true;
 
     }
-
+    // if(true){
+    //   hiddenFields['EDgB0kYWS3v']= true;
+    // }
     if(inputFieldId== 'tYN12Es3707' && value != 'true'){
       hiddenFields['o1GBFscjs4y']= true;
 
@@ -276,6 +285,7 @@ hiddenFields['gAzb8e8cLga']=true;
 
         hiddenFields['sLyfb45aLkl']=true;
         hiddenFields['aRNGDZcwWmS']=true;
+        hiddenFields['tYN12Es3707']= true;
 
       }
       if (inputFieldId == 'c5TMWtM4VVJ'){
@@ -572,7 +582,7 @@ hiddenFields['gAzb8e8cLga']=true;
         }
 
         if (inputFieldId == 'iZGQ4iWkWNu' && value != 'false') {
-          hiddenFields['EYb2XmgHt58'] = true;
+         // hiddenFields['EYb2XmgHt58'] = true;
           hiddenFields['RAlqa0C6PN7'] = true;
         }
         if (inputFieldId == 'EYb2XmgHt58' && value != 'Other') {
@@ -655,6 +665,16 @@ hiddenFields['gAzb8e8cLga']=true;
 
         if (inputFieldId == 'MlcK6DAGoCx' && value != 'true') {
           hiddenFields['W91GgtMqWnl'] = true;
+        }
+        if (inputFieldId == 'hgQXrOd7iuH' && (value != 'true'|| value == 'null')){
+          hiddenFields['Qisosyae92z'] = true;
+        }
+        if (inputFieldId == 'hgQXrOd7iuH' && (value != 'false'|| value == 'null')) {
+          hiddenFields['EYb2XmgHt58'] = true;
+        }
+
+        if (inputFieldId == 'kcG670LJt3J' && (value != 'true'|| value == 'null')){
+          hiddenFields['cEPYE0hDKtH'] = true;
         }
       }
     }

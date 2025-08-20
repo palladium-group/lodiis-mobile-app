@@ -488,10 +488,8 @@ class OvcServicesChildWellbeingAssessment {
           inputFields: [
             InputField(
                 id: 'GN85Cf2mOmw',
-                name:
-                'Child have health card?',
-                translatedName:
-                'Child have health card?',
+                name: 'Is child have health card available?',
+                translatedName: 'Is child have health card available?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
@@ -519,28 +517,6 @@ class OvcServicesChildWellbeingAssessment {
                       code: 'Yes', name: 'Yes', translatedName: 'E'),
                   InputFieldOption(
                       code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'I don\'t know',
-                      name: 'I don\'t know',
-                      translatedName: 'Ha ke tsebe'),
-                ]),
-            InputField(
-                id: 'BQYp4iDUqzN',
-                name:
-                'Child received support from the clinic?',
-                translatedName:'Child received support from the clinic?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
-                  InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'I don\'t know',
-                      name: 'I don\'t know',
-                      translatedName: 'Ha ke tsebe'),
                 ]),
             InputField(
                 id: 'TQGFUJ7MTPu',
@@ -715,8 +691,6 @@ class OvcServicesChildWellbeingAssessment {
                       code: 'Not documented',
                       name: 'Not documented',
                       translatedName: 'Ha a tsebe'),
-                  InputFieldOption(
-                      code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
 
 
@@ -761,100 +735,99 @@ class OvcServicesChildWellbeingAssessment {
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),*/
 
-            InputField(
-                id: 'ToWhhydys',
-                name: 'Who knows about your HIV status?',
-                translatedName:
-                'Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'MJGmlQevBsM',
-                      name: 'A friend/neighbor',
-                      translatedName: 'Motsoalle/Moahisane '),
-
-                   InputFieldOption(
-                       code: 'Wfu966TC3M5',
-                     name: 'Member of the family',
-                      translatedName: 'Moruti'),
-                  InputFieldOption(
-                      code: 'J5hjKDmiE6a',
-                      name: 'Pastor or priest',
-                      translatedName: 'Moruti kapa moprista'),
-                  InputFieldOption(
-                      code: 'HLPSkYfLYlS',
-                      name: 'Other',
-                      translatedName: 'Tse ling'),
-                  InputFieldOption(
-                      code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
-                ]),
-
-
 
             InputField(
-                id: 'YTa10rE1vtd',
-                name: 'Specify other people know about your HIV status',
-                translatedName: 'hlalosa.',
-                valueType: 'TEXT',
+                id: 'hgQXrOd7iuH',
+                name: 'Has the childs status been partially shared?',
+                translatedName: 'Has the childs status been partially shared?',
+                valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
+
             InputField(
-                id: 'wi6Iq4yVdXV',
-                name: 'What is their attitude towards you?',
-                translatedName: '19. maikutlo a hae ke afe ka oena?',
+                id: 'Qisosyae92z',
+                name: 'What was their response?',
+                translatedName: 'What was their response?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
-                      code: 'Discriminates',
-                      name: 'Discriminates',
-                      translatedName: 'Ho khetholla'),
+                      code: 'The child experienced denial, but is ok now',
+                      name: 'The child experienced denial, but is ok now',
+                      translatedName: 'The child experienced denial, but is ok now'),
                   InputFieldOption(
-                      code: 'Stigmatizes',
-                      name: 'Stigmatizes',
-                      translatedName: 'Ho nyelisa'),
+                      code: 'The child became angry, sad or depressed, but is ok now',
+                      name: 'The child became angry, sad or depressed, but is ok now',
+                      translatedName: 'The child became angry, sad or depressed, but is ok now'),
                   InputFieldOption(
-                      code: 'Encouraging',
-                      name: 'Encouraging',
-                      translatedName: 'Ho khothatsa'),
-                  InputFieldOption(
-                      code: 'Supporting',
-                      name: 'Supporting',
-                      translatedName: 'Ho tšehetsa')
+                      code: 'The child is still dealing with denial, anger, sadness, or depression',
+                      name: 'The child is still dealing with denial, anger, sadness, or depression',
+                      translatedName: 'The child is still dealing with denial, anger, sadness, or depression'),
                 ]),
             InputField(
-                id: 'KFCBwn7ypws',
-                name:
-                'Do you feel like you are supported enough regarding your HIV status?',
-                translatedName:
-                'Na u utloa u tshehelitsoe mabapi le boemo ba hao ba HIV?',
+                id: 'EYb2XmgHt58',
+                name: 'why was the status not shared with the child?',
+                translatedName: 'why was the status not shared with the child?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
-                      code: 'Yes', name: 'Yes', translatedName: 'E'),
+                      code: 'They are too young',
+                      name: 'They are too young',
+                      translatedName: 'They are too young'),
                   InputFieldOption(
-                      code: 'No', name: 'No', translatedName: 'Che'),
+                      code: 'Worried about the child experiencing stigma',
+                      name: 'Worried about the child experiencing stigma',
+                      translatedName: 'Worried about the child experiencing stigma'),
                   InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha hona Karabo'),
-                  // InputFieldOption(
-                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
+                      code: 'Worried about the child having a negative response',
+                      name: 'Worried about the child having a negative response',
+                      translatedName: 'Worried about the child having a negative response'),
+                  InputFieldOption(
+                      code: 'Worried about the parent/family experiencing stigma',
+                      name: 'Worried about the parent/family experiencing stigma',
+                      translatedName: 'Worried about the parent/family experiencing stigma'),
                 ]),
+
+            InputField(
+                id: 'kcG670LJt3J',
+                name: 'Has the childs status been disclosed to any family member?',
+                translatedName: 'Has the childs status been disclosed to any family member?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+                id: 'cEPYE0hDKtH',
+                name: 'What was their response?', //Family Member's Response
+                translatedName: 'What was their response?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Neutral/ no reaction',
+                      name: 'Neutral/ no reaction',
+                      translatedName: 'Neutral/ no reaction'),
+                  InputFieldOption(
+                      code: 'Rejected the child',
+                      name: 'Rejected the child',
+                      translatedName: 'Rejected the child'),
+                ]),
+
+
             InputField(
                 id: 'EDgB0kYWS3v',
                 name:
-                'Do you have a long-term illness that you would like to share with me',
+                'Does the child have a long-term illness that you would like to share with me',
                 translatedName:
                 'Na oena kapa emong oa ba lelapa o na le bokulo ba nako e telele bo u ka lakatsang ho mpolella bona?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
+
 
             InputField(
                 id: 'ut8LqpHyZnR_checkbox',
@@ -1224,28 +1197,6 @@ class OvcServicesChildWellbeingAssessment {
 
           ],
           subSections: [
-            FormSection(
-                name: 'Nutrition Section',
-                id: 'generalnutrition',
-                color: const Color(0xFF4B9F46),
-                inputFields: [
-                  InputField(
-                      id: 'UDyg5PFj12b',
-                      name: 'Which food groups do you regularly eat?',
-                      translatedName: 'Which food groups do you regularly eat?',
-                      description: 'Energy foods,Body BUiding foods or Protective foods',
-                      translatedDescription: 'Energy foods,Body BUiding foods or Protective foods',
-                      valueType: 'TEXT',
-                      inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF1A3518),
-                      options: [
-                        InputFieldOption(code: '1', name: 'One type of food group', translatedName: 'One types of food groups'),
-                        InputFieldOption(
-                            code: '2', name: 'Two types of food groups', translatedName: 'Two types of food groups'),
-                        InputFieldOption(
-                            code: '3', name: 'All types of food groups', translatedName: 'All types of food groups')
-                      ]),
-                ]),
             FormSection(
                 name: 'Child Nutrion Screening',
                 id: 'childnutrition',

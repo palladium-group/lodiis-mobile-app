@@ -829,8 +829,8 @@ class OvcHouseholdServiceAdultWellbeing {
 
             InputField(
               id: 'wRhamvRZj87',
-              name: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and others Would you like to be given information regarding them?',
-              translatedName: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
+              name: 'Would you like to receive information on Oral Health?',
+              translatedName: 'U ka thabela ho fumana thuto ka bohloeki ba lehano?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF1A3518),
