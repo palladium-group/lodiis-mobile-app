@@ -12,13 +12,14 @@ class OvchouseHoldAssessmentSkipLogic {
   static Map hiddenInputFieldOptions = {};
 
   static Future evaluateSkipLogics(BuildContext context,
-      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? artStatus) async {
+      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? artStatus,String? sex, bool? caregiverTestedForHiv, DateTime? artInitiationDate) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
 
     hiddenSections['domainsafe'] = true;
     hiddenSections['healthcaseplangaps'] = true;
+    hiddenSections['otherdetails'] = true;
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -65,14 +66,43 @@ class OvchouseHoldAssessmentSkipLogic {
       }
       if (inputFieldId == 'gcW6652C8Bt' && value != 'true') {
         hiddenFields['bmJjZctbkhX'] = true;
+        hiddenFields['HQdMUzgaIXr'] = true;
       }
       if (inputFieldId == 'blod3xZ2dPP' && value == '1') {
         dataObject['HKCv7lkLexo'] = 'true';
         hiddenFields['ubin7MjQ5OI'] = true;
         hiddenFields['JzlLk2tW4xh'] = false;
-
       }
-      else if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
+
+      if (inputFieldId == 'sLyfb45aLkl') {
+        if (value == '1') { // Yes
+          hiddenFields.remove('P52dMXyK4eA');
+        } else {            // No or empty
+          hiddenFields['P52dMXyK4eA'] = true;
+        }
+      }
+
+      if (inputFieldId == 'aRNGDZcwWmS' && value != "High (above 1,000 copies/ml)") {
+        hiddenFields['tYN12Es3707'] = true;
+      }
+
+      if (inputFieldId == 'tYN12Es3707' && value != 'true') {
+        hiddenFields['o1GBFscjs4y'] = true;
+      }
+
+      if (hivStatus!='Positive') {
+        hiddenFields['BYZu8p33lzP'] = true;
+        hiddenFields['KFCBwn7ypws'] = true;
+        hiddenFields['Uv26fX0HQvO'] = false;
+
+      }else{
+        hiddenFields['Uv26fX0HQvO'] = true;
+      }
+      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus =='Positive')) {
+        hiddenSections['hivscreening'] = true;
+      }
+
+      if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
         dataObject['HKCv7lkLexo'] = 'false';
         hiddenFields['ubin7MjQ5OI'] = true;
         hiddenFields['HKCv7lkLexo'] = true;
@@ -108,9 +138,40 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['mH9DgJoa0nT'] = true;
       }
 
+      if (sex != 'Female'){
+        hiddenFields['pJ1UrnLU9mh'] = true; // Pregnant
+        hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
+
+      }
+
+      if (caregiverTestedForHiv != true){
+        hiddenFields['Uv26fX0HQvO'] = true;
+        hiddenFields['vNeOE9abQBB'] = true;
+        hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['sLyfb45aLkl'] = true;
+        print(' Na o kila hlahloba: $caregiverTestedForHiv');
+        print('Perffrom HIV screening');
+      }
+
+      if (artInitiationDate != null) {
+        final now = DateTime.now();
+        final sixMonthsFromNow = DateTime(now.year, now.month - 6, now.day);
+
+        // Check if ART start date is before six months from now
+        if (artInitiationDate.isBefore(sixMonthsFromNow)) {
+          dataObject['ubin7MjQ5OI'] = 'more than six months';
+        } else {
+          dataObject['ubin7MjQ5OI'] = 'less than six months';
+        }
+      }
+
+
+
+
       if (inputFieldId == 'BvNaiaoxc6w') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = 'true';
+
         } else if (hivStatus == null) {
           hiddenFields['Uv26fX0HQvO'] = true;
          // hiddenFields['T4grVrCVDkk'] = true;
@@ -148,10 +209,14 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'T4grVrCVDkk') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = "true";
+
         } else {
           hiddenFields['vNeOE9abQBB'] = true;
         }
       }
+
+
+
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
@@ -164,13 +229,22 @@ class OvchouseHoldAssessmentSkipLogic {
           }
         }
       }
+
       if (inputFieldId == 'Icgkv0xkUow') {
         if (artStatus != null) {
-          print('ART satatus at Assessment== $artStatus');
+         // print('ART satatus at Assessment== $artStatus');
+         //  print('Boelng: $sex');
+         //  print(' Na o kila hlahloba: $caregiverTestedForHiv');
+         // print(' Date: $artInitiationDate');
           dataObject[inputFieldId] = artStatus;
         }
       }
 
+
+      if (inputFieldId == 'UffKzmI4698' && value != 'true') {
+        hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['ubin7MjQ5OI'] = true;
+      }
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
@@ -205,6 +279,25 @@ class OvchouseHoldAssessmentSkipLogic {
           }
         }
       }
+
+
+      // if (inputFieldId == 'BvNaiaoxc6w') {
+      //   // Grab value from registration
+      //   final bool? caregiverEverTested = dataObject['BvNaiaoxc6w'] as bool?;
+      //
+      //   if (caregiverEverTested != null) {
+      //     dataObject[inputFieldId] = caregiverEverTested;
+      //
+      //     // If false (No), hide fields
+      //     if (caregiverEverTested == false) {
+      //       hiddenFields['Icgkv0xkUow'] = true; // Hide ART question
+      //       hiddenFields['ubin7MjQ5OI'] = true; // Hide ART duration question
+      //     }
+      //   }
+      //
+      // }
+
+
 
       if (inputFieldId == 'Js9auywpL0O' && value != 'true') {
         hiddenFields['SQUodtvxYLs'] = true;

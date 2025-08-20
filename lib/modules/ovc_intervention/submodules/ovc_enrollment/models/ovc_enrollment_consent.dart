@@ -9,13 +9,6 @@ class OvcEnrollmentConsent {
     return [
       'location',
       'enrollmentDate',
-      'OVaqHW5kimy',
-      'JCI4nxcE4N6',
-      'XVRQaLDDSpx',
-      'gCdkCgKJhng',
-      'fxqfSmoLBvT',
-      'R026OBBkvLi',
-      'MP7ROUSWfT9',
       'sCGr0RTmvJ7'
     ];
   }

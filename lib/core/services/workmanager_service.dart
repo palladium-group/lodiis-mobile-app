@@ -61,10 +61,10 @@ class WorkmanagerService {
       await Workmanager()
           .registerPeriodicTask(reAssessmentEvaluation, reAssessmentEvaluation,
               initialDelay: const Duration(minutes: 5),
-              existingWorkPolicy: ExistingWorkPolicy.replace,
               frequency: reAssessmentTimeout,
+              existingWorkPolicy: ExistingWorkPolicy.replace,
               constraints: Constraints(
-                networkType: NetworkType.notRequired,
+                networkType: NetworkType.connected,
               ));
       await PreferenceProvider.setPreferenceValue(
         WorkmanagerConstants.reAssessmentEvaluation,

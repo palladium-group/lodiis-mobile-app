@@ -26,10 +26,15 @@ class OvcHousehold {
   String? implementingPartner;
   String? searchableValue;
   bool? artStatus;
+  String? artFacilityOrgUnitId;       // iBws3HMjiUT
+  String? artNumber;                  // aX0niP9AH6t
+  DateTime? artInitiationDate;        // EIMgHQW61kx
+  bool? caregiverTestedForHiv;
   bool? enrollmentOuAccessible;
   bool? primaryChildExist;
   bool? primaryChildHasExited;
   bool? hasExitedProgram;
+  String? sex;
   List<OvcHouseholdChild>? children;
   Map? dataObject;
   TrackedEntityInstance? teiData;
@@ -64,6 +69,11 @@ class OvcHousehold {
     this.hasExitedProgram,
     this.dataObject,
     this.artStatus,
+    this.artFacilityOrgUnitId,
+    this.artNumber,
+    this.artInitiationDate,
+    this.caregiverTestedForHiv,
+    this.sex,
   });
 
   OvcHousehold fromTeiModel(
@@ -74,6 +84,7 @@ class OvcHousehold {
     bool? enrollmentOuAccessible,
     List<OvcHouseholdChild> children,
   ) {
+
 
     // Helper to parse booleans from "true/false", "Yes/No", "1/0"
     bool? _parseBool(dynamic v) {
@@ -100,6 +111,11 @@ class OvcHousehold {
       'qZP982qpSPS',
       'oSKX8fFQdWc',
       'l7op0btSqSc',
+      'iBws3HMjiUT',
+      'aX0niP9AH6t',
+      'EIMgHQW61kx',
+      'vIX4GTSCX4P',
+      'WAlaenCYazT',
       OvcInterventionConstant.programStatus,
       BeneficiaryIdentification.householdCategorization,
       UserAccountReference.implementingPartnerAttribute,
@@ -117,6 +133,20 @@ class OvcHousehold {
     String village = data['RB8Wx75hGa4'] ?? '';
     String hivStatus = data['oSKX8fFQdWc'] ?? '';
     Object artStatus = (_parseBool(data['l7op0btSqSc']) ?? '');
+    final artFacilityOrgUnit  = data['iBws3HMjiUT'] ?? ''; // ORG UNIT ID
+    final artNumber           = data['aX0niP9AH6t'] ?? ''; // TEXT
+    final artInitRaw          = data['EIMgHQW61kx'];       // DATE (yyyy-MM-dd)
+
+
+    Object caregiverTestedForHiv = (_parseBool(data['WAlaenCYazT']) ?? '');
+
+    String? sex = data['vIX4GTSCX4P'] ?? '';
+
+    DateTime? artInitiationDate;
+    if (artInitRaw != null && artInitRaw.toString().trim().isNotEmpty) {
+      artInitiationDate = DateTime.tryParse(artInitRaw.toString().trim());
+    }
+
     String phoneNumber = getPhoneNumbers(data, phoneNumberIds);
     int maleCount = getChildCountBySex(children, 'male');
     int femaleCount = getChildCountBySex(children, 'female');
@@ -135,9 +165,14 @@ class OvcHousehold {
       ovcMaleCount: '$maleCount',
       ovcFemaleCount: '$femaleCount',
       hivStatus: hivStatus,
+      sex: sex,
       artStatus: artStatus is bool ? artStatus : null,
+      caregiverTestedForHiv: caregiverTestedForHiv is bool ? caregiverTestedForHiv : null,
       primaryUIC: data[BeneficiaryIdentification.primaryUIC] ?? '',
       secondaryUIC: data[BeneficiaryIdentification.secondaryUIC] ?? '',
+      artFacilityOrgUnitId: artFacilityOrgUnit,        // iBws3HMjiUT
+      artNumber: artNumber,                            // aX0niP9AH6t
+      artInitiationDate: artInitiationDate,            // EIMgHQW61kx
       houseHoldStatus: data['PN92g65TkVI'] ?? '',
       houseHoldCategorization: data['uetInX0KTfc'] ?? '',
       implementingPartner:

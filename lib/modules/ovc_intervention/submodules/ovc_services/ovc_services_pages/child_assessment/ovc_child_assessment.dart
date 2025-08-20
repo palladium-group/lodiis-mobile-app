@@ -20,6 +20,7 @@ import 'package:kb_mobile_app/core/components/entry_form_save_button.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/components/ovc_child_assessment_list_card.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/components/ovc_child_assessment_selection.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/constants/ovc_asessment_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_child_wellbeing_assessment_form.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_hiv_assessment_form.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_nutrition_assesment_form.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_assessment/pages/ovc_service_tb_assessment18.dart';
@@ -37,10 +38,26 @@ class OvcChildAssessment extends StatelessWidget {
     OvcHouseholdChild child,
   ) async {
     updateFormStateData(context, null, child);
-    Widget model = const OvcChildAssessmentSelection();
-    String? assessmentResponse =
-        await AppUtil.showPopUpModal(context, model, false);
-    onRedirectToAssessmentForm(context, assessmentResponse, true);
+   int age = int.parse(child.age.toString());
+   if(age > 8){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OvcServiceWellBeingAssessmentForm(),
+      ),
+    );
+
+   }else {
+     Navigator.push(
+       context,
+       MaterialPageRoute(
+         builder: (context) => const OvcServiceChildWellBeingAssessmentForm(),
+       ),
+     );
+
+   }
+
+
   }
 
   void onRedirectToAssessmentForm(
