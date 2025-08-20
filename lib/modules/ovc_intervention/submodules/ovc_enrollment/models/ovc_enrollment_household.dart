@@ -248,10 +248,10 @@ class OvcEnrollmentHousehold {
                     code: 'Unknown',
                     name: 'Unknown',
                     translatedName: 'Tse sa tsejoeng'),
-                InputFieldOption(
-                    code: 'No Response',
-                    name: 'No Response',
-                    translatedName: 'Ha ho Karabo'),
+                // InputFieldOption(
+                //     code: 'No Response',
+                //     name: 'No Response',
+                //     translatedName: 'Ha ho Karabo'),
               ]),
           InputField(
             id: 'l7op0btSqSc',

@@ -149,8 +149,8 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['vNeOE9abQBB'] = true;
         hiddenFields['Icgkv0xkUow'] = true;
         hiddenFields['sLyfb45aLkl'] = true;
-        print(' Na o kila hlahloba: $caregiverTestedForHiv');
-        print('Perffrom HIV screening');
+        //print(' Na o kila hlahloba: $caregiverTestedForHiv');
+        //print('Perffrom HIV screening');
       }
 
       if (artInitiationDate != null) {
@@ -164,8 +164,6 @@ class OvchouseHoldAssessmentSkipLogic {
           dataObject['ubin7MjQ5OI'] = 'less than six months';
         }
       }
-
-
 
 
       if (inputFieldId == 'BvNaiaoxc6w') {
@@ -232,7 +230,7 @@ class OvchouseHoldAssessmentSkipLogic {
 
       if (inputFieldId == 'Icgkv0xkUow') {
         if (artStatus != null) {
-         // print('ART satatus at Assessment== $artStatus');
+        // print('ART satatus at Assessment== $artStatus');
          //  print('Boelng: $sex');
          //  print(' Na o kila hlahloba: $caregiverTestedForHiv');
          // print(' Date: $artInitiationDate');
@@ -240,9 +238,12 @@ class OvchouseHoldAssessmentSkipLogic {
         }
       }
 
-
       if (inputFieldId == 'UffKzmI4698' && value != 'true') {
         hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['ubin7MjQ5OI'] = true;
+      }
+
+      if (artStatus != true){
         hiddenFields['ubin7MjQ5OI'] = true;
       }
 
