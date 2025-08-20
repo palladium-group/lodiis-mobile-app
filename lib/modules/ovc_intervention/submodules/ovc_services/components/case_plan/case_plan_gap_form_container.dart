@@ -67,23 +67,45 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
   }
   void _applyAssessmentToGaps(Map<String, String?> a) {
     // --- UIDs from you ---
-    const hivStatusDE = 'vNeOE9abQBB';      // Assessment: HIV status
-    const hivAdherenceGapDE = 'HKCv7lkLexo'; // Case Plan Gap: HIV Adherence Support
+    const artStatusDE = 'Icgkv0xkUow';      // Assessment: HIV status
+    const hivAdherenceGapDE = 'HKCv7lkLexo';
 
-    final raw = (a[hivStatusDE] ?? '').trim().toLowerCase();
-  print(raw);
+
+
+    const areYouCoughing = 'tMvluCbiiUm';
+    const TbtreatGapDE = 'bRv4ZZy5MDH';// Case Plan Gap: HIV Adherence Support
+
+
+    const hivStatusDE = 'vNeOE9abQBB';
+    const hivTreatGap = 'ylSjcj6cv42';
+    const hivSDGap = 'cx4xBY4jZXM';
+
+
+
+
+    final raw = (a[artStatusDE] ?? '').trim().toLowerCase();
+
+
+    final rawTB = (a[areYouCoughing] ?? '').trim().toLowerCase();
     // If your option set uses codes (e.g. POS), include them here
-    final positiveValues = <String> {
-      'positive',
-      'pos',
-      'positive (known)',
-      'true',
-      '1',
-    };
+    final rawHivTreat = (a[hivStatusDE] ?? '').trim().toLowerCase();
 
-    if (positiveValues.contains(raw)) {
-      dataObject[hivAdherenceGapDE] = 'true';
+    if (raw == 'true') {
+      dataObject[hivAdherenceGapDE] = true;
     }
+    if (rawTB == 'true') {
+      dataObject[TbtreatGapDE] = true;
+
+    }
+    if(rawHivTreat == 'true' && raw != 'true'){
+      dataObject[hivTreatGap] = true;
+    }
+
+    if(rawHivTreat != 'true'){
+      dataObject[hivSDGap] = true;
+    }
+
+
   }
 
 
