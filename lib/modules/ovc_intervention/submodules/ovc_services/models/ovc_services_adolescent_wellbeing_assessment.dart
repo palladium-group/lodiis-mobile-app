@@ -954,6 +954,16 @@ class OvcServicesWellbeingAssessment {
                       code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
 
+            InputField(
+              id: 'P52dMXyK4eA',
+              name: 'Have you received VL testing as per schedule?',
+              translatedName: 'Na u ntse u fumana liphetho tsa liteko tsa VL ka nako e nepahetseng?',
+              description: 'Normal: 6 months then annual; Pregnant every 3 months; Breastfeeding every 3 months',
+              translatedDescription: 'Normal: 6 months then annual; Pregnant every 3 months; Breastfeeding every 3 months',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
 
             InputField(
                 id: 'tYN12Es3707',
@@ -989,7 +999,23 @@ class OvcServicesWellbeingAssessment {
                       translatedName: 'Ha e bonahale'),
                 ]),
 
-
+            InputField(
+                id: 'BYZu8p33lzP',
+                name: 'Have you disclosed your status to anyone?',
+                translatedName:
+                'Na ho na le motho eo u kileng oa mojoetsa boemo ba hau ba HIV?',
+                description: 'Refer to HIV support services if no',
+                translatedDescription:
+                'Fetisetsa setsing bakeng sa litsebeletso tsa t’sehetso ea HIV ha karabo ele che.',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Yes', name: 'Yes', translatedName: 'E'),
+                  InputFieldOption(
+                      code: 'No', name: 'No', translatedName: 'Che'),
+                ]),
             InputField(
                 id: 'ToWhhydys',
                 name: 'Who knows about your HIV status?',
@@ -1033,13 +1059,13 @@ class OvcServicesWellbeingAssessment {
 
 
 
-            InputField(
-                id: 'YTa10rE1vtd',
-                name: 'Specify other people know about your HIV status',
-                translatedName: 'hlalosa.',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)),
+            // InputField(
+            //     id: 'YTa10rE1vtd',
+            //     name: 'Specify other people know about your HIV status',
+            //     translatedName: 'hlalosa.',
+            //     valueType: 'TEXT',
+            //     inputColor: const Color(0xFF4B9F46),
+            //     labelColor: const Color(0xFF1A3518)),
 
             InputField(
                 id: 'wi6Iq4yVdXV',
@@ -1080,13 +1106,21 @@ class OvcServicesWellbeingAssessment {
                       code: 'Yes', name: 'Yes', translatedName: 'E'),
                   InputFieldOption(
                       code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha hona Karabo'),
+                  // InputFieldOption(
+                  //     code: 'No Response',
+                  //     name: 'No Response',
+                  //     translatedName: 'Ha hona Karabo'),
                   // InputFieldOption(
                   //     code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
+            InputField(
+              id: 'wRhamvRZj87',
+              name: 'Would you like to receive information on Oral Health?',
+              translatedName: 'U ka thabela ho fumana thuto ka bohloeki ba lehano?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
           ]),
       FormSection(
           name: 'TB Screening',
@@ -1169,6 +1203,47 @@ class OvcServicesWellbeingAssessment {
                       ]),
                 ]),
           ]),
+      FormSection(
+          name: 'HIV SECTION',
+          id: 'hivscreening',
+          description: 'HIV SCREENING',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+          inputFields: [
+            InputField(
+              id: 'upkFeuyd1fX',
+              name: 'Had sex with more than 1 sexual partner?',
+              translatedName: 'Had sex with more than 1 sexual partner?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'R38Mm0YgXcx',
+              name: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              translatedName: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'qoKPxEkgfdh',
+              name: 'In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              translatedName: '7. In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'B46Zeuzafkg',
+              name: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              translatedName: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+
+          ])
     ];
   }
 }
