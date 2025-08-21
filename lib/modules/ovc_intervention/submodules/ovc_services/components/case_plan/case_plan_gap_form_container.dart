@@ -95,13 +95,12 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     }
     if (rawTB == 'true') {
       dataObject[TbtreatGapDE] = true;
-
     }
-    if(rawHivTreat == 'true' && raw != 'true'){
+    if(rawHivTreat == 'positive' && raw != 'true'){
       dataObject[hivTreatGap] = true;
     }
 
-    if(rawHivTreat != 'true'){
+    {
       dataObject[hivSDGap] = true;
     }
 
@@ -244,7 +243,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
                               Text(
                             languageTranslationState.isSesothoLanguage
                                 ? "Eketsa sekheo"
-                                : 'ADD GAP',
+                                : 'CONFIRM',
                             style: const TextStyle().copyWith(
                               color: const Color(0xFFFAFAFA),
                               fontSize: 14.0,

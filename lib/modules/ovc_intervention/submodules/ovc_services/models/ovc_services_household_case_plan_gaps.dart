@@ -75,6 +75,7 @@ class OvcHouseholdServicesCasePlanGaps {
                 name: 'HIVS&D',
                 translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
                 valueType: 'TRUE_ONLY',
+                isReadOnly: true,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
 
