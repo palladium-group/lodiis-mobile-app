@@ -214,7 +214,7 @@ class CasePlanGapViewContainer extends StatelessWidget {
                     builder: (context, languageTranslationState, child) => Text(
                       languageTranslationState.isSesothoLanguage
                           ? "Eketsa sekheo"
-                          : 'Add Gap',
+                          : 'Generate Plan ',
                       style: const TextStyle().copyWith(
                         color: formSectionColor,
                         fontSize: 14.0,
