@@ -221,9 +221,9 @@ class OvchouseHoldAssessmentSkipLogic {
           dataObject[inputFieldId] = hivStatus;
 
           if (dataObject[inputFieldId] != 'Positive') {
-            hiddenFields['blod3xZ2dPP'] = true;
+            hiddenFields['sLyfb45aLkl'] = true;
             hiddenFields['ubin7MjQ5OI'] = true;
-            hiddenFields['Icb6vUJXVDX'] = true;
+            hiddenFields['Icgkv0xkUow'] = true;
           }
         }
       }
