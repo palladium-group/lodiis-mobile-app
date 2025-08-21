@@ -17,7 +17,6 @@ class OvcCasePlanConstant {
 
   static const List<String> casePlanServiceProvisionResults = [
     "HzI5X2yHef6",
-    "y8ToqnbVz1o",
     "JnqldNamliR",
     "otd2tndsE4Z",
     "YFgrURiwirq",
