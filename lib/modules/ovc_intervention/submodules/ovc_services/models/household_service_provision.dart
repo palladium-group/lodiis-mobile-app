@@ -31,14 +31,6 @@ class HouseholdServiceProvision {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
-              id: 'uU4TvD2O1uL',
-              name: 'HIVS&D session number',
-              translatedName: 'Thupelo ea HIVS&D',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
-            InputField(
                 id: 'y8ToqnbVz1o',
                 name: 'HIVS&D Comment',
                 translatedName: 'Tlhaloso ea HIVS&D',
