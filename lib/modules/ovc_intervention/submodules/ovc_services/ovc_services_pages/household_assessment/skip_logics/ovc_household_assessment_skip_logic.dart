@@ -35,6 +35,12 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['BKDRNiyoMgV'] = true;
       }
 
+      // if (inputFieldId == 'BvNaiaoxc6w' && value != null ) {
+      //   dataObject[inputFieldId] = caregiverTestedForHiv;
+      //  // hiddenFields['BvNaiaoxc6w'] = true;
+      //   print(dataObject[inputFieldId]);
+      // }
+
       if (inputFieldId == 'p8htbyJHydl' && value != 'true') {
         hiddenFields['p8htbyJHydl_checkbox'] = true;
         hiddenFields['kFRCZNQIF51'] = true;
@@ -168,7 +174,7 @@ class OvchouseHoldAssessmentSkipLogic {
 
       if (inputFieldId == 'BvNaiaoxc6w') {
         if (hivStatus != null) {
-          dataObject[inputFieldId] = 'true';
+          dataObject[inputFieldId] = caregiverTestedForHiv;
 
         } else if (hivStatus == null) {
           hiddenFields['Uv26fX0HQvO'] = true;
@@ -235,6 +241,11 @@ class OvchouseHoldAssessmentSkipLogic {
          //  print(' Na o kila hlahloba: $caregiverTestedForHiv');
          // print(' Date: $artInitiationDate');
           dataObject[inputFieldId] = artStatus;
+          if (artStatus != true){
+            hiddenFields['ubin7MjQ5OI'] = true;
+            hiddenFields['sLyfb45aLkl'] = true;
+          }
+
         }
       }
 
@@ -243,9 +254,6 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['ubin7MjQ5OI'] = true;
       }
 
-      if (artStatus != true){
-        hiddenFields['ubin7MjQ5OI'] = true;
-      }
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {

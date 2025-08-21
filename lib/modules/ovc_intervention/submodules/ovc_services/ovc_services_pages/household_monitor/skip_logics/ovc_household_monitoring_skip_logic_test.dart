@@ -65,18 +65,21 @@ class OvchouseHoldMonitoringSkipLogic {
     // HIV status DE used in both Assessment and Monitoring
     const hivStatusDE = 'vNeOE9abQBB';
 
+    const everTestedDE = 'BvNaiaoxc6w';
+    print(assessmentVals);
     // Prefer Assessment HIV status if present
     final hivFromAssessmentNorm =
     _normalizeHivStatus(assessmentVals[hivStatusDE]?.toString());
 
     // If monitoring field is empty OR caller didn't supply hivStatus, use Assessment
     if ((dataObject[hivStatusDE] == null || '${dataObject[hivStatusDE]}'.isEmpty) &&
-        hivFromAssessmentNorm != null) {
+        hivFromAssessmentNorm == 'Positive') {
       dataObject[hivStatusDE] = hivFromAssessmentNorm;
     }
     if ((hivStatus == null || hivStatus.isEmpty) && hivFromAssessmentNorm != null) {
       hivStatus = hivFromAssessmentNorm;
     }
+    dataObject[everTestedDE] = assessmentVals[everTestedDE];
 
     // ---------------------------------------------
     // 2) Proceed with your existing dynamic behavior
@@ -90,156 +93,207 @@ class OvchouseHoldMonitoringSkipLogic {
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
 
-      if (inputFieldId == 'sLyfb45aLkl') {
-        if (value == '1') {
-          hiddenFields.remove('P52dMXyK4eA');
-        } else {
-          hiddenFields['P52dMXyK4eA'] = true;
-        }
-      }
-
-      if (inputFieldId == 'aRNGDZcwWmS' &&
-          value != "High (above 1,000 copies/ml)") {
-        hiddenFields['tYN12Es3707'] = true;
-      }
-
-      if (inputFieldId == 'tYN12Es3707' && value != 'true') {
-        hiddenFields['o1GBFscjs4y'] = true;
-      }
-
-      // Use normalized HIV status for decisions (handles POS/positive/etc.)
-      final bool isHivPositive = (hivStatus == 'Positive');
-
-      if (!isHivPositive) {
-        // Not Positive → show "When last did you test" (Uv26fX0HQvO),
-        // hide adherence/ART-only fields
-        hiddenFields['BYZu8p33lzP'] = true;
-        hiddenFields['KFCBwn7ypws'] = true;
-        hiddenFields['Uv26fX0HQvO'] = false; // ✳️ ensure visible
-      } else {
-        // Positive → hide "When last did you test"
-        hiddenFields['Uv26fX0HQvO'] = true;
-      }
-
-      if (inputFieldId == 'Uv26fX0HQvO' && value == 'Less than 3 months' ||
-          (inputFieldId == 'Uv26fX0HQvO' && value == 'null') ||
-          (caregiverTestedForHiv == false) || (!isHivPositive)) {
-        hiddenSections['hivscreening'] = true;
-      }
-
-      if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
-        dataObject['HKCv7lkLexo'] = 'false';
-        hiddenFields['ubin7MjQ5OI'] = true;
-        hiddenFields['HKCv7lkLexo'] = true;
-        hiddenFields['JzlLk2tW4xh'] = true;
-      }
-
       if (sex != 'Female') {
         hiddenFields['pJ1UrnLU9mh'] = true; // Pregnant
         hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
-
-        if (caregiverTestedForHiv != true) {
-          hiddenFields['Uv26fX0HQvO'] = true;
-          hiddenFields['vNeOE9abQBB'] = true;
-          hiddenFields['Icgkv0xkUow'] = true;
-          hiddenFields['sLyfb45aLkl'] = true;
-        }
-
-        if (artInitiationDate != null) {
-          final now = DateTime.now();
-          final sixMonthsFromNow = DateTime(now.year, now.month - 6, now.day);
-          if (artInitiationDate.isBefore(sixMonthsFromNow)) {
-            dataObject['ubin7MjQ5OI'] = 'more than six months';
-          } else {
-            dataObject['ubin7MjQ5OI'] = 'less than six months';
-          }
-        }
-
-        if (inputFieldId == 'BvNaiaoxc6w') {
-          if (hivStatus != null) {
-            dataObject[inputFieldId] = 'true';
-          } else if (hivStatus == null) {
-            hiddenFields['Uv26fX0HQvO'] = true;
-            dataObject[inputFieldId] = 'false';
-          }
-        }
-
-        if (inputFieldId == 'T4grVrCVDkk') {
-          if (hivStatus != null) {
-            dataObject[inputFieldId] = "true";
-          } else {
-            hiddenFields['vNeOE9abQBB'] = true;
-          }
-        }
-
-        if (inputFieldId == hivStatusDE) {
-          if (hivStatus != null) {
-            dataObject[inputFieldId] = hivStatus;
-
-            if (dataObject[inputFieldId] != 'Positive') {
-              hiddenFields['blod3xZ2dPP'] = true;
-              hiddenFields['ubin7MjQ5OI'] = true;
-              hiddenFields['Icb6vUJXVDX'] = true;
-            }
-          }
-        }
-
-        if (inputFieldId == 'Icgkv0xkUow') {
-          if (artStatus != null) {
-            dataObject[inputFieldId] = artStatus;
-          }
-        }
-
-        if (inputFieldId == 'UffKzmI4698' && value != 'true') {
-          hiddenFields['Icgkv0xkUow'] = true;
-          hiddenFields['ubin7MjQ5OI'] = true;
-        }
-
-        if (inputFieldId == hivStatusDE) {
-          if (hivStatus != null) {
-            dataObject[inputFieldId] = hivStatus;
-            if (dataObject[inputFieldId] == 'Negative') {
-              hiddenFields['sLyfb45aLkl'] = true;
-              hiddenFields['aRNGDZcwWmS'] = true;
-              hiddenFields['KgLtXquRot3'] = true;
-              hiddenFields['why_choose_this_facility'] = true;
-              hiddenFields['WKT65kLT9AT'] = true;
-              hiddenFields['QgWzwLkRjul'] = true;
-              hiddenFields['I4M6NLNMbG3'] = true;
-              hiddenFields['FqLADURlSw6'] = true;
-              hiddenFields['NlWEhu1onQW'] = true;
-              hiddenFields['aUZ2HTFvI4A'] = true;
-              hiddenFields['WUwcEkmhaan'] = true;
-              hiddenFields['beztnfLGhxi'] = true;
-              hiddenFields['Icgkv0xkUow'] = true;
-            }
-          }
-        }
-
-        if (inputFieldId == hivStatusDE) {
-          if (hivStatus != null) {
-            dataObject[inputFieldId] = hivStatus;
-            if (dataObject[inputFieldId] == 'Positive') {
-              dynamic onArtToTreatHiv = dataObject['blod3xZ2dPP'] ?? '';
-              if ('$onArtToTreatHiv' == '0') {
-                hiddenFields['Icb6vUJXVDX'] = true;
-              }
-            }
-          }
-        }
-
-        if (inputFieldId == 'BvNaiaoxc6w') {
-          final bool? caregiverEverTested =
-          dataObject['BvNaiaoxc6w'] as bool?;
-          if (caregiverEverTested != null) {
-            dataObject[inputFieldId] = caregiverEverTested;
-            if (caregiverEverTested == false) {
-              hiddenFields['Icgkv0xkUow'] = true;
-              hiddenFields['ubin7MjQ5OI'] = true;
-            }
-          }
-        }
       }
+
+
+    if (inputFieldId == 'BvNaiaoxc6w' && value != 'true'){
+      hiddenFields['Uv26fX0HQvO'] = true;
+      hiddenFields['vNeOE9abQBB'] = true;
+      hiddenFields['Icgkv0xkUow'] = true;
+      hiddenFields['ubin7MjQ5OI'] = true;
+      hiddenFields['sLyfb45aLkl'] = true;
+      hiddenFields['aRNGDZcwWmS'] = true;
+      hiddenFields['P52dMXyK4eA'] = true;
+      hiddenFields['tYN12Es3707'] = true;
+      hiddenFields['o1GBFscjs4y'] = true;
+      hiddenFields['BYZu8p33lzP'] = true;
+      hiddenFields['ToWhhydys'] = true;
+      hiddenFields['I3hI2UTkKyx'] = true;
+      hiddenFields['KFCBwn7ypws'] = true;
+    }
+
+
+
+
+
+      if (inputFieldId == 'vNeOE9abQBB' && value != 'Positive') {
+                hiddenFields['Icgkv0xkUow'] = true;
+                hiddenFields['ubin7MjQ5OI'] = true;
+                hiddenFields['sLyfb45aLkl'] = true;
+                hiddenFields['aRNGDZcwWmS'] = true;
+                hiddenFields['P52dMXyK4eA'] = true;
+                hiddenFields['tYN12Es3707'] = true;
+                hiddenFields['o1GBFscjs4y'] = true;
+                hiddenFields['BYZu8p33lzP'] = true;
+                hiddenFields['ToWhhydys'] = true;
+                hiddenFields['I3hI2UTkKyx'] = true;
+
+              }
+      // if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus =='Positive')) {
+      //   hiddenSections['hivscreening'] = true;
+      // }
+
+
+
+
+
+
+
+
+      //
+      // if (inputFieldId == 'sLyfb45aLkl') {
+      //   if (value == '1') {
+      //     hiddenFields.remove('P52dMXyK4eA');
+      //   } else {
+      //     hiddenFields['P52dMXyK4eA'] = true;
+      //   }
+      // }
+      //
+      // if (inputFieldId == 'aRNGDZcwWmS' &&
+      //     value != "High (above 1,000 copies/ml)") {
+      //   hiddenFields['tYN12Es3707'] = true;
+      // }
+      //
+      // if (inputFieldId == 'tYN12Es3707' && value != 'true') {
+      //   hiddenFields['o1GBFscjs4y'] = true;
+      // }
+      //
+      // // Use normalized HIV status for decisions (handles POS/positive/etc.)
+      // final bool isHivPositive = (hivStatus == 'Positive');
+      //
+      // if (!isHivPositive) {
+      //   // Not Positive → show "When last did you test" (Uv26fX0HQvO),
+      //   // hide adherence/ART-only fields
+      //   hiddenFields['BYZu8p33lzP'] = true;
+      //   hiddenFields['KFCBwn7ypws'] = true;
+      //   hiddenFields['Uv26fX0HQvO'] = false; // ✳️ ensure visible
+      // } else {
+      //   // Positive → hide "When last did you test"
+      //   hiddenFields['Uv26fX0HQvO'] = true;
+      // }
+      //
+      // if (inputFieldId == 'Uv26fX0HQvO' && value == 'Less than 3 months' ||
+      //     (inputFieldId == 'Uv26fX0HQvO' && value == 'null') ||
+      //     (caregiverTestedForHiv == false) || (!isHivPositive)) {
+      //   hiddenSections['hivscreening'] = true;
+      // }
+      //
+      // if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
+      //   dataObject['HKCv7lkLexo'] = 'false';
+      //   hiddenFields['ubin7MjQ5OI'] = true;
+      //   hiddenFields['HKCv7lkLexo'] = true;
+      //   hiddenFields['JzlLk2tW4xh'] = true;
+      // }
+      //
+      // if (sex != 'Female') {
+      //   hiddenFields['pJ1UrnLU9mh'] = true; // Pregnant
+      //   hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
+      //
+      //   if (caregiverTestedForHiv != true) {
+      //     hiddenFields['Uv26fX0HQvO'] = true;
+      //     hiddenFields['vNeOE9abQBB'] = true;
+      //     hiddenFields['Icgkv0xkUow'] = true;
+      //     hiddenFields['sLyfb45aLkl'] = true;
+      //   }
+      //
+      //   if (artInitiationDate != null) {
+      //     final now = DateTime.now();
+      //     final sixMonthsFromNow = DateTime(now.year, now.month - 6, now.day);
+      //     if (artInitiationDate.isBefore(sixMonthsFromNow)) {
+      //       dataObject['ubin7MjQ5OI'] = 'more than six months';
+      //     } else {
+      //       dataObject['ubin7MjQ5OI'] = 'less than six months';
+      //     }
+      //   }
+      //
+      //   if (inputFieldId == 'BvNaiaoxc6w') {
+      //     if (hivStatus != null) {
+      //       dataObject[inputFieldId] = 'true';
+      //     } else if (hivStatus == null) {
+      //       hiddenFields['Uv26fX0HQvO'] = true;
+      //       dataObject[inputFieldId] = 'false';
+      //     }
+      //   }
+      //
+      //   if (inputFieldId == 'T4grVrCVDkk') {
+      //     if (hivStatus != null) {
+      //       dataObject[inputFieldId] = "true";
+      //     } else {
+      //       hiddenFields['vNeOE9abQBB'] = true;
+      //     }
+      //   }
+      //
+      //   if (inputFieldId == hivStatusDE) {
+      //     if (hivStatus != null) {
+      //       dataObject[inputFieldId] = hivStatus;
+      //
+      //       if (dataObject[inputFieldId] != 'Positive') {
+      //         hiddenFields['blod3xZ2dPP'] = true;
+      //         hiddenFields['ubin7MjQ5OI'] = true;
+      //         hiddenFields['Icb6vUJXVDX'] = true;
+      //       }
+      //     }
+      //   }
+      //
+      //   if (inputFieldId == 'Icgkv0xkUow') {
+      //     if (artStatus != null) {
+      //       dataObject[inputFieldId] = artStatus;
+      //     }
+      //   }
+      //
+      //   if (inputFieldId == 'UffKzmI4698' && value != 'true') {
+      //     hiddenFields['Icgkv0xkUow'] = true;
+      //     hiddenFields['ubin7MjQ5OI'] = true;
+      //   }
+      //
+      //   if (inputFieldId == hivStatusDE) {
+      //     if (hivStatus != null) {
+      //       dataObject[inputFieldId] = hivStatus;
+      //       if (dataObject[inputFieldId] == 'Negative') {
+      //         hiddenFields['sLyfb45aLkl'] = true;
+      //         hiddenFields['aRNGDZcwWmS'] = true;
+      //         hiddenFields['KgLtXquRot3'] = true;
+      //         hiddenFields['why_choose_this_facility'] = true;
+      //         hiddenFields['WKT65kLT9AT'] = true;
+      //         hiddenFields['QgWzwLkRjul'] = true;
+      //         hiddenFields['I4M6NLNMbG3'] = true;
+      //         hiddenFields['FqLADURlSw6'] = true;
+      //         hiddenFields['NlWEhu1onQW'] = true;
+      //         hiddenFields['aUZ2HTFvI4A'] = true;
+      //         hiddenFields['WUwcEkmhaan'] = true;
+      //         hiddenFields['beztnfLGhxi'] = true;
+      //         hiddenFields['Icgkv0xkUow'] = true;
+      //       }
+      //     }
+      //   }
+      //
+      //   if (inputFieldId == hivStatusDE) {
+      //     if (hivStatus != null) {
+      //       dataObject[inputFieldId] = hivStatus;
+      //       if (dataObject[inputFieldId] == 'Positive') {
+      //         dynamic onArtToTreatHiv = dataObject['blod3xZ2dPP'] ?? '';
+      //         if ('$onArtToTreatHiv' == '0') {
+      //           hiddenFields['Icb6vUJXVDX'] = true;
+      //         }
+      //       }
+      //     }
+      //   }
+      //
+      //   if (inputFieldId == 'BvNaiaoxc6w') {
+      //     final bool? caregiverEverTested =
+      //     dataObject['BvNaiaoxc6w'] as bool?;
+      //     if (caregiverEverTested != null) {
+      //       dataObject[inputFieldId] = caregiverEverTested;
+      //       if (caregiverEverTested == false) {
+      //         hiddenFields['Icgkv0xkUow'] = true;
+      //         hiddenFields['ubin7MjQ5OI'] = true;
+      //       }
+      //     }
+      //   }
+      // }
     }
 
     for (String sectionId in hiddenSections.keys) {
