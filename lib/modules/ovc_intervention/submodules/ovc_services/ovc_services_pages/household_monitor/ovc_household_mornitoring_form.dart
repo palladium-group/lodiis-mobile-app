@@ -46,7 +46,7 @@ class OvcHouseholdMornitoringForm extends StatefulWidget {
 
 class _OvcHouseholdMornitoringFormState
     extends State<OvcHouseholdMornitoringForm> {
-  final String label = 'Household Assessment Form';
+  final String label = 'Household Monitoring Form';
   final String translatedName = 'Foromo ea hlahlobo ea lelapa';
   List<FormSection>? formSections;
   bool isFormReady = false;

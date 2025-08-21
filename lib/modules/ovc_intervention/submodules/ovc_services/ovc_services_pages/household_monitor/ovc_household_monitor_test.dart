@@ -43,36 +43,6 @@ class _OvcHouseholdMonitorState extends State<OvcHouseholdMonitorTest> {
     OvcHouseholdMonitorConstant.programStage,
   ];
 
-  /// Map Assessment -> default Monitoring values (called when creating NEW event)
-  void _applyAssessmentDefaultsToMonitoring(
-      BuildContext context,
-      Map<String, String?> assessmentVals,
-      ) {
-    // UIDs provided by you:
-    const String hivStatusDE = 'vNeOE9abQBB'; // Assessment: HIV status
-    const String hivAdherenceSupportDE = 'vNeOE9abQBB'; // Monitoring field: HIV Adherence Support
-
-    final String raw = (assessmentVals['vNeOE9abQBB'] ?? '')
-        .trim()
-        .toLowerCase();
-print('HIV Status: $raw');
-    // Add option codes/labels your HIV status actually uses
-    const Set<String> positiveValues = {
-      'positive',
-      'pos',
-      'positive (known)',
-      'true',
-      '1',
-    };
-
-    {
-      Provider.of<ServiceFormState>(context, listen: false)
-          .setFormFieldState('vNeOE9abQBB', raw);
-    }
-
-    // 👉 Extend here with more Assessment → Monitoring mappings if needed.
-  }
-
   /// Central place to prepare form state for NEW/EDIT/VIEW
   void updateFormState(
       BuildContext context,
@@ -84,30 +54,6 @@ print('HIV Status: $raw');
     formState.resetFormState();
     formState.updateFormEditabilityState(isEditableMode: isEditableMode);
 
-    if (event != null) {
-      // Editing or viewing existing Monitoring event → hydrate fields from event
-      formState.setFormFieldState('eventDate', event.eventDate);
-      formState.setFormFieldState('eventId', event.event);
-      formState.setFormFieldState('location', event.orgUnit);
-      for (final Map dataValue in (event.dataValues as List)) {
-        final value = (dataValue['value'] ?? '').toString();
-        if (value.isNotEmpty) {
-          formState.setFormFieldState(
-            dataValue['dataElement'],
-            value,
-          );
-        }
-      }
-    } else {
-      // NEW Monitoring event → prefill from latest Assessment
-      final Map<String, String?> assessmentVals = context
-          .read<ServiceEventDataState>()
-          .latestValuesForStage(
-        OvcHouseholdAssessmentConstant.programStage,
-      );
-
-      _applyAssessmentDefaultsToMonitoring(context, assessmentVals);
-    }
 
     // Auto-save and resume logic (kept as in your original flow)
     final String? beneficiaryId = household!.id;

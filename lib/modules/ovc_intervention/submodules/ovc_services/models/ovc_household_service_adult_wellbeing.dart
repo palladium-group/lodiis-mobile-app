@@ -458,17 +458,18 @@ class OvcHouseholdServiceAdultWellbeing {
               labelColor: const Color(0xFF737373),
             ),
 
-            // InputField(
-            //     id: 'BvNaiaoxc6w',
-            //     name: 'Have you been tested for HIV?',
-            //     translatedName: 'U kile oa hlahlobela HIV?',
-            //     description: 'If no refer for testing',
-            //     translatedDescription:
-            //         'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
-            //     valueType: 'BOOLEAN',
-            //     inputColor: const Color(0xFF4B9F46),
-            //     labelColor: const Color(0xFF1A3518),
-            //     isReadOnly: true),
+            InputField(
+                id: 'BvNaiaoxc6w',
+                name: 'Have you ever been tested for HIV?',
+                translatedName: 'U kile oa hlahlobela HIV?',
+                description: 'If no refer for testing',
+                translatedDescription:
+                    'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                //isReadOnly: true
+            ),
             InputField(
                 id: 'Uv26fX0HQvO',
                 name: 'If ever tested, when?',
