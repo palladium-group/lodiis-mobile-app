@@ -27,6 +27,31 @@ class OvcHouseholdOngoingMonitoring {
         inputFieldLabel: 'Monitored on',
         firstDate: firstDate,
       ),
+
+      FormSection(
+          name: 'HOUSEHOLD SERVICE MONITORING',
+          id: 'service_provision',
+          translatedName: 'BOPHELO',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+       inputFields: [
+
+         InputField(
+           id: 'HzI5X2yHef6',
+           name: 'HIVS&D Service provided',
+           translatedName: "Lits'ebeletso tsa HIVS&D li fanoe",
+           valueType: 'TRUE_ONLY',
+           inputColor: const Color(0xFF4D9E49),
+           labelColor: const Color(0xFF737373),
+         ),
+
+
+
+       ]
+
+
+
+      ),
       FormSection(
           name: 'HOUSEHOLD CHANGES',
           id: 'hhchanges',
