@@ -116,7 +116,21 @@ print('Services:$servicesVals');
           hiddenFields['P52dMXyK4eA'] = true;
         }
       }
-
+      if (inputFieldId == 'BvNaiaoxc6w' && value != 'true'){
+        hiddenFields['Uv26fX0HQvO'] = true;
+        hiddenFields['vNeOE9abQBB'] = true;
+        hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['ubin7MjQ5OI'] = true;
+        hiddenFields['sLyfb45aLkl'] = true;
+        hiddenFields['aRNGDZcwWmS'] = true;
+        hiddenFields['P52dMXyK4eA'] = true;
+        hiddenFields['tYN12Es3707'] = true;
+        hiddenFields['o1GBFscjs4y'] = true;
+        hiddenFields['BYZu8p33lzP'] = true;
+        hiddenFields['ToWhhydys'] = true;
+        hiddenFields['I3hI2UTkKyx'] = true;
+        hiddenFields['KFCBwn7ypws'] = true;
+      }
       if (inputFieldId == 'aRNGDZcwWmS' &&
           value != "High (above 1,000 copies/ml)") {
         hiddenFields['tYN12Es3707'] = true;
