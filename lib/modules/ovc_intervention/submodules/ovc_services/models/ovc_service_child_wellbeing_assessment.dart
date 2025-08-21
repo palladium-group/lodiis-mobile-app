@@ -1198,7 +1198,7 @@ class OvcServicesChildWellbeingAssessment {
           ],
           subSections: [
             FormSection(
-                name: 'Child Nutrion Screening',
+                name: 'Child Nutrition Screening',
                 id: 'childnutrition',
                 color: const Color(0xFF4B9F46),
                 inputFields: [
@@ -1254,6 +1254,39 @@ class OvcServicesChildWellbeingAssessment {
                             name: 'Never Pleasant',
                             translatedName: 'Never Pleasant'),
 
+                      ]),
+                  InputField(
+                      id: 'child_milk_checkbox',
+                      name: 'What type of milk do you feed your baby? ',
+                      translatedName: 'What type of milk do you feed your baby?',
+                      valueType: 'CHECK_BOX',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF1A3518),
+                      options: [
+                        InputFieldOption(
+                            code: 'EOUH5w2VlIk',
+                            name: 'Breast milk',
+                            translatedName: 'Breast milk'),
+                        InputFieldOption(
+                            code: 'iq0qQmJEG8E',
+                            name: 'Infant Formula',
+                            translatedName: 'Infant Formula'),
+                        InputFieldOption(
+                            code: 'WciUhLXww99',
+                            name: 'Cow Milk',
+                            translatedName: 'Cow Milk'),
+                        InputFieldOption(
+                            code: 'W2cDbQTEky1',
+                            name: 'Goat milk ',
+                            translatedName: 'Goat milk'),
+                        InputFieldOption(
+                            code: 'nBoz16EWW4N',
+                            name: 'Soy Milk',
+                            translatedName: 'Soy Milk'),
+                        InputFieldOption(
+                            code: 'Oe9HgDtX5iW',
+                            name: 'Fat free (Skim) milk',
+                            translatedName: 'Fat free (Skim) milk'),
                       ]),
                   InputField(
                       id: 'ATWzSRHBmuF',

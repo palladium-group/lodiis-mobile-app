@@ -123,6 +123,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['yVTsRM4eMHA'] = true;
       hiddenSections['childnutrition']=true;
       hiddenFields['eDuHTPn7rhh'] = true;
+      hiddenFields['child_milk_checkbox'] = true;
 
 
 
@@ -669,7 +670,7 @@ hiddenFields['kcG670LJt3J']=true;
         if (inputFieldId == 'hgQXrOd7iuH' && (value != 'true'|| value == 'null')){
           hiddenFields['Qisosyae92z'] = true;
         }
-        if (inputFieldId == 'hgQXrOd7iuH' && (value != 'false'|| value == 'null')) {
+        if (inputFieldId == 'hgQXrOd7iuH' && (value != 'false'|| value == 'null') || age < 6 ) {
           hiddenFields['EYb2XmgHt58'] = true;
         }
 
