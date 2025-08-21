@@ -13,6 +13,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/s
 import 'package:provider/provider.dart';
 
 import '../../../../../../app_state/enrollment_service_form_state/service_event_data_state.dart';
+import '../../../../../../core/utils/tracked_entity_instance_util.dart';
 import '../../constants/ovc_household_assessment_constant.dart';
 
 class CasePlanGapFormContainer extends StatefulWidget {
@@ -58,6 +59,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     // 2) Apply mapping rules (Assessment -> Case Plan Gaps)
     _applyAssessmentToGaps(assessmentVals);
 
+
     // 3) Continue with normal setup
     for (final id in mandatoryFields) {
       mandatoryFieldObject[id] = true;
@@ -65,47 +67,136 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     _evaluateSkipLogics();
     setState(() {});
   }
-  void _applyAssessmentToGaps(Map<String, String?> a) {
-    // --- UIDs from you ---
-    const artStatusDE = 'Icgkv0xkUow';      // Assessment: HIV status
-    const hivAdherenceGapDE = 'HKCv7lkLexo';
 
-
-
-    const areYouCoughing = 'tMvluCbiiUm';
-    const TbtreatGapDE = 'bRv4ZZy5MDH';// Case Plan Gap: HIV Adherence Support
-
-
-    const hivStatusDE = 'vNeOE9abQBB';
-    const hivTreatGap = 'ylSjcj6cv42';
-    const hivSDGap = 'cx4xBY4jZXM';
-
-
-
-
-    final raw = (a[artStatusDE] ?? '').trim().toLowerCase();
-
-
-    final rawTB = (a[areYouCoughing] ?? '').trim().toLowerCase();
-    // If your option set uses codes (e.g. POS), include them here
-    final rawHivTreat = (a[hivStatusDE] ?? '').trim().toLowerCase();
-
-    if (raw == 'true') {
-      dataObject[hivAdherenceGapDE] = true;
-    }
-    if (rawTB == 'true') {
-      dataObject[TbtreatGapDE] = true;
-    }
-    if(rawHivTreat == 'positive' && raw != 'true'){
-      dataObject[hivTreatGap] = true;
-    }
-
-    {
-      dataObject[hivSDGap] = true;
-    }
-
-
+  String? _normHiv(dynamic v) {
+    final s = (v ?? '').toString().trim().toLowerCase();
+    if (s.isEmpty) return null;
+    const pos = {'positive','pos','positive (known)','1','true','yes'};
+    const neg = {'negative','neg','0','false','no'};
+    if (pos.contains(s)) return 'Positive';
+    if (neg.contains(s)) return 'Negative';
+    return (v ?? '').toString().trim();
   }
+
+  /// Reads the latest value for DE vNeOE9abQBB (HIV status) from ANY stage on a TEI
+  Future<String?> _latestChildHivStatus(String tei) async {
+    final all = await TrackedEntityInstanceUtil
+        .getSavedTrackedEntityInstanceEventData(tei);
+    if (all.isEmpty) return null;
+
+    // sort newest first
+    all.sort((a,b) {
+      final ad = DateTime.tryParse(a.eventDate ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final bd = DateTime.tryParse(b.eventDate ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      return bd.compareTo(ad);
+    });
+
+    for (final e in all) {
+      print('KJesuuuuu ${e.dataValues}');
+      final list = (e.dataValues as List?) ?? const [];
+      for (final dv in list) {
+        if (dv is Map && dv['dataElement'] == 'c5TMWtM4VVJ') {
+
+          return _normHiv(dv['value']);
+        }
+      }
+    }
+    return null;
+  }
+
+  Future<void> _applyAssessmentToGaps(Map<String, String?> a) async {
+    // --- Assessment DE UIDs ---
+    const hivStatusDE = 'vNeOE9abQBB';
+    const artStatusDE = 'Icgkv0xkUow';
+    const areYouCoughingDE = 'tMvluCbiiUm';
+    const lastTestedDE = 'Uv26fX0HQvO';
+    const oralHealthMessagingDE = 'wRhamvRZj87';
+
+    // --- Case plan gap DE UIDs ---
+    const hivAdherenceGapDE = 'HKCv7lkLexo';
+    const hivTreatGapDE = 'ylSjcj6cv42';
+    const tbTreatGapDE = 'bRv4ZZy5MDH';
+    const hivSndGapDE = 'cx4xBY4jZXM';
+    const comArtAdherenceGapDE = 'gff7hjjVoI6';
+    const artLiteracyGapDE = 'vqRohVpTK2G'; // <- confirm real UID
+    const htsGapDE = 'XoSPWmpWXCy';       // <- if HTS has a different UID, change this
+    const oralHealthGapDE = 'ztDAwmkSwKf';
+
+    bool _isTrue(dynamic v) {
+      final s = (v ?? '').toString().trim().toLowerCase();
+      return s == 'true' || s == '1' || s == 'yes';
+    }
+
+    bool _testedWithin3Months(dynamic v) {
+      final raw = (v ?? '').toString().trim();
+      if (raw.isEmpty) return false;
+      final l = raw.toLowerCase();
+      const recentLabels = {'less than 3 months','lt_3_months','lt3m','recent'};
+      if (recentLabels.contains(l)) return true;
+      final dt = DateTime.tryParse(raw);
+      if (dt != null) {
+        final diff = DateTime.now().difference(dt).inDays.abs();
+        return diff <= 90;
+      }
+      return false;
+    }
+
+    // ---- caregiver/household assessment values ----
+    final hiv = _normHiv(a[hivStatusDE]);
+    final hivPositive = hiv == 'Positive';
+    final onArt = _isTrue(a[artStatusDE]);
+    final coughing = _isTrue(a[areYouCoughingDE]);
+    final recentTest = _testedWithin3Months(a[lastTestedDE]);
+    final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
+
+    // ======= YOUR EXISTING GAP RULES (household) ======={
+      dataObject[hivSndGapDE] = true;
+
+    if (coughing) {
+      dataObject[tbTreatGapDE] = true;
+    }
+    if (hivPositive && !onArt) {
+      dataObject[hivTreatGapDE] = true;
+    }
+    if (hivPositive) {
+      dataObject[comArtAdherenceGapDE] = true;
+      dataObject[hivAdherenceGapDE] = true;
+      dataObject[artLiteracyGapDE] = true;
+    }
+    if (!hivPositive && !recentTest) {
+      dataObject[htsGapDE] = true;
+    }
+    if (oralHealthFlag) {
+      dataObject[oralHealthGapDE] = true;
+    }
+
+    // ======= NEW: CHILDREN RULE (your request) =======
+    // If caregiver NOT Positive and there exists ANY child age 0–8 with Positive,
+    // then set household HIV Adherence Support gap to true.
+    if (!hivPositive) {
+
+      final household =
+          context.read<OvcHouseholdCurrentSelectionState>().currentOvcHousehold;
+      final children = household?.children ?? const [];
+
+      for (final child in children) {
+        final childTei = (child.id ?? '');
+        if (childTei.isEmpty) continue;
+
+        final age = int.parse(child.age ?? '') ;
+
+        if (age < 0 || age > 8) continue;
+
+        final childHiv = await _latestChildHivStatus(childTei);
+        if (_normHiv(childHiv) == 'Positive') {
+          dataObject[artLiteracyGapDE] = true;
+          dataObject[comArtAdherenceGapDE] = true;
+          break; // one positive child (0–8) is enough
+        }
+      }
+    }
+  }
+
 
 
   void _evaluateSkipLogics() {
