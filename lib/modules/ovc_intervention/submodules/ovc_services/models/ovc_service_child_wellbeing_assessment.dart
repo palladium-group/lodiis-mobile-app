@@ -1327,15 +1327,15 @@ class OvcServicesChildWellbeingAssessment {
                       options: [
                         InputFieldOption(
                             code: '11.5 cm or less',
-                            name: '11.5 cm or less',
+                            name: '11.5 cm or less(Red)',
                             translatedName: '11.5 cm or less'),
                         InputFieldOption(
                             code: '11.5-12.5cm ',
-                            name: '11.5-12.5cm ',
+                            name: '11.5-12.5cm(Yellow) ',
                             translatedName: '11.5-12.5cm '),
                         InputFieldOption(
                             code: '12.5cm or more ',
-                            name: '12.5cm or more ',
+                            name: '12.5cm or more(Green) ',
                             translatedName: '12.5cm or more '),
                       ]),
 
