@@ -221,19 +221,15 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
         }
 
       }
-     /* if (inputFieldId == 'c5TMWtM4VVJ' && value != 'Positive'){
+     if (inputFieldId == 'BYZu8p33lzP' && value != 'Yes'){
 
-        hiddenFields['blod3xZ2dPP'] = true;
-        hiddenFields['ubin7MjQ5OI'] = true;
-        hiddenFields['BYZu8p33lzP'] = true;
         hiddenFields['ToWhhydys'] = true;
 
-
-
-      }*/
+      }
 
       if(inputFieldId == 'sLyfb45aLkl' && value != '1'){
         hiddenFields['aRNGDZcwWmS']= true;
+        hiddenFields['P52dMXyK4eA']= true;
       }
       if(inputFieldId == 'aRNGDZcwWmS' && (value == 'Undetectable' || value == 'Not documented' || value == 'null')){
 
@@ -261,6 +257,7 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
           hiddenFields['f2GIuwu1LGh']=true;
           hiddenFields['EYb2XmgHt58']=true;
           hiddenFields['gAzb8e8cLga']=true;
+          hiddenFields['BYZu8p33lzP']=true;
 
 
 
