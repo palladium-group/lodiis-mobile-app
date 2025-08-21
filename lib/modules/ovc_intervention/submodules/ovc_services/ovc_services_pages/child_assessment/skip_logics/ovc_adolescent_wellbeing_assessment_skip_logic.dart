@@ -258,7 +258,7 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
           hiddenFields['EYb2XmgHt58']=true;
           hiddenFields['gAzb8e8cLga']=true;
           hiddenFields['BYZu8p33lzP']=true;
-
+          hiddenFields['tYN12Es3707']=true;
 
 
         }
@@ -647,6 +647,10 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
         if (inputFieldId == 'MlcK6DAGoCx' && value != 'true') {
           hiddenFields['W91GgtMqWnl'] = true;
         }
+        if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (hivStatus =='Positive')) {
+          hiddenSections['hivscreening'] = true;
+        }
+
       }
     }
     for (String sectionId in hiddenSections.keys) {

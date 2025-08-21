@@ -1203,6 +1203,47 @@ class OvcServicesWellbeingAssessment {
                       ]),
                 ]),
           ]),
+      FormSection(
+          name: 'HIV SECTION',
+          id: 'hivscreening',
+          description: 'HIV SCREENING',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+          inputFields: [
+            InputField(
+              id: 'upkFeuyd1fX',
+              name: 'Had sex with more than 1 sexual partner?',
+              translatedName: 'Had sex with more than 1 sexual partner?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'R38Mm0YgXcx',
+              name: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              translatedName: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'qoKPxEkgfdh',
+              name: 'In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              translatedName: '7. In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'B46Zeuzafkg',
+              name: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              translatedName: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+
+          ])
     ];
   }
 }
