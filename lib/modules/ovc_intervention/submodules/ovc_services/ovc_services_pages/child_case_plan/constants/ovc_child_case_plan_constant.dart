@@ -49,8 +49,18 @@ class OvcChildCasePlanConstant {
         "Hvq9oisH7Gt", "ue6xLPEURqt", "vIbKIUgzBU4", "tQ3pKyJ0X9d",
         //SOACKAGE PIT
         "qTf8VSoojJ2", "ontonbgTJ8k", "AjYKLfIQPtT", "M2Aqvn027cd",
+
       ],
-      "ageBased": []
+      "ageBased": [
+        {
+          "minAge": 0,
+          "maxAge": 8,
+          "ids": [
+            //HIVS&D
+            "cx4xBY4jZXM", "b6hvMQuH3oJ", "iy0KZ7K4qld", "SIEeRmPm0Q0",
+          ],
+        },
+      ]
     },
     "Safe": {
       "generic": [
