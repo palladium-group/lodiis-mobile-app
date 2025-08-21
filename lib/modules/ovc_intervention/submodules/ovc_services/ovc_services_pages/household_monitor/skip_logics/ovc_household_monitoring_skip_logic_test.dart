@@ -117,7 +117,17 @@ print('Services:$servicesVals');
         hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
       }
 
+      //////////////
 
+
+      if(inputFieldId == 'HzI5X2yHef6' ){
+
+        dataObject[inputFieldId] = hivSDprovided;
+
+      }
+
+
+      ////////////////
 
 
 
