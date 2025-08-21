@@ -80,7 +80,7 @@ class OvchouseHoldMonitoringSkipLogic {
     final servicesVals = _latestServiceVals(context);
 
     var hivSDprovided = servicesVals['HzI5X2yHef6'];
-print('Services:$servicesVals');
+
     // HIV status DE used in both Assessment and Monitoring
     const hivStatusDE = 'vNeOE9abQBB';
 
@@ -118,7 +118,6 @@ print('Services:$servicesVals');
       }
 
       //////////////
-
 
       if(inputFieldId == 'HzI5X2yHef6' ){
 

@@ -62,50 +62,30 @@ class OvcChildAssessment extends StatelessWidget {
 
   void onRedirectToAssessmentForm(
     BuildContext context,
-    String? assessmentResponse,
     bool isEditableMode,
+      OvcHouseholdChild child,
   ) {
     Provider.of<ServiceFormState>(context, listen: false)
         .updateFormEditabilityState(isEditableMode: isEditableMode);
-    if (assessmentResponse != null) {
-      assessmentResponse == 'Well-being'
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const OvcServiceWellBeingAssessmentForm(),
-              ),
-            )
-          : assessmentResponse == 'TB'
-              ? Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const OvcServiceTBAssessmentForm(),
-                  ),
-                )
-          : assessmentResponse == 'TB18'
-              ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const OvcServiceTB18AssessmentForm(),
-              ),
-            )
-              : assessmentResponse == 'Nutrition'
-                   ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OvcServiceNutritionAssessmentForm(),
-                      ),
-                    )
-                  : assessmentResponse == 'HIV'
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const OvcServiceHIVAssessmentForm(),
-                          ),
-                        )
-                      : '';
+    int age = int.parse(child.age.toString());
+    if(age > 8){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const OvcServiceWellBeingAssessmentForm(),
+        ),
+      );
+
+    }else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const OvcServiceChildWellBeingAssessmentForm(),
+        ),
+      );
+
     }
+
   }
 
   void updateFormStateData(
@@ -136,14 +116,14 @@ class OvcChildAssessment extends StatelessWidget {
       Events eventData, OvcHouseholdChild child) {
     bool isEditableMode = false;
     updateFormStateData(context, eventData, child);
-    onRedirectToAssessmentForm(context, assessmentResponse, isEditableMode);
+    onRedirectToAssessmentForm(context, isEditableMode,child);
   }
 
   void onEditAssessment(BuildContext context, String? assessmentResponse,
       Events eventData, OvcHouseholdChild child) {
     bool isEditableMode = true;
     updateFormStateData(context, eventData, child);
-    onRedirectToAssessmentForm(context, assessmentResponse, isEditableMode);
+    onRedirectToAssessmentForm(context, isEditableMode,child);
   }
 
   @override
