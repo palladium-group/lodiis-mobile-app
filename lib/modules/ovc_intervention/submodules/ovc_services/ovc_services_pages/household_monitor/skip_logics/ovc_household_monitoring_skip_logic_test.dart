@@ -8,6 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_household_assessment_constant.dart';
 
+import '../../household_case_plan/constants/ovc_household_case_plan_constant.dart';
+import '../../household_service/constants/ovc_service_household_constant.dart';
+
 class OvchouseHoldMonitoringSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
@@ -20,6 +23,19 @@ class OvchouseHoldMonitoringSkipLogic {
     try {
       return Provider.of<ServiceEventDataState>(context, listen: false)
           .latestValuesForStage(OvcHouseholdAssessmentConstant.programStage);
+    } catch (_) {
+      return const {};
+    }
+  }
+
+
+  // ----------------------------
+  // Helpers to access Service Provision
+  // ----------------------------
+  static Map<String, String?> _latestServiceVals(BuildContext context) {
+    try {
+      return Provider.of<ServiceEventDataState>(context, listen: false)
+          .latestValuesForStage(OvcHouseholdCasePlanConstant.casePlanGapServiceProvisionProgramStage);
     } catch (_) {
       return const {};
     }
@@ -61,7 +77,10 @@ class OvchouseHoldMonitoringSkipLogic {
     // 1) Pull latest Assessment values and prefill Monitoring fields
     // -------------------------------------------------------------
     final assessmentVals = _latestAssessmentVals(context);
+    final servicesVals = _latestServiceVals(context);
 
+    var hivSDprovided = servicesVals['HzI5X2yHef6'];
+print('Services:$servicesVals');
     // HIV status DE used in both Assessment and Monitoring
     const hivStatusDE = 'vNeOE9abQBB';
 
@@ -103,6 +122,17 @@ class OvchouseHoldMonitoringSkipLogic {
         hiddenFields['tYN12Es3707'] = true;
       }
 
+      //////////////
+
+
+  if(inputFieldId == 'HzI5X2yHef6' ){
+
+    dataObject[inputFieldId] = hivSDprovided;
+
+  }
+
+
+  ////////////////
       if (inputFieldId == 'tYN12Es3707' && value != 'true') {
         hiddenFields['o1GBFscjs4y'] = true;
       }
