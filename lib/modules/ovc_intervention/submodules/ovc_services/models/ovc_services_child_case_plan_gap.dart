@@ -683,20 +683,6 @@ class OvcServicesChildCasePlanGap {
                     inputColor: const Color(0xFF4D9E49),
                     labelColor: const Color(0xFF737373)),
                 InputField(
-                    id: 'VR8T3pFREzK',
-                    name: '(Nutrition Messaging) Name of responsible internal person',
-                    translatedName: 'Motho ea ikarabellang ka hare ho Nutrition Messaging ',
-                    valueType: 'TEXT',
-                    inputColor: const Color(0xFF4D9E49),
-                    labelColor: const Color(0xFF737373)),
-                InputField(
-                    id: 'x6O0oNypdUw',
-                    name: '(Nutrition Messaging) Name of responsible external person',
-                    translatedName: 'Motho ea ikarabellang ka ntle ho Nutrition Messaging',
-                    valueType: 'TEXT',
-                    inputColor: const Color(0xFF4D9E49),
-                    labelColor: const Color(0xFF737373)),
-                InputField(
                     id: 'v7GBKBoqJPr',
                     allowFuturePeriod: true,
                     name: '(Nutrition Messaging) Projected date for completion',

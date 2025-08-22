@@ -163,6 +163,24 @@ class OvcHouseholdServicesCasePlanGaps {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'CaAOIbC10yv',
+                name: 'Provide Nutrition Messaging',
+                translatedName: 'Tšebeletso ea  Nutrition Messaging ',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'v7GBKBoqJPr',
+                allowFuturePeriod: true,
+                name: '(Nutrition Messaging) Projected date for completion',
+                translatedName: 'Letsatsi la Nutrition Messaging le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
         ],
       ),
     ];
