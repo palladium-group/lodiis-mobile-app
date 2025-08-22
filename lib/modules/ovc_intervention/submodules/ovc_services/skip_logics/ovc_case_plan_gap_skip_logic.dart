@@ -543,8 +543,7 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['YtwjCoHKA9G'] = true;
       }
       if (inputFieldId == 'CaAOIbC10yv' && value != 'true') {
-        hiddenFields['VR8T3pFREzK'] = true;
-        hiddenFields['x6O0oNypdUw'] = true;
+        hiddenFields[inputFieldId] = true;
         hiddenFields['v7GBKBoqJPr'] = true;
       }
       if (inputFieldId == 'EaJTFrklMo5' && value != 'true') {

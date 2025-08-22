@@ -119,7 +119,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const hivSndGapDE = 'cx4xBY4jZXM';
     const comArtAdherenceGapDE = 'gff7hjjVoI6';
     const artLiteracyGapDE = 'vqRohVpTK2G'; // <- confirm real UID
-    const htsGapDE = 'XoSPWmpWXCy';       // <- if HTS has a different UID, change this
+    const htsGapDE = 'XoSPWmpWXCy'; // <- if HTS has a different UID, change this
+    const nutritionMessagingDE = 'CaAOIbC10yv';
     const oralHealthGapDE = 'ztDAwmkSwKf';
 
     bool _isTrue(dynamic v) {
@@ -151,6 +152,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
 
     // ======= YOUR EXISTING GAP RULES (household) ======={
       dataObject[hivSndGapDE] = true;
+    dataObject[nutritionMessagingDE] = true;
 
     if (coughing) {
       dataObject[tbTreatGapDE] = true;
