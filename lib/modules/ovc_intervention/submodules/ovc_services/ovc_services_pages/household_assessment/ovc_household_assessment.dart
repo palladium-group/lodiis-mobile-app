@@ -76,11 +76,67 @@ class _OvcHouseholdAssessmentState extends State<OvcHouseholdAssessment> {
               builder: (context) => const OvcHouseholdAssessmentForm()));
     }
   }
+  Future<bool> _canStartNewAssessment() async {
+    // Grab the latest assessment event (you already have this state in the tree)
+    final lastEvent = context
+        .read<ServiceEventDataState>()
+        .latestEventForStage(OvcHouseholdAssessmentConstant.programStage);
 
-  void onAddNewHouseholdAssessment(
+    // No prior assessment? Allowed.
+    final lastDateStr = lastEvent?.eventDate ?? '';
+    if (lastDateStr.isEmpty) return true;
+
+    // Parse safely (assumes 'YYYY-MM-DD' or ISO-ish)
+    final parsed = DateTime.tryParse(lastDateStr);
+    if (parsed == null) return true; // if unknown format, fail open
+
+    // Use only Y-M-D to avoid time-of-day edge cases
+    final last = DateTime(parsed.year, parsed.month, parsed.day);
+    final nextAllowed = last.add(const Duration(days: 365));
+    final now = DateTime.now();
+
+    if (now.isBefore(nextAllowed)) {
+      String fmt(DateTime d) =>
+          '${d.year.toString().padLeft(4, '0')}-'
+              '${d.month.toString().padLeft(2, '0')}-'
+              '${d.day.toString().padLeft(2, '0')}';
+      final remainingDays = nextAllowed.difference(now).inDays + 1; // round up
+
+      await showDialog<void>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title:  Text('Last assessment on ${fmt(last)}'),
+          content: Text(
+                'An assessment can only be recorded  once in a year \nNext on ${fmt(nextAllowed)} '
+                'in ~$remainingDays day(s) 😊',
+          ),
+          actions: [
+            TextButton(
+
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK' ),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.green,
+              ),
+
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> onAddNewHouseholdAssessment(
       BuildContext context,
       OvcHousehold? houseHold,
-      ) {
+      ) async {
+    final allowed = await _canStartNewAssessment();
+    if(!allowed) {
+      return;
+    }
     updateFormState(context, true, null, houseHold);
   }
 
