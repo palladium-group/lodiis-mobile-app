@@ -37,7 +37,7 @@ class OvcHouseholdServicesCasePlanGaps {
 
             InputField(
                 id: 'bRv4ZZy5MDH',
-                name: 'Refer for TB Testing',
+                name: 'Refer for TB Presumptive',
                 translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
                 valueType: 'TRUE_ONLY',
                 isReadOnly: true,

@@ -153,7 +153,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     // ======= YOUR EXISTING GAP RULES (household) ======={
       dataObject[hivSndGapDE] = true;
     dataObject[nutritionMessagingDE] = true;
+ if(onArt){
+   dataObject[hivAdherenceGapDE] = true;
 
+ }
     if (coughing) {
       dataObject[tbTreatGapDE] = true;
     }
@@ -162,7 +165,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     }
     if (hivPositive) {
       dataObject[comArtAdherenceGapDE] = true;
-      dataObject[hivAdherenceGapDE] = true;
+
       dataObject[artLiteracyGapDE] = true;
     }
     if (!hivPositive && !recentTest) {
