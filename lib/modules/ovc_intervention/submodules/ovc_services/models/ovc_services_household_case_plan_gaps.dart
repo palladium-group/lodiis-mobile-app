@@ -181,6 +181,40 @@ class OvcHouseholdServicesCasePlanGaps {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
 
+            InputField(
+                id: 'EaJTFrklMo5',
+                name: 'FOOD SUPPORT',
+                translatedName: 'Tšebeletso ea  FOOD SUPPORT',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'WAq2HJHXZYS',
+                allowFuturePeriod: true,
+                name: '(FOOD SUPPORT) Projected date for completion',
+                translatedName: 'Letsatsi la FOOD SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'uvJV4WGc5ct',
+                name: 'FOOD SUPPLIMENTS',
+                translatedName: 'Tšebeletso ea FOOD SUPPLIMENTS',
+                valueType: 'TRUE_ONLY',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'F2IOqOr4EuV',
+                allowFuturePeriod: true,
+                name: '(FOOD SUPPLIMENTS) Projected date for completion',
+                translatedName: 'Letsatsi la FOOD SUPPLIMENTS le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
         ],
       ),
     ];

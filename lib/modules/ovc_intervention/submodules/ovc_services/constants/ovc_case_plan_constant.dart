@@ -9,6 +9,7 @@ class OvcCasePlanConstant {
   static const String casePlansSecondGoal = 'efNgDIqhlNs';
   static const String houseHoldCategorizationDataElement = 'aEJnSplwvsw';
   static const String householdCategorizationSection = 'house_hold_categorization';
+  static const String casePlanFromAssessmentLinkage = 'sWZrE4FngaX';
   static const List<String> paralegalServices = [
     'AaqeRcyjbyS', // VAC Legal messaging case plan
     'QDFZ03HbjGj', // VAC Legal messaging service provision
@@ -129,7 +130,6 @@ class OvcCasePlanConstant {
     "x4yAqv4z2Xv",
     "AM9oJCOHM7f",
     "uvJV4WGc5ct",
-    "EaJTFrklMo5",
     "DQxqyncQtwm",
     "Hvq9oisH7Gt",
     "qTf8VSoojJ2",
