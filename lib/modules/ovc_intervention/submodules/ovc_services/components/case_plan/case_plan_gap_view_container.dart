@@ -98,6 +98,7 @@ class CasePlanGapViewContainer extends StatelessWidget {
           isEditableMode: isEditableMode,
           formSectionColor: formSectionColor,
           dataObject: gapDataObject,
+          isChildCasePlan: !isHouseholdCasePlan,
         ),
         initialHeightRatio: ratio,
         maxHeightRatio: ratio,

@@ -237,10 +237,8 @@ mixin OvcCasePlanGapSkipLogic {
       }
       if (inputFieldId == 'XoSPWmpWXCy' && value != 'true') {
         hiddenFields[inputFieldId] = true;
-        hiddenFields['CxwbNfPmiN9'] = true;
-        hiddenFields['vqf67Edjw4y'] = true;
         hiddenFields['iFv7FJeG3V1'] = true;
-        hiddenFields['bQtXR6iQyo8'] = true;
+
       }
       if (inputFieldId == 'bRv4ZZy5MDH' && value != 'true') {
         hiddenFields[inputFieldId] = true;
@@ -258,6 +256,9 @@ mixin OvcCasePlanGapSkipLogic {
       }
       if (inputFieldId == 'cx4xBY4jZXM' && value != 'true') {
         hiddenFields[inputFieldId] = true;
+        hiddenFields['b6hvMQuH3oJ'] = true;
+        hiddenFields['iy0KZ7K4qld'] = true;
+
 
         hiddenFields['SIEeRmPm0Q0'] = true;
 
@@ -272,9 +273,15 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['YI1Ckbt8mRn'] = true;
 
       }
+      if (inputFieldId == 'vqRohVpTK2G' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['vUMhUm3i0b0'] = true;
+
+      }
     if(hivFromAssessmentNorm == 'Positive'){
 
      hiddenFields['XoSPWmpWXCy'] = true;
+     hiddenFields['iFv7FJeG3V1'] = true;
 
 
     }
@@ -547,8 +554,7 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['v7GBKBoqJPr'] = true;
       }
       if (inputFieldId == 'EaJTFrklMo5' && value != 'true') {
-        hiddenFields['rHgxOKM91wi'] = true;
-        hiddenFields['v00dsDvhCRu'] = true;
+       hiddenFields[inputFieldId] = true;
         hiddenFields['WAq2HJHXZYS'] = true;
       }
       if (inputFieldId == 'AxtahhoHcXV' && value != 'true') {
@@ -632,17 +638,17 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['HsxFZOuV4oZ'] = true;
       }
       if (age < 9 || age > 17) {
-        hiddenFields['gff7hjjVoI6'] = true;
-        hiddenFields['cx4xBY4jZXM'] = true;
         hiddenFields['yPP7lkomNfK'] = true;
-        hiddenFields['uQiyym8SEvd'] = true;
         hiddenFields['aPmPhwm8Zln'] = true;
         hiddenFields['AaqeRcyjbyS'] = true;
         hiddenFields['Cb8qzfdrg7d'] = true;
+        hiddenFields['vqRohVpTK2G'] = true;
+        hiddenFields['vUMhUm3i0b0'] = true;
+
       }
-      if (age < 6 || age > 17) {
-        hiddenFields['X47zxNAqMv0'] = true;
-        hiddenFields['q2N7p3UbvSF'] = true;
+      if (age < 17) {
+        hiddenFields['CaAOIbC10yv'] = true;
+        hiddenFields['v7GBKBoqJPr'] = true;
       }
       if (age < 13 || age > 17) {
         hiddenFields['qraZh4n14S4'] = true;
@@ -653,14 +659,11 @@ mixin OvcCasePlanGapSkipLogic {
       if (age < 2 || age >= 5) {
         hiddenFields['BJrrrqQqwQO'] = true;
       }
-      if (age > 2) {
-        hiddenFields['hJUuQ648wVF'] = true;
+      if (age > 5) {
+
         hiddenFields['x4yAqv4z2Xv'] = true;
-        hiddenFields['AM9oJCOHM7f'] = true;
         hiddenFields['uvJV4WGc5ct'] = true;
-        hiddenFields['LswSBpMoG5C'] = true;
-        hiddenFields['gCKoJgBFdob'] = true;
-        hiddenFields['PoxYSqq8Hgz'] = true;
+
       }
     } catch (e) {
       //

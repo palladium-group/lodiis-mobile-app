@@ -235,8 +235,7 @@ class _OvcHouseholdAssessmentFormState
           assessmentData: dataObject, // the map you logged with assessment answers
         );
 
-// refresh so Case Plan Home picks it up
-
+        // refresh so Case Plan Home picks it up
         Provider.of<ServiceEventDataState>(context, listen: false)
             .resetServiceEventDataState(currentOvcHousehold?.id ?? '');
         Timer(const Duration(seconds: 1), () {

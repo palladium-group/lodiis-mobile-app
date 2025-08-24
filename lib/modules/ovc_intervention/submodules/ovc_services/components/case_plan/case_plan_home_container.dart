@@ -285,11 +285,13 @@ class CasePlanHomeContainer extends StatelessWidget {
                               bool isKbFacilitySocialWorker =
                                   currentUserState.isKbFacilitySocialWorker;
                               return Visibility(
-                                visible: !isKbFacilitySocialWorker &&
+                                visible:false,
+
+                                /*!isKbFacilitySocialWorker &&
                                     !hasBeneficiaryExitedProgram &&
                                     !(isOnCasePlanServiceMonitoring ||
                                         isOnCasePlanServiceProvision) &&
-                                    isAssessmentConducted,
+                                    isAssessmentConducted,*/
                                 child: Container(
                                   margin: EdgeInsets.symmetric(
                                     vertical:
