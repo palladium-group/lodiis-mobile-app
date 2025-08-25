@@ -54,20 +54,29 @@ class OvcChildCasePlanConstant {
       "ageBased": [
         {
           "minAge": 0,
-          "maxAge": 8,
+          "maxAge": 9,
           "ids": [
             //HIVS&D
             "cx4xBY4jZXM", "SIEeRmPm0Q0",
             "gff7hjjVoI6", "YI1Ckbt8mRn",
             "vqRohVpTK2G", "vUMhUm3i0b0",
+
           ],
         },
         {
           "minAge": 5,
-          "maxAge": 8,
+          "maxAge": 9,
           "ids": [
             //Oral Health
             "ztDAwmkSwKf", "bK18Ebt1cRa",
+          ],
+        },
+        {
+          "minAge": 0,
+          "maxAge": 6,
+          "ids": [
+            //Deworming medication, Vitamin A and Immunization
+            "x4yAqv4z2Xv", "eTDE6zroxBC",
           ],
         },
 
@@ -143,7 +152,10 @@ class OvcChildCasePlanConstant {
         //SOACKAGE PIT
         "qL9c5r7c6kK", "pUphS6E1Gu5", "k5RGRpWRbbs", "SODPuEmHEGV"
       ],
-      "ageBased": []
+      "ageBased": [
+
+        //TODO new agebased services
+      ]
     },
     "Safe": {
       "generic": [
