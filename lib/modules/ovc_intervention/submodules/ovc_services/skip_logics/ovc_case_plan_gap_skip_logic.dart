@@ -432,10 +432,9 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['iWH5MhwPSbD'] = true;
       }
       if (inputFieldId == 'x4yAqv4z2Xv' && value != 'true') {
-        hiddenFields['B1yERoBbRzH'] = true;
-        hiddenFields['tYYpfnshIvw'] = true;
+        hiddenFields[inputFieldId] = true;
         hiddenFields['eTDE6zroxBC'] = true;
-        hiddenFields['bn0EIFjqXes'] = true;
+
       }
       if (inputFieldId == 'AM9oJCOHM7f' && value != 'true') {
         hiddenFields['KzxrHSAQQa0'] = true;
@@ -553,6 +552,10 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields[inputFieldId] = true;
         hiddenFields['v7GBKBoqJPr'] = true;
       }
+      if (inputFieldId == 'eQTJrTcKzVK' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['taejdmpbsoG'] = true;
+      }
       if (inputFieldId == 'EaJTFrklMo5' && value != 'true') {
        hiddenFields[inputFieldId] = true;
         hiddenFields['WAq2HJHXZYS'] = true;
@@ -642,13 +645,8 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['aPmPhwm8Zln'] = true;
         hiddenFields['AaqeRcyjbyS'] = true;
         hiddenFields['Cb8qzfdrg7d'] = true;
-        hiddenFields['vqRohVpTK2G'] = true;
         hiddenFields['vUMhUm3i0b0'] = true;
 
-      }
-      if (age < 17) {
-        hiddenFields['CaAOIbC10yv'] = true;
-        hiddenFields['v7GBKBoqJPr'] = true;
       }
       if (age < 13 || age > 17) {
         hiddenFields['qraZh4n14S4'] = true;
@@ -659,12 +657,7 @@ mixin OvcCasePlanGapSkipLogic {
       if (age < 2 || age >= 5) {
         hiddenFields['BJrrrqQqwQO'] = true;
       }
-      if (age > 5) {
 
-        hiddenFields['x4yAqv4z2Xv'] = true;
-        hiddenFields['uvJV4WGc5ct'] = true;
-
-      }
     } catch (e) {
       //
     }

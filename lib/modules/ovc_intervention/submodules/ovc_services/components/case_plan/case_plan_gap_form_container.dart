@@ -73,9 +73,16 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
   }
 
   // NOTE: uses only child.age (no DOB fallback)
+  /// Robust age parser: “8”, “08”, “8.5”, “8 yrs”, “8 years” → 8
   int _ageFromChild(OvcHouseholdChild child) {
-    return int.tryParse((child.age ?? '').toString()) ?? -1;
+    final raw = (child.age ?? '').toString().trim().toLowerCase();
+    if (raw.isEmpty) return -1;
+    final m = RegExp(r'(\d+(\.\d+)?)').firstMatch(raw);
+    if (m == null) return -1;
+    final d = double.tryParse(m.group(1) ?? '');
+    return d == null ? -1 : d.floor();
   }
+
 
   bool _hasChildAgeAtMost(int years) {
     final household =
@@ -191,6 +198,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const lastTestedDE = 'Uv26fX0HQvO';
     const oralHealthMessagingDE = 'wRhamvRZj87';
     const dietDE = 'iqBsSAfCyJb';
+    const feelingSupportedDE = 'KFCBwn7ypws';
 
     // Gap DEs
     const hivAdherenceGapDE = 'HKCv7lkLexo';
@@ -203,6 +211,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const nutritionMessagingDE = 'CaAOIbC10yv';
     const oralHealthGapDE = 'ztDAwmkSwKf';
     const foodSupportGapDE = 'EaJTFrklMo5';
+    const disclosureSupportGapDE = 'eQTJrTcKzVK';
+    const dewormingGapDE = 'x4yAqv4z2Xv';
 
     bool _isTrue(dynamic v) {
       final s = (v ?? '').toString().trim().toLowerCase();
@@ -237,23 +247,30 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final coughing = _isTrue(a[areYouCoughingDE]);
     final recentTest = _testedWithin3Months(a[lastTestedDE]);
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
+    final feelingSupported = a[feelingSupportedDE] ;
 
     // rules
     dataObject[hivSndGapDE] = true;
+    dataObject[nutritionMessagingDE] = true;
+    if(feelingSupported != null && feelingSupported != 'Yes'){
+      dataObject[disclosureSupportGapDE] = true;
+    }
     if (onArt) dataObject[hivAdherenceGapDE] = true;
     if (coughing) dataObject[tbTreatGapDE] = true;
     if (hivPositive && !onArt) dataObject[hivTreatGapDE] = true;
     if (hivPositive) {
+      if(_dietIsOneType(a)){
+        dataObject[foodSupportGapDE] = true;
+      }
       dataObject[comArtAdherenceGapDE] = true;
       dataObject[artLiteracyGapDE] = true;
     }
     if (!hivPositive && !recentTest) dataObject[htsGapDE] = true;
     if (oralHealthFlag) dataObject[oralHealthGapDE] = true;
 
+
     // nutrition messaging if any child <= 5
-    if (_hasChildAgeAtMost(5)) {
-      dataObject[nutritionMessagingDE] = true;
-    }
+
 
     // caregiver NOT positive + any child (0–8) positive (from CHILD assessment)
     if (!hivPositive) {
@@ -266,14 +283,20 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         (child.id ?? '').toString();
         if (tei.isEmpty) continue;
         final age = _ageFromChild(child);
-        if (age < 0 || age > 8) continue;
         final childVals = await _latestValuesForChildAssessment(tei);
         final childHiv = _normHiv(childVals['c5TMWtM4VVJ']); // child HIV DE
+       if (_dietIsOneType(a)) {
+          dataObject[foodSupportGapDE] = true;
+        }
+        print('ageeeee: $age');
+        if (age >= 0 && age <= 5) {
+          dataObject[dewormingGapDE] = true;
+        }
+
+        if (age < 0 || age > 8) continue;
         if (childHiv == 'Positive') {
-          if (_dietIsOneType(a)) {
-            dataObject[foodSupportGapDE] = true;
-          }
-          dataObject[hivAdherenceGapDE] = true;
+          print(childHiv);
+          print('${dataObject[hivAdherenceGapDE] = true}');
           dataObject[artLiteracyGapDE] = true;
           break;
         }
@@ -285,27 +308,84 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
 
   Future<void> _applyChildAssessmentToGaps(
       Map<String, String?> a, OvcHouseholdChild child) async {
+
+    bool _testedWithin3Months(dynamic v) {
+      final raw = (v ?? '').toString().trim();
+      if (raw.isEmpty) return false;
+      final l = raw.toLowerCase();
+      const recentLabels = {'less than 3 months', 'lt_3_months', 'lt3m', 'recent'};
+      if (recentLabels.contains(l)) return true;
+      final dt = DateTime.tryParse(raw);
+      if (dt != null) {
+        final diff = DateTime.now().difference(dt).inDays.abs();
+        return diff <= 90;
+      }
+      return false;
+    }
     // Child assessment DEs
     const hivStatusDE = 'c5TMWtM4VVJ'; // child HIV status DE
     const malnutritionSignsDE = 'OBugEkynJG0';
+    const feelingSupportedDE = 'KFCBwn7ypws';
     // Gap DEs (reuse or swap for child-specific if different)
 
     const foodSupplementsGapDE = 'uvJV4WGc5ct';
+    const hivSndGapDE = 'cx4xBY4jZXM';
+    const disclosureSupportGapDE = 'eQTJrTcKzVK';
+    const artStatusDE = 'Icgkv0xkUow';
+    const areYouCoughingDE = 'tMvluCbiiUm';
+    const lastTestedDE = 'Uv26fX0HQvO';
+    const oralHealthMessagingDE = 'wRhamvRZj87';
+    const dietDE = 'iqBsSAfCyJb';
 
-
-
+    // Gap DEs
+    const hivAdherenceGapDE = 'HKCv7lkLexo';
+    const hivTreatGapDE = 'ylSjcj6cv42';
+    const tbTreatGapDE = 'bRv4ZZy5MDH';
+    const comArtAdherenceGapDE = 'gff7hjjVoI6';
+    const artLiteracyGapDE = 'vqRohVpTK2G';
+    const htsGapDE = 'XoSPWmpWXCy';
+    const oralHealthGapDE = 'ztDAwmkSwKf';
     bool _isTrue(dynamic v) {
       final s = (v ?? '').toString().trim().toLowerCase();
       return s == 'true' || s == '1' || s == 'yes';
     }
     final hiv = _normHiv(a[hivStatusDE]);
     final mulnutriotSigns = _isTrue(a[malnutritionSignsDE]);
-
+    final feelingSupported = a[feelingSupportedDE] ;
     final age = _ageFromChild(child);
+    final hivPositive = hiv == 'Positive';
+    final onArt = _isTrue(a[artStatusDE]);
+    final coughing = _isTrue(a[areYouCoughingDE]);
+    final recentTest = _testedWithin3Months(a[lastTestedDE]);
+    final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
+
     if (age >= 0 && age <= 5 && mulnutriotSigns) {
       print('Mulnutrion Signs?? $mulnutriotSigns');
       dataObject[foodSupplementsGapDE] = true;
     }
+
+    if(age > 8){
+
+      dataObject[hivSndGapDE] = true;
+      if (oralHealthFlag){
+        print('AGEEE: $oralHealthFlag');
+        dataObject[oralHealthGapDE] = true;
+      }
+      if(feelingSupported != null && feelingSupported != 'Yes'){
+        dataObject[disclosureSupportGapDE] = true;
+      }
+      if (onArt) dataObject[hivAdherenceGapDE] = true;
+      if (coughing) dataObject[tbTreatGapDE] = true;
+      if (hivPositive && !onArt) dataObject[hivTreatGapDE] = true;
+      if (hivPositive) {
+        dataObject[comArtAdherenceGapDE] = true;
+        dataObject[artLiteracyGapDE] = true;
+      }
+      if (!hivPositive && !recentTest) dataObject[htsGapDE] = true;
+    }
+
+
+
 
     // add more child-only rules here using `a[...]` if needed
   }
