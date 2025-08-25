@@ -31,7 +31,7 @@ class OvcHouseholdOngoingMonitoring {
       FormSection(
           name: 'HOUSEHOLD SERVICE MONITORING',
           id: 'service_provision',
-          translatedName: 'BOPHELO',
+          translatedName: 'HOUSEHOLD SERVICE MONITORING',
           color: const Color(0xFF4B9F46),
           borderColor: const Color(0xFF4B9F46),
        inputFields: [
@@ -45,7 +45,49 @@ class OvcHouseholdOngoingMonitoring {
            labelColor: const Color(0xFF737373),
          ),
 
+         InputField(
+           id: 'JnqldNamliR',
+           name: 'HTS Service provided',
+           valueType: 'TRUE_ONLY',
+           translatedName: 'Litsebeletso tsa HTS li fanoe',
+           inputColor: const Color(0xFF4D9E49),
+           labelColor: const Color(0xFF737373),
+         ),
 
+          InputField(
+          id: 'otd2tndsE4Z',
+          name: 'HIV ADHERANCE SUPPORT Service provided',
+          translatedName:
+          "Lits'ebeletso tsa HIV ADHERANCE SUPPORT li fanoe",
+          valueType: 'TRUE_ONLY',
+          inputColor: const Color(0xFF4D9E49),
+          labelColor: const Color(0xFF737373),),
+
+          InputField(
+          id: 'YFgrURiwirq',
+          name: 'HIVTREAT Service provided',
+          valueType: 'TRUE_ONLY',
+          translatedName: 'Litsebeletso tsa HIVTREAT li fanoe',
+          inputColor: const Color(0xFF4D9E49),
+          labelColor: const Color(0xFF737373),),
+
+          InputField(
+          id: 'CRVDu0WUOFm',
+          name: 'Nutrition Messaging Service provided',
+          translatedName: "Lits'ebeletso tsa Nutrition Messaging li fanoe",
+          valueType: 'TRUE_ONLY',
+          inputColor: const Color(0xFF4D9E49),
+          labelColor: const Color(0xFF737373),),
+
+
+         InputField(
+           id: 'eqhzeRBMftZ',
+           name: 'ANY HEALTH RELATED Service provided',
+           translatedName: 'Litsebeletso tsa ANY HEALTH RELATED tse fanoe',
+           valueType: 'TRUE_ONLY',
+           inputColor: const Color(0xFF4D9E49),
+           labelColor: const Color(0xFF737373),
+         ),
 
        ]
 
@@ -348,12 +390,7 @@ class OvcHouseholdOngoingMonitoring {
                       code: 'Yes', name: 'Yes', translatedName: 'E'),
                   InputFieldOption(
                       code: 'No', name: 'No', translatedName: 'Che'),
-                  InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha hona Karabo'),
-                  // InputFieldOption(
-                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
+
                 ]),
             InputField(
                 id: 'ToWhhydys',
