@@ -70,16 +70,16 @@ class CasePlanHomeContainer extends StatelessWidget {
         return false;
       }
     });
-   /* if(hasRecentCaseplan){
+   if(hasRecentCaseplan){
       if(onAddCasePlan){
         AppUtil.showToastMessage(
           message:
           'There is exiting case plan that has already created on $casedate',
         );
         shouldContinue = false;
-      }      }*/
+      }      }
 
-    if (casePlanDates.contains(eventDate)) {
+/*    if (casePlanDates.contains(eventDate)) {
       if (onAddCasePlan) {
         AppUtil.showToastMessage(
           message:
@@ -87,7 +87,7 @@ class CasePlanHomeContainer extends StatelessWidget {
         );
         shouldContinue = false;
       }
-    }
+    }*/
     Provider.of<ServiceFormState>(context, listen: false).resetFormState();
     Provider.of<ServiceFormState>(context, listen: false)
         .updateFormEditabilityState(isEditableMode: isEditMode);
@@ -285,11 +285,13 @@ class CasePlanHomeContainer extends StatelessWidget {
                               bool isKbFacilitySocialWorker =
                                   currentUserState.isKbFacilitySocialWorker;
                               return Visibility(
-                                visible: !isKbFacilitySocialWorker &&
+                                visible:false,
+
+                                /*!isKbFacilitySocialWorker &&
                                     !hasBeneficiaryExitedProgram &&
                                     !(isOnCasePlanServiceMonitoring ||
                                         isOnCasePlanServiceProvision) &&
-                                    isAssessmentConducted,
+                                    isAssessmentConducted,*/
                                 child: Container(
                                   margin: EdgeInsets.symmetric(
                                     vertical:

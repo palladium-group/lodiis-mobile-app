@@ -80,12 +80,8 @@ class OvchouseHoldMonitoringSkipLogic {
     final servicesVals = _latestServiceVals(context);
 
     var hivSDprovided = servicesVals['HzI5X2yHef6'];
-    var htsProvided = servicesVals['JnqldNamliR'];
-    var ArtAdProvided = servicesVals['otd2tndsE4Z'];
-    var HIVTreatProvided = servicesVals['YFgrURiwirq'];
-    var NutrMsgProvided = servicesVals['CRVDu0WUOFm'];
-    var AnyHealthProvided =servicesVals['eqhzeRBMftZ'];
-    print('Services:$servicesVals');
+     const hivStatusDE = 'vNeOE9abQBB';
+
     // HIV status DE used in both Assessment and Monitoring
     const hivStatusDE = 'vNeOE9abQBB';
 
@@ -123,14 +119,6 @@ class OvchouseHoldMonitoringSkipLogic {
 
       if(inputFieldId == 'JnqldNamliR' ){
         dataObject[inputFieldId] = htsProvided;
-      }
-
-      if(inputFieldId == 'otd2tndsE4Z' ){
-        dataObject[inputFieldId] = ArtAdProvided;
-      }
-
-      if(inputFieldId == 'YFgrURiwirq' ){
-        dataObject[inputFieldId] = HIVTreatProvided;
       }
 
       if(inputFieldId == 'CRVDu0WUOFm' ){

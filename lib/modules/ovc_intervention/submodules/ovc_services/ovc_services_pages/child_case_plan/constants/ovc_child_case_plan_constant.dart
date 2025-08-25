@@ -40,9 +40,9 @@ class OvcChildCasePlanConstant {
         // FOOD PREP
         "JSQ3xP1NhuN", "k6jzyzGOu5Y", "HrCyUkuZath", "MdmCqSwcrlk",
         //FOOD SUPPORT
-        "EaJTFrklMo5", "rHgxOKM91wi", "v00dsDvhCRu", "WAq2HJHXZYS",
+        "EaJTFrklMo5","WAq2HJHXZYS",
         //NUTRITION MESSAGING
-        "CaAOIbC10yv", "VR8T3pFREzK", "x6O0oNypdUw", "v7GBKBoqJPr",
+        "CaAOIbC10yv", "v7GBKBoqJPr",
         //TIPPY TAP
         "DQxqyncQtwm", "P4I6rK6Xqxw", "WFKe1YpH1uK", "YJXb5rSVP0L",
         // WASH MESSAGE
@@ -54,12 +54,32 @@ class OvcChildCasePlanConstant {
       "ageBased": [
         {
           "minAge": 0,
-          "maxAge": 8,
+          "maxAge": 9,
           "ids": [
             //HIVS&D
-            "cx4xBY4jZXM", "b6hvMQuH3oJ", "iy0KZ7K4qld", "SIEeRmPm0Q0",
+            "cx4xBY4jZXM", "SIEeRmPm0Q0",
+            "gff7hjjVoI6", "YI1Ckbt8mRn",
+            "vqRohVpTK2G", "vUMhUm3i0b0",
+
           ],
         },
+        {
+          "minAge": 5,
+          "maxAge": 9,
+          "ids": [
+            //Oral Health
+            "ztDAwmkSwKf", "bK18Ebt1cRa",
+          ],
+        },
+        {
+          "minAge": 0,
+          "maxAge": 6,
+          "ids": [
+            //Deworming medication, Vitamin A and Immunization
+            "x4yAqv4z2Xv", "eTDE6zroxBC",
+          ],
+        },
+
       ]
     },
     "Safe": {
@@ -132,7 +152,10 @@ class OvcChildCasePlanConstant {
         //SOACKAGE PIT
         "qL9c5r7c6kK", "pUphS6E1Gu5", "k5RGRpWRbbs", "SODPuEmHEGV"
       ],
-      "ageBased": []
+      "ageBased": [
+
+        //TODO new agebased services
+      ]
     },
     "Safe": {
       "generic": [

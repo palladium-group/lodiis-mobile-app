@@ -194,14 +194,7 @@ class HouseholdServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-              id: 'vXuVPQLxw1d',
-              name: 'FOOD SUPPORT session number',
-              translatedName: 'Thupelo ea FOOD SUPPORT',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
+
             InputField(
                 id: 'xdI5atw8DC4',
                 name: 'FOOD SUPPORT Comment',
@@ -228,14 +221,6 @@ class HouseholdServiceProvision {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
-              id: 'hyVWFxIg7x6',
-              name: 'Nutrition Messaging session number',
-              translatedName: 'Thupelo ea Nutrition Messaging',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
-            InputField(
                 id: 'OypZVFbZ1r0',
                 name: 'Nutrition Messaging Comment',
                 translatedName: 'Tlhaloso ea FOOD SUPPORT',
@@ -260,14 +245,7 @@ class HouseholdServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-              id: 'YRUnLuPerwn',
-              name: 'FOOD PREV  session number',
-              translatedName: 'Thupelo ea FOOD PREV ',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
+
             InputField(
                 id: 'eXh6Gag1uwp',
                 name: 'FOOD PREV  Comment',
@@ -292,14 +270,7 @@ class HouseholdServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-              id: 'F6z3SQxLskG',
-              name: 'FOOD PREP session number',
-              translatedName: 'Thupelo ea FOOD PREP ',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
+
             InputField(
                 id: 'g2X9vUL2d9m',
                 name: 'FOOD PREP Comment',
@@ -372,14 +343,7 @@ class HouseholdServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-              id: 'cBCJAB8Ogxd',
-              name: 'TIPPY TAP session number',
-              translatedName: 'Thupelo ea TIPPY TAP',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
+
             InputField(
                 id: 'w4EYZpbtUV8',
                 name: 'TIPPY TAP Comment',
@@ -435,13 +399,7 @@ class HouseholdServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF0000FF),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'SzDHpqzsiLw',
-                name: 'SILC session number',
-                translatedName: 'Thupelo ea SILC',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF0000FF),
-                labelColor: const Color(0xFF737373)),
+
             InputField(
                 id: 'hMdC0CMKSGn',
                 name: 'SILC Comment',
@@ -489,13 +447,7 @@ class HouseholdServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF0000FF),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'KvHf0rBfa1L',
-                name: 'FINANCIAL EDUCATION  session number',
-                translatedName: 'Thupelo ea FINANCIAL EDUCATION ',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF0000FF),
-                labelColor: const Color(0xFF737373)),
+
             InputField(
                 id: 'HGpA4kx5jLQ',
                 name: 'FINANCIAL EDUCATION  Comment',
@@ -528,13 +480,7 @@ class HouseholdServiceProvision {
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
-          InputField(
-              id: 'NwtohlveKHW',
-              name: 'LEGAL PROTECTION session number',
-              translatedName: 'Thupelo ea LEGAL PROTECTION',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
+
           InputField(
               id: 'iz4CvIFovsF',
               name: 'LEGAL PROTECTION Comment',
@@ -558,13 +504,7 @@ class HouseholdServiceProvision {
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
-          InputField(
-              id: 'RTEBrgDTe02',
-              name: 'BIRTHCERT session number',
-              translatedName: 'Thupelo ea BIRTHCERT',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
+
           InputField(
               id: 'cb773khL7XB',
               name: 'BIRTHCERT Comment',
@@ -589,13 +529,7 @@ class HouseholdServiceProvision {
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
-          InputField(
-              id: 'YPImSLRMLWH',
-              name: 'VAC MESSAGING session number',
-              translatedName: "Lits'ebeletso tsa molaetsa oa session number",
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
+
           InputField(
               id: 'OMhFxj6SYhM',
               name: 'VAC MESSAGING Comment',
@@ -620,13 +554,7 @@ class HouseholdServiceProvision {
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
-          InputField(
-              id: 'P4PMMDgWCSA',
-              name: 'VAC Legal Messaging session number',
-              translatedName: 'Thupelo ea VAC Legal Messaging',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
+
           InputField(
               id: 'KWk8waoLO7N',
               name: 'VAC Legal Messaging Comment',
@@ -651,13 +579,7 @@ class HouseholdServiceProvision {
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
-          InputField(
-              id: 'LkQxvdt6YCw',
-              name: 'COUNSELLING session number',
-              translatedName: 'Thupelo ea COUNSELLING',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
+
           InputField(
               id: 'XUoqvbk0uVH',
               name: 'COUNSEL Comment',
@@ -682,13 +604,7 @@ class HouseholdServiceProvision {
               firstDate: firstDate,
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
-          InputField(
-              id: 'QBNhlIan0LR',
-              name: 'RTEEN/Parenting session number',
-              translatedName: 'Thupelo ea RTEEN',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
+
           InputField(
               id: 'IFggJCXLYPD',
               name: 'RTEEN/Parenting Comment',
@@ -710,13 +626,6 @@ class HouseholdServiceProvision {
               translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa P&FC',
               valueType: 'DATE',
               firstDate: firstDate,
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
-          InputField(
-              id: 'n30r7v0ti1s',
-              name: 'P&FC session number',
-              translatedName: 'Thupelo ea P&FC',
-              valueType: 'TEXT',
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
           InputField(

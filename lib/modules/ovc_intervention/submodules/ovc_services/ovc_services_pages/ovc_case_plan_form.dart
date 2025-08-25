@@ -370,7 +370,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
                                     .map(
                                       (formSection) => Container(
                                         margin: const EdgeInsets.symmetric(),
-                                        child: CasePlanFormContainer(
+                                        child:  CasePlanFormContainer(
                                           mandatoryFieldObject: mandatoryFieldObject,
                                           canAddDomainGaps: ![
                                             OvcCasePlanConstant.householdCategorizationSection,
