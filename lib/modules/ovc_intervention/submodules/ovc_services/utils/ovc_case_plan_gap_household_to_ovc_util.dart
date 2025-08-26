@@ -1,263 +1,188 @@
+// lib/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_gap_household_to_ovc_util.dart
 import 'package:flutter/foundation.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
 import 'package:kb_mobile_app/models/events.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
-import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_case_plan.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 
+/// Utilities for saving Household (Caregiver) case plans and gaps without duplicates.
+/// Deduplication is **by linkage**, never by event date.
+///
+/// How to use (in your HH "Generate → Confirm → Save"):
+///
+/// await OvcCasePlanGapHouseholdToOvcUtil.upsertHouseholdCasePlanAndGapsByLinkage(
+///   teiId: household.id!,
+///   orgUnit: household.orgUnit!,
+///   eventDate: currentCasePlanDate,              // used as payload only (not as uniqueness)
+///   domain: activeDomainId,                      // "Health" | "Safe" | "Stable"
+///   domainData: selectedDomainPayload,           // must include 'gaps': [ ... ] and linkage de(s)
+///   casePlanSections: casePlanSectionsForDomain, // sections you use to save HH case plan
+///   gapSections: gapSectionsForDomain,           // sections you use to save HH gaps
+///   programId: OvcCasePlanConstant.program,
+///   casePlanStageId: OvcCasePlanConstant.casePlanProgramStage,
+///   gapStageId: OvcCasePlanConstant.casePlanGapProgramStage,
+/// );
 class OvcCasePlanGapHouseholdToOvcUtil {
-  static Future autoSyncOvcsCasPlanGaps({
-    required String currentCasePlanDate,
-    required List<OvcHouseholdChild> childrens,
-    required Map dataObject,
+  /// Upsert (no-dup) for **HOUSEHOLD/CAREGIVER** Case Plan + Gaps by linkage.
+  /// - If linkage already exists: update existing events.
+  /// - If linkage missing: create new events.
+  /// - Never deletes; never duplicates.
+  static Future<void> upsertHouseholdCasePlanAndGapsByLinkage({
+    required String teiId,
     required String orgUnit,
     required String eventDate,
+    required String domain, // e.g. "Health" | "Safe" | "Stable"
+    required Map<String, dynamic> domainData, // includes 'gaps': [...]
+    required List<FormSection> casePlanSections,
+    required List<FormSection> gapSections,
+    required String programId,
+    required String casePlanStageId,
+    required String gapStageId,
   }) async {
-    try {
-      final allCasePlanSections =
-      OvcServicesCasePlan.getFormSections(firstDate: '');
-      final allGapSections =
-      OvcServicesChildCasePlanGap.getFormSections(firstDate: '');
+    // Pull ALL events for the HH TEI (we're not using eventDate for uniqueness!)
+    final hhEvents =
+    await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(
+      teiId,
+    );
 
-      for (final child in childrens) {
-        final childTei = (child.id ?? '').toString();
-        if (childTei.isEmpty) continue;
+    // 1) Find linkage from domain payload or its first gap
+    const linkageDe = OvcCasePlanConstant.casePlanToGapLinkage;
+    final linkageValue = _readLinkValue(domainData, linkageDe) ??
+        _readLinkageFromFirstGap(domainData, linkageDe);
 
-        final perChild = getSanitizedCaregiverDataObjects(
-          dataObject: dataObject,
-          child: child,
-        );
-        if (perChild.isEmpty) {
-          if (kDebugMode) {
-            debugPrint('[HH→Child] No age-eligible caregiver gaps for TEI=$childTei');
-          }
-          continue;
-        }
-
-        final childEvents =
-        await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(childTei);
-
-        for (final domain in perChild.keys) {
-          final Map<String, dynamic> domainData =
-          Map<String, dynamic>.from(perChild[domain] as Map);
-
-          // linkage from domain or first gap
-          final linkageDe = OvcCasePlanConstant.casePlanToGapLinkage;
-          String? linkageValue = _readLinkValue(domainData, linkageDe);
-          linkageValue ??= _readLinkageFromFirstGap(domainData, linkageDe);
-          if (linkageValue == null) {
-            if (kDebugMode) {
-              debugPrint('[HH→Child] Skip domain="$domain" TEI=$childTei: missing linkage');
-            }
-            continue;
-          }
-
-          // sections / field ids (fallback to full list if filter is empty)
-          var domainCasePlanSections =
-          allCasePlanSections.where((s) => s.id == domain).toList();
-          if (domainCasePlanSections.isEmpty) {
-            domainCasePlanSections = allCasePlanSections;
-          }
-          final casePlanFieldIds = FormUtil.getFormFieldIds(domainCasePlanSections);
-
-          var domainGapSections =
-          allGapSections.where((s) => s.id == domain).toList();
-          if (domainGapSections.isEmpty) {
-            domainGapSections = allGapSections;
-          }
-          final gapFieldIds = FormUtil.getFormFieldIds(domainGapSections);
-
-          // ================= CASE PLAN =================
-          final existingCasePlan = _findEventByLinkage(
-            events: childEvents,
-            programStageId: OvcChildCasePlanConstant.casePlanProgramStage,
-            linkageDe: linkageDe,
-            linkageValue: linkageValue,
-          );
-
-          final casePlanIncoming =
-          Map<String, dynamic>.from(domainData)..remove('gaps');
-
-          final mergedCasePlan = _mergeExistingWithIncoming(
-            existingEvent: existingCasePlan,
-            incoming: casePlanIncoming,
-            keepKeys: casePlanFieldIds,
-            ensureKeys: <String, dynamic>{
-              linkageDe: linkageValue,
-              'eventDate': currentCasePlanDate,
-              // NEW: ensure domain type is set so UI can group/display it
-              OvcCasePlanConstant.casePlanDomainType: domain,
-            },
-          );
-
-          final skippedCasePlan =
-          _skippedFromSection(casePlanFieldIds, mergedCasePlan);
-
-          if (kDebugMode) {
-            debugPrint(
-                '[HH→Child] CASEPLAN save TEI=$childTei domain=$domain linkage=$linkageValue keep=${casePlanFieldIds.length} set=${mergedCasePlan.keys.length} skip=${skippedCasePlan.length} updating=${existingCasePlan?.event != null}');
-          }
-
-          await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcChildCasePlanConstant.program,
-            OvcChildCasePlanConstant.casePlanProgramStage,
-            orgUnit,
-            domainCasePlanSections,
-            mergedCasePlan,
-            eventDate,
-            childTei,
-            existingCasePlan?.event,
-            <String>[
-              OvcCasePlanConstant.casePlanToGapLinkage,
-              OvcCasePlanConstant.casePlanDomainType, // keep domain hidden on form
-            ],
-            skippedFields: skippedCasePlan,
-          );
-
-          // ================= GAPS =================
-          final List gaps = List.from((perChild[domain]['gaps']) ?? const []);
-          if (gaps.isEmpty) continue;
-
-          final mergedGapPayload =
-          _mergeGapsForSameLinkage(gaps, linkageDe, linkageValue)
-            ..['c'] = currentCasePlanDate;
-
-          final existingGap = _findEventByLinkage(
-            events: childEvents,
-            programStageId: OvcChildCasePlanConstant.casePlanGapProgramStage,
-            linkageDe: linkageDe,
-            linkageValue: linkageValue,
-          );
-
-          final mergedGap = _mergeExistingWithIncoming(
-            existingEvent: existingGap,
-            incoming: mergedGapPayload,
-            keepKeys: gapFieldIds,
-            ensureKeys: <String, dynamic>{
-              linkageDe: linkageValue,
-              // keep linkage chain if already set, otherwise allow payload to seed
-              OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage:
-              existingGap == null
-                  ? mergedGapPayload[OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage]
-                  : _getDeValue(existingGap, OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage),
-              OvcCasePlanConstant.casePlanGapToMonitoringLinkage:
-              existingGap == null
-                  ? mergedGapPayload[OvcCasePlanConstant.casePlanGapToMonitoringLinkage]
-                  : _getDeValue(existingGap, OvcCasePlanConstant.casePlanGapToMonitoringLinkage),
-            },
-          );
-
-          final skippedGap = _skippedFromSection(gapFieldIds, mergedGap);
-
-          if (kDebugMode) {
-            debugPrint(
-                '[HH→Child] GAP save TEI=$childTei domain=$domain linkage=$linkageValue gapsIn=${gaps.length} set=${mergedGap.keys.length} skip=${skippedGap.length} updating=${existingGap?.event != null}');
-          }
-
-          await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcChildCasePlanConstant.program,
-            OvcChildCasePlanConstant.casePlanGapProgramStage,
-            orgUnit,
-            domainGapSections,
-            mergedGap,
-            eventDate,
-            childTei,
-            existingGap?.event,
-            <String>[
-              OvcCasePlanConstant.casePlanToGapLinkage,
-              OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-              OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
-            ],
-            skippedFields: skippedGap,
-          );
-        }
-      }
-    } catch (e, st) {
-      if (kDebugMode) {
-        debugPrint('[HH→Child] autoSyncOvcsCasPlanGaps error: $e\n$st');
-      }
+    if (linkageValue == null || linkageValue.isEmpty) {
+      debugPrint(
+          '[HH CasePlan] Skip domain="$domain" TEI=$teiId (no linkage present)');
+      return;
     }
-  }
 
-  // ---------- Sanitizer ----------
-  static Map<String, dynamic> getSanitizedCaregiverDataObjects({
-    required Map dataObject,
-    required OvcHouseholdChild child,
-  }) {
-    final Map<String, dynamic> sanitized = <String, dynamic>{};
-    final int age = int.tryParse((child.age ?? '').toString()) ?? 0;
+    // 2) Field allowlists from the sections provided by the caller
+    final casePlanFieldIds = FormUtil.getFormFieldIds(
+      casePlanSections,
+    );
+    final gapFieldIds = FormUtil.getFormFieldIds(
+      gapSections,
+    );
 
-    final List<String> domains =
-    OvcChildCasePlanConstant.domainToAutopopuledCasePlanGaps.keys.toList();
+    // 3) ----- CASE PLAN (HH) -----
+    final existingCasePlan = _findEventByLinkage(
+      events: hhEvents,
+      programStageId: casePlanStageId,
+      linkageDe: linkageDe,
+      linkageValue: linkageValue,
+    );
 
-    for (final String domain in domains) {
-      final Map domainCfg =
-          OvcChildCasePlanConstant.domainToAutopopuledCasePlanGaps[domain] ?? {};
-      final List<String> validIds =
-      OvcChildCasePlanConstant.getValidIdForAutoPopulatingServiceData(
-        domainConfig: domainCfg,
-        age: age,
-      );
+    // Prepare incoming (without gaps list)
+    final incomingCasePlan =
+    Map<String, dynamic>.from(domainData)..remove('gaps');
 
-      final Map<String, dynamic> selected =
-      Map<String, dynamic>.from((dataObject[domain] ?? const {}) as Map);
+    final mergedCasePlan = _mergeExistingWithIncoming(
+      existingEvent: existingCasePlan,
+      incoming: incomingCasePlan,
+      keepKeys: casePlanFieldIds,
+      ensureKeys: <String, dynamic>{
+        linkageDe: linkageValue,
+        'eventDate': eventDate,
+        // Keep domain type so UI renders in correct domain
+        OvcCasePlanConstant.casePlanDomainType: domain,
+      },
+    );
 
-      final List gaps = List.from(selected['gaps'] ?? const []);
-      if (gaps.isEmpty) continue;
+    final skippedCasePlan =
+    _skippedFromSection(casePlanFieldIds, mergedCasePlan);
 
-      final keptGaps = <Map<String, dynamic>>[];
-      for (final g in gaps) {
-        final Map<String, dynamic> gap = Map<String, dynamic>.from(g as Map);
-        final filtered = <String, dynamic>{};
-        for (final key in gap.keys) {
-          final k = key.toString();
-          if (validIds.contains(k) || _isLinkageDe(k) || _isDomainDe(k)) {
-            filtered[k] = gap[key];
-          }
-        }
-        if (filtered.isNotEmpty) keptGaps.add(filtered);
-      }
-      if (keptGaps.isEmpty) continue;
+    debugPrint(
+        '[HH CasePlan] save TEI=$teiId domain=$domain linkage=$linkageValue keep=${casePlanFieldIds.length} set=${mergedCasePlan.keys.length} skip=${skippedCasePlan.length} updating=${existingCasePlan?.event != null}');
 
-      final filteredSelected = <String, dynamic>{};
-      for (final key in selected.keys) {
-        final k = key.toString();
-        if (k == 'gaps') continue;
-        if (validIds.contains(k) || _isLinkageDe(k) || _isDomainDe(k)) {
-          filteredSelected[k] = selected[key];
-        }
-      }
-      filteredSelected['gaps'] = keptGaps;
+    await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+      programId,
+      casePlanStageId,
+      orgUnit,
+      casePlanSections,
+      mergedCasePlan,
+      eventDate,
+      teiId,
+      existingCasePlan?.event, // update if exists
+      <String>[
+        OvcCasePlanConstant.casePlanToGapLinkage,
+        OvcCasePlanConstant.casePlanDomainType,
+      ],
+      skippedFields: skippedCasePlan,
+    );
 
-      // NEW: if caregiver payload didn’t carry domain type, stamp it here
-      filteredSelected[OvcCasePlanConstant.casePlanDomainType] =
-          filteredSelected[OvcCasePlanConstant.casePlanDomainType] ?? domain;
-
-      sanitized[domain] = filteredSelected;
+    // 4) ----- GAPS (HH) -----
+    final List<dynamic> rawGaps = List<dynamic>.from(
+      domainData['gaps'] ?? const <dynamic>[],
+    );
+    if (rawGaps.isEmpty) {
+      return;
     }
-    return sanitized;
+
+    // Flatten all selected gaps for this domain into one payload by OR-merging
+    final mergedGapPayload = _mergeGapsForSameLinkage(
+      rawGaps,
+      linkageDe,
+      linkageValue,
+    )..['eventDate'] = eventDate;
+
+    final existingGap = _findEventByLinkage(
+      events: hhEvents,
+      programStageId: gapStageId,
+      linkageDe: linkageDe,
+      linkageValue: linkageValue,
+    );
+
+    final mergedGap = _mergeExistingWithIncoming(
+      existingEvent: existingGap,
+      incoming: mergedGapPayload,
+      keepKeys: gapFieldIds,
+      ensureKeys: <String, dynamic>{
+        linkageDe: linkageValue,
+        // Preserve existing SP/Monitoring linkages if present (avoid breaking chains)
+        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage:
+        existingGap == null
+            ? mergedGapPayload[OvcCasePlanConstant
+            .casePlanGapToServiceProvisionLinkage]
+            : _getDeValue(existingGap,
+            OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage),
+        OvcCasePlanConstant.casePlanGapToMonitoringLinkage:
+        existingGap == null
+            ? mergedGapPayload[
+        OvcCasePlanConstant.casePlanGapToMonitoringLinkage]
+            : _getDeValue(existingGap,
+            OvcCasePlanConstant.casePlanGapToMonitoringLinkage),
+      },
+    );
+
+    final skippedGap = _skippedFromSection(gapFieldIds, mergedGap);
+
+    debugPrint(
+        '[HH CasePlan] GAP save TEI=$teiId domain=$domain linkage=$linkageValue set=${mergedGap.keys.length} skip=${skippedGap.length} updating=${existingGap?.event != null}');
+
+    await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+      programId,
+      gapStageId,
+      orgUnit,
+      gapSections,
+      mergedGap,
+      eventDate,
+      teiId,
+      existingGap?.event, // update if exists
+      <String>[
+        OvcCasePlanConstant.casePlanToGapLinkage,
+        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
+        OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
+      ],
+      skippedFields: skippedGap,
+    );
   }
 
-  // ---------- Helpers ----------
-  static String? _readLinkValue(Map<String, dynamic> m, String de) {
-    final v = (m[de] ?? '').toString().trim();
-    return v.isEmpty ? null : v;
-  }
+  // ---------------------------------------------------------------------------
+  // Helper utilities
+  // ---------------------------------------------------------------------------
 
-  static String? _readLinkageFromFirstGap(Map<String, dynamic> m, String de) {
-    final gaps = List.from(m['gaps'] ?? const []);
-    for (final g in gaps) {
-      final gap = Map<String, dynamic>.from(g as Map);
-      final v = (gap[de] ?? '').toString().trim();
-      if (v.isNotEmpty) return v;
-    }
-    return null;
-  }
-
+  /// Find first event in [events] for [programStageId] where dataElement [linkageDe] == [linkageValue]
   static Events? _findEventByLinkage({
     required List<Events> events,
     required String programStageId,
@@ -265,12 +190,12 @@ class OvcCasePlanGapHouseholdToOvcUtil {
     required String linkageValue,
   }) {
     for (final e in events) {
-      if (e.programStage != programStageId) continue;
-      final list = (e.dataValues as List?) ?? const [];
-      for (final dv in list) {
+      if ((e.programStage ?? '') != programStageId) continue;
+      final dvs = (e.dataValues as List?) ?? const <dynamic>[];
+      for (final dv in dvs) {
         if (dv is Map &&
-            (dv['dataElement']?.toString() == linkageDe) &&
-            (dv['value']?.toString() == linkageValue)) {
+            dv['dataElement'] == linkageDe &&
+            (dv['value'] ?? '') == linkageValue) {
           return e;
         }
       }
@@ -278,111 +203,85 @@ class OvcCasePlanGapHouseholdToOvcUtil {
     return null;
   }
 
-  static Map<String, dynamic> _mergeExistingWithIncoming({
-    required Events? existingEvent,
-    required Map<String, dynamic> incoming,
-    required List<String> keepKeys,
-    Map<String, dynamic> ensureKeys = const {},
-  }) {
-    final base = existingEvent == null ? <String, dynamic>{} : _eventValueMap(existingEvent);
-
-    final kept = <String, dynamic>{};
-    for (final k in base.keys) {
-      if (keepKeys.contains(k) || _isLinkageDe(k) || _isDomainDe(k) || k == 'eventDate' || k == 'eventId') {
-        kept[k] = base[k];
-      }
-    }
-
-    final merged = Map<String, dynamic>.from(kept);
-    incoming.forEach((key, val) {
-      if (!(keepKeys.contains(key) || _isLinkageDe(key) || _isDomainDe(key) || key == 'eventDate')) {
-        return;
-      }
-      if (_isBoolLike(val)) {
-        merged[key] = _isTruthy(merged[key]) || _isTruthy(val);
-      } else if ((val ?? '').toString().trim().isNotEmpty) {
-        merged[key] = val;
-      }
-    });
-
-    ensureKeys.forEach((k, v) {
-      if (v != null) merged[k] = v;
-    });
-
-    if (existingEvent?.event != null) merged['eventId'] = existingEvent!.event;
-    return merged;
-  }
-
-  static Map<String, dynamic> _eventValueMap(Events e) {
-    final m = <String, dynamic>{};
-    final list = (e.dataValues as List?) ?? const [];
-    for (final dv in list) {
-      if (dv is Map && dv['dataElement'] != null) {
-        m[dv['dataElement'] as String] = dv['value'];
-      }
-    }
-    if (e.eventDate != null) m['eventDate'] = e.eventDate;
-    if (e.event != null) m['eventId'] = e.event;
-    return m;
-  }
-
-  static Map<String, dynamic> _mergeGapsForSameLinkage(
-      List gaps,
-      String linkageDe,
-      String linkageValue,
-      ) {
-    final out = <String, dynamic>{linkageDe: linkageValue};
-    for (final g in gaps) {
-      final gap = Map<String, dynamic>.from(g as Map);
-      for (final key in gap.keys) {
-        final k = key.toString();
-        if (k == linkageDe) continue;
-        if (_isLinkageDe(k) || _isDomainDe(k)) {
-          out[k] ??= gap[key];
-          continue;
-        }
-        final v = gap[key];
-        if (_isBoolLike(v)) {
-          out[k] = _isTruthy(out[k]) || _isTruthy(v);
-        } else if ((v ?? '').toString().trim().isNotEmpty) {
-          out[k] = v;
-        }
-      }
-    }
-    return out;
-  }
-
-  static List<String> _skippedFromSection(
-      List<String> sectionFieldIds,
-      Map<String, dynamic> payload,
-      ) {
-    final keep = payload.keys.map((e) => e.toString()).toSet();
-    return sectionFieldIds.where((id) => !keep.contains(id)).toList();
-  }
-
-  static bool _isLinkageDe(String key) {
-    return key == OvcCasePlanConstant.casePlanToGapLinkage ||
-        key == OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage ||
-        key == OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
-  }
-
-  // NEW: consider domain type a required/display key
-  static bool _isDomainDe(String key) {
-    return key == OvcCasePlanConstant.casePlanDomainType;
-  }
-
-  static String? _getDeValue(Events? e, String de) {
-    if (e == null) return null;
-    final list = (e.dataValues as List?) ?? const [];
-    for (final dv in list) {
-      if (dv is Map && dv['dataElement']?.toString() == de) {
-        return (dv['value'] ?? '').toString();
+  /// Gets a single DE value from an Events dataValues list.
+  static dynamic _getDeValue(Events? event, String de) {
+    if (event == null) return null;
+    final dvs = (event.dataValues as List?) ?? const <dynamic>[];
+    for (final dv in dvs) {
+      if (dv is Map && dv['dataElement'] == de) {
+        return dv['value'];
       }
     }
     return null;
   }
 
-  static bool _isBoolLike(dynamic v) {
+  /// Merge an existing event's values with an incoming payload:
+  /// - For boolean-like fields: OR (true wins).
+  /// - For strings: prefer non-empty incoming; else keep existing.
+  /// - Only keep keys present in [keepKeys] plus [ensureKeys].
+  static Map<String, dynamic> _mergeExistingWithIncoming({
+    required Events? existingEvent,
+    required Map<String, dynamic> incoming,
+    required List<String> keepKeys,
+    required Map<String, dynamic> ensureKeys,
+  }) {
+    final Map<String, dynamic> out = <String, dynamic>{};
+
+    // Seed with ensure keys
+    out.addAll(ensureKeys);
+
+    // 1) Load existing from event
+    if (existingEvent != null) {
+      final dvs = (existingEvent.dataValues as List?) ?? const <dynamic>[];
+      for (final dv in dvs) {
+        if (dv is! Map) continue;
+        final id = (dv['dataElement'] ?? '').toString();
+        if (!keepKeys.contains(id) && !_isLinkageDe(id) && !_isDomainDe(id)) {
+          // Skip any noise not in the section (but we still keep linkage/domain elsewhere)
+          continue;
+        }
+        final existingVal = dv['value'];
+        if (existingVal == null) continue;
+        // Only set if not already in out (ensure keys win)
+        if (!out.containsKey(id) || _isEmpty(out[id])) {
+          out[id] = existingVal;
+        }
+      }
+    }
+
+    // 2) Apply incoming within the allowed keys
+    incoming.forEach((key, val) {
+      if (!keepKeys.contains(key) && !_isLinkageDe(key) && !_isDomainDe(key)) {
+        return;
+      }
+      final existing = out[key];
+      out[key] = _mergeValue(existing, val);
+    });
+
+    // Clean up any null/empty keys that slipped in (except linkage/domain/eventDate)
+    final keys = List<String>.from(out.keys);
+    for (final k in keys) {
+      if (_isLinkageDe(k) || _isDomainDe(k) || k == 'eventDate') continue;
+      if (_isEmpty(out[k])) out.remove(k);
+    }
+
+    return out;
+  }
+
+  /// OR merge for booleans, otherwise prefer non-empty incoming.
+  static dynamic _mergeValue(dynamic existing, dynamic incoming) {
+    // boolean-like? -> OR
+    if (_looksBool(existing) || _looksBool(incoming)) {
+      final a = _isTruthy(existing);
+      final b = _isTruthy(incoming);
+      return (a || b) ? 'true' : 'false';
+    }
+    // strings / others: prefer incoming if not empty
+    if (!_isEmpty(incoming)) return incoming;
+    return existing;
+  }
+
+  static bool _looksBool(dynamic v) {
     final s = (v ?? '').toString().trim().toLowerCase();
     return {'true', 'false', '1', '0', 'yes', 'no'}.contains(s);
   }
@@ -390,5 +289,93 @@ class OvcCasePlanGapHouseholdToOvcUtil {
   static bool _isTruthy(dynamic v) {
     final s = (v ?? '').toString().trim().toLowerCase();
     return s == 'true' || s == '1' || s == 'yes';
+  }
+
+  static bool _isEmpty(dynamic v) {
+    if (v == null) return true;
+    if (v is String) return v.trim().isEmpty;
+    return false;
+  }
+
+  /// Merge many gap maps (all for the same linkage) into a single payload:
+  /// - Booleans OR'd, last non-empty string wins
+  static Map<String, dynamic> _mergeGapsForSameLinkage(
+      List<dynamic> gaps,
+      String linkageDe,
+      String linkageValue,
+      ) {
+    final Map<String, dynamic> out = <String, dynamic>{
+      linkageDe: linkageValue,
+    };
+
+    for (final raw in gaps) {
+      if (raw is! Map) continue;
+      final gap = Map<String, dynamic>.from(raw);
+      // Never carry eventId across different saves; we upsert by linkage
+      gap.remove('eventId');
+
+      gap.forEach((key, val) {
+        if (key == 'eventDate') return; // handled by caller
+        final prev = out[key];
+        out[key] = _mergeValue(prev, val);
+      });
+    }
+    // Strip empty
+    final keys = List<String>.from(out.keys);
+    for (final k in keys) {
+      if (k == linkageDe) continue;
+      if (_isEmpty(out[k])) out.remove(k);
+    }
+    return out;
+  }
+
+  /// Build "skippedFields" list: anything present in [keepIds] but missing in [payload].
+  static List<String> _skippedFromSection(
+      List<String> keepIds,
+      Map<String, dynamic> payload,
+      ) {
+    final List<String> skipped = <String>[];
+    for (final id in keepIds) {
+      if (!payload.containsKey(id) && !_isLinkageDe(id) && !_isDomainDe(id)) {
+        skipped.add(id);
+      }
+    }
+    return skipped;
+  }
+
+  static bool _isLinkageDe(String id) {
+    return id == OvcCasePlanConstant.casePlanToGapLinkage ||
+        id == OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage ||
+        id == OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
+  }
+
+  static bool _isDomainDe(String id) {
+    return id == OvcCasePlanConstant.casePlanDomainType;
+  }
+
+  static String? _readLinkValue(
+      Map<String, dynamic> m,
+      String linkageDe,
+      ) {
+    final v = m[linkageDe];
+    if (v == null) return null;
+    final s = v.toString().trim();
+    return s.isEmpty ? null : s;
+  }
+
+  static String? _readLinkageFromFirstGap(
+      Map<String, dynamic> m,
+      String linkageDe,
+      ) {
+    final gaps = m['gaps'];
+    if (gaps is! List) return null;
+    for (final g in gaps) {
+      if (g is! Map) continue;
+      final v = g[linkageDe];
+      if (v == null) continue;
+      final s = v.toString().trim();
+      if (s.isNotEmpty) return s;
+    }
+    return null;
   }
 }

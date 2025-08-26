@@ -80,8 +80,12 @@ class OvchouseHoldMonitoringSkipLogic {
     final servicesVals = _latestServiceVals(context);
 
     var hivSDprovided = servicesVals['HzI5X2yHef6'];
-     const hivStatusDE = 'vNeOE9abQBB';
-
+    var htsProvided = servicesVals['JnqldNamliR'];
+    var ArtAdProvided = servicesVals['otd2tndsE4Z'];
+    var HIVTreatProvided = servicesVals['YFgrURiwirq'];
+    var NutrMsgProvided = servicesVals['CRVDu0WUOFm'];
+    var AnyHealthProvided =servicesVals['eqhzeRBMftZ'];
+    print('Services:$servicesVals');
     // HIV status DE used in both Assessment and Monitoring
     const hivStatusDE = 'vNeOE9abQBB';
 
@@ -114,11 +118,19 @@ class OvchouseHoldMonitoringSkipLogic {
       String value = '${dataObject[inputFieldId]}';
 
       if(inputFieldId == 'HzI5X2yHef6' ){
-          dataObject[inputFieldId] = hivSDprovided;
-        }
+        dataObject[inputFieldId] = hivSDprovided;
+      }
 
       if(inputFieldId == 'JnqldNamliR' ){
         dataObject[inputFieldId] = htsProvided;
+      }
+
+      if(inputFieldId == 'otd2tndsE4Z' ){
+        dataObject[inputFieldId] = ArtAdProvided;
+      }
+
+      if(inputFieldId == 'YFgrURiwirq' ){
+        dataObject[inputFieldId] = HIVTreatProvided;
       }
 
       if(inputFieldId == 'CRVDu0WUOFm' ){
@@ -149,19 +161,19 @@ class OvchouseHoldMonitoringSkipLogic {
       }
 
       if (inputFieldId == 'vNeOE9abQBB' && value != 'Positive') {
-                hiddenFields['Icgkv0xkUow'] = true;
-                hiddenFields['ubin7MjQ5OI'] = true;
-                hiddenFields['sLyfb45aLkl'] = true;
-                hiddenFields['aRNGDZcwWmS'] = true;
-                hiddenFields['P52dMXyK4eA'] = true;
-                hiddenFields['tYN12Es3707'] = true;
-                hiddenFields['o1GBFscjs4y'] = true;
-                hiddenFields['BYZu8p33lzP'] = true;
-                hiddenFields['ToWhhydys'] = true;
-                hiddenFields['I3hI2UTkKyx'] = true;
-                hiddenFields['Uv26fX0HQvO'] = true;
-                hiddenFields['KFCBwn7ypws'] = true;
-              }
+        hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['ubin7MjQ5OI'] = true;
+        hiddenFields['sLyfb45aLkl'] = true;
+        hiddenFields['aRNGDZcwWmS'] = true;
+        hiddenFields['P52dMXyK4eA'] = true;
+        hiddenFields['tYN12Es3707'] = true;
+        hiddenFields['o1GBFscjs4y'] = true;
+        hiddenFields['BYZu8p33lzP'] = true;
+        hiddenFields['ToWhhydys'] = true;
+        hiddenFields['I3hI2UTkKyx'] = true;
+        hiddenFields['Uv26fX0HQvO'] = true;
+        hiddenFields['KFCBwn7ypws'] = true;
+      }
 
       if (inputFieldId == 'vNeOE9abQBB' && value == 'Positive') {
         hiddenFields['Uv26fX0HQvO'] = true;
