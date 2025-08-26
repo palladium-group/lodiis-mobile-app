@@ -61,15 +61,6 @@ class _OvcServicesPageState extends State<OvcServicesPage> {
     );
   }
 
-  // void onOpenHouseholdMonitoringTest(BuildContext context, OvcHousehold ovcHousehold) {
-  //   setOvcHouseholdCurrentSelection(context, ovcHousehold);
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => const OvcHouseholdMonitoringTest(),
-  //     ),
-  //   );
-  // }
 
   void onOpenHouseholdCasePlan(
       BuildContext context, OvcHousehold ovcHousehold) {
@@ -87,7 +78,7 @@ class _OvcServicesPageState extends State<OvcServicesPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const OvcHouseholdMonitorTest(),
+        builder: (context) => const OvcHouseholdMonitor(),
       ),
     );
   }

@@ -1,26 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:kb_mobile_app/core/services/user_service.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/current_user.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../../app_state/enrollment_service_form_state/service_event_data_state.dart';
+import '../ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
+
+
+
 
 class OvcServiceMonitoringSkipLogic {
   Map hiddenFields = {};
   Map hiddenSections = {};
   Map childMapObject = {};
 
+  static Map<String, String?> _latestServiceVals(BuildContext context) {
+    try {
+      return Provider.of<ServiceEventDataState>(context, listen: false)
+          .latestValuesForStage(OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage);
+    } catch (_) {
+      return const {};
+    }
+  }
+
+  static Map<String, String?> _latestHouseholdServiceVals(BuildContext context) {
+    try {
+      return Provider.of<ServiceEventDataState>(context, listen: false)
+          .latestValuesForStage(OvcHouseholdCasePlanConstant.casePlanGapServiceProvisionProgramStage);
+    } catch (_) {
+      return const {};
+    }
+  }
+
+  // Normalize HIV status values coming from Assessment (labels/codes)
+  // Returns "Positive", "Negative", or the original string if unknown.
+  static String? _normalizeHivStatus(String? raw) {
+    final s = raw?.trim().toLowerCase();
+    if (s == null || s.isEmpty) return null;
+
+    const positives = {'positive', 'pos', 'positive (known)', '1', 'true', 'yes'};
+    const negatives = {'negative', 'neg', '0', 'false', 'no'};
+
+    if (positives.contains(s)) return 'Positive';
+    if (negatives.contains(s)) return 'Negative';
+    return raw; // leave as-is if not matched
+  }
+
+
+
   Future evaluateSkipLogics(
     BuildContext context,
     List<FormSection> formSections,
     Map dataObject,
+      String? hivStatus,
+      bool? artStatus,
+      String? sex,
+      bool? caregiverTestedForHiv,
+      DateTime? artInitiationDate,
   ) async {
     CurrentUser? currentUser = Provider.of<CurrentUserState>(context, listen: false).currentUser;
     String implementingPartner = currentUser!.implementingPartner ?? "";
 
     hiddenFields.clear();
     hiddenSections.clear();
+
+    final servicesVals = _latestServiceVals(context);
+    final houseHoldServices = _latestHouseholdServiceVals(context);
+
+    var hivSDprovided = servicesVals['HzI5X2yHef6'];
+    var anyHsRProvided = servicesVals['eqhzeRBMftZ'];
+
 
     // Gather all progress fields
     List<FormSection> filteredFormSections = formSections
@@ -38,9 +92,129 @@ class OvcServiceMonitoringSkipLogic {
       hiddenFields[inputFieldId] = !['eventDate', 'location'].contains(inputFieldId);
     }
 
+    if (hivSDprovided == null) {
+      dataObject['PcLhqLEjKGw'] = 'No';
+      print('hivs&D: $hivSDprovided');
+    }
+    print('hivANn&D: $anyHsRProvided');
+    print(servicesVals);
+
+    if (anyHsRProvided != 'true') {
+      dataObject['fySDvo8AXNy'] = 'No';
+    }else {
+      dataObject['fySDvo8AXNy'] = 'Yes';
+    }
+
+
     // skip logics for non-progress fields
     for (String inputFieldId in skippedInputFieldIds) {
       String value = "${dataObject[inputFieldId]}";
+
+      if(inputFieldId == 'HzI5X2yHef6' ){
+        dataObject[inputFieldId] = hivSDprovided;
+      }
+
+      // if(inputFieldId == 'JnqldNamliR' ){
+      //   dataObject[inputFieldId] = htsProvided;
+      // }
+      //
+      // if(inputFieldId == 'CRVDu0WUOFm' ){
+      //   dataObject[inputFieldId] = NutrMsgProvided;
+      // }
+      //
+      // if(inputFieldId == 'eqhzeRBMftZ' ){
+      //   dataObject[inputFieldId] = AnyHealthProvided;
+      // }
+
+      if (sex != 'Female') {
+        hiddenFields['pJ1UrnLU9mh'] = true; // Pregnant
+        hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
+        //print('Statuss: $hivStatus');
+      }
+
+      if (hivStatus == 'Negative' || hivStatus == 'Unknown' || hivStatus == null ) {
+        hiddenFields['Uv26fX0HQvO'] = false;
+
+      }
+
+      // if (hivStatus == 'Positive' || (inputFieldId == 'Uv26fX0HQvO' && value != 'Less than 3 months')) {
+      //   hiddenSections['hivscreening'] = false; // hide
+      // }
+
+      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus =='Positive')) {
+        hiddenSections['hivscreening'] = true;
+      }
+
+      if (inputFieldId == 'vNeOE9abQBB' && value != 'Positive') {
+        hiddenFields['Icgkv0xkUow'] = true;
+        hiddenFields['ubin7MjQ5OI'] = true;
+        hiddenFields['sLyfb45aLkl'] = true;
+        hiddenFields['aRNGDZcwWmS'] = true;
+        hiddenFields['P52dMXyK4eA'] = true;
+        hiddenFields['tYN12Es3707'] = true;
+        hiddenFields['o1GBFscjs4y'] = true;
+        hiddenFields['BYZu8p33lzP'] = true;
+        hiddenFields['ToWhhydys'] = true;
+        hiddenFields['I3hI2UTkKyx'] = true;
+        hiddenFields['Uv26fX0HQvO'] = true;
+        hiddenFields['KFCBwn7ypws'] = true;
+      }
+
+      if (inputFieldId == 'vNeOE9abQBB' && value == 'Positive') {
+        hiddenFields['Uv26fX0HQvO'] = true;
+        hiddenSections['hivscreening'] = true;
+      }
+
+      if (inputFieldId == 'Icgkv0xkUow' && value != 'true') {
+        hiddenFields['ubin7MjQ5OI'] = true;
+        hiddenFields['sLyfb45aLkl'] = true;
+        hiddenFields['aRNGDZcwWmS'] = true;
+
+      }
+
+      if (inputFieldId == 'ubin7MjQ5OI' && value != 'more than six months') {
+        hiddenFields['sLyfb45aLkl'] = true;
+        hiddenFields['P52dMXyK4eA'] = true;
+        hiddenFields['aRNGDZcwWmS'] = true;
+
+      }
+
+      if (inputFieldId == 'ubin7MjQ5OI' && value != 'more than six months') {
+        hiddenFields['sLyfb45aLkl'] = true;
+        hiddenFields['sLyfb45aLkl'] = true;
+        hiddenFields['aRNGDZcwWmS'] = true;
+
+      }
+
+      if (inputFieldId == 'sLyfb45aLkl' && value != '1') {
+        hiddenFields['aRNGDZcwWmS'] = true;
+        hiddenFields['P52dMXyK4eA'] = true;
+        hiddenFields['tYN12Es3707'] = true;
+        hiddenFields['o1GBFscjs4y'] = true;
+      }
+
+      if (inputFieldId == 'aRNGDZcwWmS' && value != 'High (above 1,000 copies/ml)') {
+        hiddenFields['tYN12Es3707'] = true;
+        hiddenFields['o1GBFscjs4y'] = true;
+
+      }
+
+      if (inputFieldId == 'tYN12Es3707' && value != 'true') {
+        hiddenFields['o1GBFscjs4y'] = true;
+      }
+
+      if (inputFieldId == 'HLPSkYfLYlS' && value != 'true') {
+        hiddenFields['I3hI2UTkKyx'] = true;
+      }
+
+      if (inputFieldId == 'BYZu8p33lzP' && value != 'Yes') {
+        hiddenFields['ToWhhydys'] = true;
+        hiddenFields['I3hI2UTkKyx'] = true;
+        hiddenFields['I3hI2UTkKyx'] = true;
+      }
+
+      /////////
+
       if (inputFieldId == 'kEa51XegbF1' && value != 'true') {
         hiddenFields['whQroZXYFXl'] = true;
       }
