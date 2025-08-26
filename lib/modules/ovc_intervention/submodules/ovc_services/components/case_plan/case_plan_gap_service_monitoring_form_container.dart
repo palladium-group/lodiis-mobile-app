@@ -11,6 +11,7 @@ import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
+import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
@@ -64,6 +65,11 @@ class _CasePlanGapServiceMonitoringFormContainerState
   }
 
   void setFormMetdata() {
+
+    OvcHousehold? household = Provider.of<OvcHouseholdCurrentSelectionState>(
+        context,
+        listen: false)
+        .currentOvcHousehold;
     mandatoryFieldObject.clear();
     formSections = widget.isHouseholdCasePlan
         ? HouseholdServicesOngoingMonitoring.getFormSections()
@@ -118,16 +124,22 @@ class _CasePlanGapServiceMonitoringFormContainerState
     Timer(const Duration(milliseconds: 200), () {
       _isFormReady = true;
       evaluateSkipLogics(
-          context, formSections, widget.gapServiceMonitoringObject);
+          context, formSections, widget.gapServiceMonitoringObject, household?.hivStatus, household?.artStatus, household?.sex, household?.caregiverTestedForHiv, household?.artInitiationDate);
       setState(() {});
     });
   }
 
+
   void onInputValueChange(String id, dynamic value) {
+    OvcHousehold? household = Provider.of<OvcHouseholdCurrentSelectionState>(
+        context,
+        listen: false)
+        .currentOvcHousehold;
+
     widget.gapServiceMonitoringObject[id] = value;
     setState(() {});
     evaluateSkipLogics(
-        context, formSections, widget.gapServiceMonitoringObject);
+        context, formSections, widget.gapServiceMonitoringObject, household?.hivStatus, household?.artStatus, household?.sex, household?.caregiverTestedForHiv, household?.artInitiationDate);
   }
 
   void onSaveCasePlanMonitoring() async {
@@ -243,6 +255,7 @@ class _CasePlanGapServiceMonitoringFormContainerState
   Widget build(BuildContext context) {
     return Consumer<LanguageTranslationState>(
       builder: (context, languageTranslationState, child) {
+
         String currentLanguage = languageTranslationState.currentLanguage;
 
         return Container(
