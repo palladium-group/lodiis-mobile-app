@@ -26,6 +26,8 @@ class OvcChildEnrollmentSkipLogic {
     hiddenFields['RB8Wx75hGa4'] = true;
     hiddenInputFieldOptions.clear();
     assignedFields.clear();
+
+
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -56,8 +58,30 @@ class OvcChildEnrollmentSkipLogic {
     assignedFields[OvcEnrollmentChildConstant.village] = caregiverVillage;
     assignedFields[OvcEnrollmentChildConstant.subVillage] = caregiverSubVillage;
 
+    final String? caregiverSex =
+    (caregiverDataObject['vIX4GTSCX4P'] ?? dataObject['vIX4GTSCX4P'])
+        ?.toString();
+
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
+
+
+      if (inputFieldId == 'iS9mAp3jDaU') {
+        // Build the hide-map fresh each pass so changes to Sex re-render options correctly
+        final Map<String, bool> optionHides = {};
+        if (caregiverSex == 'Male') {
+          // Hide mother when caregiver is male
+          optionHides['Biological mother'] = true; // option *code* exactly as in form
+        } else if (caregiverSex == 'Female') {
+          // Hide father when caregiver is female
+          optionHides['Biological father'] = true; // option *code* exactly as in form
+        }
+
+        // Overwrite for this field id (don’t merge, to avoid stale hides)
+        hiddenInputFieldOptions[inputFieldId] = optionHides;
+      }
+
+
       if (inputFieldId == 'iS9mAp3jDaU')
       {if(value == 'Biological mother') {
             assignedFields['R9e8v9r3lMM'] = 'Yes';
