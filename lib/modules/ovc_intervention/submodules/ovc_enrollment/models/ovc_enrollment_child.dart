@@ -431,10 +431,10 @@ class OvcEnrollmentChild {
                       code: 'Unknown',
                       name: 'Unknown',
                       translatedName: 'Tse sa tsejoeng'),
-                  InputFieldOption(
-                      code: 'No Response',
-                      name: 'No Response',
-                      translatedName: 'Ha ho Karabo'),
+                  // InputFieldOption(
+                  //     code: 'No Response',
+                  //     name: 'No Response',
+                  //     translatedName: 'Ha ho Karabo'),
                 ],
               ),
               InputField(
@@ -550,20 +550,10 @@ class OvcEnrollmentChild {
               InputField(
                   id: 'OcY02VcD7fm',
                   name: 'Child Health Card available?',
-                  translatedName: 'Do you have a child?',
+                  translatedName: 'Child Health Card available?',
                   inputColor: const Color(0xFF4B9F46),
                   labelColor: const Color(0xFF737373),
                   valueType: 'BOOLEAN'),
-
-
-
-
-
-
-
-
-
-
 
               InputField(
                 id: 'KO5NC4pfBmv',
@@ -666,10 +656,7 @@ class OvcEnrollmentChild {
                   code: 'Unknown',
                   name: 'Unknown',
                   translatedName: 'Tse sa tsejoeng'),
-              InputFieldOption(
-                  code: 'No Response',
-                  name: 'No Response',
-                  translatedName: 'Ha ho Karabo'),
+
             ],
           ),
           InputField(
@@ -798,10 +785,7 @@ class OvcEnrollmentChild {
                   code: 'Unknown',
                   name: 'Unknown',
                   translatedName: 'Tse sa tsejoeng'),
-              InputFieldOption(
-                  code: 'No Response',
-                  name: 'No Response',
-                  translatedName: 'Ha ho Karabo'),
+
             ],
           ),
           InputField(
