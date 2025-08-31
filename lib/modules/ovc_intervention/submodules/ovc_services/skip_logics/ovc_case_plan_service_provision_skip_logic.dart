@@ -88,7 +88,17 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
           hiddenFields['CNnzifTDF5a'] = false;
           hiddenFields['sxlVgySosg3'] = false;
         }
-      } else if (key == 'AxtahhoHcXV' && value == 'true') {
+      }
+
+      else if (key == 'HKCv7lkLexo' && value == 'true') {
+        hiddenFields['otd2tndsE4Z'] = hideServicesByImplementingPartner(
+          "otd2tndsE4Z",
+          implementingPartner,
+        );
+
+      }
+
+      else if (key == 'AxtahhoHcXV' && value == 'true') {
         hiddenFields['eqhzeRBMftZ'] = hideServicesByImplementingPartner(
           "eqhzeRBMftZ",
           implementingPartner,
