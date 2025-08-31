@@ -110,6 +110,44 @@ class OvcHouseholdServicesCasePlanGaps {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'XuZIbkwn5yi',
+                name: 'Offer Enhanced adherence counseling',
+                translatedName: 'Enhanced adherence counselingT',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'uwuAbOBtPHf',
+                allowFuturePeriod: true,
+                name: 'Date for enhanced adherence counseling to be completed',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'zkbTGkrT6bH',
+                name: 'Provide feeding session service',
+                translatedName: 'Offer feeding session service',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'G4kPVSr7I8U',
+                allowFuturePeriod: true,
+                name: 'Date for feeding session service to be completed',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
             InputField(
                 id: 'XoSPWmpWXCy',
                 name: 'Refer for HTS',

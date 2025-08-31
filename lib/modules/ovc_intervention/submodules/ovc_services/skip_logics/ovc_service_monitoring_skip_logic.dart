@@ -261,7 +261,25 @@ class OvcServiceMonitoringSkipLogic {
           "DC4B9EIMZN9",
           implementingPartner,
         );
-      } else if (key == 'AxtahhoHcXV' && value == 'true') {
+      }
+
+
+      else if (key == 'HKCv7lkLexo' && value == 'true') {
+        hiddenFields['TACaGIXmXMs'] = hideServicesByImplementingPartner(
+          "TACaGIXmXMs",
+          implementingPartner,
+        );
+      }
+
+
+
+
+
+
+
+
+
+      else if (key == 'AxtahhoHcXV' && value == 'true') {
         hiddenFields['fySDvo8AXNy'] = hideServicesByImplementingPartner(
           "fySDvo8AXNy",
           implementingPartner,

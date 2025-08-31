@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,23 +6,24 @@ import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.da
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
+import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 
 import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
+import 'package:kb_mobile_app/core/services/organisation_unit_service.dart';
+import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
 
 import 'package:kb_mobile_app/models/current_user.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/skip_logics/ovc_case_plan_gap_skip_logic.dart';
-
-import '../../../../../../app_state/enrollment_service_form_state/service_event_data_state.dart';
-import '../../../../../../core/services/organisation_unit_service.dart';
-import '../../../../../../core/utils/tracked_entity_instance_util.dart';
-
-import '../../constants/ovc_household_assessment_constant.dart';
-import '../../constants/ovc_service_well_being_assessment_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_monitor/constants/ovc_household_monitor_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_service_well_being_assessment_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_household_assessment_constant.dart';
 
 class CasePlanGapFormContainer extends StatefulWidget {
   const CasePlanGapFormContainer({
@@ -30,7 +32,7 @@ class CasePlanGapFormContainer extends StatefulWidget {
     required this.isEditableMode,
     required this.formSectionColor,
     required this.dataObject,
-    this.isChildCasePlan = false, // << pass true for CHILD case plan
+    this.isChildCasePlan = false,
   }) : super(key: key);
 
   final List<FormSection> formSections;
@@ -38,7 +40,7 @@ class CasePlanGapFormContainer extends StatefulWidget {
   final Color formSectionColor;
   final Map dataObject;
 
-  /// When true, use child-specific logic based on the selected child's latest assessment.
+  /// true => use child logic & child CP stages
   final bool isChildCasePlan;
 
   @override
@@ -56,7 +58,6 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
   @override
   void initState() {
     super.initState();
-    // ensure providers are ready before reading them
     WidgetsBinding.instance.addPostFrameCallback((_) => _prepareForm());
   }
 
@@ -72,8 +73,6 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     return (v ?? '').toString().trim();
   }
 
-  // NOTE: uses only child.age (no DOB fallback)
-  /// Robust age parser: “8”, “08”, “8.5”, “8 yrs”, “8 years” → 8
   int _ageFromChild(OvcHouseholdChild child) {
     final raw = (child.age ?? '').toString().trim().toLowerCase();
     if (raw.isEmpty) return -1;
@@ -83,28 +82,25 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     return d == null ? -1 : d.floor();
   }
 
-
-  bool _hasChildAgeAtMost(int years) {
-    final household =
-        context.read<OvcHouseholdCurrentSelectionState>().currentOvcHousehold;
-    final children = household?.children ?? const <OvcHouseholdChild>[];
-    for (final child in children) {
-      final age = _ageFromChild(child);
-      if (age >= 0 && age <= years) return true;
+  void _pruneFalseyToggles(Map obj) {
+    final keys = List<String>.from(obj.keys);
+    for (final k in keys) {
+      final v = obj[k];
+      final isTrueBool = v is bool && v == true;
+      final isNonEmptyString = v is String && v.trim().isNotEmpty;
+      final isNonZeroNum = v is num && v != 0;
+      if (!(isTrueBool || isNonEmptyString || isNonZeroNum)) {
+        obj.remove(k);
+      }
     }
-    return false;
   }
 
-  /// Latest **CHILD** assessment values (Well-Being Assessment stage)
+  /// Latest **CHILD** assessment values (Well-Being Assessment)
   Future<Map<String, String?>> _latestValuesForChildAssessment(String tei) async {
     final accessibleOrgUnits =
     await OrganisationUnitService().getOrganisationUnitAccessedByCurrentUser();
-
     final all = await TrackedEntityInstanceUtil
-        .getSavedTrackedEntityInstanceEventData(
-      tei,
-      accessibleOrgUnits: accessibleOrgUnits,
-    );
+        .getSavedTrackedEntityInstanceEventData(tei, accessibleOrgUnits: accessibleOrgUnits);
 
     final stageId = OvcServiceWellBeingAssessmentConstant.programStage;
     final stageEvents = all.where((e) => e.programStage == stageId).toList();
@@ -130,25 +126,79 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     return map;
   }
 
+  /// TEI for current screen (HH or Child)
+  String? _currentTei() {
+    final sel = context.read<OvcHouseholdCurrentSelectionState>();
+    if (widget.isChildCasePlan) {
+      final c = sel.currentOvcHouseholdChild;
+      final tei = (c?.teiData?.trackedEntityInstance ?? c?.id ?? '').toString();
+      return tei.isEmpty ? null : tei;
+    } else {
+      final h = sel.currentOvcHousehold;
+      final tei = (h?.teiData?.trackedEntityInstance ?? h?.id ?? '').toString();
+      return tei.isEmpty ? null : tei;
+    }
+  }
+
+  /// Collect **all** gap DEs that have EVER been saved `true` in Case Plan Gap stage
+  Future<Set<String>> _existingGapTogglesAcrossAllEvents() async {
+    final tei = _currentTei();
+    if (tei == null) return <String>{};
+
+    final stageId = widget.isChildCasePlan
+        ? OvcChildCasePlanConstant.casePlanGapProgramStage
+        : OvcHouseholdCasePlanConstant.casePlanGapProgramStage;
+
+    final accessibleOrgUnits =
+    await OrganisationUnitService().getOrganisationUnitAccessedByCurrentUser();
+    final events = await TrackedEntityInstanceUtil
+        .getSavedTrackedEntityInstanceEventData(tei, accessibleOrgUnits: accessibleOrgUnits);
+
+    final existing = <String>{};
+    for (final e in events) {
+      if (e.programStage != stageId) continue;
+      final dvs = (e.dataValues as List?) ?? const [];
+      for (final dv in dvs) {
+        if (dv is Map && dv['dataElement'] != null) {
+          final val = (dv['value'] ?? '').toString().trim().toLowerCase();
+          if (val == 'true' || val == '1' || val == 'yes') {
+            existing.add(dv['dataElement'] as String);
+          }
+        }
+      }
+    }
+    return existing;
+  }
+
   // ----------------- prepare -----------------
 
   void _prepareForm() {
-    dataObject = widget.dataObject;
-
-    // Decide path ONLY from explicit flag to avoid accidental branch selection
+    dataObject = Map.of(widget.dataObject);
     final runChildPath = widget.isChildCasePlan;
-    debugPrint('[CasePlanGap] isChildCasePlan=${widget.isChildCasePlan} -> runChildPath=$runChildPath');
+    debugPrint('[CasePlanGap] isChildCasePlan=${widget.isChildCasePlan}');
 
     if (!runChildPath) {
-      // HOUSEHOLD/CAREGIVER PATH — uses latest HH assessment
+      // HOUSEHOLD
       Future.microtask(() async {
         final assessmentVals = context
             .read<ServiceEventDataState>()
             .latestValuesForStage(OvcHouseholdAssessmentConstant.programStage);
 
-        debugPrint('[CasePlanGap] Running CAREGIVER mapping with $assessmentVals');
+        final monitoringVals = context
+            .read<ServiceEventDataState>()
+            .latestValuesForStage(OvcHouseholdMonitorConstant.programStage);
 
-        await _applyCaregiverAssessmentToGaps(assessmentVals);
+        // map from monitoring if available else assessment
+        final source = monitoringVals.isEmpty ? assessmentVals : monitoringVals;
+        await _applyCaregiverAssessmentToGaps(source);
+
+        // remove gaps that exist in ANY past HH case plan gap event
+        final existing = await _existingGapTogglesAcrossAllEvents();
+        for (final id in existing) {
+          dataObject.remove(id);
+        }
+
+        _pruneFalseyToggles(dataObject);
 
         for (final id in mandatoryFields) {
           mandatoryFieldObject[id] = true;
@@ -159,25 +209,25 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
       return;
     }
 
-    // CHILD PATH — reads ONLY the child’s latest assessment (no HH reads)
+    // CHILD
     Future.microtask(() async {
-      final child = context
-          .read<OvcHouseholdCurrentSelectionState>()
-          .currentOvcHouseholdChild;
-
+      final child =
+          context.read<OvcHouseholdCurrentSelectionState>().currentOvcHouseholdChild;
       if (child != null) {
-        final tei =
-        (child.id ?? '').toString();
+        final tei = (child.id ?? '').toString();
         if (tei.isNotEmpty) {
           final childVals = await _latestValuesForChildAssessment(tei);
-          debugPrint('[CasePlanGap] Running CHILD mapping for TEI=$tei with $childVals');
           await _applyChildAssessmentToGaps(childVals, child);
-        } else {
-          debugPrint('[CasePlanGap] CHILD mapping skipped: empty TEI');
         }
-      } else {
-        debugPrint('[CasePlanGap] CHILD mapping skipped: no selected child');
       }
+
+      // remove gaps that exist in ANY past CHILD case plan gap event
+      final existing = await _existingGapTogglesAcrossAllEvents();
+      for (final id in existing) {
+        dataObject.remove(id);
+      }
+
+      _pruneFalseyToggles(dataObject);
 
       for (final id in mandatoryFields) {
         mandatoryFieldObject[id] = true;
@@ -187,10 +237,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     });
   }
 
-  // ----------------- caregiver mapper (HH assessment ONLY) -----------------
+  // ----------------- CAREGIVER mapper -----------------
 
-  Future<void> _applyCaregiverAssessmentToGaps(
-      Map<String, String?> a) async {
+  Future<void> _applyCaregiverAssessmentToGaps(Map<String, String?> a) async {
     // Assessment DEs (household)
     const hivStatusDE = 'vNeOE9abQBB';
     const artStatusDE = 'Icgkv0xkUow';
@@ -199,6 +248,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const oralHealthMessagingDE = 'wRhamvRZj87';
     const dietDE = 'iqBsSAfCyJb';
     const feelingSupportedDE = 'KFCBwn7ypws';
+    const viralLoadResultsDE = 'aRNGDZcwWmS';
 
     // Gap DEs
     const hivAdherenceGapDE = 'HKCv7lkLexo';
@@ -213,6 +263,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const foodSupportGapDE = 'EaJTFrklMo5';
     const disclosureSupportGapDE = 'eQTJrTcKzVK';
     const dewormingGapDE = 'x4yAqv4z2Xv';
+    const feedingsessionsGapDE = 'zkbTGkrT6bH';
+    const enhancedAdherenceCouncilingGapDE = 'XuZIbkwn5yi';
 
     bool _isTrue(dynamic v) {
       final s = (v ?? '').toString().trim().toLowerCase();
@@ -247,56 +299,52 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final coughing = _isTrue(a[areYouCoughingDE]);
     final recentTest = _testedWithin3Months(a[lastTestedDE]);
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
-    final feelingSupported = a[feelingSupportedDE] ;
+    final feelingSupported = a[feelingSupportedDE];
+    final viralLoadResults = a[viralLoadResultsDE];
 
-    // rules
+    if (hivPositive && (viralLoadResults ?? '').isNotEmpty) {
+      if (viralLoadResults == 'High (above 1,000 copies/ml)') {
+        dataObject[enhancedAdherenceCouncilingGapDE] = true;
+      }
+    }
     dataObject[hivSndGapDE] = true;
     dataObject[nutritionMessagingDE] = true;
-    if(feelingSupported != null && feelingSupported != 'Yes'){
+    if (feelingSupported != null && feelingSupported != 'Yes') {
       dataObject[disclosureSupportGapDE] = true;
     }
     if (onArt) dataObject[hivAdherenceGapDE] = true;
     if (coughing) dataObject[tbTreatGapDE] = true;
     if (hivPositive && !onArt) dataObject[hivTreatGapDE] = true;
     if (hivPositive) {
-      if(_dietIsOneType(a)){
-        dataObject[foodSupportGapDE] = true;
-      }
+      if (_dietIsOneType(a)) dataObject[foodSupportGapDE] = true;
       dataObject[comArtAdherenceGapDE] = true;
       dataObject[artLiteracyGapDE] = true;
     }
     if (!hivPositive && !recentTest) dataObject[htsGapDE] = true;
     if (oralHealthFlag) dataObject[oralHealthGapDE] = true;
 
-
-    // nutrition messaging if any child <= 5
-
-
-    // caregiver NOT positive + any child (0–8) positive (from CHILD assessment)
+    // CHILD-driven additions (caregiver NOT positive scenarios)
     if (!hivPositive) {
       final hh =
           context.read<OvcHouseholdCurrentSelectionState>().currentOvcHousehold;
       final children = hh?.children ?? const <OvcHouseholdChild>[];
 
       for (final child in children) {
-        final tei =
-        (child.id ?? '').toString();
+        final tei = (child.id ?? '').toString();
         if (tei.isEmpty) continue;
         final age = _ageFromChild(child);
-        final childVals = await _latestValuesForChildAssessment(tei);
-        final childHiv = _normHiv(childVals['c5TMWtM4VVJ']); // child HIV DE
-       if (_dietIsOneType(a)) {
-          dataObject[foodSupportGapDE] = true;
-        }
-        print('ageeeee: $age');
+
+        // age-based nutrition
         if (age >= 0 && age <= 5) {
+          if (age < 4) dataObject[feedingsessionsGapDE] = true;
           dataObject[dewormingGapDE] = true;
         }
 
         if (age < 0 || age > 8) continue;
+
+        final childVals = await _latestValuesForChildAssessment(tei);
+        final childHiv = _normHiv(childVals['c5TMWtM4VVJ']);
         if (childHiv == 'Positive') {
-          print(childHiv);
-          print('${dataObject[hivAdherenceGapDE] = true}');
           dataObject[artLiteracyGapDE] = true;
           break;
         }
@@ -304,10 +352,16 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     }
   }
 
-  // ----------------- child mapper (CHILD assessment ONLY) -----------------
+  // ----------------- CHILD mapper -----------------
 
   Future<void> _applyChildAssessmentToGaps(
-      Map<String, String?> a, OvcHouseholdChild child) async {
+      Map<String, String?> a,
+      OvcHouseholdChild child,
+      ) async {
+    bool _isTrue(dynamic v) {
+      final s = (v ?? '').toString().trim().toLowerCase();
+      return s == 'true' || s == '1' || s == 'yes';
+    }
 
     bool _testedWithin3Months(dynamic v) {
       final raw = (v ?? '').toString().trim();
@@ -322,22 +376,20 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
       }
       return false;
     }
+
     // Child assessment DEs
-    const hivStatusDE = 'c5TMWtM4VVJ'; // child HIV status DE
+    const hivStatusDE = 'c5TMWtM4VVJ';
     const malnutritionSignsDE = 'OBugEkynJG0';
     const feelingSupportedDE = 'KFCBwn7ypws';
-    // Gap DEs (reuse or swap for child-specific if different)
-
-    const foodSupplementsGapDE = 'uvJV4WGc5ct';
-    const hivSndGapDE = 'cx4xBY4jZXM';
-    const disclosureSupportGapDE = 'eQTJrTcKzVK';
     const artStatusDE = 'Icgkv0xkUow';
     const areYouCoughingDE = 'tMvluCbiiUm';
     const lastTestedDE = 'Uv26fX0HQvO';
     const oralHealthMessagingDE = 'wRhamvRZj87';
-    const dietDE = 'iqBsSAfCyJb';
 
     // Gap DEs
+    const foodSupplementsGapDE = 'uvJV4WGc5ct';
+    const hivSndGapDE = 'cx4xBY4jZXM';
+    const disclosureSupportGapDE = 'eQTJrTcKzVK';
     const hivAdherenceGapDE = 'HKCv7lkLexo';
     const hivTreatGapDE = 'ylSjcj6cv42';
     const tbTreatGapDE = 'bRv4ZZy5MDH';
@@ -345,13 +397,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const artLiteracyGapDE = 'vqRohVpTK2G';
     const htsGapDE = 'XoSPWmpWXCy';
     const oralHealthGapDE = 'ztDAwmkSwKf';
-    bool _isTrue(dynamic v) {
-      final s = (v ?? '').toString().trim().toLowerCase();
-      return s == 'true' || s == '1' || s == 'yes';
-    }
+
     final hiv = _normHiv(a[hivStatusDE]);
-    final mulnutriotSigns = _isTrue(a[malnutritionSignsDE]);
-    final feelingSupported = a[feelingSupportedDE] ;
+    final malnutrition = _isTrue(a[malnutritionSignsDE]);
+    final feelingSupported = a[feelingSupportedDE];
     final age = _ageFromChild(child);
     final hivPositive = hiv == 'Positive';
     final onArt = _isTrue(a[artStatusDE]);
@@ -359,19 +408,14 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final recentTest = _testedWithin3Months(a[lastTestedDE]);
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
 
-    if (age >= 0 && age <= 5 && mulnutriotSigns) {
-      print('Mulnutrion Signs?? $mulnutriotSigns');
+    if (age >= 0 && age <= 5 && malnutrition) {
       dataObject[foodSupplementsGapDE] = true;
     }
 
-    if(age > 8){
-
+    if (age > 8) {
       dataObject[hivSndGapDE] = true;
-      if (oralHealthFlag){
-        print('AGEEE: $oralHealthFlag');
-        dataObject[oralHealthGapDE] = true;
-      }
-      if(feelingSupported != null && feelingSupported != 'Yes'){
+      if (oralHealthFlag) dataObject[oralHealthGapDE] = true;
+      if (feelingSupported != null && feelingSupported != 'Yes') {
         dataObject[disclosureSupportGapDE] = true;
       }
       if (onArt) dataObject[hivAdherenceGapDE] = true;
@@ -382,12 +426,12 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         dataObject[artLiteracyGapDE] = true;
       }
       if (!hivPositive && !recentTest) dataObject[htsGapDE] = true;
+    } else {
+      if (hivPositive) {
+        dataObject[hivAdherenceGapDE] = true;
+        dataObject[artLiteracyGapDE] = true;
+      }
     }
-
-
-
-
-    // add more child-only rules here using `a[...]` if needed
   }
 
   // ----------------- Skip-logic / UI -----------------
@@ -446,7 +490,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     setState(() {});
   }
 
-  onSaveGapForm(BuildContext context) {
+  void onSaveGapForm(BuildContext context) {
+    _pruneFalseyToggles(dataObject);
+
     bool isAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       dataObject,
@@ -478,12 +524,12 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         Navigator.pop(context, dataObject);
       } else {
         AppUtil.showToastMessage(
-          message: 'Please fill at least one field',
+          message: 'No new gaps for this beneficiary',
         );
       }
     } else {
       AppUtil.showToastMessage(
-        message: 'Please fill  all mandatory fields',
+        message: 'Please fill all mandatory fields',
       );
     }
   }
@@ -533,7 +579,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
                                     ? "Eketsa sekheo"
                                     : 'CONFIRM',
                                 style: const TextStyle().copyWith(
-                                  color: const Color(0xFFFAFAFA),
+                                  color: Color(0xFFFAFAFA),
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.w700,
                                 ),

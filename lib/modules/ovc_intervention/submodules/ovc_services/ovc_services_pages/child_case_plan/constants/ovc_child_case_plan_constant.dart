@@ -60,6 +60,7 @@ class OvcChildCasePlanConstant {
             "cx4xBY4jZXM", "SIEeRmPm0Q0",
             "gff7hjjVoI6", "YI1Ckbt8mRn",
             "vqRohVpTK2G", "vUMhUm3i0b0",
+            "XuZIbkwn5yi","uwuAbOBtPHf"
 
           ],
         },
@@ -77,6 +78,8 @@ class OvcChildCasePlanConstant {
           "ids": [
             //Deworming medication, Vitamin A and Immunization
             "x4yAqv4z2Xv", "eTDE6zroxBC",
+            //feeding sessions
+            "zkbTGkrT6bH","G4kPVSr7I8U",
           ],
         },
 
@@ -154,7 +157,14 @@ class OvcChildCasePlanConstant {
       ],
       "ageBased": [
 
-        //TODO new agebased services
+        {
+          "minAge": 0,
+          "maxAge": 9,
+          "ids": [
+            //HIVS&D service
+            "HzI5X2yHef6", "GyG2HcLsVka"
+          ],
+        },
       ]
     },
     "Safe": {

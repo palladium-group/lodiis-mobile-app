@@ -15,7 +15,7 @@ class OvcServicesChildServiceProvision {
           borderColor: const Color(0xFF4D9E49),
           inputFields: [
             InputField(
-              id: 'y8ToqnbVz1o',
+              id: 'HzI5X2yHef6',
               name: 'HIVS&D Service provided',
               translatedName: "Lits'ebeletso tsa HIVS&D li fanoe",
               valueType: 'TRUE_ONLY',
@@ -30,14 +30,6 @@ class OvcServicesChildServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-              id: 'uU4TvD2O1uL',
-              name: 'HIVS&D session number',
-              translatedName: 'Thupelo ea HIVS&D',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
             InputField(
                 id: 'dwhnvU5m667',
                 name: 'HIVS&D Comment',
@@ -604,6 +596,7 @@ class OvcServicesChildServiceProvision {
               name: 'Nutrition Messaging Service provided',
               translatedName: "Lits'ebeletso tsa Nutrition Messaging li fanoe",
               valueType: 'TRUE_ONLY',
+              isReadOnly: true,
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
             ),
@@ -616,14 +609,6 @@ class OvcServicesChildServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-              id: 'hyVWFxIg7x6',
-              name: 'Nutrition Messaging session number',
-              translatedName: 'Thupelo ea Nutrition Messaging',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
             InputField(
                 id: 'OypZVFbZ1r0',
                 name: 'Nutrition Messaging Comment',

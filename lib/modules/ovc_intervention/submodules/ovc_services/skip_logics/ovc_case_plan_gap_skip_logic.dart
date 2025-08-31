@@ -268,6 +268,16 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['bK18Ebt1cRa'] = true;
 
       }
+      if (inputFieldId == 'zkbTGkrT6bH' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['G4kPVSr7I8U'] = true;
+
+      }
+      if (inputFieldId == 'XuZIbkwn5yi' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['uwuAbOBtPHf'] = true;
+
+      }
       if (inputFieldId == 'gff7hjjVoI6' && value != 'true') {
         hiddenFields[inputFieldId] = true;
         hiddenFields['YI1Ckbt8mRn'] = true;
@@ -645,7 +655,7 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['aPmPhwm8Zln'] = true;
         hiddenFields['AaqeRcyjbyS'] = true;
         hiddenFields['Cb8qzfdrg7d'] = true;
-        hiddenFields['vUMhUm3i0b0'] = true;
+
 
       }
       if (age < 13 || age > 17) {

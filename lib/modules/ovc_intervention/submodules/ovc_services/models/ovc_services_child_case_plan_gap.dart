@@ -21,6 +21,7 @@ class OvcServicesChildCasePlanGap {
                 name: 'HIV S&D',
                 translatedName: 'Tšebeletso ea HIV S&D',
                 valueType: 'TRUE_ONLY',
+                isReadOnly: true,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
@@ -89,22 +90,10 @@ class OvcServicesChildCasePlanGap {
                 name: 'HIV ADHERANCE SUPPORT',
                 translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
                 valueType: 'TRUE_ONLY',
+                isReadOnly: true,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'd3X7sRgkQkl',
-                name: '(HIV ADHERANCE SUPPORT) Name of responsible internal person',
-                translatedName: 'Motho ea ikarabellang ka hare ho HIV ADHERANCE SUPPORT ',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4D9E49),
-                labelColor: const Color(0xFF737373)),
-            InputField(
-                id: 'd8vFkGjiux4',
-                name: '(HIV ADHERANCE SUPPORT ) Name of responsible external Person',
-                translatedName: 'Motho ea ikarabellang ka ntle ho HIV ADHERANCE SUPPORT ',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4D9E49),
-                labelColor: const Color(0xFF737373)),
+
             InputField(
                 id: 'JzlLk2tW4xh',
                 allowFuturePeriod: true,
@@ -119,6 +108,7 @@ class OvcServicesChildCasePlanGap {
                 name: 'HTS',
                 translatedName: 'Tšebeletso a HTS ',
                 valueType: 'TRUE_ONLY',
+                isReadOnly: true,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
@@ -137,6 +127,26 @@ class OvcServicesChildCasePlanGap {
                 valueType: 'TRUE_ONLY',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'XuZIbkwn5yi',
+                name: 'Enhanced adherence counseling',
+                translatedName: 'Enhanced adherence counselingT',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'uwuAbOBtPHf',
+                allowFuturePeriod: true,
+                name: 'Date for enhanced adherence counseling to be completed',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                isReadOnly: true,
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
             InputField(
                 id: 'elqeNdaYNTS',
                 name: '(HIVTREAT) Name of responsible internal person',
@@ -165,20 +175,7 @@ class OvcServicesChildCasePlanGap {
                     name: 'TBTREAT',
                     translatedName: 'Tšebeletso a TBTREAT',
                     valueType: 'TRUE_ONLY',
-                    inputColor: const Color(0xFF4D9E49),
-                    labelColor: const Color(0xFF737373)),
-                InputField(
-                    id: 'Wc58mUb3AXg',
-                    name: '(TBTREAT) Name of responsible internal person',
-                    translatedName: 'Motho ea ikarabellang ka hare ho TBTREAT',
-                    valueType: 'TEXT',
-                    inputColor: const Color(0xFF4D9E49),
-                    labelColor: const Color(0xFF737373)),
-                InputField(
-                    id: 'OPmcOXe5Ogy',
-                    name: '(TBTREAT) Name of responsible external Person',
-                    translatedName: 'Motho ea ikarabellang ka ntle ho TBTREAT',
-                    valueType: 'TEXT',
+                    isReadOnly: true,
                     inputColor: const Color(0xFF4D9E49),
                     labelColor: const Color(0xFF737373)),
                 InputField(
