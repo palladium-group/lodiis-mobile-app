@@ -66,8 +66,22 @@ I understand:
 • In life-threatening or emergency situations, our information may be shared with authorities even without my consent (e.g., health service denial or refusal to adhere to essential health services).
 ''',
         translatedDescription: '''
-Mosebeletsi oa morero o oa bala: “Thepa ke lintho tse molemo li bile li le bohlokoa ho oena. 
-Mohlala e ka ba batho hobane motho ka mong o na le litsebo, mahlale le litalenta tse itseng.”
+I understand the goal of the Bokamoso OVC program as supporting healthy lives of families and its potential benefits to my household.
+
+My household agrees to regularly meet with a case management worker to:
+• Discuss issues we face
+• Set goals for our future
+• Plan how to achieve those goals
+
+This process is referred to as “case management.”
+
+I allow our information to be stored in the m2m case management system. This means m2m will keep records about our participation and progress during case management in a safe place. Only authorized individuals and those bound by shared confidentiality agreements, will access this information.
+
+I consent to the sharing and discussion of my household’s and children’s information with service providers (organizations/groups) for case conferencing. This will only occur on a need-to-know basis and with respect for confidentiality to help us achieve our goals.
+
+I understand:
+• I may withdraw this consent at any time.
+• In life-threatening or emergency situations, our information may be shared with authorities even without my consent (e.g., health service denial or refusal to adhere to essential health services).
 ''',
         inputFields: [],
       ),
