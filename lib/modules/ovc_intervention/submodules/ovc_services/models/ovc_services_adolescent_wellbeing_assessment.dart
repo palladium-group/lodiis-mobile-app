@@ -950,8 +950,7 @@ class OvcServicesWellbeingAssessment {
                       code: 'Not documented',
                       name: 'Not documented',
                       translatedName: 'Ha a tsebe'),
-                  InputFieldOption(
-                      code: 'NA', name: 'NA', translatedName: 'N/A')
+
                 ]),
 
             InputField(
@@ -1018,7 +1017,7 @@ class OvcServicesWellbeingAssessment {
                 ]),
             InputField(
                 id: 'ToWhhydys',
-                name: 'Who knows about your HIV status?',
+                name: 'To Whom have you disclosed your status to?',
                 translatedName:
                 'Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
                 valueType: 'CHECK_BOX',
@@ -1027,7 +1026,7 @@ class OvcServicesWellbeingAssessment {
                 options: [
                   InputFieldOption(
                       code: 'Dl3tIlQxsrd',
-                      name: 'My child',
+                      name: 'Caregiver',
                       translatedName: 'Ngoana oaka'),
                   InputFieldOption(
                       code: 'CHuwbETwj8o',
@@ -1041,10 +1040,6 @@ class OvcServicesWellbeingAssessment {
                       code: 'pCHKaQptcwn',
                       name: 'Boyfriend/ girlfriend',
                       translatedName: 'Mohlankana oaka/Kharebe eaka'),
-                  // InputFieldOption(
-                  //     code: 'Wfu966TC3M5',
-                  //     name: 'Member of the family',
-                  //     translatedName: 'Moruti'),
                   InputFieldOption(
                       code: 'J5hjKDmiE6a',
                       name: 'Pastor or priest',
@@ -1053,8 +1048,7 @@ class OvcServicesWellbeingAssessment {
                       code: 'HLPSkYfLYlS',
                       name: 'Other',
                       translatedName: 'Tse ling'),
-                  InputFieldOption(
-                      code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
+
                 ]),
 
 
