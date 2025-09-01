@@ -169,6 +169,14 @@ class OvcChildEnrollmentSkipLogic {
 
         }
       }
+
+      if (inputFieldId == 'psMvy1sqWwf' && value != 'true') {
+        hiddenFields['mrODVshHUli'] = true;
+      }
+      if (inputFieldId == 'XYPRtYgQUF8' && value != 'Yes'){
+        hiddenFields['xSd3LPUf8Tf'] = true;
+      }
+
       if (inputFieldId == 'oSKX8fFQdWc' && value == 'Positive') {
         hiddenFields['NqhUKijE4hB'] = true;
         hiddenFields['GMcljM7jbNG'] = true;

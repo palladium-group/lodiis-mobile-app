@@ -501,7 +501,7 @@ class OvcEnrollmentChild {
 
               InputField(
                 id: 'XYPRtYgQUF8',
-                name: 'Do you suspect that you are pregnant?',
+                name: 'Are you pregnant?',
                 translatedName: 'Do you suspect that you are pregnant?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
@@ -942,8 +942,8 @@ class OvcEnrollmentChild {
                 name: 'Adolescent Girl who is Pregnant',
               ),
               InputFieldOption(
-                code: 'Adolescent Girl who is Breastfeeding',
-                name: 'Adolescent Girl who is Breastfeeding',
+                code: 'Adolescent Girl who is a young mother',
+                name: 'Adolescent Girl who is a young mother',
               ),
 
 
