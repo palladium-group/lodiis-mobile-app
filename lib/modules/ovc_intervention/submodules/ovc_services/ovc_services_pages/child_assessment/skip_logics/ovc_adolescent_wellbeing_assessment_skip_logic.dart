@@ -186,24 +186,15 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
 
     }
 
-    if(isTested == true){
-      if(hivStatus =='Positive'){
-        hiddenFields['Uv26fX0HQvO'] = true;
 
-      }
-    }
     if (age > 5) {
       hideMalnutritionQuestions();
 
     } else if (age < 2) {
       hiddenSections['domainschooltsasekolo'] = true;
     }
-    if(isTested == true){
-      if(hivStatus =='Positive'){
-        hiddenFields['Uv26fX0HQvO'] = true;
 
-      }
-    }
+
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
       bool isFieldHidden = hiddenFields[inputFieldId] ?? false;
@@ -218,30 +209,28 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
       if (inputFieldId == 'c5TMWtM4VVJ'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;
+          print('Statuss: $hivStatus');
         }
 
       }
      if (inputFieldId == 'BYZu8p33lzP' && value != 'Yes'){
 
         hiddenFields['ToWhhydys'] = true;
+        hiddenFields['wi6Iq4yVdXV'] = true;
 
       }
+
 
       if(inputFieldId == 'sLyfb45aLkl' && value != '1'){
         hiddenFields['aRNGDZcwWmS']= true;
         hiddenFields['P52dMXyK4eA']= true;
       }
-      if(inputFieldId == 'aRNGDZcwWmS' && (value == 'Undetectable' || value == 'Not documented' || value == 'null')){
 
-        hiddenFields['tYN12Es3707']= true;
-
-      }
 
       if(inputFieldId== 'tYN12Es3707' && value != 'true'){
         hiddenFields['o1GBFscjs4y']= true;
-
-
       }
+
       if (inputFieldId == 'Icgkv0xkUow'){
         if(hivStatus != null){
           dataObject[inputFieldId] = artStatus;
@@ -259,12 +248,22 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
           hiddenFields['gAzb8e8cLga']=true;
           hiddenFields['BYZu8p33lzP']=true;
           hiddenFields['tYN12Es3707']=true;
-
-
         }
       }
 
 
+      final hivDuration = (dataObject['ubin7MjQ5OI'] ?? '').toString().trim();
+
+      if (hivStatus == 'Negative' && hivDuration == 'more than six months') {
+        hiddenFields['Uv26fX0HQvO'] = false;
+      }else {
+        hiddenFields['Uv26fX0HQvO'] = true;
+      }
+
+      final vlResult = (dataObject['aRNGDZcwWmS'] ?? '').toString().trim();
+      if (vlResult != 'High (above 1,000 copies/ml)') {
+        hiddenFields['tYN12Es3707'] = true;
+      }
       if (inputFieldId == 'sHUjPZTqpy2' && value != 'Yes') {
         hiddenFields['VFLlpMdPCTX'] = true;
         hiddenFields['VFLlpMdPCTX_checkboxes'] = true;
@@ -435,7 +434,6 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
           hiddenFields['YRWFyAhfhRP'] = true;
           hiddenFields['YQVQRnN30O6'] = true;
         }
-
 
         if (inputFieldId == 'EDgB0kYWS3v' && value != 'true' ) {
           hiddenFields['ut8LqpHyZnR_checkbox'] = true;
@@ -630,18 +628,11 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
               hiddenFields['YTa10rE1vtd'] = true;
               hiddenFields['wi6Iq4yVdXV'] = true;
               hiddenFields['KFCBwn7ypws'] = true;
-
-
             }
           }
-
         }
         if(artStatus != true){
           hiddenFields['wv3YAGLZlev'] = true;
-          hiddenFields['ubin7MjQ5OI'] = true;
-
-
-
 
         }
         if (inputFieldId == 'MlcK6DAGoCx' && value != 'true') {
