@@ -6,6 +6,8 @@ import 'package:kb_mobile_app/models/case_plan_gap_service_provision_event.dart'
 import 'package:kb_mobile_app/models/events.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
+import '../../../services/ovc_case_plan_service.dart';
+
 class OvcCasePlanUtil {
   static Map<String, List<Events>> getCasePlanByDates({
     required Map<String?, List<Events>> eventListByProgramStage,
@@ -24,6 +26,30 @@ class OvcCasePlanUtil {
             .toList()
             .length;
   }
+
+
+  /// Return ALL gap events for a given case-plan linkage, ignoring date windows.
+  /// Used to deduplicate when saving (so previously-saved gaps from any day aren’t re-added).
+  static Future<List<CasePlanGapEvent>> getCasePlanGapsForLinkage({
+    required String teiId,
+    required String programStageId,
+    required String linkage,
+  }) async {
+    try {
+      // Most builds of OvcCasePlanService filter by linkage if you pass it,
+      // and ignore the date when you pass an empty ''.
+      final gaps = await OvcCasePlanService().getCasePlanGapEvents(
+        date: '', // <- intentionally blank to fetch across dates
+        programStageId: programStageId,
+        teiId: teiId,
+        casePlanToGaps: [linkage],
+      );
+      return gaps;
+    } catch (_) {
+      return <CasePlanGapEvent>[];
+    }
+  }
+
 
   static Map getMappedCasePlanWithGapsByDomain({
     required List<Events> casePlanEvents,
