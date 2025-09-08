@@ -42,13 +42,7 @@ class InterventionBottomNavigationState with ChangeNotifier {
               interventionBottomNavigation.id != 'enrollment')
           .toList();
     }
-    if (['M2M']
-        .contains(implementingPartner)) {
-      interventionBottomNavigations = interventionBottomNavigations
-          .where((interventionBottomNavigation) =>
-      interventionBottomNavigation.id == 'enrollment')
-          .toList();
-    }
+
     InterventionBottomNavigation interventionBottomNavigation =
         interventionBottomNavigations.isNotEmpty
             ? interventionBottomNavigations.first
