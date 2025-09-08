@@ -12,7 +12,7 @@ class OvchouseHoldAssessmentSkipLogic {
   static Map hiddenInputFieldOptions = {};
 
   static Future evaluateSkipLogics(BuildContext context,
-      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? artStatus,String? sex, bool? caregiverTestedForHiv, DateTime? artInitiationDate) async {
+      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? artStatus,String? sex, bool? caregiverTestedForHiv, DateTime? artInitiationDate, String? age) async {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenInputFieldOptions.clear();
@@ -104,8 +104,39 @@ class OvchouseHoldAssessmentSkipLogic {
       }else{
         hiddenFields['Uv26fX0HQvO'] = true;
       }
-      if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus =='Positive')) {
-        hiddenSections['hivscreening'] = true;
+      // if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus =='Positive')) {
+      //   hiddenSections['hivscreening'] = true;
+      // }
+      // if (inputFieldId == 'Exposure' && value != 1){
+      //   hiddenSections['hivscreening'] = true;
+      // }
+
+      if (inputFieldId == 'Uv26fX0HQvO') {
+        final testedDuration = value.toString().trim();
+        if (!(testedDuration == 'Less than 3 months' && hivStatus == 'Negative')) {
+          hiddenFields['Exposure'] = true; // hide in all other cases
+        }
+      }
+
+      if (inputFieldId == 'Uv26fX0HQvO' || inputFieldId == 'Exposure' || inputFieldId == 'vNeOE9abQBB') {
+        final testedDuration = (dataObject['Uv26fX0HQvO'] ?? '').toString().trim();
+        final exposure = (dataObject['Exposure'] ?? '').toString().trim();
+
+        bool showScreening = false;
+
+        if (hivStatus == 'Negative') {
+          if (testedDuration != 'Less than 3 months' && testedDuration != '' ) {
+            showScreening = true;
+          } else if (testedDuration == 'Less than 3 months' && exposure == 'true') {
+            showScreening = true;
+          }
+        }
+
+        if (!showScreening) {
+          hiddenSections['hivscreening'] = true;
+        } else {
+          hiddenSections.remove('hivscreening');
+        }
       }
 
       if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
@@ -144,12 +175,13 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['mH9DgJoa0nT'] = true;
       }
 
-      if (sex != 'Female'){
+      // Convert age String to int (default to 0 if null or invalid)
+      final int parsedAge = int.tryParse(age ?? '') ?? 0;
+
+      if (sex != 'Female' || parsedAge < 18 || parsedAge > 56) {
         hiddenFields['pJ1UrnLU9mh'] = true; // Pregnant
         hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
-
       }
-
       if (caregiverTestedForHiv != true){
         hiddenFields['Uv26fX0HQvO'] = true;
         hiddenFields['vNeOE9abQBB'] = true;
@@ -221,8 +253,6 @@ class OvchouseHoldAssessmentSkipLogic {
           hiddenFields['vNeOE9abQBB'] = true;
         }
       }
-
-
 
 
       if (inputFieldId == 'vNeOE9abQBB') {
