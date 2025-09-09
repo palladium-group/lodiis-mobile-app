@@ -146,6 +146,61 @@ class OvcServicesChildCasePlanGap {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'zkbTGkrT6bH',
+                name: 'Provide feeding session service',
+                translatedName: 'Offer feeding session service',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'G4kPVSr7I8U',
+                allowFuturePeriod: true,
+                name: 'Date for feeding session service to be completed',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'eQTJrTcKzVK',
+                name: 'Offer Disclosure Support service',
+                translatedName: 'Tšebeletso a HTS ',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'taejdmpbsoG',
+                allowFuturePeriod: true,
+                name: 'Date for Disclosure Support service to be completed',
+                translatedName: 'Letsatsi la HTS le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'gff7hjjVoI6',
+                name: 'Provide Community ART adherence counseling ',
+                translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'YI1Ckbt8mRn',
+                allowFuturePeriod: true,
+                name: 'Date for Community ART adherence counseling  to be completed',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
 
             InputField(
                 id: 'elqeNdaYNTS',

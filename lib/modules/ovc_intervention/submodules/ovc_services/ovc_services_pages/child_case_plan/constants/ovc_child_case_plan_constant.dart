@@ -43,6 +43,8 @@ class OvcChildCasePlanConstant {
         "EaJTFrklMo5","WAq2HJHXZYS",
         //NUTRITION MESSAGING
         "CaAOIbC10yv", "v7GBKBoqJPr",
+        //RTEEN/Parenting
+        "WiPTQhWLVU1", "E2CWztOcx2X", "xFXc0oacTEb", "BpLk6ruSL7e"
         //TIPPY TAP
         "DQxqyncQtwm", "P4I6rK6Xqxw", "WFKe1YpH1uK", "YJXb5rSVP0L",
         // WASH MESSAGE
@@ -70,6 +72,7 @@ class OvcChildCasePlanConstant {
           "ids": [
             //Oral Health
             "ztDAwmkSwKf", "bK18Ebt1cRa",
+
           ],
         },
         {
@@ -78,6 +81,14 @@ class OvcChildCasePlanConstant {
           "ids": [
             //Deworming medication, Vitamin A and Immunization
             "x4yAqv4z2Xv", "eTDE6zroxBC",
+            //feeding sessions
+            "zkbTGkrT6bH","G4kPVSr7I8U",
+          ],
+        },
+        {
+          "minAge": 0,
+          "maxAge": 6,
+          "ids": [
             //feeding sessions
             "zkbTGkrT6bH","G4kPVSr7I8U",
           ],
@@ -92,8 +103,7 @@ class OvcChildCasePlanConstant {
         OvcCasePlanConstant.casePlanToGapLinkage,
         OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
         OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
-        //RTEEN/Parenting
-        "WiPTQhWLVU1", "E2CWztOcx2X", "xFXc0oacTEb", "BpLk6ruSL7e"
+
       ],
       "ageBased": [
         {
@@ -147,13 +157,15 @@ class OvcChildCasePlanConstant {
         //FOOD SUPPORT
         "QnFYeBNZlbf", "EnrZPBFxZuX", "vXuVPQLxw1d", "xdI5atw8DC4",
         //Nutrition Messaging
-        "CRVDu0WUOFm", "cyEa4fwKL7O", "hyVWFxIg7x6","OypZVFbZ1r0",
+        "CRVDu0WUOFm", "cyEa4fwKL7O","OypZVFbZ1r0",
         //TIPPY TAP
         "FRWCmEerPic", "lQYnoeqfKpe", "IiIVDSKX8yk",
         // WASH MESSAGE
         "gV77yUM8NK8", "aqJBZDBzh4m", "EtENRPlSnO0", "JFlnkaXlXm5",
         //SOACKAGE PIT
         "qL9c5r7c6kK", "pUphS6E1Gu5", "k5RGRpWRbbs", "SODPuEmHEGV"
+        //RTEEN/Parenting
+            "GImA3HB9YK5", "fFuabYbLUjz", "QBNhlIan0LR", "IFggJCXLYPD"
       ],
       "ageBased": [
 
@@ -162,7 +174,17 @@ class OvcChildCasePlanConstant {
           "maxAge": 9,
           "ids": [
             //HIVS&D service
-            "HzI5X2yHef6", "GyG2HcLsVka"
+            "HzI5X2yHef6", "GyG2HcLsVka","y8ToqnbVz1o",
+            "E21r5xeRgBg","LcEBYlqwCij","zhSR0uBSq3f"
+          ],
+        },
+
+        {
+          "minAge": 0,
+          "maxAge": 6,
+          "ids": [
+            //feeding sessions service
+            "BWqkxqDJJEP", "E8Bi7BwHEXM","SGLSQWgUi8R"
           ],
         },
       ]
@@ -172,8 +194,7 @@ class OvcChildCasePlanConstant {
         //Defult for events
         "eventDate",
         OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-        //RTEEN/Parenting
-        "GImA3HB9YK5", "fFuabYbLUjz", "QBNhlIan0LR", "IFggJCXLYPD"
+
       ],
       "ageBased": [
         {

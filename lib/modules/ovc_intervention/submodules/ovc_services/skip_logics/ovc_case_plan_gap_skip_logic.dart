@@ -496,10 +496,8 @@ mixin OvcCasePlanGapSkipLogic {
         hiddenFields['meOOSrOPoLB'] = true;
       }
       if (inputFieldId == 'WiPTQhWLVU1' && value != 'true') {
-        hiddenFields['ldXiV8hkfjt'] = true;
-        hiddenFields['E2CWztOcx2X'] = true;
+        hiddenFields[inputFieldId]=true;
         hiddenFields['BpLk6ruSL7e'] = true;
-        hiddenFields['xFXc0oacTEb'] = true;
       }
       if (inputFieldId == 'neF08iYV9Os' && value != 'true') {
         hiddenFields['cVOG90HglRW'] = true;

@@ -444,11 +444,6 @@ class OvcServiceMonitoringSkipLogic {
           "JINWcteYR7D",
           implementingPartner,
         );
-      } else if (key == 'CaAOIbC10yv' && value == 'true') {
-        hiddenFields['HKNayBlUGII'] = hideServicesByImplementingPartner(
-          "HKNayBlUGII",
-          implementingPartner,
-        );
       }
       else if (key == 'EaJTFrklMo5' && value == 'true') {
         hiddenFields['gtXZARFG9Pa'] = hideServicesByImplementingPartner(
