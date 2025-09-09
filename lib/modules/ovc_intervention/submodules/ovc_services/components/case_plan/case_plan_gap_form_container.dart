@@ -244,6 +244,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const hivStatusDE = 'vNeOE9abQBB';
     const artStatusDE = 'Icgkv0xkUow';
     const areYouCoughingDE = 'tMvluCbiiUm';
+    const havelostWeight = 'P9hiqrTjAdg';
+    const havedrenching = 'Y8Xzy7bEWsi';
+    const havefever = 'VETgonq6tFr';
     const lastTestedDE = 'Uv26fX0HQvO';
     const oralHealthMessagingDE = 'wRhamvRZj87';
     const dietDE = 'iqBsSAfCyJb';
@@ -265,6 +268,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const dewormingGapDE = 'x4yAqv4z2Xv';
     const feedingsessionsGapDE = 'zkbTGkrT6bH';
     const enhancedAdherenceCouncilingGapDE = 'XuZIbkwn5yi';
+    const psycosocialsupportGapDE = 'WiPTQhWLVU1';
 
     bool _isTrue(dynamic v) {
       final s = (v ?? '').toString().trim().toLowerCase();
@@ -297,6 +301,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final hivPositive = hiv == 'Positive';
     final onArt = _isTrue(a[artStatusDE]);
     final coughing = _isTrue(a[areYouCoughingDE]);
+    final lostWeight = _isTrue(a[havelostWeight]);
+    final haveDrenching = _isTrue(a[havedrenching]);
+    final hasFever = _isTrue(a[havefever]);
     final recentTest = _testedWithin3Months(a[lastTestedDE]);
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
     final feelingSupported = a[feelingSupportedDE];
@@ -311,9 +318,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     dataObject[nutritionMessagingDE] = true;
     if (feelingSupported != null && feelingSupported != 'Yes') {
       dataObject[disclosureSupportGapDE] = true;
+      dataObject[psycosocialsupportGapDE] = true;
     }
     if (onArt) dataObject[hivAdherenceGapDE] = true;
-    if (coughing) dataObject[tbTreatGapDE] = true;
+    if (coughing || lostWeight || hasFever || haveDrenching ) dataObject[tbTreatGapDE] = true;
     if (hivPositive && !onArt) dataObject[hivTreatGapDE] = true;
     if (hivPositive) {
       if (_dietIsOneType(a)) dataObject[foodSupportGapDE] = true;
@@ -383,6 +391,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const feelingSupportedDE = 'KFCBwn7ypws';
     const artStatusDE = 'Icgkv0xkUow';
     const areYouCoughingDE = 'tMvluCbiiUm';
+    const havelostWeight = 'P9hiqrTjAdg';
+    const havedrenching = 'Y8Xzy7bEWsi';
+    const havefever = 'VETgonq6tFr';
     const lastTestedDE = 'Uv26fX0HQvO';
     const oralHealthMessagingDE = 'wRhamvRZj87';
 
@@ -405,6 +416,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final hivPositive = hiv == 'Positive';
     final onArt = _isTrue(a[artStatusDE]);
     final coughing = _isTrue(a[areYouCoughingDE]);
+    final lostWeight = _isTrue(a[havelostWeight]);
+    final haveDrenching = _isTrue(a[havedrenching]);
+    final hasFever = _isTrue(a[havefever]);
     final recentTest = _testedWithin3Months(a[lastTestedDE]);
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
 
