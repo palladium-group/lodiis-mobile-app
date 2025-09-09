@@ -148,6 +148,27 @@ class OvcHouseholdServicesCasePlanGaps {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
 
+
+            InputField(
+                id: 'WiPTQhWLVU1',
+                name: 'Provide family psychosocial support service',
+                translatedName: 'Offer feeding session service',
+                valueType: 'TRUE_ONLY',
+                isReadOnly: true,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
+                id: 'BpLk6ruSL7e',
+                allowFuturePeriod: true,
+                name: 'Date for family psychosocial support service to be completed',
+                translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
             InputField(
                 id: 'XoSPWmpWXCy',
                 name: 'Refer for HTS',

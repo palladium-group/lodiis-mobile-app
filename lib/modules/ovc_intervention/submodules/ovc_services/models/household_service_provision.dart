@@ -14,6 +14,33 @@ class HouseholdServiceProvision {
           color: const Color(0xFF4D9E49),
           borderColor: const Color(0xFF4D9E49),
           inputFields: [
+
+            InputField(
+              id: 'FHvpd3Z5PAo',
+              name: 'Disclosure Support Service Provided',
+              translatedName: "Lits'ebeletso tsa HIVS&D li fanoe",
+              valueType: 'TRUE_ONLY',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'xpSfl4fCE5B',
+                name: 'Disclosure Support Service Provision Date',
+                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HIVS&D',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'r8oyCTs6Fd3',
+                name: 'Disclosure Support Comment',
+                translatedName: 'Tlhaloso ea HIVS&D',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
+
             InputField(
               id: 'HzI5X2yHef6',
               name: 'HIVS&D Service provided',
@@ -32,7 +59,7 @@ class HouseholdServiceProvision {
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'y8ToqnbVz1o',
-                name: 'HIVS&D Comment',
+                name: 'HIV Messaging Comment',
                 translatedName: 'Tlhaloso ea HIVS&D',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
@@ -63,7 +90,7 @@ class HouseholdServiceProvision {
 
             InputField(
               id: 'YFgrURiwirq',
-              name: 'HIVTREAT Service provided',
+              name: 'ART Initiation Service provided',
               valueType: 'TRUE_ONLY',
               translatedName: 'Litsebeletso tsa HIVTREAT li fanoe',
               inputColor: const Color(0xFF4D9E49),
@@ -71,7 +98,7 @@ class HouseholdServiceProvision {
             ),
             InputField(
                 id: 'LtiZFxXw0Wc',
-                name: 'HIVTREAT Service Provision Date',
+                name: 'ART Initiation Service Provision Date',
                 translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HIVTREAT',
                 valueType: 'DATE',
                 firstDate: firstDate,
@@ -79,14 +106,14 @@ class HouseholdServiceProvision {
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'i9icxSZ8HCf',
-                name: 'HIVTREAT Comment',
+                name: 'ART Initiation Comment',
                 translatedName: 'Tlhaloso ea HIVTREAT',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
               id: 'dJO2m3CXfM5',
-              name: 'TBTREAT Service provided',
+              name: 'TB Testing referral completed',
               valueType: 'TRUE_ONLY',
               translatedName: 'Litsebeletso tsa TBTREAT li fanoe',
               inputColor: const Color(0xFF4D9E49),
@@ -94,7 +121,7 @@ class HouseholdServiceProvision {
             ),
             InputField(
                 id: 'YEebsaVMH19',
-                name: 'TBTREAT Service Provision Date',
+                name: 'TB Testing referral completed Date',
                 translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa TBTREAT',
                 valueType: 'DATE',
                 firstDate: firstDate,
@@ -102,7 +129,7 @@ class HouseholdServiceProvision {
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'eB10uAfk1El',
-                name: 'TBTREAT Comment',
+                name: 'TB Testing referral Comment',
                 translatedName: 'Tlhaloso ea TBTREAT',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
@@ -203,6 +230,61 @@ class HouseholdServiceProvision {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
+
+            InputField(
+              id: 'BWqkxqDJJEP',
+              name: 'Feeding Sessions Service provided',
+              translatedName: "Lits'ebeletso tsa Nutrition Messaging li fanoe",
+              valueType: 'TRUE_ONLY',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'E8Bi7BwHEXM',
+                name: 'Feeding Sessions Service Provision Date',
+                translatedName:
+                'Letsatsi la Kabo ea Litšebeletso tsa Nutrition Messaging',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'SGLSQWgUi8R',
+                name: 'Feeding Sessions Description',
+                translatedName: 'Tlhaloso ea FOOD SUPPORT',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
+
+            InputField(
+              id: 'E21r5xeRgBg',
+              name: 'Community ART Adherance counseling Service Provided',
+              translatedName: "Lits'ebeletso tsa Nutrition Messaging li fanoe",
+              valueType: 'TRUE_ONLY',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'LcEBYlqwCij',
+                name: 'Community ART Adherance Service Provision Date',
+                translatedName:
+                'Letsatsi la Kabo ea Litšebeletso tsa Nutrition Messaging',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'zhSR0uBSq3f',
+                name: 'Community ART Adherance counseling Description',
+                translatedName: 'Tlhaloso ea FOOD SUPPORT',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
+
             InputField(
               id: 'otd2tndsE4Z',
               name: 'HIV ADHERANCE SUPPORT Service provided',
