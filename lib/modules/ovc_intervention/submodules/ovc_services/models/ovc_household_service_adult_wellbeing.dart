@@ -539,6 +539,16 @@ class OvcHouseholdServiceAdultWellbeing {
                       name: 'No Response',
                       translatedName: 'Ha ho Karabo') */
                 ]),
+
+            InputField(
+              id: 'Exposure',
+              name: 'Has there been any possible exposure (e.g., unprotected sex, new partner, shared needles) that might put you at risk of HIV infection?',
+              translatedName: 'Na ho bile le monyetla oa ho pepeseha (mohlala, thobalano e sa sireletsehang, molekane e mocha, ho arolelana nale) o ka u behang kotsing ea tšoaetso ea HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+
             /*InputField(
               id: 'blod3xZ2dPP',
               name: '9. Are you currently taking ART to treat HIV?',
