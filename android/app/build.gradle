@@ -46,7 +46,7 @@ android {
 
     defaultConfig {
         applicationId "org.hisptanzania.kb_mobile_app.testing"
-        minSdkVersion 21
+        minSdkVersion 24
         multiDexEnabled true
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

@@ -252,7 +252,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const dietDE = 'iqBsSAfCyJb';
     const feelingSupportedDE = 'KFCBwn7ypws';
     const viralLoadResultsDE = 'aRNGDZcwWmS';
-
+    const hadsexwithmorethanone = 'upkFeuyd1fX';
+    const sexwithoucondomPositve ='R38Mm0YgXcx';
+    const sexwithoucondomUnknown ='qoKPxEkgfdh';
+    const genitalsores ='B46Zeuzafkg';
     // Gap DEs
     const hivAdherenceGapDE = 'HKCv7lkLexo';
     const hivTreatGapDE = 'ylSjcj6cv42';
@@ -308,6 +311,11 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
     final feelingSupported = a[feelingSupportedDE];
     final viralLoadResults = a[viralLoadResultsDE];
+    final hadsexWithMoreThanOne = _isTrue(a[hadsexwithmorethanone]);
+    final sexWithouCondomPositive = _isTrue(a[sexwithoucondomPositve]);
+    final sexWithouCondomUnknown = _isTrue(a[sexwithoucondomUnknown]);
+    final genitalSores = _isTrue(a[genitalsores]);
+
 
     if (hivPositive && (viralLoadResults ?? '').isNotEmpty) {
       if (viralLoadResults == 'High (above 1,000 copies/ml)') {
@@ -328,7 +336,11 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
       dataObject[comArtAdherenceGapDE] = true;
       dataObject[artLiteracyGapDE] = true;
     }
-    if (!hivPositive && !recentTest) dataObject[htsGapDE] = true;
+    if (!hivPositive && !recentTest){
+      if(hadsexWithMoreThanOne || sexWithouCondomPositive || sexWithouCondomUnknown || genitalSores){
+      dataObject[htsGapDE] = true;}
+
+    }
     if (oralHealthFlag) dataObject[oralHealthGapDE] = true;
 
     // CHILD-driven additions (caregiver NOT positive scenarios)

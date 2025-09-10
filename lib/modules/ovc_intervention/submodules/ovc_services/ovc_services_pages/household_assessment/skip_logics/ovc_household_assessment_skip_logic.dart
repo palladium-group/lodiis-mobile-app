@@ -39,12 +39,6 @@ class OvchouseHoldAssessmentSkipLogic {
       }
 
 
-      // if (inputFieldId == 'BvNaiaoxc6w' && value != null ) {
-      //   dataObject[inputFieldId] = caregiverTestedForHiv;
-      //  // hiddenFields['BvNaiaoxc6w'] = true;
-      //   print(dataObject[inputFieldId]);
-      // }
-
       if (inputFieldId == 'p8htbyJHydl' && value != 'true') {
         hiddenFields['p8htbyJHydl_checkbox'] = true;
         hiddenFields['kFRCZNQIF51'] = true;
@@ -183,7 +177,7 @@ class OvchouseHoldAssessmentSkipLogic {
       final int parsedAge = int.tryParse(age ?? '') ?? 0;
 
       if (sex != 'Female' || parsedAge < 18 || parsedAge > 56) {
-        hiddenFields['pJ1UrnLU9mh'] = true; // Pregnant
+        hiddenFields['nSh4v0iBjKW'] = true; // Pregnant
         hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
       }
       if (caregiverTestedForHiv != true){
@@ -195,6 +189,13 @@ class OvchouseHoldAssessmentSkipLogic {
         //print('Perffrom HIV screening');
       }
 
+
+
+      if(inputFieldId=='nSh4v0iBjKW' && value != 'Yes'){
+
+        hiddenFields['fINHdGnfAMA']=true;
+        hiddenFields['LHf5EZmkZ5q']=true;
+      }
       if (artInitiationDate != null) {
         final now = DateTime.now();
         final sixMonthsFromNow = DateTime(now.year, now.month - 6, now.day);

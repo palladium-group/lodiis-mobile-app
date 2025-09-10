@@ -87,6 +87,55 @@ class HouseholdServiceProvision {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
+            InputField(
+              id: 'UKczyQWCB0L',
+              name: 'IMMUNIZATION Service provided',
+              translatedName: "Lits'ebeletso tsa IMMUNIZATION li fanoe",
+              valueType: 'TRUE_ONLY',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'jsEr16lnber',
+                name: 'IMMUNIZATION Service Provision Date',
+                translatedName:
+                'Letsatsi la Kabo ea Litšebeletso tsa IMMUNIZATION',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'wZLjymsKsuj',
+                name: 'IMMUNIZATION Comment',
+                translatedName: 'Tlhaloso ea IMMUNIZATION',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+              id: 'yQkDGd2gLw2',
+              name: 'ART literacy Service Provided',
+              valueType: 'TRUE_ONLY',
+              translatedName: 'Litsebeletso tsa HIVTREAT li fanoe',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'lL8XiDgD8ZI',
+                name: 'ART literacy Service Provision Date',
+                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HIVTREAT',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'HfO5NXau7f2',
+                name: 'ART literacy  Comment',
+                translatedName: 'Tlhaloso ea HIVTREAT',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
 
             InputField(
               id: 'YFgrURiwirq',
