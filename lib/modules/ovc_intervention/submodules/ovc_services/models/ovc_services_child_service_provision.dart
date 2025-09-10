@@ -477,6 +477,33 @@ class OvcServicesChildServiceProvision {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
+              id: 'yQkDGd2gLw2',
+              name: 'ART literacy Service Provided',
+              valueType: 'TRUE_ONLY',
+              isReadOnly: true,
+              translatedName: 'Litsebeletso tsa HIVTREAT li fanoe',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'lL8XiDgD8ZI',
+                name: 'ART literacy Service Provision Date',
+                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HIVTREAT',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'HfO5NXau7f2',
+                name: 'ART literacy  Comment',
+                translatedName: 'Tlhaloso ea HIVTREAT',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
+
+            InputField(
               id: 'YFgrURiwirq',
               name: 'ART Initiation Service provided',
               valueType: 'TRUE_ONLY',
@@ -586,14 +613,7 @@ class OvcServicesChildServiceProvision {
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-            InputField(
-              id: 'LUyWbpKKNgW',
-              name: 'HIMMUNIZATION  session number',
-              translatedName: 'Thupelo ea IMMUNIZATION',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF4D9E49),
-              labelColor: const Color(0xFF737373),
-            ),
+
             InputField(
                 id: 'wZLjymsKsuj',
                 name: 'IMMUNIZATION Comment',
