@@ -1100,12 +1100,7 @@ class OvcServicesWellbeingAssessment {
                       code: 'Yes', name: 'Yes', translatedName: 'E'),
                   InputFieldOption(
                       code: 'No', name: 'No', translatedName: 'Che'),
-                  // InputFieldOption(
-                  //     code: 'No Response',
-                  //     name: 'No Response',
-                  //     translatedName: 'Ha hona Karabo'),
-                  // InputFieldOption(
-                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
+
                 ]),
 
           ]),
