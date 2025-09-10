@@ -118,13 +118,13 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'Uv26fX0HQvO') {
         final testedDuration = value.toString().trim();
         if (!(testedDuration == 'Less than 3 months' && hivStatus == 'Negative')) {
-          hiddenFields['Exposure'] = true; // hide in all other cases
+          hiddenFields['EEclxMv9xXk'] = true; // hide in all other cases
         }
       }
 
-      if (inputFieldId == 'Uv26fX0HQvO' || inputFieldId == 'Exposure' || inputFieldId == 'vNeOE9abQBB') {
+      if (inputFieldId == 'Uv26fX0HQvO' || inputFieldId == 'EEclxMv9xXk' || inputFieldId == 'vNeOE9abQBB') {
         final testedDuration = (dataObject['Uv26fX0HQvO'] ?? '').toString().trim();
-        final exposure = (dataObject['Exposure'] ?? '').toString().trim();
+        final exposure = (dataObject['EEclxMv9xXk'] ?? '').toString().trim();
 
         bool showScreening = false;
 
