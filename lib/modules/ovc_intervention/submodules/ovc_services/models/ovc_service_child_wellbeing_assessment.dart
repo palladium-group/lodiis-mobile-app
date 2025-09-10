@@ -35,7 +35,7 @@ class OvcServicesChildWellbeingAssessment {
           inputFields: [
             InputField(
                 id: 'GN85Cf2mOmw',
-                name: 'Is child have health card available?',
+                name: 'Is the child health card available?',
                 translatedName: 'Is child have health card available?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
@@ -116,14 +116,15 @@ class OvcServicesChildWellbeingAssessment {
                 ],
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
+
             InputField(
-                id: 'c5TMWtM4VVJ',
-                name: 'HIV Status',
-                isReadOnly: true,
-                translatedName: '14. Na u nka mpolella sephetho sa hau?',
+                id: 'vNeOE9abQBB',
+                name: 'What were the results of the childs last HIV test?',
+                translatedName: 'Boemo ba hau ba HIV ke bofe?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
+
                 options: [
                   InputFieldOption(
                       code: 'Positive',
@@ -134,10 +135,23 @@ class OvcServicesChildWellbeingAssessment {
                       name: 'Negative',
                       translatedName: 'T’soaetso haeo'),
                   InputFieldOption(
-                      code: 'No disclosure',
-                      name: 'No disclosure',
-                      translatedName: 'Ha a bolele'),
+                      code: 'Unknown',
+                      name: 'Unknown',
+                      translatedName: 'Tse sa tsejoeng'),
+                  /*            InputFieldOption(
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha ho Karabo') */
                 ]),
+
+            InputField(
+              id: 'EEclxMv9xXk',
+              name: 'Has there been any possible exposure (e.g. shared needles) that might put you at risk of HIV infection?',
+              translatedName: 'Na ho bile le monyetla oa ho pepeseha (mohlala, thobalano e sa sireletsehang, molekane e mocha, ho arolelana nale) o ka u behang kotsing ea tšoaetso ea HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
 
 
             InputField(
@@ -575,6 +589,14 @@ class OvcServicesChildWellbeingAssessment {
                 color: const Color(0xFF4B9F46),
                 inputFields: [
                   InputField(
+                      id: 'R8SyKEnNi2q',
+                      name: 'Does the child attend growth monitoring services?',
+                      translatedName: 'Does the child attend growth monitoring services?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF455B44)),
+
+                  InputField(
                       id: 'JnCFOeouVIy',
                       name: 'Check weight on the growth chart',
                       translatedName: 'Khetha boima ba ngoana bukaneng',
@@ -659,6 +681,10 @@ class OvcServicesChildWellbeingAssessment {
                             code: 'Oe9HgDtX5iW',
                             name: 'Fat free (Skim) milk',
                             translatedName: 'Fat free (Skim) milk'),
+                        InputFieldOption(
+                            code: 'n/a',
+                            name: 'Not Applicable',
+                            translatedName: 'Not Applicable'),
                       ]),
                   InputField(
                       id: 'ATWzSRHBmuF',
@@ -714,14 +740,7 @@ class OvcServicesChildWellbeingAssessment {
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
-                  InputField(
-                      id: 'OBugEkynJG0',
-                      name: 'Are there any signs of malnutrition?',
-                      translatedName: 'Are there any signs of malnutrition?',
-                      valueType: 'BOOLEAN',
 
-                      inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF455B44)),
 
                   InputField(
                       id: 'XLpBcDQ3p7I',
@@ -746,13 +765,41 @@ class OvcServicesChildWellbeingAssessment {
                       ]),
 
                   InputField(
-                      id: 'R8SyKEnNi2q',
-                      name: 'Does the child attend growth monitoring services?',
-                      translatedName: 'Does the child attend growth monitoring services?',
+                      id: 'child_immunization_checkbox',
+                      name: 'Which of the following has the child received according to schedule?',
+                      translatedName: 'Ngooana o fumane life ho tse latelang ka nako ea tsona?',
+                      valueType: 'CHECK_BOX',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF1A3518),
+                      options: [
+                        InputFieldOption(
+                            code: 'Ws4XNKa3NpF',
+                            name: 'Deworming Medication',
+                            translatedName: 'Moriana oa manyooa'),
+                        InputFieldOption(
+                            code: 'DUOFvJnn1R7',
+                            name: 'Vitamin A',
+                            translatedName: 'Vitamin A'),
+                        InputFieldOption(
+                            code: 'MiSYfeKhOUC',
+                            name: 'Immunization',
+                            translatedName: 'Immunization'),
+                        InputFieldOption(
+                            code: 'NZE7E1vQwgx',
+                            name: 'None of the above',
+                            translatedName: 'Ha ho ea e fumaneng'),
+                      ]),
+
+                  InputField(
+                      id: 'OBugEkynJG0',
+                      name: 'Are there any signs of malnutrition?',
+                      translatedName: 'Are there any signs of malnutrition?',
                       valueType: 'BOOLEAN',
+
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF455B44)),
                 ]),
+
           ]),
     ];
   }

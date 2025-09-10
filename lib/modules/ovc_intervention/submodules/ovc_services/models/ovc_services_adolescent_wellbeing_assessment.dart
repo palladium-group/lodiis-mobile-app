@@ -842,12 +842,13 @@ class OvcServicesWellbeingAssessment {
                       translatedName: 'Ha e tsejoe'),
                 ]),*/
             InputField(
-                id: 'c5TMWtM4VVJ',
-                name: 'HIV Status',
-                translatedName: '14. Na u nka mpolella sephetho sa hau?',
+                id: 'vNeOE9abQBB',
+                name: 'What were the results of your last HIV test?',
+                translatedName: 'Boemo ba hau ba HIV ke bofe?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
+
                 options: [
                   InputFieldOption(
                       code: 'Positive',
@@ -858,10 +859,22 @@ class OvcServicesWellbeingAssessment {
                       name: 'Negative',
                       translatedName: 'T’soaetso haeo'),
                   InputFieldOption(
-                      code: 'No disclosure',
-                      name: 'No disclosure',
-                      translatedName: 'Ha a bolele'),
+                      code: 'Unknown',
+                      name: 'Unknown',
+                      translatedName: 'Tse sa tsejoeng'),
+                  /*            InputFieldOption(
+                      code: 'No Response',
+                      name: 'No Response',
+                      translatedName: 'Ha ho Karabo') */
                 ]),
+            InputField(
+              id: 'EEclxMv9xXk',
+              name: 'Has there been any possible exposure (e.g. shared needles) that might put you at risk of HIV infection?',
+              translatedName: 'Na ho bile le monyetla oa ho pepeseha (mohlala, thobalano e sa sireletsehang, molekane e mocha, ho arolelana nale) o ka u behang kotsing ea tšoaetso ea HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
 
             /*InputField(
               id: 'blod3xZ2dPP',
@@ -1225,7 +1238,174 @@ class OvcServicesWellbeingAssessment {
               labelColor: const Color(0xFF1A3518),
             ),
 
-          ])
+          ]),
+      FormSection(
+          name: 'HIV Risk Assessment',
+          id: 'hivriskassessment',
+          translatedName: 'Hlahlobo ea hoba tlokotsing ea HIV',
+          color: const Color(0xFF4D9E49),
+          borderColor: const Color(0xFF4D9E49),
+          inputFields: [
+            InputField(
+                id: 'kL4IhnhdKZv',
+                name: 'Assessment enrollment criteria',
+                translatedName: 'Lebaka la tlhahlobo ea boemo ba kotsi ea HIV',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373),
+                options: [
+                  InputFieldOption(
+                      translatedName: 'Boemo ba HIV bo sa tsebahaleng',
+                      code: 'Unknown status',
+                      name: 'Unknown status'),
+                  InputFieldOption(
+                      translatedName: 'Boemo ba HIV bo sa boleloang.',
+                      code: 'Undisclosed',
+                      name: 'Undisclosed'),
+                  InputFieldOption(
+                      translatedName:
+                      'O hlahlahlobile likhoeling tse 6 a fungoanoe a sena tsoaetso ea HIV',
+                      code: 'Negative > 6mths',
+                      name: 'Negative > 6mths'),
+                  InputFieldOption(
+                      translatedName: 'Ba kotsing ea ho ba le tsoetso ea HIV',
+                      code: 'At risk older OVC/adolescent',
+                      name: 'At risk older OVC/adolescent'),
+                ]),
+            InputField(
+              id: 'Fz89mIraWIl',
+              name:
+              'Is the biological father or mother of this child living or lived with HIV?',
+              valueType: 'BOOLEAN',
+              translatedName:
+              'Na Ntate kapa ‘M’e oa ngoana o phela kapa o ne a phela le tsoaetso ea HIV?',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),),
+            InputField(
+                id: 'mIcseDgrIlJ',
+                name:
+                'Is at least one sibling of the child living or has lived with HIV?',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na e mong oa bana  ba bo ngoana eo o phela kapa o ne a phela le tsoaetso HIV?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'Hi9fp222l2D',
+                name:
+                'Has this child lost one or both biological parents due to a chronic or undiagnosed illness?',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na ho na le emong oa batsoali ba ngoana eo ea hlokahetseng ka lebaka la bokuli bo sa phekoleheng kapa bo sa boleloang?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'r13f1emAyvw',
+                name:
+                'Has this child lost a sibling due to a chronic or undiagnosed illness?',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na e mong oa bana  ba bo ngoana eo o hlokahetse ka lebaka la bokuli bo sa phekoleheng kapa bo sa boleloang?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'YAugNMbMe2c',
+                name:
+                'Has the child ever been hospitalized or has been malnourished in the past 12 months?',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na ngoana o kile a kena sepetlele kapa a bontsa mats’oao a phepo e sa nepahalang likhoeling tse 12 tse fetileng?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'niqNMJrfFDs',
+                name:
+                'Does the child have recurring skin problems, and oral fungus or persistent cough and fever?',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na ngoana eo o na le bothata ba letlalo kapa liso tsa lehano kapa ho khohlela ho sa eng meriting?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'NhjnHO0IyqY',
+                name:
+                'Has this child been frequently sick in the last three months?',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na ngoana eo o kile a khathatsoa ke bokuli likhoeling tse tharo tse fetileng?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'LA4G0A6fkNF',
+                name:
+                'Is there anyone in the family who had TB in last 6 months',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na ho na le e mong oa lelapa ea bileng le lefuba (TB) likhoeling tse 6 tse fetileng?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'dL8ts5GQcMI',
+                name:
+                'Is the child/ adolescent exposed to sexual violence?',
+                valueType: 'BOOLEAN',
+                translatedName:
+                'Na ngoana eo o kile a ba maemong a mmehang tlokotsing ea tlhekefetso ea motabo?',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'W64q5maeL6o',
+                translatedName:
+                'Na ngoana o sa bonahala e ka o sa kene litabeng tsa  thobalanong?',
+                name: 'Is the adolescent sexually active?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'VJh6KDlBkfb',
+                translatedName:
+                'Ho latela likarabo tse fanoeng na ngoana eo o lokela ho hlahlobela HIV?',
+                name: 'Is this child/adolescent eligible for an HIV test?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'SDPCwdDB9yX',
+                translatedName:
+                'Na mohlokomeli/ ngoana ea lilemo li  ka holimo ho 12  o llumela ho halahobela HIV?',
+                name:
+                'Has the caregiver/OVC >12 years accepted to have the child tested?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'v0ArPi4Rk4o',
+                translatedName:
+                'Bao boemo ba HIV bo sa boleloang, mme ba le kotsing ea HIV, ba fetisetsoe ho Social Worker ea morero.',
+                name: 'Refer to Social Worker?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'hivriskres',
+                name: 'HIV RISK ASSESSMENT RESULTS',
+                translatedName: "SEPHETHO SA TLHAHLOBO EA KOTSI EA HIV",
+                valueType: 'TEXT',
+                renderAsRadio: true,
+                options: [
+                  InputFieldOption(
+                      code: 'High risk',
+                      name: 'High risk',
+                      translatedName: "Kotsi e phahameng"),
+                  InputFieldOption(
+                      code: 'Low risk',
+                      name: 'Low risk',
+                      translatedName: "Kotsi e tlase")
+                ],
+                isReadOnly: true,
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373))
+          ]),
     ];
   }
 }

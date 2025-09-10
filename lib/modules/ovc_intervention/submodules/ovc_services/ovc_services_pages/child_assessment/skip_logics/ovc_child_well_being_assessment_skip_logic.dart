@@ -182,7 +182,8 @@ class OvcChildWellBeingAssessmentSkipLogic {
     int age = int.parse(dataObject['age']);
     if(age > 3 && isTested != true){
       hideHivQuestions();
-      hiddenFields['c5TMWtM4VVJ'] =true;
+      hiddenFields['vNeOE9abQBB'] =true;
+      hiddenFields['Uv26fX0HQvO'] =true;
 
     }
 
@@ -194,7 +195,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
     }
     if(age <= 3 && testedHeiAlgorithm != true){
       hideHivQuestions();
-      hiddenFields['c5TMWtM4VVJ'] =true;
+      hiddenFields['vNeOE9abQBB'] =true;
       hiddenFields['Uv26fX0HQvO'] =true;
 
     }
@@ -208,6 +209,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['hgQXrOd7iuH'] = true;
       hiddenFields['Qisosyae92z'] = true;
     }
+
     if (age > 5) {
       hideMalnutritionQuestions();
 
@@ -220,18 +222,20 @@ class OvcChildWellBeingAssessmentSkipLogic {
         hiddenFields['hgQXrOd7iuH']=true;
         hiddenFields['kcG670LJt3J']=true;
         hiddenFields['cEPYE0hDKtH']=true;
+        hiddenFields['Qisosyae92z']=true;
+        hiddenFields['EYb2XmgHt58']=true;
 
       }
       if(hivStatus !='Positive' || artStatus != true){
-hiddenFields['sLyfb45aLkl']=true;
-hiddenFields['aRNGDZcwWmS']=true;
+        hiddenFields['sLyfb45aLkl']=true;
+        hiddenFields['aRNGDZcwWmS']=true;
 
       }
-
-
     }
 
-
+    if (hivStatus == 'Positive' || hivStatus == 'null' ){
+      hiddenFields['Uv26fX0HQvO'] = true;
+    }
 
 
 
@@ -287,19 +291,46 @@ hiddenFields['aRNGDZcwWmS']=true;
 
     }
       if(inputFieldId == 'ImAyVEpwmNS' && value !='false'){
-hiddenSections['tbsection_child'] = true;
+      hiddenSections['tbsection_child'] = true;
       }
     if(inputFieldId== 'tYN12Es3707' && value != 'true'){
       hiddenFields['o1GBFscjs4y']= true;
 
-
     }
 
-
-  if(inputFieldId =='Uv26fX0HQvO' && value == 'Less than 3 months'){
-    hiddenSections['hivriskassessment']= true;
+  if (inputFieldId == 'R8SyKEnNi2q' && value != 'true' ){
+    hiddenFields['JnCFOeouVIy'] = true;
   }
 
+      if (inputFieldId == 'Uv26fX0HQvO' || inputFieldId == 'EEclxMv9xXk' || inputFieldId == 'vNeOE9abQBB') {
+        final testedDuration = (dataObject['Uv26fX0HQvO'] ?? '').toString().trim();
+        final exposure = (dataObject['EEclxMv9xXk'] ?? '').toString().trim();
+
+        bool showScreening = false;
+
+        if (hivStatus == 'Negative') {
+          if (testedDuration != 'Less than 3 months' && testedDuration != '' ) {
+            showScreening = true;
+          } else if (testedDuration == 'Less than 3 months' && exposure == 'true') {
+            showScreening = true;
+          }
+        }
+
+        if (!showScreening) {
+          hiddenSections['hivriskassessment'] = true;
+        } else {
+          hiddenSections.remove('hivriskassessment');
+        }
+      }
+
+
+
+  if (inputFieldId == 'Uv26fX0HQvO') {
+        final testedDuration = value.toString().trim();
+        if (!(testedDuration == 'Less than 3 months' && hivStatus == 'Negative')) {
+          hiddenFields['EEclxMv9xXk'] = true; // hide in all other cases
+        }
+  }
 
 
       if (inputFieldId == 'Icgkv0xkUow'){
@@ -324,7 +355,7 @@ hiddenSections['tbsection_child'] = true;
         hiddenFields['tYN12Es3707']= true;
 
       }
-      if (inputFieldId == 'c5TMWtM4VVJ'){
+      if (inputFieldId == 'vNeOE9abQBB'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;
           if(hivStatus != 'Positive'){
@@ -406,7 +437,6 @@ hiddenSections['tbsection_child'] = true;
 
  }else if(inputFieldId == 'OBugEkynJG0' && value != 'true'){
         dataObject[inputFieldId] = 'false';
-
       }
 
       if (inputFieldId == 'Js9auywpL0O' && value != 'true') {
