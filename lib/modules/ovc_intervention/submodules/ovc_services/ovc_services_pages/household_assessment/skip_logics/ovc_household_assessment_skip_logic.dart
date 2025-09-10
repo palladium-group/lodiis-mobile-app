@@ -34,6 +34,10 @@ class OvchouseHoldAssessmentSkipLogic {
       if (inputFieldId == 'yqwX3XCGAUN' && value != 'true') {
         hiddenFields['BKDRNiyoMgV'] = true;
       }
+      if (inputFieldId == 'ImAyVEpwmNS' && value != 'false') {
+        hiddenSections['tbsection'] =true;
+      }
+
 
       // if (inputFieldId == 'BvNaiaoxc6w' && value != null ) {
       //   dataObject[inputFieldId] = caregiverTestedForHiv;

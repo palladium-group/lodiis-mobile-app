@@ -37,6 +37,8 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['o1GBFscjs4y'] =true;
       hiddenFields['wi6Iq4yVdXV'] =true;
       hiddenFields['KFCBwn7ypws'] =true;
+
+
     }
 
     void hideForChild() {
@@ -60,9 +62,6 @@ class OvcChildWellBeingAssessmentSkipLogic {
       hiddenFields['Ey6WeeJVCI7'] = true;
       hiddenFields['GN85Cf2mOmw'] = true;
       hiddenFields['H84JX4fQWsK'] = true;
-
-
-
 
       //Domain Stable
       hiddenFields['aaERjQ9jSZn'] = true;
@@ -196,6 +195,7 @@ class OvcChildWellBeingAssessmentSkipLogic {
     if(age <= 3 && testedHeiAlgorithm != true){
       hideHivQuestions();
       hiddenFields['c5TMWtM4VVJ'] =true;
+      hiddenFields['Uv26fX0HQvO'] =true;
 
     }
     if(age <= 3 && testedHeiAlgorithm == true){
@@ -216,16 +216,15 @@ class OvcChildWellBeingAssessmentSkipLogic {
     }
 
     if(hivStatus != null){
+      if(hivStatus != 'Positive'){
+        hiddenFields['hgQXrOd7iuH']=true;
+        hiddenFields['kcG670LJt3J']=true;
+        hiddenFields['cEPYE0hDKtH']=true;
+
+      }
       if(hivStatus !='Positive' || artStatus != true){
 hiddenFields['sLyfb45aLkl']=true;
 hiddenFields['aRNGDZcwWmS']=true;
-hiddenFields['f2GIuwu1LGh']=true;
-hiddenFields['EYb2XmgHt58']=true;
-hiddenFields['gAzb8e8cLga']=true;
-hiddenFields['kcG670LJt3J']=true;
-
-
-
 
       }
 
@@ -239,7 +238,36 @@ hiddenFields['kcG670LJt3J']=true;
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
       bool isFieldHidden = hiddenFields[inputFieldId] ?? false;
-
+      if ((dataObject['Fz89mIraWIl'] != null &&
+          '${dataObject['Fz89mIraWIl']}' == 'Yes') ||
+          (dataObject['mIcseDgrIlJ'] != null &&
+              '${dataObject['mIcseDgrIlJ']}' == 'Yes') ||
+          (dataObject['Hi9fp222l2D'] != null &&
+              '${dataObject['Hi9fp222l2D']}' == 'true') ||
+          (dataObject['r13f1emAyvw'] != null &&
+              '${dataObject['r13f1emAyvw']}' == 'true') ||
+          (dataObject['YAugNMbMe2c'] != null &&
+              '${dataObject['YAugNMbMe2c']}' == 'true') ||
+          (dataObject['niqNMJrfFDs'] != null &&
+              '${dataObject['niqNMJrfFDs']}' == 'true') ||
+          (dataObject['NhjnHO0IyqY'] != null &&
+              '${dataObject['NhjnHO0IyqY']}' == 'true') ||
+          (dataObject['LA4G0A6fkNF'] != null &&
+              '${dataObject['LA4G0A6fkNF']}' == 'true') ||
+          (dataObject['dL8ts5GQcMI'] != null &&
+              '${dataObject['dL8ts5GQcMI']}' == 'true') ||
+          (dataObject['W64q5maeL6o'] != null &&
+              '${dataObject['W64q5maeL6o']}' == 'true') ||
+          (dataObject['VJh6KDlBkfb'] != null &&
+              '${dataObject['VJh6KDlBkfb']}' == 'true') ||
+          (dataObject['SDPCwdDB9yX'] != null &&
+              '${dataObject['SDPCwdDB9yX']}' == 'true') ||
+          (dataObject['v0ArPi4Rk4o'] != null &&
+              '${dataObject['v0ArPi4Rk4o']}' == 'true')) {
+        assignInputFieldValue(context, 'hivriskres', 'High risk');
+      } else {
+        assignInputFieldValue(context, 'hivriskres', 'Low risk');
+      }
       if (inputFieldId == 'puLHlflNeg6') {
         if (hivStatus != null) {
           dataObject[inputFieldId] = 'true';
@@ -258,14 +286,21 @@ hiddenFields['kcG670LJt3J']=true;
       hiddenFields['o1GBFscjs4y']= true;
 
     }
-    // if(true){
-    //   hiddenFields['EDgB0kYWS3v']= true;
-    // }
+      if(inputFieldId == 'ImAyVEpwmNS' && value !='false'){
+hiddenSections['tbsection_child'] = true;
+      }
     if(inputFieldId== 'tYN12Es3707' && value != 'true'){
       hiddenFields['o1GBFscjs4y']= true;
 
 
     }
+
+
+  if(inputFieldId =='Uv26fX0HQvO' && value == 'Less than 3 months'){
+    hiddenSections['hivriskassessment']= true;
+  }
+
+
 
       if (inputFieldId == 'Icgkv0xkUow'){
         if(hivStatus != null){
@@ -360,6 +395,19 @@ hiddenFields['kcG670LJt3J']=true;
         hiddenFields['mH9DgJoa0nT'] = true;
       }
 
+ if((inputFieldId == 'eQM7VOlr5hG' && value == 'true') ||
+    (inputFieldId == 'ATWzSRHBmuF' && value == 'true') ||
+     (inputFieldId == 'uINNVU0OeRP' && value == 'true')||
+     (inputFieldId == 'bMNyAIWumx1' && value == 'true')||
+     (inputFieldId == 'OUPk2e9DoMe' && value == 'true')||
+     (inputFieldId == 'yVTsRM4eMHA' && value == 'true')
+ ){
+   dataObject['OBugEkynJG0'] = 'true';
+
+ }else if(inputFieldId == 'OBugEkynJG0' && value != 'true'){
+        dataObject[inputFieldId] = 'false';
+
+      }
 
       if (inputFieldId == 'Js9auywpL0O' && value != 'true') {
         hiddenFields['SQUodtvxYLs'] = true;
