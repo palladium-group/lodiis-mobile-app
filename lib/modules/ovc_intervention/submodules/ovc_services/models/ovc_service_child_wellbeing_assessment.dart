@@ -35,7 +35,7 @@ class OvcServicesChildWellbeingAssessment {
           inputFields: [
             InputField(
                 id: 'GN85Cf2mOmw',
-                name: 'Is child have health card available?',
+                name: 'Is the child health card available?',
                 translatedName: 'Is child have health card available?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
@@ -138,6 +138,15 @@ class OvcServicesChildWellbeingAssessment {
                       name: 'No disclosure',
                       translatedName: 'Ha a bolele'),
                 ]),
+
+            InputField(
+              id: 'Exposure',
+              name: 'Has there been any possible exposure (e.g. shared needles) that might put you at risk of HIV infection?',
+              translatedName: 'Na ho bile le monyetla oa ho pepeseha (mohlala, thobalano e sa sireletsehang, molekane e mocha, ho arolelana nale) o ka u behang kotsing ea tšoaetso ea HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
 
 
             InputField(
