@@ -137,6 +137,16 @@ class OvcServiceMonitoringSkipLogic {
 
       }
 
+
+      if(hivStatus == 'Positive'){
+      /*  hiddenFields['Uv26fX0HQvO']=true;*/
+        if(inputFieldId == 'BvNaiaoxc6w'){
+dataObject[inputFieldId] = true;
+dataObject['vNeOE9abQBB']=hivStatus;
+
+        }
+
+      }
       // if (hivStatus == 'Positive' || (inputFieldId == 'Uv26fX0HQvO' && value != 'Less than 3 months')) {
       //   hiddenSections['hivscreening'] = false; // hide
       // }
@@ -146,6 +156,7 @@ class OvcServiceMonitoringSkipLogic {
       }
 
       if (inputFieldId == 'vNeOE9abQBB' && value != 'Positive') {
+
         hiddenFields['Icgkv0xkUow'] = true;
         hiddenFields['ubin7MjQ5OI'] = true;
         hiddenFields['sLyfb45aLkl'] = true;
