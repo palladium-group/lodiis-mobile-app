@@ -1086,6 +1086,91 @@ class OvcServicesWellbeingAssessment {
 
                 ]),
 
+            ///////////////////////////////////////
+
+            InputField(
+                id: 'hgQXrOd7iuH',
+                name: 'Has the childs status been partially shared?',
+                translatedName: 'Has the childs status been partially shared?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+                id: 'Qisosyae92z',
+                name: 'What was their response?',
+                translatedName: 'What was their response?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'The child experienced denial, but is ok now',
+                      name: 'The child experienced denial, but is ok now',
+                      translatedName: 'The child experienced denial, but is ok now'),
+                  InputFieldOption(
+                      code: 'The child became angry, sad or depressed, but is ok now',
+                      name: 'The child became angry, sad or depressed, but is ok now',
+                      translatedName: 'The child became angry, sad or depressed, but is ok now'),
+                  InputFieldOption(
+                      code: 'The child is still dealing with denial, anger, sadness, or depression',
+                      name: 'The child is still dealing with denial, anger, sadness, or depression',
+                      translatedName: 'The child is still dealing with denial, anger, sadness, or depression'),
+                ]),
+            InputField(
+                id: 'EYb2XmgHt58',
+                name: 'why was the status not shared with the child?',
+                translatedName: 'why was the status not shared with the child?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'They are too young',
+                      name: 'They are too young',
+                      translatedName: 'They are too young'),
+                  InputFieldOption(
+                      code: 'Worried about the child experiencing stigma',
+                      name: 'Worried about the child experiencing stigma',
+                      translatedName: 'Worried about the child experiencing stigma'),
+                  InputFieldOption(
+                      code: 'Worried about the child having a negative response',
+                      name: 'Worried about the child having a negative response',
+                      translatedName: 'Worried about the child having a negative response'),
+                  InputFieldOption(
+                      code: 'Worried about the parent/family experiencing stigma',
+                      name: 'Worried about the parent/family experiencing stigma',
+                      translatedName: 'Worried about the parent/family experiencing stigma'),
+                ]),
+
+            InputField(
+                id: 'kcG670LJt3J',
+                name: 'Has the childs status been disclosed to any family member?',
+                translatedName: 'Has the childs status been disclosed to any family member?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+                id: 'cEPYE0hDKtH',
+                name: 'What was their response?', //Family Member's Response
+                translatedName: 'What was their response?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Neutral/ no reaction',
+                      name: 'Neutral/ no reaction',
+                      translatedName: 'Neutral/ no reaction'),
+                  InputFieldOption(
+                      code: 'Rejected the child',
+                      name: 'Rejected the child',
+                      translatedName: 'Rejected the child'),
+                ]),
+            /////////////////////////////////////////////////////////////////////
+
+
             InputField(
                 id: 'ImAyVEpwmNS',
                 name:
