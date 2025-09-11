@@ -102,11 +102,13 @@ class OvcHouseholdChild {
       'PN92g65TkVI',
       'KO5NC4pfBmv',
       'qZP982qpSPS',
+      'oSKX8fFQdWc',
       'EIMgHQW61kx',
       'WAlaenCYazT',
       'GMcljM7jbNG',
       'l7op0btSqSc',
       'IQX90Pjcrdh',
+
       BeneficiaryIdentification.phoneNumber,
       BeneficiaryIdentification.primaryUIC,
       BeneficiaryIdentification.secondaryUIC,
@@ -124,6 +126,7 @@ class OvcHouseholdChild {
     Object isHei = (_parseBool(data['GMcljM7jbNG']) ?? '');
     Object artStatus = (_parseBool(data['l7op0btSqSc']) ?? '');
     Object testedHeiAlgorithm = (_parseBool(data['IQX90Pjcrdh']) ?? '');
+    String hivStatus = data['oSKX8fFQdWc'] ?? '';
 
     return OvcHouseholdChild(
         id: tei.trackedEntityInstance,
@@ -137,11 +140,7 @@ class OvcHouseholdChild {
         secondaryUIC: data[BeneficiaryIdentification.secondaryUIC] ?? '',
         createdDate: createdDate,
         artInitiationDate: data['EIMgHQW61kx'],
-        hivStatus: data['wmKqYZML8GA'] != null
-            ? data['wmKqYZML8GA'] == 'true'
-                ? 'Positive'
-                : 'Negative'
-            : '',
+        hivStatus: hivStatus,
         enrollmentOuAccessible: enrollmentOuAccessible,
         isChildPrimary: "${data['KO5NC4pfBmv']}" == 'true',
         ovcStatus: data['PN92g65TkVI'] ?? '',

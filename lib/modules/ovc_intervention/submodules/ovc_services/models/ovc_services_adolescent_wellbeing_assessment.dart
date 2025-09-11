@@ -819,28 +819,7 @@ class OvcServicesWellbeingAssessment {
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
 
-            /*InputField(
-                id: 'eSJhbqT1NQb',
-                name: '6. Latest HIV test result?',
-                translatedName:
-                '6. Liphetho tsa liteko tsa HIV tsa morao-rao?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF2895F0),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Positive',
-                      name: 'Positive',
-                      translatedName: 'T’soaetso e teng'),
-                  InputFieldOption(
-                      code: 'Negative',
-                      name: 'Negative',
-                      translatedName: 'T’soaetso haeo'),
-                  InputFieldOption(
-                      code: 'Unknown',
-                      name: 'Unknown',
-                      translatedName: 'Ha e tsejoe'),
-                ]),*/
+
             InputField(
                 id: 'vNeOE9abQBB',
                 name: 'What were the results of your last HIV test?',
@@ -1065,15 +1044,6 @@ class OvcServicesWellbeingAssessment {
                 ]),
 
 
-
-            // InputField(
-            //     id: 'YTa10rE1vtd',
-            //     name: 'Specify other people know about your HIV status',
-            //     translatedName: 'hlalosa.',
-            //     valueType: 'TEXT',
-            //     inputColor: const Color(0xFF4B9F46),
-            //     labelColor: const Color(0xFF1A3518)),
-
             InputField(
                 id: 'wi6Iq4yVdXV',
                 name: 'What is their attitude towards you?',
@@ -1116,7 +1086,17 @@ class OvcServicesWellbeingAssessment {
 
                 ]),
 
+            InputField(
+                id: 'ImAyVEpwmNS',
+                name:
+                'Are you on TB treatment?',
+                translatedName:
+                'Na u noa lithlare tsa lefuba?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
           ]),
+
       FormSection(
           name: 'TB Screening',
           id:'tbsection_adolescent',
@@ -1166,38 +1146,7 @@ class OvcServicesWellbeingAssessment {
 
                 ])
           ]),
-      // FormSection(
-      //     name: 'NUTRITION',
-      //     id:'nutritionsection',
-      //     color: const Color(0xFF4D9E49),
-      //     borderColor: const Color(0xFF4D9E49),
-      //     inputFields: [
-      //
-      //     ],
-      //     subSections: [
-      //       FormSection(
-      //           name: 'Nutrition Section',
-      //           id: 'generalnutrition',
-      //           color: const Color(0xFF4B9F46),
-      //           inputFields: [
-      //             InputField(
-      //                 id: 'iqBsSAfCyJb',
-      //                 name: 'Which food groups do you regularly eat?',
-      //                 translatedName: 'Which food groups do you regularly eat?',
-      //                 description: 'Energy foods,Body BUiding foods or Protective foods',
-      //                 translatedDescription: 'Energy foods,Body BUiding foods or Protective foods',
-      //                 valueType: 'TEXT',
-      //                 inputColor: const Color(0xFF4B9F46),
-      //                 labelColor: const Color(0xFF1A3518),
-      //                 options: [
-      //                   InputFieldOption(code: '1', name: 'One type of food group', translatedName: 'One types of food groups'),
-      //                   InputFieldOption(
-      //                       code: '2', name: 'Two types of food groups', translatedName: 'Two types of food groups'),
-      //                   InputFieldOption(
-      //                       code: '3', name: 'All types of food groups', translatedName: 'All types of food groups')
-      //                 ]),
-      //           ]),
-      //     ]),
+
       FormSection(
           name: 'HIV SECTION',
           id: 'hivscreening',
