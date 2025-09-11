@@ -547,7 +547,6 @@ class OvcHouseholdServiceAdultWellbeing {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
-
                 options: [
                   InputFieldOption(
                       code: 'Positive',
@@ -618,63 +617,7 @@ class OvcHouseholdServiceAdultWellbeing {
                   InputFieldOption(
                       code: 'more than six months',
                       name: 'more than six months'),
-        /*            InputFieldOption(
-                      code: 'more than one year',
-                      name: 'more than one year'),
-                  InputFieldOption(code: 'NA', name: 'NA') */
                 ]),
-        /*      InputField(
-                id: 'Icb6vUJXVDX',
-                name: '11. Do you take your treatments daily and on time?',
-                translatedName:
-                    '11. Na u noa litlhare tsa hau hantle (ka mehla ka nako)?',
-                description:
-                    'If no or not regularly, refer to HIV care and treatment.',
-                translatedDescription:
-                    'Ha ese ka mehla fetisetsa setsing sa kalafo.',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Too many side effects',
-                      name: 'No, too many side effects',
-                      translatedName:
-                          'Che, mat’soao a mangata a khahlanong le tsona'),
-                  InputFieldOption(
-                      code: 'Treatment not regularly available',
-                      name: 'No, treatment is not regularly available',
-                      translatedName: 'Che, kalafo ha e fumanehe nako eohle.'),
-                  InputFieldOption(
-                      code: 'Someone will find out',
-                      name:
-                          'No, scared that someone will find out that I? living with HIV',
-                      translatedName:
-                          'Che, ke t’saba hore hona le motho a tla tseba hore ke phela le HIV'),
-                  InputFieldOption(
-                      code: 'No, it? hard to remember',
-                      name: 'No, it? hard to remember',
-                      translatedName: 'Che, kea lebala '),
-                  InputFieldOption(
-                      code: 'I take it on time and regularly',
-                      name: 'Yes, I take it on time and regularly',
-                      translatedName: 'E, ke li nka ka nako, ka mehla '),
-                  InputFieldOption(
-                      code: 'Yes, but not regularly',
-                      name: 'Yes, but not regularly',
-                      translatedName: 'E, fela eseng mehlaena'),
-                  InputFieldOption(
-                      code: 'Other', name: 'Other', translatedName: 'Tse ling'),
-                  InputFieldOption(
-                      code: 'NA', name: 'NA', translatedName: 'N/A')
-                ]),
-            InputField(
-                id: 'IiKxc53TdqL',
-                name: 'Other, Specify (treatment taking)',
-                translatedName: 'Tse ling, hlakisa',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)), */
             InputField(
                 id: 'sLyfb45aLkl',
                 name: 'Have you ever had a blood test called viral load?',

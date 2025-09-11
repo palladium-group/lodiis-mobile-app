@@ -185,8 +185,7 @@ class OvchouseHoldAssessmentSkipLogic {
         hiddenFields['vNeOE9abQBB'] = true;
         hiddenFields['Icgkv0xkUow'] = true;
         hiddenFields['sLyfb45aLkl'] = true;
-        //print(' Na o kila hlahloba: $caregiverTestedForHiv');
-        //print('Perffrom HIV screening');
+
       }
 
 
@@ -203,8 +202,10 @@ class OvchouseHoldAssessmentSkipLogic {
         // Check if ART start date is before six months from now
         if (artInitiationDate.isBefore(sixMonthsFromNow)) {
           dataObject['ubin7MjQ5OI'] = 'more than six months';
+
         } else {
           dataObject['ubin7MjQ5OI'] = 'less than six months';
+          hiddenFields['sLyfb45aLkl']=true;
         }
       }
 
@@ -326,23 +327,6 @@ class OvchouseHoldAssessmentSkipLogic {
           }
         }
       }
-
-
-      // if (inputFieldId == 'BvNaiaoxc6w') {
-      //   // Grab value from registration
-      //   final bool? caregiverEverTested = dataObject['BvNaiaoxc6w'] as bool?;
-      //
-      //   if (caregiverEverTested != null) {
-      //     dataObject[inputFieldId] = caregiverEverTested;
-      //
-      //     // If false (No), hide fields
-      //     if (caregiverEverTested == false) {
-      //       hiddenFields['Icgkv0xkUow'] = true; // Hide ART question
-      //       hiddenFields['ubin7MjQ5OI'] = true; // Hide ART duration question
-      //     }
-      //   }
-      //
-      // }
 
 
 

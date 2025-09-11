@@ -17,7 +17,7 @@ class OvcServicesChildServiceProvision {
             InputField(
               id: 'FHvpd3Z5PAo',
               name: 'Disclosure Support Service Provided',
-              translatedName: "Lits'ebeletso tsa HIVS&D li fanoe",
+              translatedName: "Lits'ebeletso tsa Disclosure li fanoe",
               valueType: 'TRUE_ONLY',
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
@@ -25,7 +25,7 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'xpSfl4fCE5B',
                 name: 'Disclosure Support Service Provision Date',
-                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HIVS&D',
+                translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa Disclosure',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
@@ -33,7 +33,7 @@ class OvcServicesChildServiceProvision {
             InputField(
                 id: 'r8oyCTs6Fd3',
                 name: 'Disclosure Support Comment',
-                translatedName: 'Tlhaloso ea HIVS&D',
+                translatedName: 'Tlhaloso ea Disclosure',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
@@ -88,7 +88,7 @@ class OvcServicesChildServiceProvision {
                 labelColor: const Color(0xFF737373)),
             InputField(
               id: 'HzI5X2yHef6',
-              name: 'HIVS&D Service provided',
+              name: 'HIV Prevention,Care and Treatment MessagingService provided',
               translatedName: "Lits'ebeletso tsa HIVS&D li fanoe",
               valueType: 'TRUE_ONLY',
               isReadOnly:true,
@@ -97,7 +97,7 @@ class OvcServicesChildServiceProvision {
             ),
             InputField(
                 id: 'GyG2HcLsVka',
-                name: 'HIVS&D Service Provision Date',
+                name: 'HIV Prevention,Care and Treatment Messaging Service Provision Date',
                 translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa HIVS&D',
                 valueType: 'DATE',
                 firstDate: firstDate,
@@ -105,7 +105,7 @@ class OvcServicesChildServiceProvision {
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'dwhnvU5m667',
-                name: 'HIVS&D Comment',
+                name: 'HIV Prevention,Care and Treatment Messaging Comment',
                 translatedName: 'Tlhaloso ea HIVS&D',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
