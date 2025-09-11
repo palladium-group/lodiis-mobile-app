@@ -24,6 +24,30 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
     inputFieldIds = inputFieldIds.toSet().toList();
 
 
+
+    void hideChildDisclosure(){
+
+      //
+      hiddenFields['hgQXrOd7iuH'] =true;
+      hiddenFields['Qisosyae92z'] =true;
+      hiddenFields['EYb2XmgHt58'] =true;
+      hiddenFields['kcG670LJt3J'] =true;
+      hiddenFields['cEPYE0hDKtH'] =true;
+
+    }
+
+    void hideAdolDisclosure(){
+
+      //
+      hiddenFields['KFCBwn7ypws'] =true;
+      hiddenFields['wi6Iq4yVdXV'] =true;
+      hiddenFields['ToWhhydys'] =true;
+      hiddenFields['BYZu8p33lzP'] =true;
+
+
+    }
+
+
     void hideHivQuestions(){
 
       //
@@ -124,9 +148,6 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
       hiddenFields['yVTsRM4eMHA'] = true;
       hiddenSections['childnutrition']=true;
       hiddenFields['eDuHTPn7rhh'] = true;
-
-
-
     }
 
     void hideForCaregiver() {
@@ -203,7 +224,7 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
       if (inputFieldId == 'vNeOE9abQBB'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;
-         print('Statuss: $hivStatus');
+         //print('Statuss: $hivStatus');
         }
 
       }
@@ -238,13 +259,41 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
       }
 
       if(hivStatus != null){
+        if(hivStatus != 'Positive'){
+          hiddenFields['hgQXrOd7iuH']=true;
+          hiddenFields['kcG670LJt3J']=true;
+          hiddenFields['cEPYE0hDKtH']=true;
+          hiddenFields['Qisosyae92z']=true;
+          hiddenFields['EYb2XmgHt58']=true;
+
+        }
+      }
+
+      if (inputFieldId == 'hgQXrOd7iuH' && (value != 'true'|| value == 'null')){
+        hiddenFields['Qisosyae92z'] = true;
+      }
+      if (inputFieldId == 'hgQXrOd7iuH' && (value != 'false'|| value == 'null') || age < 6 ) {
+        hiddenFields['EYb2XmgHt58'] = true;
+      }
+
+      if (inputFieldId == 'kcG670LJt3J' && (value != 'true'|| value == 'null')){
+        hiddenFields['cEPYE0hDKtH'] = true;
+      }
+
+      if (age <= 12){
+        hideAdolDisclosure();
+      }else{
+        hideChildDisclosure();
+      }
+
+      if(hivStatus != null){
         if(hivStatus !='Positive' || artStatus != true){
           hiddenFields['sLyfb45aLkl']=true;
           hiddenFields['aRNGDZcwWmS']=true;
           hiddenFields['f2GIuwu1LGh']=true;
           hiddenFields['EYb2XmgHt58']=true;
           hiddenFields['gAzb8e8cLga']=true;
-          hiddenFields['BYZu8p33lzP']=true;
+
           hiddenFields['tYN12Es3707']=true;
         }
       }
