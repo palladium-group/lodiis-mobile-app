@@ -690,7 +690,7 @@ class OvcChildEnrollmentSkipLogic {
       'HIV exposed infants',
       'Child of PLHIV',
       'Adolescent Girl who is Pregnant',
-      'Adolescent Girl who is Breastfeeding',
+      'Adolescent Girl who is a young mother',
       'Child of Adolescent Girl who is Breastfeeding',
       'Sibling for CALHIV',
 
