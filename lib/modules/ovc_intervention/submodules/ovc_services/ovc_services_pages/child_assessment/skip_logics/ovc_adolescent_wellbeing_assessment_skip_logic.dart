@@ -274,7 +274,7 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
       }
 
       if (inputFieldId == 'ImAyVEpwmNS' && value != 'false') {
-        hiddenSections['tbsection'] =true;
+        hiddenSections['tbsection_adolescent'] =true;
       }
 
       if (age < 12){
