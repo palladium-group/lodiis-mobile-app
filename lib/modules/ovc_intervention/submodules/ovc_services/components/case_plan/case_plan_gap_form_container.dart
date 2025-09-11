@@ -250,12 +250,16 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const lastTestedDE = 'Uv26fX0HQvO';
     const oralHealthMessagingDE = 'wRhamvRZj87';
     const dietDE = 'iqBsSAfCyJb';
+    const durationOnArt = 'ubin7MjQ5OI';
     const feelingSupportedDE = 'KFCBwn7ypws';
     const viralLoadResultsDE = 'aRNGDZcwWmS';
     const hadsexwithmorethanone = 'upkFeuyd1fX';
     const sexwithoucondomPositve ='R38Mm0YgXcx';
     const sexwithoucondomUnknown ='qoKPxEkgfdh';
     const genitalsores ='B46Zeuzafkg';
+    const vltestingDE = 'sLyfb45aLkl';
+    const cd4testingDE = 'tYN12Es3707';
+
     // Gap DEs
     const hivAdherenceGapDE = 'HKCv7lkLexo';
     const hivTreatGapDE = 'ylSjcj6cv42';
@@ -272,6 +276,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const feedingsessionsGapDE = 'zkbTGkrT6bH';
     const enhancedAdherenceCouncilingGapDE = 'XuZIbkwn5yi';
     const psycosocialsupportGapDE = 'WiPTQhWLVU1';
+    const viralLoadTestingGapDE = 'bepi3n6Z4T0';
+    const cd4TestingGapDE = 'SHWV7e088RT';
 
     bool _isTrue(dynamic v) {
       final s = (v ?? '').toString().trim().toLowerCase();
@@ -298,7 +304,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
           raw == 'one type of food group' ||
           raw == 'one types of food groups';
     }
-
+    bool moreThanSixMonthsOnArt(Map<String, String?> m) {
+      final raw = (m[durationOnArt] ?? '').toString().trim().toLowerCase();
+      return raw == 'more than six months';
+    }
     // caregiver values
     final hiv = _normHiv(a[hivStatusDE]);
     final hivPositive = hiv == 'Positive';
@@ -315,10 +324,23 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final sexWithouCondomPositive = _isTrue(a[sexwithoucondomPositve]);
     final sexWithouCondomUnknown = _isTrue(a[sexwithoucondomUnknown]);
     final genitalSores = _isTrue(a[genitalsores]);
+    final testForVL = _isTrue(a[vltestingDE]);
+    final testdforCD4 = _isTrue(a[cd4testingDE]);
+    final overSixMonthsOnArt = moreThanSixMonthsOnArt(a);
+
+
+    if(overSixMonthsOnArt && !testForVL){
+      dataObject[viralLoadTestingGapDE] = true;
+    }
 
 
     if (hivPositive && (viralLoadResults ?? '').isNotEmpty) {
       if (viralLoadResults == 'High (above 1,000 copies/ml)') {
+        if(!testdforCD4){
+          dataObject[cd4TestingGapDE]=true;
+
+        }
+        dataObject[viralLoadTestingGapDE] = true;
         dataObject[enhancedAdherenceCouncilingGapDE] = true;
       }
     }
