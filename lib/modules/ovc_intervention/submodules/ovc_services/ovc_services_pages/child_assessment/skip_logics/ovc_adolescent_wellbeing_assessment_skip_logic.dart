@@ -199,18 +199,11 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
       bool isFieldHidden = hiddenFields[inputFieldId] ?? false;
-      if (inputFieldId == 'puLHlflNeg6') {
-        if (hivStatus != null) {
-          dataObject[inputFieldId] = 'true';
-          hiddenFields['ef1ixon3YBh'] = true;
-        } else if (hivStatus == null) {
-          dataObject[inputFieldId] = 'false';
-        }
-      }
+
       if (inputFieldId == 'vNeOE9abQBB'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;
-         // print('Statuss: $hivStatus');
+         print('Statuss: $hivStatus');
         }
 
       }
@@ -235,7 +228,7 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
 
 
       if (inputFieldId == 'Icgkv0xkUow'){
-        if(hivStatus != null){
+        if(artStatus != null){
           dataObject[inputFieldId] = artStatus;
         }
       }
@@ -256,14 +249,6 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
         }
       }
 
-
-      // final hivDuration = (dataObject['ubin7MjQ5OI'] ?? '').toString().trim();
-      //
-      // if (hivStatus == 'Negative' && hivDuration == 'more than six months') {
-      //   hiddenFields['Uv26fX0HQvO'] = false;
-      // }else {
-      //   hiddenFields['Uv26fX0HQvO'] = true;
-      // }
       if(age >= 12){
       if (inputFieldId == 'Uv26fX0HQvO' || inputFieldId == 'EEclxMv9xXk' || inputFieldId == 'vNeOE9abQBB') {
         final testedDuration = (dataObject['Uv26fX0HQvO'] ?? '').toString().trim();
@@ -286,6 +271,10 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
       }
       }else {
         hiddenSections['hivscreening'] = true;
+      }
+
+      if (inputFieldId == 'ImAyVEpwmNS' && value != 'false') {
+        hiddenSections['tbsection'] =true;
       }
 
       if (age < 12){
@@ -594,10 +583,6 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
           hiddenFields['eSJhbqT1NQb'] = true;
         }
 
-        if (inputFieldId == 'eSJhbqT1NQb' && hivStatus != null) {
-          dataObject[inputFieldId] = hivStatus;
-          hiddenFields['sHUjPZTqpy2'] = true;
-        }
 
         if (inputFieldId == 'iZGQ4iWkWNu' && value != 'false') {
           hiddenFields['EYb2XmgHt58'] = true;
@@ -682,7 +667,7 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
         }
         if (inputFieldId == 'vNeOE9abQBB'){
           if(hivStatus != null){
-            dataObject[inputFieldId] = hivStatus;
+
             if(hivStatus != 'Positive'){
               hiddenFields['Icgkv0xkUow'] = true;
               hiddenFields['wv3YAGLZlev'] = true;
