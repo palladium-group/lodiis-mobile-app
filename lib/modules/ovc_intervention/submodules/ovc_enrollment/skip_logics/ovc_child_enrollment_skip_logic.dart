@@ -104,6 +104,7 @@ class OvcChildEnrollmentSkipLogic {
 
 
     for (String inputFieldId in inputFieldIds) {
+      int age = AppUtil.getAgeInYear(dataObject['qZP982qpSPS']);
       String value = '${dataObject[inputFieldId]}';
 
 
@@ -124,6 +125,26 @@ class OvcChildEnrollmentSkipLogic {
         hiddenInputFieldOptions[inputFieldId] = optionHides;
       }
 
+      if (dataObject['vIX4GTSCX4P'] == 'Male') {
+        hiddenFields['tHbPB5hrbOc'] = true;
+        hiddenFields['ZGH70UbL2O1'] = true;
+      }
+
+      if (age > 5){
+        hiddenFields['FYjxxvyugEt'] = true;
+      }
+
+      if (dataObject['XYPRtYgQUF8'] == 'Yes'){
+        dataObject['tHbPB5hrbOc'] = true;
+      }else{
+        hiddenFields['tHbPB5hrbOc'] = true;
+      }
+
+      if (dataObject['nO38lKlKHYi'] == 'Positive' ||dataObject['tbpqNLJotOi'] == 'Positive' ){
+        dataObject['ZKMhrjWoXnD'] = true;
+      }else{
+        hiddenFields['ZKMhrjWoXnD'] = true;
+      }
 
       if (inputFieldId == 'iS9mAp3jDaU') {
         if (value == 'Biological mother') {
@@ -260,6 +281,7 @@ class OvcChildEnrollmentSkipLogic {
           hiddenOptions['Single Orphan(Mother)'] = true;
           hiddenOptions['Double Orphan'] = true;
         }
+
       } else if (inputFieldId == 'UeF4OvjIIEK') {
         if (value.isEmpty || value.trim() != 'true') {
           hiddenFields['nOgf8LKXS4k'] = true;
