@@ -386,8 +386,8 @@ class OvcEnrollmentChild {
             inputFields: [
               InputField(
                 id: 'WAlaenCYazT',
-                name: 'Have you been tested for HIV?',
-                translatedName: 'U kile oa hlahlobela HIV?',
+                name: 'Ever been tested for HIV?',
+                translatedName: 'O kile a hlahlobela HIV?',
                 description: 'If no refer for testing',
                 translatedDescription:
                 'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
@@ -401,7 +401,7 @@ class OvcEnrollmentChild {
                 translatedName: 'Child tested as per HEI testing algorithm?',
                 description: 'If no refer for testing',
                 translatedDescription:
-                'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+                'Ha a sa hlahloba, fetesitsa setsing sa tlhatlhobo',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
@@ -872,7 +872,7 @@ class OvcEnrollmentChild {
           InputField(
             id: 'ZGH70UbL2O1',
             name: '5. Adolescent Girl who is a young mother',
-            translatedName: "5. Na ngoana ke motsoetse a anyesang?",
+            translatedName: "5. Ke ngoana oa moroetsana ea anyesang?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'BOOLEAN',

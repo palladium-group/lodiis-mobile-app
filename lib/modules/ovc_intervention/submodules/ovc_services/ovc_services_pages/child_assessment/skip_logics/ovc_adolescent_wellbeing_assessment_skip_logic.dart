@@ -204,8 +204,12 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
     if(isTested != true){
       hideHivQuestions();
       hiddenFields['vNeOE9abQBB'] =true;
-      hiddenFields['Uv26fX0HQvO'] =true;
 
+
+    }
+
+    if (hivStatus == 'Positive'){
+      hiddenFields['Uv26fX0HQvO'] =true;
     }
 
 
@@ -723,7 +727,7 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
               hiddenFields['YTa10rE1vtd'] = true;
               hiddenFields['wi6Iq4yVdXV'] = true;
               hiddenFields['KFCBwn7ypws'] = true;
-
+              hiddenFields['Uv26fX0HQvO'] = true;
             }
           }
         }

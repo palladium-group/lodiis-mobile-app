@@ -139,7 +139,7 @@ class OvcEnrollmentHousehold {
           InputField(
             id: 'rSP9c21JsfC',
             name: 'Surname',
-            translatedName: 'Le Fane',
+            translatedName: 'Fane',
             regExpValidation: RegExp('^[A-Za-z]{0,}'),
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
@@ -200,11 +200,11 @@ class OvcEnrollmentHousehold {
                 InputFieldOption(
                     code: 'Married',
                     name: 'Married',
-                    translatedName: 'Ke nyetsoe'),
+                    translatedName: 'Ke nyetsoe/nyetse'),
                 InputFieldOption(
                     code: 'Single',
                     name: 'Single',
-                    translatedName: 'Ha kea nyaloa'),
+                    translatedName: 'Ha kea nyaloa/nyala'),
                 InputFieldOption(
                     code: 'Widowed',
                     name: 'Widowed',
@@ -285,7 +285,7 @@ class OvcEnrollmentHousehold {
             id: 'EIMgHQW61kx',
             name: 'Date of initiation',
             translatedName:
-            'Letsatsi leo ngoana a qalileng litlare tsa ART ka lona?',
+            'Letsatsi leo u qalileng litlare tsa ART ka lona?',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF737373),
             valueType: 'DATE',
