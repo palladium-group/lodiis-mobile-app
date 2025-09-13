@@ -1,5 +1,6 @@
+
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart'; // kept (not used to hide)
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
@@ -40,36 +41,43 @@ class _CasePlanGapServiceProvisionViewContainerState
   }) async {
     double ratio = 0.8;
     gapServiceObject = gapServiceObject ?? {};
-    String location = gapServiceObject['location'] ?? '';
-    String programStage = widget.isHouseholdCasePlan
+    String location = (gapServiceObject['location'] ?? '').toString();
+
+    final String programStage = widget.isHouseholdCasePlan
         ? OvcHouseholdCasePlanConstant.casePlanGapServiceProvisionProgramStage
         : OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage;
-    List skippedKeys = [
+
+    const skippedKeys = [
       'eventId',
       'eventDate',
       UserAccountReference.appAndDeviceTrackingDataElement,
       UserAccountReference.implementingPartnerDataElement,
       UserAccountReference.subImplementingPartnerDataElement,
-      UserAccountReference.serviceProviderDataElement
+      UserAccountReference.serviceProviderDataElement,
     ];
-    for (String key in widget.casePlanGap.keys
-        .where((element) => !skippedKeys.contains(element))) {
-      gapServiceObject[key] = gapServiceObject[key] ?? widget.casePlanGap[key];
-    }
-    gapServiceObject['casePlanDate'] = widget.casePlanGap['eventDate'];
-    gapServiceObject['location'] = location;
-    Map<String, List<String>> previousSessionMapping =
-        OvcServiceProvisionUtil.getPreviousSessionMapping(
+
+    // seed object with gap values (preserve linkages), then keep any edit values
+    final Map<String, dynamic> obj = <String, dynamic>{};
+    widget.casePlanGap.forEach((k, v) {
+      final key = k.toString();
+      if (!skippedKeys.contains(key)) obj[key] = v;
+    });
+    gapServiceObject.forEach((k, v) => obj[k.toString()] = v);
+    obj['casePlanDate'] = widget.casePlanGap['eventDate'];
+    obj['location'] = location;
+
+    final prev = OvcServiceProvisionUtil.getPreviousSessionMapping(
       context,
       [programStage],
     );
-    gapServiceObject["previousSessionMapping"] = previousSessionMapping;
+    obj['previousSessionMapping'] = prev;
+
     AppUtil.showActionSheetModal(
       context: context,
       initialHeightRatio: ratio,
       maxHeightRatio: ratio,
       containerBody: CasePlanGapServiceProvisionFormContainer(
-        gapServiceObject: gapServiceObject,
+        gapServiceObject: obj,
         isHouseholdCasePlan: widget.isHouseholdCasePlan,
         enrollmentOuAccessible: widget.enrollmentOuAccessible,
         domainId: widget.domainId,
@@ -82,81 +90,72 @@ class _CasePlanGapServiceProvisionViewContainerState
   @override
   Widget build(BuildContext context) {
     return Consumer<OvcHouseholdCurrentSelectionState>(
-        builder: (context, state, child) {
-      var hasBeneficiaryExited =
-          state.currentOvcHousehold?.hasExitedProgram == true ||
-              (!widget.isHouseholdCasePlan &&
-                  state.currentOvcHouseholdChild?.hasExitedProgram == true);
-      return Container(
-        margin: const EdgeInsets.symmetric(),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 15.0,
+      builder: (context, state, child) {
+        // hide ONLY when exited
+        final bool hasBeneficiaryExited = widget.isHouseholdCasePlan
+            ? (state.currentOvcHousehold?.hasExitedProgram == true)
+            : (state.currentOvcHousehold?.hasExitedProgram == true ||
+            state.currentOvcHouseholdChild?.hasExitedProgram == true);
+
+        return Container(
+          margin: const EdgeInsets.symmetric(),
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: CasePlanGapServiceProvisionView(
+                  isHouseholdCasePlan: widget.isHouseholdCasePlan,
+                  hasEditAccess: !hasBeneficiaryExited,
+                  formSectionColor: widget.formSectionColor,
+                  domainId: widget.domainId,
+                  casePlanGap: widget.casePlanGap,
+                  onEditCasePlanService: (Map dataObject) =>
+                      onManageCasePlanGapServiceProvision(
+                        gapServiceObject: dataObject,
+                        isOnEditMode: true,
+                      ),
+                  onViewCasePlanService: (Map dataObject) =>
+                      onManageCasePlanGapServiceProvision(
+                        gapServiceObject: dataObject,
+                        isOnEditMode: false,
+                      ),
+                ),
               ),
-              child: CasePlanGapServiceProvisionView(
-                isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                hasEditAccess: hasBeneficiaryExited != true,
-                formSectionColor: widget.formSectionColor,
-                domainId: widget.domainId,
-                casePlanGap: widget.casePlanGap,
-                onEditCasePlanService: (Map dataObject) =>
-                    onManageCasePlanGapServiceProvision(
-                        gapServiceObject: dataObject),
-                onViewCasePlanService: (Map dataObject) =>
-                    onManageCasePlanGapServiceProvision(
-                        gapServiceObject: dataObject, isOnEditMode: false),
-              ),
-            ),
-            Consumer<CurrentUserState>(
-              builder: (context, currentUserState, child) {
-                bool isKbFacilitySocialWorker =
-                    currentUserState.isKbFacilitySocialWorker;
-                return Visibility(
-                  visible:
-                      !isKbFacilitySocialWorker && hasBeneficiaryExited != true,
-                  child: Consumer<LanguageTranslationState>(
-                    builder: (context, languageTranslationState, child) {
-                      String? currentLanguage =
-                          languageTranslationState.currentLanguage;
-                      return Container(
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 10.0,
-                        ),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                color: widget.formSectionColor,
-                              ),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            padding: const EdgeInsets.all(15.0),
+              Visibility(
+                visible: !hasBeneficiaryExited,
+                child: Consumer<LanguageTranslationState>(
+                  builder: (context, languageTranslationState, _) {
+                    final isSesotho =
+                        languageTranslationState.isSesothoLanguage;
+                    return Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(color: widget.formSectionColor),
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
-                          onPressed: () =>
-                              onManageCasePlanGapServiceProvision(),
-                          child: Text(
-                            currentLanguage != 'lesotho'
-                                ? 'ADD SERVICE'
-                                : 'TLATSA TŠEBELETSO',
-                            style: const TextStyle().copyWith(
-                              color: widget.formSectionColor,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          padding: const EdgeInsets.all(15.0),
+                        ),
+                        onPressed: onManageCasePlanGapServiceProvision,
+                        child: Text(
+                          isSesotho ? 'TLATSA TŠEBELETSO' : 'ADD SERVICE',
+                          style: const TextStyle().copyWith(
+                            color: widget.formSectionColor,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
-            )
-          ],
-        ),
-      );
-    });
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

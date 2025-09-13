@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart'; // kept (not used to hide)
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
@@ -38,19 +38,15 @@ class CasePlanGapServiceMonitoringViewContainer extends StatefulWidget {
 
 class _CasePlanGapServiceMonitoringViewContainerState
     extends State<CasePlanGapServiceMonitoringViewContainer> {
-
   bool _isTrue(dynamic v) {
     final s = (v ?? '').toString().trim().toLowerCase();
     return s == 'true' || s == '1' || s == 'yes';
   }
 
-  /// Only show Viral Load monitoring if HIV+ and on ART
+  /// Only show VL option if HIV+ and on ART (latest)
   Future<bool> _isPositiveAndOnArt(BuildContext context) async {
-    // HH assessment DEs
     const hhHivDe = 'vNeOE9abQBB';
-    const artDe   = 'Icgkv0xkUow';
-
-    // Child WBA DEs
+    const artDe = 'Icgkv0xkUow';
     const childHivDe = 'c5TMWtM4VVJ';
 
     if (widget.isHouseholdCasePlan) {
@@ -61,14 +57,15 @@ class _CasePlanGapServiceMonitoringViewContainerState
       final onArt = _isTrue(hhVals[artDe]);
       return (hiv == 'positive' || hiv == '1' || hiv == 'true') && onArt;
     } else {
-      final child = context.read<OvcHouseholdCurrentSelectionState>().currentOvcHouseholdChild;
+      final child = context
+          .read<OvcHouseholdCurrentSelectionState>()
+          .currentOvcHouseholdChild;
       if (child == null) return false;
 
-      final all = await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(
-        child.id ?? '',
-      );
-      final stageId = OvcServiceWellBeingAssessmentConstant.programStage;
-      final events = all.where((e) => e.programStage == stageId).toList();
+      final all = await TrackedEntityInstanceUtil
+          .getSavedTrackedEntityInstanceEventData(child.id ?? '');
+      final stage = OvcServiceWellBeingAssessmentConstant.programStage;
+      final events = all.where((e) => e.programStage == stage).toList();
       if (events.isEmpty) return false;
 
       events.sort((a, b) => (b.eventDate ?? '').compareTo(a.eventDate ?? ''));
@@ -87,31 +84,33 @@ class _CasePlanGapServiceMonitoringViewContainerState
     }
   }
 
-  Future<String?> _pickMonitoringType(BuildContext context, {required bool canShowVl}) async {
-    final options = <String>['Assessment monitoring', if (canShowVl) 'Viral load monitoring'];
+  Future<String?> _pickMonitoringType(BuildContext context,
+      {required bool canShowVl}) async {
+    final options = <String>[
+      'Assessment monitoring',
+      if (canShowVl) 'Viral load monitoring',
+    ];
     return showModalBottomSheet<String>(
       context: context,
       isScrollControlled: false,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 8),
-              Text('Choose monitoring type',
-                  style: Theme.of(ctx).textTheme.titleMedium),
-              const Divider(),
-              for (final opt in options)
-                ListTile(
-                  title: Text(opt),
-                  onTap: () => Navigator.pop(ctx, opt),
-                ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        );
-      },
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Text('Choose monitoring type',
+                style: Theme.of(ctx).textTheme.titleMedium),
+            const Divider(),
+            for (final opt in options)
+              ListTile(
+                title: Text(opt),
+                onTap: () => Navigator.pop(ctx, opt),
+              ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
     );
   }
 
@@ -119,17 +118,18 @@ class _CasePlanGapServiceMonitoringViewContainerState
     Map? gapServiceMonitoringObject,
     bool isOnEditMode = true,
   }) async {
-    double ratio = 0.8;
+    final ratio = 0.8;
     gapServiceMonitoringObject = gapServiceMonitoringObject ?? {};
 
-    // 1) Decide what to show
     final canShowVl = await _isPositiveAndOnArt(context);
-    final picked = await _pickMonitoringType(context, canShowVl: canShowVl);
+    final picked =
+    await _pickMonitoringType(context, canShowVl: canShowVl);
     if (picked == null) return;
 
-    // 2) Seed the payload, keeping linkages and case plan date
-    String location = (gapServiceMonitoringObject['location'] ?? '').toString();
-    String casePlanGapDate = (widget.casePlanGap['eventDate'] ?? '').toString();
+    String location =
+    (gapServiceMonitoringObject['location'] ?? '').toString();
+    String casePlanGapDate =
+    (widget.casePlanGap['eventDate'] ?? '').toString();
 
     const skippedKeys = [
       'eventId',
@@ -141,9 +141,7 @@ class _CasePlanGapServiceMonitoringViewContainerState
     ];
 
     final Map<String, dynamic> obj = <String, dynamic>{};
-    // bring incoming edit values
     gapServiceMonitoringObject.forEach((k, v) => obj[k.toString()] = v);
-    // copy from the gap, preserving linkages
     widget.casePlanGap.forEach((key, value) {
       final k = key.toString();
       if (!skippedKeys.contains(k) && !obj.containsKey(k)) {
@@ -153,7 +151,6 @@ class _CasePlanGapServiceMonitoringViewContainerState
     obj['location'] = location;
     obj['casePlanDate'] = casePlanGapDate;
 
-    // 3) Route to correct monitoring form
     if (picked == 'Viral load monitoring') {
       AppUtil.showActionSheetModal(
         context: context,
@@ -191,10 +188,12 @@ class _CasePlanGapServiceMonitoringViewContainerState
   Widget build(BuildContext context) {
     return Consumer<OvcHouseholdCurrentSelectionState>(
       builder: (context, state, child) {
-        var hasBeneficiaryExited = widget.isHouseholdCasePlan
-            ? state.currentOvcHousehold?.hasExitedProgram
-            : state.currentOvcHousehold?.hasExitedProgram == true ||
-            state.currentOvcHouseholdChild?.hasExitedProgram == true;
+        // hide ONLY when exited
+        final bool hasBeneficiaryExited = widget.isHouseholdCasePlan
+            ? (state.currentOvcHousehold?.hasExitedProgram == true)
+            : (state.currentOvcHousehold?.hasExitedProgram == true ||
+            state.currentOvcHouseholdChild?.hasExitedProgram == true);
+
         return Container(
           margin: const EdgeInsets.symmetric(),
           child: Column(
@@ -206,7 +205,7 @@ class _CasePlanGapServiceMonitoringViewContainerState
                   formSectionColor: widget.formSectionColor,
                   casePlanGap: widget.casePlanGap,
                   isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                  hasEditAccess: hasBeneficiaryExited != true,
+                  hasEditAccess: !hasBeneficiaryExited,
                   onViewCasePlanServiceMonitoring: (Map dataObject) =>
                       onManageCasePlanGapServiceMonitoring(
                         gapServiceMonitoringObject: dataObject,
@@ -219,43 +218,35 @@ class _CasePlanGapServiceMonitoringViewContainerState
                       ),
                 ),
               ),
-              Consumer<CurrentUserState>(
-                builder: (context, currentUserState, child) {
-                  bool isKbFacilitySocialWorker =
-                      currentUserState.isKbFacilitySocialWorker;
-                  return Visibility(
-                    visible: !isKbFacilitySocialWorker &&
-                        hasBeneficiaryExited != true,
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: widget.formSectionColor),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          padding: const EdgeInsets.all(15.0),
-                        ),
-                        onPressed: onManageCasePlanGapServiceMonitoring,
-                        child: Consumer<LanguageTranslationState>(
-                          builder: (context, languageTranslationState, child) =>
-                              Text(
-                                languageTranslationState.isSesothoLanguage
-                                    ? 'KENYA TLHOKOMELO'
-                                    : 'ADD MONITORING',
-                                style: const TextStyle().copyWith(
-                                  color: widget.formSectionColor,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
+              Visibility(
+                visible: !hasBeneficiaryExited,
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: widget.formSectionColor),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      padding: const EdgeInsets.all(15.0),
+                    ),
+                    onPressed: onManageCasePlanGapServiceMonitoring,
+                    child: Consumer<LanguageTranslationState>(
+                      builder: (context, languageTranslationState, _) => Text(
+                        languageTranslationState.isSesothoLanguage
+                            ? 'KENYA TLHOKOMELO'
+                            : 'ADD MONITORING',
+                        style: const TextStyle().copyWith(
+                          color: widget.formSectionColor,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                  );
-                },
-              )
+                  ),
+                ),
+              ),
             ],
           ),
         );
