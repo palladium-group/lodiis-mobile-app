@@ -4,8 +4,11 @@ import 'package:kb_mobile_app/models/case_plan_gap_event.dart';
 import 'package:kb_mobile_app/models/case_plan_gap_service_monitoring_event.dart';
 import 'package:kb_mobile_app/models/case_plan_gap_service_provision_event.dart';
 import 'package:kb_mobile_app/models/events.dart';
+import 'package:kb_mobile_app/models/form_section.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
-
+import 'package:flutter/material.dart';
 import '../../../services/ovc_case_plan_service.dart';
 
 class OvcCasePlanUtil {
@@ -15,7 +18,7 @@ class OvcCasePlanUtil {
   }) {
     List<Events> events = TrackedEntityInstanceUtil
         .getAllEventListFromServiceDataStateByProgramStages(
-            eventListByProgramStage, programStageIds);
+        eventListByProgramStage, programStageIds);
     return TrackedEntityInstanceUtil.getGroupedEventByDates(events);
   }
 
@@ -27,19 +30,15 @@ class OvcCasePlanUtil {
             .length;
   }
 
-
   /// Return ALL gap events for a given case-plan linkage, ignoring date windows.
-  /// Used to deduplicate when saving (so previously-saved gaps from any day aren’t re-added).
   static Future<List<CasePlanGapEvent>> getCasePlanGapsForLinkage({
     required String teiId,
     required String programStageId,
     required String linkage,
   }) async {
     try {
-      // Most builds of OvcCasePlanService filter by linkage if you pass it,
-      // and ignore the date when you pass an empty ''.
       final gaps = await OvcCasePlanService().getCasePlanGapEvents(
-        date: '', // <- intentionally blank to fetch across dates
+        date: '', // intentionally blank to fetch across dates
         programStageId: programStageId,
         teiId: teiId,
         casePlanToGaps: [linkage],
@@ -50,7 +49,6 @@ class OvcCasePlanUtil {
     }
   }
 
-
   static Map getMappedCasePlanWithGapsByDomain({
     required List<Events> casePlanEvents,
     required List<Events> casePlanGapsEvents,
@@ -58,20 +56,20 @@ class OvcCasePlanUtil {
     Map casePlanDataObject = {};
     for (Events casePlanEventData in casePlanEvents) {
       CasePlanEvent casePlanEvent =
-          CasePlanEvent().toDataModel(eventData: casePlanEventData);
+      CasePlanEvent().toDataModel(eventData: casePlanEventData);
       String domainType = casePlanEvent.domainType!;
       Map casePlanObject = getMappedEventObject(casePlanEvent.eventData!);
       casePlanObject['gaps'] = casePlanGapsEvents
           .map(
             (Events casePlanGapEventData) =>
-                CasePlanGapEvent().toDataModel(eventData: casePlanGapEventData),
-          )
+            CasePlanGapEvent().toDataModel(eventData: casePlanGapEventData),
+      )
           .toList()
           .where((casePlanGapEvent) =>
-              casePlanGapEvent.casePlanToGap == casePlanEvent.casePlanToGap)
+      casePlanGapEvent.casePlanToGap == casePlanEvent.casePlanToGap)
           .toList()
           .map((casePlanGapEvent) =>
-              getMappedEventObject(casePlanGapEvent.eventData!))
+          getMappedEventObject(casePlanGapEvent.eventData!))
           .toList();
       casePlanDataObject[domainType] = casePlanObject;
     }
@@ -97,10 +95,10 @@ class OvcCasePlanUtil {
   }
 
   static bool isLocationOnCasePlanFormFilled(
-    Map dataObject, {
-    required String sectionsId,
-    required bool shouldCheck,
-  }) {
+      Map dataObject, {
+        required String sectionsId,
+        required bool shouldCheck,
+      }) {
     bool hasBeenFilled = true;
     if (shouldCheck) {
       hasBeenFilled =
@@ -110,24 +108,24 @@ class OvcCasePlanUtil {
   }
 
   static String getCasePlanDateFromCasePlanForm(
-    Map dataObject,
-    String sectionsId,
-  ) {
+      Map dataObject,
+      String sectionsId,
+      ) {
     Map casePlanDateSection = dataObject[sectionsId] ?? {};
     return casePlanDateSection['eventDate'] ?? '';
   }
 
   static bool isCasePlanDateOnCasePlanFormFilled(
-    Map dataObject, {
-    required String sectionsId,
-  }) {
+      Map dataObject, {
+        required String sectionsId,
+      }) {
     return getCasePlanDateFromCasePlanForm(dataObject, sectionsId).isNotEmpty;
   }
 
   static bool isAllDomainGoalAndGapFilled(
-    Map dataObject, {
-    required bool isHouseholdCasePlan,
-  }) {
+      Map dataObject, {
+        required bool isHouseholdCasePlan,
+      }) {
     bool isAllDomainFilled = true;
     for (String? domainType in dataObject.keys.toList()) {
       Map domainDataObject = dataObject[domainType] ?? {};
@@ -146,7 +144,7 @@ class OvcCasePlanUtil {
       } else if (isHouseholdCasePlan &&
           domainType == OvcCasePlanConstant.casePlanDomainType) {
         String houseHoldCategorization = domainDataObject[
-                OvcCasePlanConstant.houseHoldCategorizationDataElement] ??
+        OvcCasePlanConstant.houseHoldCategorizationDataElement] ??
             '';
         if (houseHoldCategorization.isEmpty) {
           isAllDomainFilled = false;
@@ -157,40 +155,101 @@ class OvcCasePlanUtil {
   }
 
   static List<CasePlanGapServiceProvisionEvent>
-      getCasePlanGapServiceProvisionEvents({
+  getCasePlanGapServiceProvisionEvents({
     required Map<String?, List<Events>> eventListByProgramStage,
     required List<String> programStageIds,
     required String casePlanGapToServiceProvisionLinkage,
   }) {
     List<Events> events = TrackedEntityInstanceUtil
         .getAllEventListFromServiceDataStateByProgramStages(
-            eventListByProgramStage, programStageIds);
+        eventListByProgramStage, programStageIds);
     return events
         .map((eventData) => CasePlanGapServiceProvisionEvent()
-            .toDataModel(eventData: eventData))
+        .toDataModel(eventData: eventData))
         .toList()
         .where((casePlanService) =>
-            casePlanService.casePlanGapToServiceProvisionLinkage ==
-            casePlanGapToServiceProvisionLinkage)
+    casePlanService.casePlanGapToServiceProvisionLinkage ==
+        casePlanGapToServiceProvisionLinkage)
         .toList();
   }
 
   static List<CasePlanGapServiceMonitoringEvent>
-      getCasePlanGapServiceMonitoringEvents({
+  getCasePlanGapServiceMonitoringEvents({
     required Map<String?, List<Events>> eventListByProgramStage,
     required List<String> programStageIds,
     required String casePlanGapToServiceMonitoringLinkage,
   }) {
     List<Events> events = TrackedEntityInstanceUtil
         .getAllEventListFromServiceDataStateByProgramStages(
-            eventListByProgramStage, programStageIds);
+        eventListByProgramStage, programStageIds);
     return events
         .map((eventData) => CasePlanGapServiceMonitoringEvent()
-            .toDataModel(eventData: eventData))
+        .toDataModel(eventData: eventData))
         .toList()
         .where((casePlanService) =>
-            casePlanService.casePlanGapToServiceMonitoringLinkage ==
-            casePlanGapToServiceMonitoringLinkage)
+    casePlanService.casePlanGapToServiceMonitoringLinkage ==
+        casePlanGapToServiceMonitoringLinkage)
         .toList();
+  }
+
+  // ---------- NEW: group saved gap booleans by sub-section label ----------
+
+  static bool _isTrueish(dynamic v) {
+    final s = (v ?? '').toString().trim().toLowerCase();
+    return s == 'true' || s == '1' || s == 'yes';
+  }
+
+  /// Returns: { "Sub-section Name": ["Gap label A", "Gap label B"], ... }
+  static Map<String, List<String>> groupTrueFieldsBySubsection({
+    required String domainId,
+    required bool isHouseholdCasePlan,
+    required Map<String, dynamic> gapEvent,
+    String firstDate = '',
+  }) {
+    final sections = isHouseholdCasePlan
+        ? OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: firstDate)
+        : OvcServicesChildCasePlanGap.getFormSections(firstDate: firstDate);
+
+
+    final domain = sections.firstWhere(
+          (s) => s.id == domainId,
+      orElse: () => FormSection(
+        id: domainId,
+        name: domainId,
+        translatedName: domainId,
+        color: Colors.transparent,        // <- required
+        borderColor: Colors.transparent,  // <- commonly required in your app
+        inputFields: const [],
+        subSections: const [],
+      ),
+    );
+
+
+    final groups = <String, List<String>>{};
+
+    void collectFromSection(FormSection s, String groupName) {
+      for (final f in (s.inputFields ?? const [])) {
+        final v = gapEvent[f.id];
+        if (_isTrueish(v)) {
+          groups.putIfAbsent(groupName, () => <String>[]);
+          groups[groupName]!.add(f.name);
+        }
+      }
+    }
+
+    final subs = domain.subSections ?? const <FormSection>[];
+    if (subs.isNotEmpty) {
+      for (final sub in subs) {
+        collectFromSection(sub, sub.name);
+        for (final nested in (sub.subSections ?? const <FormSection>[])) {
+          collectFromSection(nested, nested.name);
+        }
+      }
+    } else {
+      collectFromSection(domain, domain.name);
+    }
+
+    groups.removeWhere((_, list) => list.isEmpty);
+    return groups;
   }
 }
