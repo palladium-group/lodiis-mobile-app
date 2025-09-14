@@ -4,19 +4,16 @@ import 'package:provider/provider.dart';
 
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/form_section.dart';
+
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_form_container.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_monitoring_view_container.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_provision_view_container.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_view.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
+import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
 
 class CasePlanGapViewContainer extends StatelessWidget {
   const CasePlanGapViewContainer({
     Key? key,
-    // keep existing required params
     required this.dataObject,
     required this.formSectionColor,
     required this.isHouseholdCasePlan,
@@ -28,11 +25,8 @@ class CasePlanGapViewContainer extends StatelessWidget {
     required this.onInputValueChange,
     required this.isOnCasePlanServiceProvision,
     required this.isOnCasePlanServiceMonitoring,
-    // NEW: optional (to avoid “required but missing” at call sites)
-    this.domainDataObject,
   }) : super(key: key);
 
-  // existing
   final Map dataObject;
   final Color formSectionColor;
   final bool isHouseholdCasePlan;
@@ -43,204 +37,90 @@ class CasePlanGapViewContainer extends StatelessWidget {
   final String domainId;
   final bool isOnCasePlanServiceProvision;
   final bool isOnCasePlanServiceMonitoring;
-  final Function onInputValueChange;
+  final Function(dynamic value) onInputValueChange;
 
-  // optional, safe default
-  final Map<String, dynamic>? domainDataObject;
-
-  final String caseToGapLinkage = OvcCasePlanConstant.casePlanToGapLinkage;
-  final String casePlanGapToServiceProvisionLinkage =
-      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
-  final String casePlanGapToServiceMonitoringLinkage =
-      OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
-
-  void onAddOrEditCasePlanGap(
+  // If someone still taps edit on a gap row, we open the gap form.
+  Future<void> _onEditGap(
       BuildContext context, {
-        Map? gapDataObject,
-        bool isOnEdit = false,
+        required Map<String, dynamic> gapDataObject,
       }) async {
-    String caseToGapLinkageValue =
-    (dataObject[caseToGapLinkage] ?? AppUtil.getUid()).toString();
-    String casePlanFirstGoal =
-    (dataObject[OvcCasePlanConstant.casePlanFirstGoal] ?? '').toString();
-    String casePlansSecondGoal =
-    (dataObject[OvcCasePlanConstant.casePlansSecondGoal] ?? '').toString();
+    // Resolve the gap sections for this domain
+    List<FormSection> sections = isHouseholdCasePlan
+        ? OvcHouseholdServicesCasePlanGaps.getFormSections(
+      firstDate: gapDataObject['eventDate'] ??
+          AppUtil.formattedDateTimeIntoString(DateTime.now()),
+    ).where((s) => (s.id ?? '') == domainId).toList()
+        : OvcServicesChildCasePlanGap.getFormSections(
+      firstDate: gapDataObject['eventDate'] ??
+          AppUtil.formattedDateTimeIntoString(DateTime.now()),
+    ).where((s) => (s.id ?? '') == domainId).toList();
 
-    double ratio = 0.8;
-    final Map<String, dynamic> gap = Map<String, dynamic>.from(gapDataObject ?? {});
-    gap[casePlanGapToServiceProvisionLinkage] =
-        (gap[casePlanGapToServiceProvisionLinkage] ?? AppUtil.getUid()).toString();
-    gap[casePlanGapToServiceMonitoringLinkage] =
-        (gap[casePlanGapToServiceMonitoringLinkage] ?? AppUtil.getUid()).toString();
-    gap[OvcCasePlanConstant.casePlanFirstGoal] = casePlanFirstGoal;
-    gap[OvcCasePlanConstant.casePlansSecondGoal] = casePlansSecondGoal;
-    gap[caseToGapLinkage] = caseToGapLinkageValue;
-
-    final String firstDate = (gap['eventDate'] ??
-        AppUtil.formattedDateTimeIntoString(DateTime.now()))
-        .toString();
-
-    List<FormSection> formSections = isHouseholdCasePlan
-        ? OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: firstDate)
-        .where((s) => (s.id ?? '') == domainId)
-        .toList()
-        : OvcServicesChildCasePlanGap.getFormSections(firstDate: firstDate)
-        .where((s) => (s.id ?? '') == domainId)
-        .toList();
-
-    formSections = formSections
-        .map((f) {
-      f.borderColor = Colors.transparent;
-      return f;
-    })
-        .toList();
+    sections = sections.map((s) {
+      s.borderColor = Colors.transparent;
+      return s;
+    }).toList();
 
     final response = await AppUtil.showActionSheetModal(
       context: context,
+      initialHeightRatio: 0.9,
+      maxHeightRatio: 0.95,
       containerBody: CasePlanGapFormContainer(
-        formSections: formSections,
-        isEditableMode: isEditableMode,
+        formSections: sections,
+        isEditableMode: isEditableMode && hasEditAccessToCasePlan,
         formSectionColor: formSectionColor,
-        dataObject: gap,
+        dataObject: gapDataObject,
         isChildCasePlan: !isHouseholdCasePlan,
       ),
-      initialHeightRatio: ratio,
-      maxHeightRatio: ratio,
     );
 
-    if (response != null) {
-      final String eventId = (response['eventId'] ?? '').toString();
-      final List<dynamic> gapsList =
-      List<dynamic>.from((dataObject['gaps'] ?? []) as List);
+    if (response is Map) {
+      // Update dataObject['gaps'] list by replacing edited eventId
+      final eventId = (response['eventId'] ?? '').toString();
+      final List<Map<String, dynamic>> gaps = ((dataObject['gaps'] as List?) ??
+          const <Map<String, dynamic>>[])
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
 
-      if (isOnEdit) {
-        dataObject['gaps'] =
-            gapsList.where((g) => (g as Map)['eventId'] != eventId).toList();
+      final updated = <Map<String, dynamic>>[];
+      for (final g in gaps) {
+        if ((g['eventId'] ?? '') == eventId && eventId.isNotEmpty) {
+          updated.add(Map<String, dynamic>.from(response));
+        } else {
+          updated.add(g);
+        }
       }
-
-      gapsList.add(response);
-      onValueChange('gaps', gapsList);
+      if (eventId.isEmpty) {
+        // in case edit created a new one somehow, append
+        updated.add(Map<String, dynamic>.from(response));
+      }
+      dataObject['gaps'] = updated;
+      onInputValueChange(dataObject);
     }
   }
-
-  void onValueChange(String id, dynamic value) {
-    dataObject[id] = value;
-    onInputValueChange(dataObject);
-  }
-
-  Map<String, dynamic> _getCasePlanGapObjects(List casePlanGapObjects) {
-    final out = <String, dynamic>{};
-    for (final obj in casePlanGapObjects) {
-      final m = Map<String, dynamic>.from(obj as Map);
-      out.addAll(m);
-    }
-    return out;
-  }
-
-  bool _hasCasPlanGaps(List casePlanGapObjects) => casePlanGapObjects.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> rawGaps = List<dynamic>.from((dataObject['gaps'] ?? []) as List);
+    final List<dynamic> rawGaps = (dataObject['gaps'] as List?) ?? const [];
+    final List<Map<String, dynamic>> gaps =
+    rawGaps.map((e) => Map<String, dynamic>.from(e as Map)).toList();
 
     return Container(
       margin: const EdgeInsets.symmetric(),
-      child: Column(
-        children: [
-          // Classic gaps list (edit/view single gap cards)
-          CasePlanGapView(
-            hasEditAccessToCasePlan: hasEditAccessToCasePlan,
-            isEditableMode: isEditableMode,
-            isOnCasePlanServiceProvision: isOnCasePlanServiceProvision,
-            isOnCasePlanServiceMonitoring: isOnCasePlanServiceMonitoring,
-            domainId: domainId,
-            formSectionColor: formSectionColor,
-            isHouseholdCasePlan: isHouseholdCasePlan,
-            casePlanGapObjects: rawGaps,
-            onEdiCasePlanGap: (dynamic gapDataObject) => onAddOrEditCasePlanGap(
-              context,
-              gapDataObject: gapDataObject as Map?,
-              isOnEdit: true,
-            ),
-          ),
-
-          // Service Provision / Monitoring containers (use merged gap object)
-          Visibility(
-            visible: _hasCasPlanGaps(rawGaps),
-            child: Container(
-              margin: const EdgeInsets.symmetric(),
-              child: Column(
-                children: [
-                  if (isOnCasePlanServiceProvision)
-                    CasePlanGapServiceProvisionViewContainer(
-                      domainId: domainId,
-                      formSectionColor: formSectionColor,
-                      casePlanGap: _getCasePlanGapObjects(rawGaps),
-                      isHouseholdCasePlan: isHouseholdCasePlan,
-                      enrollmentOuAccessible: enrollmentOuAccessible,
-                      // optional grouped gaps can use the whole section map if you want
-                      domainDataObject: Map<String, dynamic>.from(
-                        (domainDataObject ?? dataObject).map(
-                              (k, v) => MapEntry(k.toString(), v),
-                        ),
-                      ),
-                    ),
-                  if (isOnCasePlanServiceMonitoring)
-                    CasePlanGapServiceMonitoringViewContainer(
-                      domainId: domainId,
-                      formSectionColor: formSectionColor,
-                      casePlanGap: _getCasePlanGapObjects(rawGaps),
-                      isHouseholdCasePlan: isHouseholdCasePlan,
-                      enrollmentOuAccessible: enrollmentOuAccessible,
-                      domainDataObject: Map<String, dynamic>.from(
-                        (domainDataObject ?? dataObject).map(
-                              (k, v) => MapEntry(k.toString(), v),
-                        ),
-                      ),
-                    )
-                ],
-              ),
-            ),
-          ),
-
-          // (Optional) Generate Plan button if you still show gaps here
-          Visibility(
-            visible: (isEditableMode && canAddDomainGaps) &&
-                !(isOnCasePlanServiceMonitoring || isOnCasePlanServiceProvision),
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 10.0),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  disabledForegroundColor:
-                  formSectionColor.withOpacity(0.38),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: formSectionColor),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                onPressed: () => onAddOrEditCasePlanGap(context),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 15.0,
-                    horizontal: 40.0,
-                  ),
-                  child: Consumer<LanguageTranslationState>(
-                    builder: (context, lang, child) => Text(
-                      lang.isSesothoLanguage ? "Eketsa sekheo" : 'Generate Plan',
-                      style: const TextStyle().copyWith(
-                        color: formSectionColor,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      child: CasePlanGapView(
+        hasEditAccessToCasePlan: hasEditAccessToCasePlan,
+        isEditableMode: isEditableMode,
+        isOnCasePlanServiceProvision: isOnCasePlanServiceProvision,
+        isOnCasePlanServiceMonitoring: isOnCasePlanServiceMonitoring,
+        domainId: domainId,
+        formSectionColor: formSectionColor,
+        isHouseholdCasePlan: isHouseholdCasePlan,
+        casePlanGapObjects: gaps, // already typed
+        onEdiCasePlanGap: (dynamic gap) => _onEditGap(
+          context,
+          gapDataObject: Map<String, dynamic>.from(gap as Map),
+        ),
       ),
     );
   }
 }
+

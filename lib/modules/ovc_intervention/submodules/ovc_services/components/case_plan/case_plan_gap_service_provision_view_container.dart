@@ -5,17 +5,17 @@ import 'package:provider/provider.dart';
 import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
+
 import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/identified_gaps_grouped.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_provision_form_container.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_provision_view.dart';
 
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/identified_gaps_grouped.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_service_provision_util.dart';
-import '../../constants/ovc_case_plan_constant.dart';
 
 class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
   const CasePlanGapServiceProvisionViewContainer({
@@ -25,15 +25,26 @@ class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
     required this.casePlanGap,
     required this.isHouseholdCasePlan,
     required this.enrollmentOuAccessible,
-    required this.domainDataObject, // NEW
+    this.domainGaps = const <Map<String, dynamic>>[],
+    this.showIdentifiedGapsHeader = true,
   }) : super(key: key);
 
+  /// Domain (e.g. "Health", "Safe", etc.)
   final String domainId;
+
   final Color formSectionColor;
-  final Map casePlanGap;
+
+  /// Merged gap map for this domain (plus linkage, casePlanDate, location)
+  final Map<String, dynamic> casePlanGap;
+
   final bool isHouseholdCasePlan;
   final bool enrollmentOuAccessible;
-  final Map<String, dynamic> domainDataObject; // full domain (with 'gaps')
+
+  /// Optional: the raw list of domain gaps (so we can render grouped “Identified gaps”)
+  final List<Map<String, dynamic>> domainGaps;
+
+  /// Toggle to show/hide the grouped “Identified gaps” header in this container
+  final bool showIdentifiedGapsHeader;
 
   @override
   State<CasePlanGapServiceProvisionViewContainer> createState() =>
@@ -42,49 +53,50 @@ class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
 
 class _CasePlanGapServiceProvisionViewContainerState
     extends State<CasePlanGapServiceProvisionViewContainer> {
-  void onManageCasePlanGapServiceProvision({
-    Map? gapServiceObject,
+  Future<void> _openServiceProvisionSheet({
+    Map<String, dynamic>? gapServiceObject,
     bool isOnEditMode = true,
   }) async {
-    double ratio = 0.8;
-    gapServiceObject = gapServiceObject ?? {};
+    double ratio = 0.85;
 
-    // Copy linkages/safe fields from gap + keep existing
-    final obj = <String, dynamic>{};
-    gapServiceObject.forEach((k, v) => obj[k.toString()] = v);
-    widget.casePlanGap.forEach((key, value) {
-      final k = key.toString();
-      if (!obj.containsKey(k)) obj[k] = value;
+    // Start from incoming (edit) or fresh
+    final obj = Map<String, dynamic>.from(gapServiceObject ?? <String, dynamic>{});
+
+    // Keep device/user tracking fields present
+    obj.putIfAbsent(UserAccountReference.appAndDeviceTrackingDataElement, () => null);
+    obj.putIfAbsent(UserAccountReference.implementingPartnerDataElement, () => null);
+    obj.putIfAbsent(UserAccountReference.subImplementingPartnerDataElement, () => null);
+    obj.putIfAbsent(UserAccountReference.serviceProviderDataElement, () => null);
+
+    // Ensure base context comes from the identified gap (merge without clobbering edits)
+    const skippedKeys = <String>[
+      'eventId',
+      'eventDate',
+      UserAccountReference.appAndDeviceTrackingDataElement,
+      UserAccountReference.implementingPartnerDataElement,
+      UserAccountReference.subImplementingPartnerDataElement,
+      UserAccountReference.serviceProviderDataElement,
+    ];
+
+    widget.casePlanGap.forEach((k, v) {
+      if (!skippedKeys.contains(k) && !obj.containsKey(k)) {
+        obj[k] = v;
+      }
     });
 
-    // Harden linkages
-    final cp = (obj[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString();
-    if (cp.isEmpty && (widget.casePlanGap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString().isNotEmpty) {
-      obj[OvcCasePlanConstant.casePlanToGapLinkage] =
-      widget.casePlanGap[OvcCasePlanConstant.casePlanToGapLinkage];
-    }
-    final sp =
-    (obj[OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage] ?? '').toString();
-    if (sp.isEmpty) {
-      obj[OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage] =
-          AppUtil.getUid();
-    }
+    // Ensure date + location on object
+    obj['casePlanDate'] = obj['casePlanDate'] ??
+        widget.casePlanGap['casePlanDate'] ??
+        widget.casePlanGap['eventDate'];
+    obj['location'] = obj['location'] ?? (widget.casePlanGap['location'] ?? '');
 
-    obj['location'] = (obj['location'] ?? '').toString();
-    obj['casePlanDate'] = (widget.casePlanGap['eventDate'] ?? '').toString();
-
-    // Previous sessions map (unchanged)
-    String programStage = widget.isHouseholdCasePlan
+    // Provide previous session map (some skip logic depends on it)
+    final stage = widget.isHouseholdCasePlan
         ? OvcHouseholdCasePlanConstant.casePlanGapServiceProvisionProgramStage
         : OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage;
-    Map<String, List<String>> previousSessionMapping =
-    OvcServiceProvisionUtil.getPreviousSessionMapping(
-      context,
-      [programStage],
-    );
-    obj["previousSessionMapping"] = previousSessionMapping;
 
-    AppUtil.showActionSheetModal(
+
+    await AppUtil.showActionSheetModal(
       context: context,
       initialHeightRatio: ratio,
       maxHeightRatio: ratio,
@@ -103,92 +115,90 @@ class _CasePlanGapServiceProvisionViewContainerState
   Widget build(BuildContext context) {
     return Consumer<OvcHouseholdCurrentSelectionState>(
       builder: (context, state, child) {
-        var hasBeneficiaryExited =
-            state.currentOvcHousehold?.hasExitedProgram == true ||
-                (!widget.isHouseholdCasePlan &&
-                    state.currentOvcHouseholdChild?.hasExitedProgram == true);
+        final hasExited = state.currentOvcHousehold?.hasExitedProgram == true ||
+            (!widget.isHouseholdCasePlan &&
+                state.currentOvcHouseholdChild?.hasExitedProgram == true);
 
-        final gapsList = (widget.domainDataObject['gaps'] as List?) ?? const [];
-
-        return Container(
-          margin: const EdgeInsets.symmetric(),
-          child: Column(
-            children: [
-              // New: show grouped identified gaps here (single place)
-              if (gapsList.isNotEmpty)
-                Container(
-                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 8),
-                  child: IdentifiedGapsGrouped(
-                    domainId: widget.domainId,
-                    domainColor: widget.formSectionColor,
-                    domainDataObject:
-                    Map<String, dynamic>.from(widget.domainDataObject),
-                    isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                    title: 'Identified gaps',
-                  ),
-                ),
-
-              // Existing: list of services for this gap
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: CasePlanGapServiceProvisionView(
-                  isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                  hasEditAccess: hasBeneficiaryExited != true,
-                  formSectionColor: widget.formSectionColor,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Optional “Identified gaps” header (grouped) — only if you supplied domainGaps
+            if (widget.showIdentifiedGapsHeader && widget.domainGaps.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 6, 15, 6),
+                child: IdentifiedGapsGrouped(
                   domainId: widget.domainId,
-                  casePlanGap: widget.casePlanGap,
-                  onEditCasePlanService: (Map dataObject) =>
-                      onManageCasePlanGapServiceProvision(
-                          gapServiceObject: dataObject),
-                  onViewCasePlanService: (Map dataObject) =>
-                      onManageCasePlanGapServiceProvision(
-                          gapServiceObject: dataObject, isOnEditMode: false),
+                  domainColor: widget.formSectionColor,
+                  domainDataObject: <String, dynamic>{
+                    'gaps': widget.domainGaps,
+                  },
+                  isHouseholdCasePlan: widget.isHouseholdCasePlan,
+                  title: 'Identified gaps',
                 ),
               ),
 
-              // Add Service button
-              Consumer<CurrentUserState>(
-                builder: (context, currentUserState, child) {
-                  bool isKbFacilitySocialWorker =
-                      currentUserState.isKbFacilitySocialWorker;
-                  return Visibility(
-                    visible:
-                    !isKbFacilitySocialWorker && hasBeneficiaryExited != true,
-                    child: Consumer<LanguageTranslationState>(
-                      builder: (context, languageTranslationState, child) {
-                        String? currentLanguage =
-                            languageTranslationState.currentLanguage;
-                        return Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: widget.formSectionColor),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              padding: const EdgeInsets.all(15.0),
-                            ),
-                            onPressed: () => onManageCasePlanGapServiceProvision(),
-                            child: Text(
-                              currentLanguage != 'lesotho'
-                                  ? 'ADD SERVICE'
-                                  : 'TLATSA TŠEBELETSO',
-                              style: const TextStyle().copyWith(
-                                color: widget.formSectionColor,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+            // Existing saved Service Provision list & actions
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: CasePlanGapServiceProvisionView(
+                isHouseholdCasePlan: widget.isHouseholdCasePlan,
+                hasEditAccess: !hasExited,
+                formSectionColor: widget.formSectionColor,
+                domainId: widget.domainId,
+                casePlanGap: widget.casePlanGap,
+                onEditCasePlanService: (Map dataObject) =>
+                    _openServiceProvisionSheet(
+                      gapServiceObject: Map<String, dynamic>.from(dataObject),
+                      isOnEditMode: true,
                     ),
-                  );
-                },
-              )
-            ],
-          ),
+                onViewCasePlanService: (Map dataObject) =>
+                    _openServiceProvisionSheet(
+                      gapServiceObject: Map<String, dynamic>.from(dataObject),
+                      isOnEditMode: false,
+                    ),
+              ),
+            ),
+
+            // Add Service button (respect role + exit status)
+            Consumer<CurrentUserState>(
+              builder: (context, currentUserState, child) {
+                final isKbFacilitySocialWorker =
+                    currentUserState.isKbFacilitySocialWorker;
+                final showButton = !isKbFacilitySocialWorker && !hasExited;
+
+                if (!showButton) return const SizedBox.shrink();
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: widget.formSectionColor),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        padding: const EdgeInsets.all(15.0),
+                      ),
+                      onPressed: _openServiceProvisionSheet,
+                      child: Consumer<LanguageTranslationState>(
+                        builder: (context, lang, _) => Text(
+                          lang.isSesothoLanguage
+                              ? 'TLATSA TŠEBELETSO'
+                              : 'ADD SERVICE',
+                          style: TextStyle(
+                            color: widget.formSectionColor,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         );
       },
     );

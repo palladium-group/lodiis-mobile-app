@@ -4,13 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
 
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.dart';
 import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
+import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
@@ -28,12 +29,11 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/skip_logics/ovc_case_plan_service_provision_skip_logic.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_service_provision_household_to_ovc_util.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_service_provision_util.dart';
 
 class CasePlanGapServiceProvisionFormContainer extends StatefulWidget {
   const CasePlanGapServiceProvisionFormContainer({
     Key? key,
-    required this.gapServiceObject,
+    required this.gapServiceObject,         // Map<String, dynamic>
     required this.isHouseholdCasePlan,
     required this.enrollmentOuAccessible,
     required this.domainId,
@@ -58,43 +58,46 @@ class _CasePlanGapServiceProvisionFormContainerState
     with OvcCasePlanServiceProvisionSkipLogic {
   bool _isFormReady = false;
   bool _isSaving = false;
+
   List<FormSection> formSections = [];
-  List<String> mandatoryFields = [];
-  Map mandatoryFieldObject = {};
+  final List<String> mandatoryFields = [];
+  final Map mandatoryFieldObject = {};
   List _unFilledMandatoryFields = [];
 
-  static const String _cpDe = OvcCasePlanConstant.casePlanToGapLinkage;
-  static const String _spDe =
-      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
+  static const String cpKey = OvcCasePlanConstant.casePlanToGapLinkage;
+  static const String spKey = OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
 
   @override
   void initState() {
     super.initState();
-    setFormMetadata();
+    _setFormMetadata();
   }
 
-  void setFormMetadata() {
+  void _setFormMetadata() {
     if (kDebugMode) {
-      debugPrint('[SP Form] init for domain="${widget.domainId}" '
-          'isHH=${widget.isHouseholdCasePlan}, editable=${widget.isEditableMode}');
+      debugPrint(
+          '[SP Form] init for domain="${widget.domainId}" isHH=${widget.isHouseholdCasePlan}, editable=${widget.isEditableMode}');
     }
 
     mandatoryFieldObject.clear();
-
     formSections = widget.isHouseholdCasePlan
         ? HouseholdServiceProvision.getFormSections(
-      firstDate: widget.gapServiceObject['casePlanDate'] ??
-          AppUtil.formattedDateTimeIntoString(DateTime.now()),
-    )
+        firstDate: widget.gapServiceObject['casePlanDate'] ??
+            AppUtil.formattedDateTimeIntoString(DateTime.now()))
         : OvcServicesChildServiceProvision.getFormSections(
-      firstDate: widget.gapServiceObject['casePlanDate'] ??
-          AppUtil.formattedDateTimeIntoString(DateTime.now()),
-    );
+        firstDate: widget.gapServiceObject['casePlanDate'] ??
+            AppUtil.formattedDateTimeIntoString(DateTime.now()));
 
-    formSections =
-        formSections.where((s) => (s.id ?? '') == widget.domainId).toList();
+    // Keep only this domain
+    formSections = formSections
+        .where((s) => (s.id ?? '') == widget.domainId)
+        .map((s) {
+      s.borderColor = Colors.transparent;
+      return s;
+    })
+        .toList();
 
-    // Make DATEs mandatory for submit
+    // All DATE fields are mandatory
     mandatoryFields.addAll(
       FormUtil.getInputFieldIdsByValueType(
         valueType: "DATE",
@@ -102,7 +105,7 @@ class _CasePlanGapServiceProvisionFormContainerState
       ),
     );
 
-    // If OU not accessible, inject Location section
+    // Add location selector section when OU is not accessible
     if (!widget.enrollmentOuAccessible) {
       formSections = [
         AppUtil.getServiceProvisionLocationSection(
@@ -118,60 +121,63 @@ class _CasePlanGapServiceProvisionFormContainerState
         ),
         ...formSections
       ];
+      // pre-seed location if present
       final orgUnit = (widget.gapServiceObject['location'] ?? '').toString();
-      onInputValueChange('location', orgUnit);
+      if (orgUnit.isNotEmpty) {
+        onInputValueChange('location', orgUnit);
+      }
       mandatoryFields.add('location');
     }
 
-    // Style tweak
-    formSections = formSections
-        .map((fs) {
-      fs.borderColor = Colors.transparent;
-      return fs;
-    })
-        .toList();
-
+    // Build mandatory object
     for (final f in mandatoryFields) {
       mandatoryFieldObject[f] = true;
     }
 
-    // Ensure linkages exist on the payload we’re about to save
-    if ('${widget.gapServiceObject[_cpDe] ?? ''}'.trim().isEmpty) {
-      // you pass CP from caller; if not, keep it blank (UI won’t list under CP-grouped views)
-      // but propagation will still create child gap if needed.
-    }
-    if ('${widget.gapServiceObject[_spDe] ?? ''}'.trim().isEmpty) {
-      widget.gapServiceObject[_spDe] = AppUtil.getUid();
-    }
-
+    // Evaluate skip-logic async (after UI builds)
     Timer(const Duration(milliseconds: 150), () {
       _isFormReady = true;
       evaluateSkipLogics(context, formSections, widget.gapServiceObject);
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 
   void onInputValueChange(String id, dynamic value) {
     widget.gapServiceObject[id] = value;
-    if (kDebugMode) {
-      debugPrint('[SP Form] onChange "$id"="${widget.gapServiceObject[id]}"');
-    }
+    if (kDebugMode) debugPrint('[SP Form] onChange "$id"="$value"');
     setState(() {});
     evaluateSkipLogics(context, formSections, widget.gapServiceObject);
-
-    final v = OvcServiceProvisionUtil.getSessionNumberValidation(
-        widget.gapServiceObject);
+    // clear any previous mandatory marks
     _unFilledMandatoryFields = [];
-    setSessionNumberViolationMessages(v);
+    setState(() {});
   }
 
-  List<String> _collectServiceDates() => FormUtil
-      .getInputFieldIdsByValueType(valueType: "DATE", formSections: formSections)
-      .map((id) => (widget.gapServiceObject[id] ?? '').toString())
-      .toList();
+  List<String> _serviceProvisionDates() {
+    return FormUtil.getInputFieldIdsByValueType(
+      valueType: "DATE",
+      formSections: formSections,
+    ).map((inputFieldId) {
+      final date = (widget.gapServiceObject[inputFieldId] ?? '').toString();
+      return date;
+    }).toList();
+  }
 
   Future<void> _save() async {
-    final hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+    // Validate required linkages so list-views can find this event later
+    final String cpLink = (widget.gapServiceObject[cpKey] ?? '').toString().trim();
+    final String spLink = (widget.gapServiceObject[spKey] ?? '').toString().trim();
+
+    if (cpLink.isEmpty || spLink.isEmpty) {
+      AppUtil.showToastMessage(
+          message: 'Case plan/service linkage missing. Open from the Service Provision tab again.');
+      if (kDebugMode) {
+        debugPrint('[SP Save] ABORT: missing linkages cp="$cpLink" sp="$spLink"');
+      }
+      return;
+    }
+
+    // Mandatory check (DATE + location if applicable)
+    final hasAll = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       widget.gapServiceObject,
       hiddenFields: hiddenFields,
@@ -190,42 +196,30 @@ class _CasePlanGapServiceProvisionFormContainerState
       ),
     );
     setState(() {});
-    if (!hadAllMandatoryFilled) {
+    if (!hasAll) {
       AppUtil.showToastMessage(message: 'Please fill all mandatory fields');
-      return;
-    }
-
-    final v = OvcServiceProvisionUtil.getSessionNumberValidation(
-        widget.gapServiceObject);
-    setSessionNumberViolationMessages(v);
-    if (v["isSessionNumberExit"] == true || v["isSessionNumberInValid"] == true) {
-      AppUtil.showToastMessage(
-        message: 'Session number is invalid or already exist',
-      );
       return;
     }
 
     _isSaving = true;
     setState(() {});
     try {
-      final selection =
-      Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false);
-
-      final childrens = selection.currentOvcHousehold?.children ?? <OvcHouseholdChild>[];
+      // Resolve beneficiary & orgUnit
+      final hhSel = Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false);
       final TrackedEntityInstance beneficiary = widget.isHouseholdCasePlan
-          ? selection.currentOvcHousehold!.teiData!
-          : selection.currentOvcHouseholdChild!.teiData!;
+          ? hhSel.currentOvcHousehold!.teiData!
+          : hhSel.currentOvcHouseholdChild!.teiData!;
+      String orgUnit = (widget.gapServiceObject['location'] ?? '').toString();
+      if (orgUnit.isEmpty) {
+        orgUnit = beneficiary.orgUnit ?? '';
+      }
 
-      String orgUnit =
-      (widget.gapServiceObject['location'] ?? beneficiary.orgUnit ?? '')
-          .toString();
-      if (orgUnit.isEmpty) orgUnit = beneficiary.orgUnit ?? '';
-
-      final eventDate = (widget.gapServiceObject['eventDate'] ??
+      // Pick event date = earliest of provided DATEs (or today)
+      final dateList = _serviceProvisionDates().where((e) => e.toString().isNotEmpty).toList();
+      final eventDate = widget.gapServiceObject['eventDate'] ??
           AppUtil.formattedDateTimeIntoString(
-            AppUtil.getMinimumDateTimeFromDateList(_collectServiceDates()),
-          ))
-          .toString();
+            AppUtil.getMinimumDateTimeFromDateList(dateList),
+          );
 
       final program = widget.isHouseholdCasePlan
           ? OvcHouseholdCasePlanConstant.program
@@ -237,15 +231,14 @@ class _CasePlanGapServiceProvisionFormContainerState
       if (kDebugMode) {
         debugPrint('[SP Save] domain="${widget.domainId}" HH=${widget.isHouseholdCasePlan}');
         debugPrint('[SP Save] program=$program stage=$stage');
-        debugPrint(
-            '[SP Save] tei=${beneficiary.trackedEntityInstance} ou=$orgUnit date=$eventDate');
-        debugPrint('[SP Save] linkages: cp="${widget.gapServiceObject[_cpDe]}", '
-            'sp="${widget.gapServiceObject[_spDe]}"');
+        debugPrint('[SP Save] tei=${beneficiary.trackedEntityInstance} ou=$orgUnit');
+        debugPrint('[SP Save] date=$eventDate');
+        debugPrint('[SP Save] linkages: cp="$cpLink", sp="$spLink"');
         debugPrint('[SP Save] eventId="${widget.gapServiceObject['eventId'] ?? ''}"');
         debugPrint('[SP Save] payload keys=${widget.gapServiceObject.keys.toList()}');
       }
 
-      // Save HH/Child service event
+      // Persist HH SP event (must include cp & sp linkages so list-views find it)
       await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
         program,
         stage,
@@ -253,55 +246,38 @@ class _CasePlanGapServiceProvisionFormContainerState
         formSections,
         widget.gapServiceObject,
         eventDate,
-        beneficiary.trackedEntityInstance!,
+        beneficiary.trackedEntityInstance,
         widget.gapServiceObject['eventId'],
-        // Hide linkages on form
-        [_cpDe, _spDe],
+        const [cpKey, spKey],
       );
 
-      // Refresh service-event cache for THIS TEI so views rebuild with the new item
-      Provider.of<ServiceEventDataState>(context, listen: false)
-          .resetServiceEventDataState(beneficiary.trackedEntityInstance);
-
-      // If HH, propagate to eligible children (age-based)
+      // Propagate to eligible children (only in HH SP)
       if (widget.isHouseholdCasePlan) {
+        final childrens = hhSel.currentOvcHousehold?.children ?? <OvcHouseholdChild>[];
         await OvcCasePlanServiceProvisionHouseholdToOvcUtil
             .autoSyncOvcsCasePlanServiceProvisions(
           childrens: childrens,
-          dataObject: Map<String, dynamic>.from(widget.gapServiceObject),
+          hhSpObject: Map<String, dynamic>.from(widget.gapServiceObject),
           domainId: widget.domainId,
           orgUnit: orgUnit,
           eventDate: eventDate,
         );
-
-        // IMPORTANT: refresh HH data so lists & header counters update
-        await Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
-            .refetchCurrentHousehold();
-
-        // Also reset children caches (optional but keeps lists fresh if you navigate in)
-        for (final c in childrens) {
-          final id = c.teiData?.trackedEntityInstance ?? c.id;
-          if (id != null && id.isNotEmpty) {
-            Provider.of<ServiceEventDataState>(context, listen: false)
-                .resetServiceEventDataState(id);
-          }
-        }
       }
 
-      final currentLanguage =
-          Provider.of<LanguageTranslationState>(context, listen: false)
-              .currentLanguage;
+      // Refresh event lists
+      Provider.of<ServiceEventDataState>(context, listen: false)
+          .resetServiceEventDataState(beneficiary.trackedEntityInstance);
 
+      final lang = Provider.of<LanguageTranslationState>(context, listen: false).currentLanguage;
       AppUtil.showToastMessage(
-        message: currentLanguage == 'lesotho'
+        message: lang == 'lesotho'
             ? 'Fomo e bolokeile'
             : 'Form has been saved successfully',
       );
-      if (Navigator.canPop(context)) Navigator.pop(context);
+      if (mounted) Navigator.pop(context);
     } catch (e) {
-      if (kDebugMode) debugPrint('[SP Save] ERROR: $e');
       _isSaving = false;
-      setState(() {});
+      if (mounted) setState(() {});
       AppUtil.showToastMessage(message: e.toString());
     }
   }
@@ -315,8 +291,8 @@ class _CasePlanGapServiceProvisionFormContainerState
           : Column(
         children: [
           EntryFormContainer(
-            hiddenFields: hiddenFields,
-            hiddenSections: hiddenSections,
+            hiddenFields: hiddenFields,          // from skip-logic mixin (Map)
+            hiddenSections: hiddenSections,      // from skip-logic mixin (List)
             elevation: 0.0,
             formSections: formSections,
             mandatoryFieldObject: mandatoryFieldObject,
@@ -330,9 +306,11 @@ class _CasePlanGapServiceProvisionFormContainerState
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Consumer<LanguageTranslationState>(
-                builder: (context, languageTranslationState, child) {
-                  final currentLanguage =
-                      languageTranslationState.currentLanguage;
+                builder: (context, t, child) {
+                  final saving = _isSaving;
+                  final label = t.currentLanguage == 'lesotho'
+                      ? (saving ? 'E EA BOLOKA LITSEBELETSO ...' : 'BOLOKA LITSEBELETSO')
+                      : (saving ? 'SAVING SERVICE ...' : 'SAVE SERVICE');
                   return TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: widget.formSectionColor,
@@ -342,13 +320,7 @@ class _CasePlanGapServiceProvisionFormContainerState
                       alignment: Alignment.center,
                       padding: const EdgeInsets.symmetric(vertical: 22.0),
                       child: Text(
-                        currentLanguage == 'lesotho'
-                            ? (_isSaving
-                            ? 'E EA BOLOKA LITSEBELETSO ...'
-                            : 'BOLOKA LITSEBELETSO')
-                            : (_isSaving
-                            ? 'SAVING SERVICE ...'
-                            : 'SAVE SERVICE'),
+                        label,
                         style: const TextStyle(
                           color: Color(0xFFFAFAFA),
                           fontSize: 14.0,
@@ -366,64 +338,43 @@ class _CasePlanGapServiceProvisionFormContainerState
     );
   }
 
-  void setSessionNumberViolationMessages(
-      Map<String, dynamic> sessionNumberValidation,
+  // ------------ helpers for error messages (unchanged) ------------
+  List<String> getInputFieldsLabel(
+      List<FormSection> formSections,
+      List<String> inputFieldIds,
       ) {
-    final isExit = sessionNumberValidation["isSessionNumberExit"] == true;
-    final isInvalid = sessionNumberValidation["isSessionNumberInValid"] == true;
-
-    String message = "";
-    if (isInvalid) {
-      final fields = sessionNumberValidation["sessionWithInvalidSessionNumber"] ?? <String>[];
-      final labels = _labelsForIds(fields);
-      message = "Session number for $labels are not valid session number";
-    } else if (isExit) {
-      final fields = sessionNumberValidation["sessionWithExistingSessionNumber"] ?? <String>[];
-      final labels = _labelsForIds(fields);
-      message = "Session number for $labels already existed for previous service provision";
-    }
-    if (message.isNotEmpty) {
-      AppUtil.showToastMessage(message: message);
-    }
-  }
-
-  String _labelsForIds(List<String> ids) {
-    final lang =
-        Provider.of<LanguageTranslationState>(context, listen: false).currentLanguage;
-    final labels = <String>[];
-
-    String? labelFor(InputField f) {
-      if (f.id == '' || f.id == 'location' || f.valueType == 'CHECK_BOX') {
-        return null;
-      }
-      if (lang == 'lesotho' && (f.translatedName ?? '').isNotEmpty) {
-        return f.translatedName;
-      }
-      return f.name;
-    }
-
-    void walk(List<FormSection> sections) {
-      for (final s in sections) {
-        for (final f in (s.inputFields ?? const <InputField>[])) {
-          if (ids.contains(f.id)) {
-            final lb = labelFor(f);
-            if (lb != null) labels.add(lb);
+    String? currentLanguage =
+        Provider.of<LanguageTranslationState>(context, listen: false)
+            .currentLanguage;
+    List<String> inputFieldLabels = [];
+    for (FormSection formSection in formSections) {
+      for (InputField inputField in formSection.inputFields ?? []) {
+        if (inputFieldIds.contains(inputField.id)) {
+          if (inputField.id != '' &&
+              inputField.id != 'location' &&
+              inputField.valueType != 'CHECK_BOX') {
+            String? label = currentLanguage == 'lesotho' &&
+                (inputField.translatedName ?? '').isNotEmpty
+                ? inputField.translatedName
+                : inputField.name;
+            inputFieldLabels.add(label ?? '');
           }
-          if (f.valueType == 'CHECK_BOX') {
-            for (final o in (f.options ?? const [])) {
-              if (ids.contains(o.code)) {
-                labels.add(lang == 'lesotho' && (o.translatedName ?? '').isNotEmpty
-                    ? o.translatedName!
-                    : o.name!);
-              }
+          if (inputField.valueType == 'CHECK_BOX') {
+            for (var option in inputField.options ?? []) {
+              String? label = currentLanguage == 'lesotho' &&
+                  (option.translatedName ?? '').isNotEmpty
+                  ? option.translatedName
+                  : option.name;
+              inputFieldLabels.add(label ?? '');
             }
           }
         }
-        walk(s.subSections ?? const <FormSection>[]);
       }
+      List<String> subLabels =
+      getInputFieldsLabel(formSection.subSections ?? [], inputFieldIds);
+      inputFieldLabels.addAll(subLabels);
     }
-
-    walk(formSections);
-    return labels.toSet().join(", ");
+    return inputFieldLabels.toSet().toList();
   }
 }
+

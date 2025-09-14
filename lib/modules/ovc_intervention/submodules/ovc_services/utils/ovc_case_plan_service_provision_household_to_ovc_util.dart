@@ -1,186 +1,111 @@
-
 import 'package:flutter/foundation.dart';
+import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
-import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_util.dart';
 
 class OvcCasePlanServiceProvisionHouseholdToOvcUtil {
-  /// Propagate a **household** service provision to **children** that:
-  ///  1) have a GAP with the same case-plan linkage, and
-  ///  2) have age-eligible service DEs per domain config.
-  /// Also **patches the child GAP** with the SP linkage (if missing) so that
-  /// child services render under the correct gap.
+  /// Copy HH Service Provision to each eligible child’s SP, **only if** that child
+  /// already has a case-plan gap with the same CP linkage.
   static Future<void> autoSyncOvcsCasePlanServiceProvisions({
     required List<OvcHouseholdChild> childrens,
-    required Map dataObject, // household service payload
+    required Map hhSpObject,
     required String domainId,
     required String orgUnit,
     required String eventDate,
   }) async {
-    try {
-      final cpLinkage =
-      (dataObject[OvcCasePlanConstant.casePlanToGapLinkage] ?? '')
-          .toString()
-          .trim();
-      final spLinkage =
-      (dataObject[OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage] ??
-          '')
-          .toString()
-          .trim();
+    final cpLink = (hhSpObject[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString().trim();
+    final spLink = (hhSpObject[OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage] ?? '').toString().trim();
 
-      if (cpLinkage.isEmpty || spLinkage.isEmpty) {
-        if (kDebugMode) {
-          debugPrint(
-              '[SP Propagation] Missing linkage(s) cp="$cpLinkage" sp="$spLinkage". Abort.');
-        }
-        return;
-      }
-
-      // sections for updating child GAP (to add SP linkage)
-      final gapSections = OvcServicesChildCasePlanGap.getFormSections(firstDate: '')
-          .where((s) => (s.id ?? '') == domainId)
-          .toList();
-
-      const hiddenGapFields = <String>[
-        OvcCasePlanConstant.casePlanToGapLinkage,
-        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-        OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
-      ];
-      const hiddenServiceFields = <String>[
-        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-      ];
-
-      List<String> _validIdsForAge(int age) {
-        final domainConfig = OvcChildCasePlanConstant
-            .domainToAutopopuledCasePlanServiceProvision[domainId] ??
-            const <String, dynamic>{};
-        return OvcChildCasePlanConstant.getValidIdForAutoPopulatingServiceData(
-          domainConfig: domainConfig,
-          age: age,
-        );
-      }
-
-      for (final child in childrens) {
-        final tei = child.teiData;
-        if (tei == null) continue;
-
-        // must have child gap with same cp linkage
-        final childGaps = await OvcCasePlanUtil.getCasePlanGapsForLinkage(
-          teiId: tei.trackedEntityInstance ?? '',
-          programStageId:
-          OvcChildCasePlanConstant.casePlanGapProgramStage,
-          linkage: cpLinkage,
-        );
-        if (childGaps.isEmpty) {
-          if (kDebugMode) {
-            debugPrint(
-                '[SP Propagation] Child ${child.id} has no matching gap (cp=$cpLinkage). Skipping.');
-          }
-          continue;
-        }
-
-        // ensure child gap has SP linkage
-        final gapEvent = childGaps.first;
-        final hasSpLink = ((gapEvent.eventData?.dataValues ?? []) as List)
-            .any((dv) =>
-        dv is Map &&
-            dv['dataElement'] ==
-                OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage &&
-            ('${dv['value']}'.trim().isNotEmpty));
-        if (!hasSpLink) {
-          final patch = <String, dynamic>{
-            'eventId': gapEvent.eventData?.event,
-            OvcCasePlanConstant.casePlanToGapLinkage: cpLinkage,
-            OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage: spLinkage,
-          };
-          try {
-            await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-              OvcChildCasePlanConstant.program,
-              OvcChildCasePlanConstant.casePlanGapProgramStage,
-              tei.orgUnit ?? orgUnit,
-              gapSections,
-              patch,
-              gapEvent.eventData?.eventDate ?? eventDate,
-              tei.trackedEntityInstance,
-              gapEvent.eventData?.event,
-              hiddenGapFields,
-            );
-            if (kDebugMode) {
-              debugPrint(
-                  '[SP Propagation] Patched child gap SP linkage for ${child.id}.');
-            }
-          } catch (e) {
-            if (kDebugMode) {
-              debugPrint(
-                  '[SP Propagation] Failed to patch SP linkage for ${child.id}: $e');
-            }
-          }
-        }
-
-        // build child service using allowed DEs only
-        final int age = int.tryParse(child.age ?? '0') ?? 0;
-        final allowed = _validIdsForAge(age).toSet();
-
-        final childService = <String, dynamic>{};
-        dataObject.forEach((k, v) {
-          final ks = '$k';
-          if (!allowed.contains(ks)) return;
-          if (v == null) return;
-          if (v is bool && v == false) return;
-          if (v is String && v.trim().isEmpty) return;
-          childService[ks] = v;
-        });
-
-        // Always include SP linkage + eventDate
-        childService[OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage] =
-            spLinkage;
-        final String childEventDate =
-        (childService['eventDate'] ?? '$eventDate').toString();
-
-        // skip if nothing besides required fields
-        final ks = childService.keys.toSet();
-        final requiredOnly =
-            ks.length <= 2 &&
-                ks.contains('eventDate') &&
-                ks.contains(OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage);
-        if (requiredOnly) {
-          if (kDebugMode) {
-            debugPrint(
-                '[SP Propagation] No age-eligible service fields for ${child.id}. Skipping.');
-          }
-          continue;
-        }
-
-        try {
-          await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcChildCasePlanConstant.program,
-            OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage,
-            tei.orgUnit ?? orgUnit,
-            const <FormSection>[],
-            childService,
-            childEventDate,
-            tei.trackedEntityInstance,
-            null,
-            hiddenServiceFields,
-          );
-          if (kDebugMode) {
-            debugPrint(
-                '[SP Propagation] Created child service for ${child.id} (domain="$domainId").');
-          }
-        } catch (e) {
-          if (kDebugMode) {
-            debugPrint(
-                '[SP Propagation] Failed to create child service for ${child.id}: $e');
-          }
-        }
-      }
-    } catch (e) {
+    if (cpLink.isEmpty || spLink.isEmpty) {
       if (kDebugMode) {
-        debugPrint('[SP Propagation] Fatal error: $e');
+        debugPrint('[SP Propagation] Missing linkage(s) cp="$cpLink" sp="$spLink". Abort.');
+      }
+      return;
+    }
+
+    for (final child in childrens) {
+      final tei = child.teiData;
+      if (tei == null) continue;
+
+      // 1) Confirm the child has a GAP with matching CP linkage
+      final childEvents = await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(tei.trackedEntityInstance);
+      final String gapStage = OvcChildCasePlanConstant.casePlanGapProgramStage;
+
+      final childHasMatchingGap = childEvents.any((e) {
+        if ((e.programStage ?? '') != gapStage) return false;
+        final dvs = (e.dataValues as List?) ?? const [];
+        for (final dv in dvs) {
+          if (dv is Map) {
+            final de = (dv['dataElement'] ?? '').toString();
+            final val = (dv['value'] ?? '').toString();
+            if (de == OvcCasePlanConstant.casePlanToGapLinkage && val == cpLink) {
+              return true;
+            }
+          }
+        }
+        return false;
+      });
+
+      if (!childHasMatchingGap) {
+        if (kDebugMode) {
+          debugPrint('[SP Propagation] Child ${tei.trackedEntityInstance} has no matching gap (cp=$cpLink). Skipping.');
+        }
+        continue;
+      }
+
+      // 2) Age-based filter of fields to copy
+      final int age = int.parse(child.age ?? '');
+      final domainCfg = OvcChildCasePlanConstant.domainToAutopopuledCasePlanServiceProvision[domainId] ?? {};
+      final ids = OvcChildCasePlanConstant.getValidIdForAutoPopulatingServiceData(
+        domainConfig: domainCfg,
+        age: age,
+      );
+
+      // Always carry these
+      final copyKeys = <String>{
+        'eventDate',
+        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
+        OvcCasePlanConstant.casePlanToGapLinkage,
+        ...ids,
+      };
+
+      final childPayload = <String, dynamic>{
+        OvcCasePlanConstant.casePlanToGapLinkage: cpLink,
+        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage: spLink,
+      };
+
+      hhSpObject.forEach((k, v) {
+        if (copyKeys.contains(k) && v != null && v.toString().isNotEmpty) {
+          childPayload[k] = v;
+        }
+      });
+
+      // 3) Save child SP event
+      try {
+        await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+          OvcChildCasePlanConstant.program,
+          OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage,
+          orgUnit,
+          /* We don’t have the full child form sections here; pass empty and rely on payload */
+          const [],
+          childPayload,
+          hhSpObject['eventDate'] ?? eventDate,
+          tei.trackedEntityInstance,
+          null,
+          [
+            OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
+            OvcCasePlanConstant.casePlanToGapLinkage,
+          ],
+        );
+        if (kDebugMode) {
+          debugPrint('[SP Propagation] Created child service for ${tei.trackedEntityInstance} (domain="$domainId").');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          debugPrint('[SP Propagation][ERROR] Child ${tei.trackedEntityInstance}: $e');
+        }
       }
     }
   }
