@@ -240,6 +240,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
   // ----------------- CAREGIVER mapper -----------------
 
   Future<void> _applyCaregiverAssessmentToGaps(Map<String, String?> a) async {
+
     // Assessment DEs (household)
     const hivStatusDE = 'vNeOE9abQBB';
     const artStatusDE = 'Icgkv0xkUow';
@@ -332,8 +333,6 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     if(overSixMonthsOnArt && !testForVL){
       dataObject[viralLoadTestingGapDE] = true;
     }
-
-
     if (hivPositive && (viralLoadResults ?? '').isNotEmpty) {
       if (viralLoadResults == 'High (above 1,000 copies/ml)') {
         if(!testdforCD4){
