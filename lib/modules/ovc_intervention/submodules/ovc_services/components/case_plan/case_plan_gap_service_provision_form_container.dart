@@ -11,7 +11,6 @@ import 'package:kb_mobile_app/app_state/language_translation_state/language_tran
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.dart';
 import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
-import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
@@ -33,7 +32,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/u
 class CasePlanGapServiceProvisionFormContainer extends StatefulWidget {
   const CasePlanGapServiceProvisionFormContainer({
     Key? key,
-    required this.gapServiceObject,         // Map<String, dynamic>
+    required this.gapServiceObject, // Map<String, dynamic>
     required this.isHouseholdCasePlan,
     required this.enrollmentOuAccessible,
     required this.domainId,
@@ -65,7 +64,11 @@ class _CasePlanGapServiceProvisionFormContainerState
   List _unFilledMandatoryFields = [];
 
   static const String cpKey = OvcCasePlanConstant.casePlanToGapLinkage;
-  static const String spKey = OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
+  static const String spKey =
+      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
+
+  /// Make SP stable per (CP, domain)
+  String _stableSp(String cp, String domain) => '$cp|$domain';
 
   @override
   void initState() {
@@ -80,6 +83,7 @@ class _CasePlanGapServiceProvisionFormContainerState
     }
 
     mandatoryFieldObject.clear();
+
     formSections = widget.isHouseholdCasePlan
         ? HouseholdServiceProvision.getFormSections(
         firstDate: widget.gapServiceObject['casePlanDate'] ??
@@ -94,8 +98,7 @@ class _CasePlanGapServiceProvisionFormContainerState
         .map((s) {
       s.borderColor = Colors.transparent;
       return s;
-    })
-        .toList();
+    }).toList();
 
     // All DATE fields are mandatory
     mandatoryFields.addAll(
@@ -134,6 +137,15 @@ class _CasePlanGapServiceProvisionFormContainerState
       mandatoryFieldObject[f] = true;
     }
 
+    // Ensure stable cp/sp are present on the working object
+    final cp = (widget.gapServiceObject[cpKey] ?? '').toString();
+    if (cp.isNotEmpty) {
+      final stable = _stableSp(cp, widget.domainId);
+      if ((widget.gapServiceObject[spKey] ?? '').toString() != stable) {
+        widget.gapServiceObject[spKey] = stable;
+      }
+    }
+
     // Evaluate skip-logic async (after UI builds)
     Timer(const Duration(milliseconds: 150), () {
       _isFormReady = true;
@@ -164,16 +176,23 @@ class _CasePlanGapServiceProvisionFormContainerState
 
   Future<void> _save() async {
     // Validate required linkages so list-views can find this event later
-    final String cpLink = (widget.gapServiceObject[cpKey] ?? '').toString().trim();
-    final String spLink = (widget.gapServiceObject[spKey] ?? '').toString().trim();
+    final String cpLink =
+    (widget.gapServiceObject[cpKey] ?? '').toString().trim();
 
-    if (cpLink.isEmpty || spLink.isEmpty) {
+    if (cpLink.isEmpty) {
       AppUtil.showToastMessage(
-          message: 'Case plan/service linkage missing. Open from the Service Provision tab again.');
+          message:
+          'Case plan linkage missing. Open from the Service Provision tab again.');
       if (kDebugMode) {
-        debugPrint('[SP Save] ABORT: missing linkages cp="$cpLink" sp="$spLink"');
+        debugPrint('[SP Save] ABORT: missing cp');
       }
       return;
+    }
+
+    // Enforce a stable SP per (CP, domain)
+    final stableSp = _stableSp(cpLink, widget.domainId);
+    if ((widget.gapServiceObject[spKey] ?? '').toString() != stableSp) {
+      widget.gapServiceObject[spKey] = stableSp;
     }
 
     // Mandatory check (DATE + location if applicable)
@@ -205,7 +224,8 @@ class _CasePlanGapServiceProvisionFormContainerState
     setState(() {});
     try {
       // Resolve beneficiary & orgUnit
-      final hhSel = Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false);
+      final hhSel =
+      Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false);
       final TrackedEntityInstance beneficiary = widget.isHouseholdCasePlan
           ? hhSel.currentOvcHousehold!.teiData!
           : hhSel.currentOvcHouseholdChild!.teiData!;
@@ -215,7 +235,8 @@ class _CasePlanGapServiceProvisionFormContainerState
       }
 
       // Pick event date = earliest of provided DATEs (or today)
-      final dateList = _serviceProvisionDates().where((e) => e.toString().isNotEmpty).toList();
+      final dateList =
+      _serviceProvisionDates().where((e) => e.toString().isNotEmpty).toList();
       final eventDate = widget.gapServiceObject['eventDate'] ??
           AppUtil.formattedDateTimeIntoString(
             AppUtil.getMinimumDateTimeFromDateList(dateList),
@@ -229,16 +250,20 @@ class _CasePlanGapServiceProvisionFormContainerState
           : OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage;
 
       if (kDebugMode) {
-        debugPrint('[SP Save] domain="${widget.domainId}" HH=${widget.isHouseholdCasePlan}');
+        debugPrint(
+            '[SP Save] domain="${widget.domainId}" HH=${widget.isHouseholdCasePlan}');
         debugPrint('[SP Save] program=$program stage=$stage');
-        debugPrint('[SP Save] tei=${beneficiary.trackedEntityInstance} ou=$orgUnit');
+        debugPrint(
+            '[SP Save] tei=${beneficiary.trackedEntityInstance} ou=$orgUnit');
         debugPrint('[SP Save] date=$eventDate');
-        debugPrint('[SP Save] linkages: cp="$cpLink", sp="$spLink"');
-        debugPrint('[SP Save] eventId="${widget.gapServiceObject['eventId'] ?? ''}"');
-        debugPrint('[SP Save] payload keys=${widget.gapServiceObject.keys.toList()}');
+        debugPrint('[SP Save] linkages: cp="$cpLink", sp="$stableSp"');
+        debugPrint(
+            '[SP Save] eventId="${widget.gapServiceObject['eventId'] ?? ''}"');
+        debugPrint(
+            '[SP Save] payload keys=${widget.gapServiceObject.keys.toList()}');
       }
 
-      // Persist HH SP event (must include cp & sp linkages so list-views find it)
+      // DO NOT hide cp/sp, we must persist them for listing
       await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
         program,
         stage,
@@ -248,15 +273,16 @@ class _CasePlanGapServiceProvisionFormContainerState
         eventDate,
         beneficiary.trackedEntityInstance,
         widget.gapServiceObject['eventId'],
-        const [cpKey, spKey],
+        const [cpKey,spKey],
       );
 
       // Propagate to eligible children (only in HH SP)
       if (widget.isHouseholdCasePlan) {
-        final childrens = hhSel.currentOvcHousehold?.children ?? <OvcHouseholdChild>[];
+        final childrens =
+            hhSel.currentOvcHousehold?.children ?? <OvcHouseholdChild>[];
         await OvcCasePlanServiceProvisionHouseholdToOvcUtil
             .autoSyncOvcsCasePlanServiceProvisions(
-          childrens: childrens,
+          children: childrens,
           hhSpObject: Map<String, dynamic>.from(widget.gapServiceObject),
           domainId: widget.domainId,
           orgUnit: orgUnit,
@@ -264,15 +290,16 @@ class _CasePlanGapServiceProvisionFormContainerState
         );
       }
 
-      // Refresh event lists
+      // Refresh event lists so the view re-renders
       Provider.of<ServiceEventDataState>(context, listen: false)
           .resetServiceEventDataState(beneficiary.trackedEntityInstance);
 
-      final lang = Provider.of<LanguageTranslationState>(context, listen: false).currentLanguage;
+      final lang =
+          Provider.of<LanguageTranslationState>(context, listen: false)
+              .currentLanguage;
       AppUtil.showToastMessage(
-        message: lang == 'lesotho'
-            ? 'Fomo e bolokeile'
-            : 'Form has been saved successfully',
+        message:
+        lang == 'lesotho' ? 'Fomo e bolokeile' : 'Form has been saved successfully',
       );
       if (mounted) Navigator.pop(context);
     } catch (e) {
@@ -291,8 +318,8 @@ class _CasePlanGapServiceProvisionFormContainerState
           : Column(
         children: [
           EntryFormContainer(
-            hiddenFields: hiddenFields,          // from skip-logic mixin (Map)
-            hiddenSections: hiddenSections,      // from skip-logic mixin (List)
+            hiddenFields: hiddenFields, // from skip-logic mixin (Map)
+            hiddenSections: hiddenSections, // from skip-logic mixin (List)
             elevation: 0.0,
             formSections: formSections,
             mandatoryFieldObject: mandatoryFieldObject,
@@ -309,7 +336,9 @@ class _CasePlanGapServiceProvisionFormContainerState
                 builder: (context, t, child) {
                   final saving = _isSaving;
                   final label = t.currentLanguage == 'lesotho'
-                      ? (saving ? 'E EA BOLOKA LITSEBELETSO ...' : 'BOLOKA LITSEBELETSO')
+                      ? (saving
+                      ? 'E EA BOLOKA LITSEBELETSO ...'
+                      : 'BOLOKA LITSEBELETSO')
                       : (saving ? 'SAVING SERVICE ...' : 'SAVE SERVICE');
                   return TextButton(
                     style: TextButton.styleFrom(
@@ -318,7 +347,8 @@ class _CasePlanGapServiceProvisionFormContainerState
                     onPressed: _save,
                     child: Container(
                       alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 22.0),
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 22.0),
                       child: Text(
                         label,
                         style: const TextStyle(
@@ -377,4 +407,3 @@ class _CasePlanGapServiceProvisionFormContainerState
     return inputFieldLabels.toSet().toList();
   }
 }
-

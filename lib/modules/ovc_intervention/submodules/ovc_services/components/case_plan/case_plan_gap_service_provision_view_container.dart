@@ -1,4 +1,4 @@
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +15,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_service_provision_util.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
 class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
   const CasePlanGapServiceProvisionViewContainer({
@@ -53,11 +53,18 @@ class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
 
 class _CasePlanGapServiceProvisionViewContainerState
     extends State<CasePlanGapServiceProvisionViewContainer> {
+  static const String _cpKey = OvcCasePlanConstant.casePlanToGapLinkage;
+  static const String _spKey =
+      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
+
+  /// Make SP stable per (CP, domain)
+  String _stableSp(String cp, String domain) => '$cp|$domain';
+
   Future<void> _openServiceProvisionSheet({
     Map<String, dynamic>? gapServiceObject,
     bool isOnEditMode = true,
   }) async {
-    double ratio = 0.85;
+    final ratio = 0.85;
 
     // Start from incoming (edit) or fresh
     final obj = Map<String, dynamic>.from(gapServiceObject ?? <String, dynamic>{});
@@ -90,11 +97,28 @@ class _CasePlanGapServiceProvisionViewContainerState
         widget.casePlanGap['eventDate'];
     obj['location'] = obj['location'] ?? (widget.casePlanGap['location'] ?? '');
 
-    // Provide previous session map (some skip logic depends on it)
-    final stage = widget.isHouseholdCasePlan
-        ? OvcHouseholdCasePlanConstant.casePlanGapServiceProvisionProgramStage
-        : OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage;
+    // Ensure stable CP/SP linkage
+    final cp = (obj[_cpKey] ?? widget.casePlanGap[_cpKey] ?? '').toString();
+    if (cp.isEmpty) {
+      if (kDebugMode) {
+        debugPrint('[SP ViewContainer] ABORT: missing CP for domain=${widget.domainId}');
+      }
+      return;
+    }
+    final spStable = _stableSp(cp, widget.domainId);
+    if ((obj[_spKey] ?? '').toString() != spStable) {
+      obj[_spKey] = spStable;
+    }
 
+    // Previous sessions map (some skip-logic uses it) — nothing to do here,
+    // the form itself reads existing events via ServiceEventDataState.
+
+    if (kDebugMode) {
+      final ou = (obj['location'] ?? '').toString();
+      final date = (obj['eventDate'] ?? obj['casePlanDate'] ?? '').toString();
+      debugPrint(
+          '[SP ViewContainer] open sheet domain=${widget.domainId} cp=$cp sp=$spStable date=$date ou=$ou edit=$isOnEditMode');
+    }
 
     await AppUtil.showActionSheetModal(
       context: context,
@@ -137,7 +161,7 @@ class _CasePlanGapServiceProvisionViewContainerState
                 ),
               ),
 
-            // Existing saved Service Provision list & actions
+            // Existing saved Service Provision list & actions (CP-only filtering inside)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: CasePlanGapServiceProvisionView(
@@ -145,7 +169,14 @@ class _CasePlanGapServiceProvisionViewContainerState
                 hasEditAccess: !hasExited,
                 formSectionColor: widget.formSectionColor,
                 domainId: widget.domainId,
-                casePlanGap: widget.casePlanGap,
+                casePlanGap: <String, dynamic>{
+                  ...widget.casePlanGap,
+                  // also pass the stable sp (view may log mismatches but won't require it)
+                  _spKey: _stableSp(
+                    (widget.casePlanGap[_cpKey] ?? '').toString(),
+                    widget.domainId,
+                  ),
+                },
                 onEditCasePlanService: (Map dataObject) =>
                     _openServiceProvisionSheet(
                       gapServiceObject: Map<String, dynamic>.from(dataObject),
@@ -180,7 +211,13 @@ class _CasePlanGapServiceProvisionViewContainerState
                         ),
                         padding: const EdgeInsets.all(15.0),
                       ),
-                      onPressed: _openServiceProvisionSheet,
+                      onPressed: () {
+                        if (kDebugMode) {
+                          debugPrint(
+                              '[SP ViewContainer] ADD SERVICE pressed (domain=${widget.domainId})');
+                        }
+                        _openServiceProvisionSheet();
+                      },
                       child: Consumer<LanguageTranslationState>(
                         builder: (context, lang, _) => Text(
                           lang.isSesothoLanguage
