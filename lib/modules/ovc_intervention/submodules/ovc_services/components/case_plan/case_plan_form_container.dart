@@ -165,6 +165,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
         isEditableMode: widget.isEditableMode && widget.hasEditAccessToCasePlan,
         formSectionColor: widget.formSectionColor,
         dataObject: seed,
+        isHouseholdCasePlan: widget.isHouseholdCasePlan,
       ),
     );
 
