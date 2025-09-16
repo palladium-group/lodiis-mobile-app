@@ -1,126 +1,72 @@
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_form_container.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_view.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
 
+// Grouped/collapsible gaps view
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/identified_gaps_grouped_view.dart';
+
+// GAP section builders (Household & Child)
+// NOTE: If your class names/files differ slightly, adjust these two imports.
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
+
+/// Container that renders Identified Gaps grouped by Benchmark/Subsection,
+/// collapsed by default, and only shows gaps with ≥ 1 recorded entry.
+///
+/// Required:
+/// - [isHouseholdCasePlan] : true for HH CP, false for Child CP
+/// - [formSectionColor]    : domain color used for accents
+/// - [domainId]            : FormSection.id of the current domain (e.g., 'Health')
+/// - [casePlanEvent]       : Map of the selected Case Plan event (should carry
+///                           OvcCasePlanConstant.casePlanToGapLinkage or at least event id)
+///
+/// Optional:
+/// - [gapToggleDataElements] : restrict which TRUE_ONLY DEs count as “gap toggles”
+/// - [onViewGapEvent]        : tap handler for a gap item (opens details, etc.)
 class CasePlanGapViewContainer extends StatelessWidget {
   const CasePlanGapViewContainer({
     Key? key,
-    required this.dataObject,
-    required this.formSectionColor,
     required this.isHouseholdCasePlan,
-    required this.hasEditAccessToCasePlan,
-    required this.enrollmentOuAccessible,
-    required this.isEditableMode,
-    required this.canAddDomainGaps,
+    required this.formSectionColor,
     required this.domainId,
-    required this.onInputValueChange,
-    required this.isOnCasePlanServiceProvision,
-    required this.isOnCasePlanServiceMonitoring,
+    required this.casePlanEvent,
+    this.gapToggleDataElements,
+    this.title = 'Identified gaps',
+    this.onViewGapEvent,
   }) : super(key: key);
 
-  final Map dataObject;
-  final Color formSectionColor;
   final bool isHouseholdCasePlan;
-  final bool hasEditAccessToCasePlan;
-  final bool enrollmentOuAccessible;
-  final bool isEditableMode;
-  final bool canAddDomainGaps;
+  final Color formSectionColor;
   final String domainId;
-  final bool isOnCasePlanServiceProvision;
-  final bool isOnCasePlanServiceMonitoring;
-  final Function(dynamic value) onInputValueChange;
+  final Map<String, dynamic> casePlanEvent;
+  final String title;
 
-  // If someone still taps edit on a gap row, we open the gap form.
-  Future<void> _onEditGap(
-      BuildContext context, {
-        required Map<String, dynamic> gapDataObject,
-      }) async {
-    // Resolve the gap sections for this domain
-    List<FormSection> sections = isHouseholdCasePlan
-        ? OvcHouseholdServicesCasePlanGaps.getFormSections(
-      firstDate: gapDataObject['eventDate'] ??
-          AppUtil.formattedDateTimeIntoString(DateTime.now()),
-    ).where((s) => (s.id ?? '') == domainId).toList()
-        : OvcServicesChildCasePlanGap.getFormSections(
-      firstDate: gapDataObject['eventDate'] ??
-          AppUtil.formattedDateTimeIntoString(DateTime.now()),
-    ).where((s) => (s.id ?? '') == domainId).toList();
+  /// If provided, only these DE ids count as “gap toggles”.
+  final Set<String>? gapToggleDataElements;
 
-    sections = sections.map((s) {
-      s.borderColor = Colors.transparent;
-      return s;
-    }).toList();
+  /// Optional: open a details screen / bottom sheet for a specific gap event.
+  final void Function(Map dataObject)? onViewGapEvent;
 
-    final response = await AppUtil.showActionSheetModal(
-      context: context,
-      initialHeightRatio: 0.9,
-      maxHeightRatio: 0.95,
-      containerBody: CasePlanGapFormContainer(
-        formSections: sections,
-        isEditableMode: isEditableMode && hasEditAccessToCasePlan,
-        formSectionColor: formSectionColor,
-        dataObject: gapDataObject,
-        isChildCasePlan: !isHouseholdCasePlan,
-      ),
-    );
-
-    if (response is Map) {
-      // Update dataObject['gaps'] list by replacing edited eventId
-      final eventId = (response['eventId'] ?? '').toString();
-      final List<Map<String, dynamic>> gaps = ((dataObject['gaps'] as List?) ??
-          const <Map<String, dynamic>>[])
-          .map((e) => Map<String, dynamic>.from(e as Map))
-          .toList();
-
-      final updated = <Map<String, dynamic>>[];
-      for (final g in gaps) {
-        if ((g['eventId'] ?? '') == eventId && eventId.isNotEmpty) {
-          updated.add(Map<String, dynamic>.from(response));
-        } else {
-          updated.add(g);
-        }
-      }
-      if (eventId.isEmpty) {
-        // in case edit created a new one somehow, append
-        updated.add(Map<String, dynamic>.from(response));
-      }
-      dataObject['gaps'] = updated;
-      onInputValueChange(dataObject);
+  List<FormSection> _buildGapSections() {
+    // Build full GAP sections set; the grouped view filters to [domainId].
+    if (isHouseholdCasePlan) {
+      return OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: '');
+    } else {
+      return OvcServicesChildCasePlanGap.getFormSections(firstDate: '');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> rawGaps = (dataObject['gaps'] as List?) ?? const [];
-    final List<Map<String, dynamic>> gaps =
-    rawGaps.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    final gapSections = _buildGapSections();
 
-    return Container(
-      margin: const EdgeInsets.symmetric(),
-      child: CasePlanGapView(
-        hasEditAccessToCasePlan: hasEditAccessToCasePlan,
-        isEditableMode: isEditableMode,
-        isOnCasePlanServiceProvision: isOnCasePlanServiceProvision,
-        isOnCasePlanServiceMonitoring: isOnCasePlanServiceMonitoring,
-        domainId: domainId,
-        formSectionColor: formSectionColor,
-        isHouseholdCasePlan: isHouseholdCasePlan,
-        casePlanGapObjects: gaps, // already typed
-        onEdiCasePlanGap: (dynamic gap) => _onEditGap(
-          context,
-          gapDataObject: Map<String, dynamic>.from(gap as Map),
-        ),
-      ),
+    return IdentifiedGapsGroupedView(
+      isHouseholdCasePlan: isHouseholdCasePlan,
+      formSectionColor: formSectionColor,
+      domainId: domainId,
+      casePlan: casePlanEvent,
+      gapSections: gapSections,
+      gapToggleDataElements: gapToggleDataElements,
+      onViewGapEvent: onViewGapEvent,
     );
   }
 }
-

@@ -24,6 +24,8 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/m
 // Constants
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
+import 'case_plan_gap_view_container.dart';
+
 class CasePlanFormContainer extends StatefulWidget {
   const CasePlanFormContainer({
     Key? key,
@@ -276,14 +278,18 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
         // 2) Grouped Identified Gaps (only on Case Plan page)
         if (showGroupedHere && gaps.isNotEmpty) ...[
           const SizedBox(height: 8),
-          IdentifiedGapsGrouped(
-            domainId: domainId,
-            domainColor: widget.formSectionColor,
-            domainDataObject: domainValue,
-            isHouseholdCasePlan: widget.isHouseholdCasePlan,
-            title: 'Identified gaps',
-            compact: false,
+          CasePlanGapViewContainer(
+            isHouseholdCasePlan: true, // or false for child CP
+            formSectionColor: const Color(0xFF4A9F46), // use your domain color
+            domainId: domainId,                 // e.g. 'Health'
+            casePlanEvent: domainValue,
+            title: 'Identified gaps',// must include CP linkage or event id
+            onViewGapEvent: (gapEvent) {
+              // optional: navigate to details / view gap
+              // Navigator.push(...);
+            },
           ),
+
         ],
 
         const SizedBox(height: 8),

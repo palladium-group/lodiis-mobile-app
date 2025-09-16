@@ -17,6 +17,8 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
+import 'case_plan_gap_view_container.dart';
+
 class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
   const CasePlanGapServiceProvisionViewContainer({
     Key? key,
@@ -150,14 +152,18 @@ class _CasePlanGapServiceProvisionViewContainerState
             if (widget.showIdentifiedGapsHeader && widget.domainGaps.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 6, 15, 6),
-                child: IdentifiedGapsGrouped(
-                  domainId: widget.domainId,
-                  domainColor: widget.formSectionColor,
-                  domainDataObject: <String, dynamic>{
-                    'gaps': widget.domainGaps,
+                child:
+
+                CasePlanGapViewContainer(
+                  isHouseholdCasePlan: widget.isHouseholdCasePlan, // or false for child CP
+                  formSectionColor: const Color(0xFF4A9F46), // use your domain color
+                  domainId: widget.domainId,                 // e.g. 'Health'
+                  casePlanEvent: widget.casePlanGap,
+                  title: 'Identified gaps',// must include CP linkage or event id
+                  onViewGapEvent: (gapEvent) {
+                    // optional: navigate to details / view gap
+                    // Navigator.push(...);
                   },
-                  isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                  title: 'Identified gaps',
                 ),
               ),
 
