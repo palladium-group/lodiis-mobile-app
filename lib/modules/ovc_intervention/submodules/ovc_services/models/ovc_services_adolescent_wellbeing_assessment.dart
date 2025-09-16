@@ -502,7 +502,7 @@ class OvcServicesWellbeingAssessment {
                 name:
                 'Do you have a long-term illness that you would like to share with me',
                 translatedName:
-                'Na oena kapa emong oa ba lelapa o na le bokulo ba nako e telele bo u ka lakatsang ho mpolella bona?',
+                'Naa u na le bokulo ba nako e telele bo u ka lakatsang ho mpolella ka bona?',
                 valueType: 'BOOLEAN',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
@@ -793,7 +793,7 @@ class OvcServicesWellbeingAssessment {
             InputField(
                 id: 'Uv26fX0HQvO',
                 name: 'When last did you test for HIV?',
-                translatedName: 'Haeba Karabo le “E”, neng',
+                translatedName: 'U qetetse ho hlahlobela HIV neng?',
                 description:
                 'If over six months (or their window period) refer for testing ',
                 translatedDescription:
@@ -803,18 +803,18 @@ class OvcServicesWellbeingAssessment {
                   InputFieldOption(
                     code: 'Less than 3 months',
                     name: 'Less than 3 months',
-                    translatedName: 'Less than 3 months',
+                    translatedName: 'Ka tlase ho likhoeli tse 3',
                   ),
                   InputFieldOption(
                     code: 'Three months to twelve months',
                     name: 'Three months to twelve months',
-                    translatedName: 'Three months to twelve months',
+                    translatedName: 'Khoeling tse 3 ho ea ho tse 12 tse fetileng',
                   ),
                   InputFieldOption(
                       code: 'More than 1 year',
                       name: 'More than 1 year',
                       translatedName:
-                      'Ka holimo ho likhoeli tse 12 tse fetileng'),
+                      'Ka holimo ho selemo'),
                 ],
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518)),
@@ -1200,31 +1200,31 @@ class OvcServicesWellbeingAssessment {
                   InputField(
                       id: 'tMvluCbiiUm',
                       name:
-                      '1.	Are you coughing?',
+                      'Are you coughing?',
                       translatedName:
-                      '1.	Are you coughing?',
+                      'Na oa khohlela?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
                       id: 'P9hiqrTjAdg',
-                      name: '2.	Have you lost weight (without trying)?',
+                      name: 'Have you lost weight (without trying)?',
                       translatedName:
-                      '2.	Have you lost weight (without trying)?',
+                      'Naa u theohile mmeleng (u sa rera)?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
                       id: 'Y8Xzy7bEWsi',
-                      name: '3.	Do you have drenching/soaking sweats at night?',
-                      translatedName: '3.	Do you have drenching/soaking sweats at night?',
+                      name: 'Do you have drenching/soaking sweats at night?',
+                      translatedName: 'Naa u fufuleloa haholo hoo bosiu?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
                   InputField(
                       id: 'VETgonq6tFr',
-                      name: '4.	Do you have fevers?',
-                      translatedName: '4.	Do you have fevers?',
+                      name: 'Do you have fevers?',
+                      translatedName: 'Naa u na le mocheso o holimo?',
                       valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
                       labelColor: const Color(0xFF737373)),
