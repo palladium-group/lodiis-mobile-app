@@ -26,7 +26,6 @@ class IdentifiedGapsGroupedView extends StatefulWidget {
     required this.gapSections, // GAP form sections (HH or Child)
     this.gapToggleDataElements,
     this.onViewGapEvent,
-    this.title = 'Identified gaps',
   }) : super(key: key);
 
   final bool isHouseholdCasePlan;
@@ -36,7 +35,6 @@ class IdentifiedGapsGroupedView extends StatefulWidget {
   final List<FormSection> gapSections;
   final Set<String>? gapToggleDataElements;
   final void Function(Map dataObject)? onViewGapEvent;
-  final String title;
 
   @override
   State<IdentifiedGapsGroupedView> createState() => _IdentifiedGapsGroupedViewState();

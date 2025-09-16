@@ -245,7 +245,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     );
 
     final mergedGap = _mergedGapForDomain(gaps);
-
+    final gapsTitle = 'Case Plan Gaps';
     // Only show grouped gaps here when on the Case Plan page
     final bool showGroupedHere = widget.isOnCasePlanPage;
 
@@ -257,6 +257,8 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     final String cpLink = (domainValue[cpKey] ?? '').toString();
     final String spLink = (domainValue[spKey] ?? '').toString();
     final String monLink = (domainValue[monKey] ?? '').toString();
+    // Build sections explicitly (match your real class names if different)
+// Localize outside (keep container simple)
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -278,19 +280,21 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
         // 2) Grouped Identified Gaps (only on Case Plan page)
         if (showGroupedHere && gaps.isNotEmpty) ...[
           const SizedBox(height: 8),
-          CasePlanGapViewContainer(
-            isHouseholdCasePlan: true, // or false for child CP
-            formSectionColor: const Color(0xFF4A9F46), // use your domain color
-            domainId: domainId,                 // e.g. 'Health'
-            casePlanEvent: domainValue,
-            title: 'Identified gaps',// must include CP linkage or event id
-            onViewGapEvent: (gapEvent) {
-              // optional: navigate to details / view gap
-              // Navigator.push(...);
-            },
-          ),
 
-        ],
+
+          CasePlanGapViewContainer(
+          title: gapsTitle,
+          isHouseholdCasePlan: widget.isHouseholdCasePlan,
+          formSectionColor: widget.formSectionColor,
+          domainId: domainId,
+          casePlanEvent: domainValue, // CP event map
+          gapSections: gapSections,
+          // gapToggleDataElements: {'deId1','deId2'}, // optional
+          onViewGapEvent: (gapEvent) { /* open details */ },
+    ),
+
+
+    ],
 
         const SizedBox(height: 8),
 
