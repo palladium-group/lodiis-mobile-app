@@ -211,24 +211,6 @@ class OvcServicesChildCasePlanGap {
                       labelColor: const Color(0xFF737373)),
 
                   InputField(
-                      id: 'eQTJrTcKzVK',
-                      name: 'Offer Disclosure Support service',
-                      translatedName: 'Tšebeletso a HTS ',
-                      valueType: 'TRUE_ONLY',
-                      isReadOnly: true,
-                      inputColor: const Color(0xFF4D9E49),
-                      labelColor: const Color(0xFF737373)),
-                  InputField(
-                      id: 'taejdmpbsoG',
-                      allowFuturePeriod: true,
-                      name: 'Date for Disclosure Support service to be completed',
-                      translatedName: 'Letsatsi la HTS le tla phetheloa',
-                      valueType: 'DATE',
-                      firstDate: firstDate,
-                      inputColor: const Color(0xFF4D9E49),
-                      labelColor: const Color(0xFF737373)),
-
-                  InputField(
                       id: 'gff7hjjVoI6',
                       name: 'Provide Community ART adherence counseling ',
                       translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
