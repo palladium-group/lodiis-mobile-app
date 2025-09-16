@@ -4,11 +4,8 @@ import 'package:kb_mobile_app/models/case_plan_gap_event.dart';
 import 'package:kb_mobile_app/models/case_plan_gap_service_monitoring_event.dart';
 import 'package:kb_mobile_app/models/case_plan_gap_service_provision_event.dart';
 import 'package:kb_mobile_app/models/events.dart';
-import 'package:kb_mobile_app/models/form_section.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
-import 'package:flutter/material.dart';
+
 import '../../../services/ovc_case_plan_service.dart';
 
 class OvcCasePlanUtil {
@@ -31,6 +28,7 @@ class OvcCasePlanUtil {
   }
 
   /// Return ALL gap events for a given case-plan linkage, ignoring date windows.
+  /// Used to deduplicate when saving (so previously-saved gaps from any day aren’t re-added).
   static Future<List<CasePlanGapEvent>> getCasePlanGapsForLinkage({
     required String teiId,
     required String programStageId,
@@ -122,36 +120,41 @@ class OvcCasePlanUtil {
     return getCasePlanDateFromCasePlanForm(dataObject, sectionsId).isNotEmpty;
   }
 
+  /// NEW: validation without Goals and WITHOUT requiring HH Categorization.
+  /// We only require **at least one gap** anywhere (ignoring location/date; those are checked separately).
+  static bool isCasePlanValidWithoutGoals(
+      Map dataObject, {
+        required bool isHouseholdCasePlan,
+      }) {
+    bool hasAtLeastOneGap = false;
+
+    for (final key in dataObject.keys) {
+      if (key == OvcCasePlanConstant.casePlanLocatinSectionId ||
+          key == OvcCasePlanConstant.casePlanEventDateSectionId ||
+          key == OvcCasePlanConstant.householdCategorizationSection) {
+        // ignore these sections in gap validation
+        continue;
+      }
+
+      final section = (dataObject[key] as Map?) ?? const {};
+      final gaps = (section['gaps'] as List?) ?? const [];
+      if (gaps.isNotEmpty) {
+        hasAtLeastOneGap = true;
+      }
+    }
+    return hasAtLeastOneGap;
+  }
+
+  /// Legacy entry point kept for backwards compatibility.
+  /// Internally delegates to the new validator (goals/categorization not required).
   static bool isAllDomainGoalAndGapFilled(
       Map dataObject, {
         required bool isHouseholdCasePlan,
       }) {
-    bool isAllDomainFilled = true;
-    for (String? domainType in dataObject.keys.toList()) {
-      Map domainDataObject = dataObject[domainType] ?? {};
-      String casePlanFirstGoal =
-          domainDataObject[OvcCasePlanConstant.casePlanFirstGoal] ?? '';
-      String casePlansSecondGoal =
-          domainDataObject[OvcCasePlanConstant.casePlansSecondGoal] ?? '';
-
-      if (domainDataObject.keys.contains('gaps') &&
-          domainDataObject['gaps'].length > 0) {
-        if (casePlanFirstGoal.isEmpty) {
-          if (casePlansSecondGoal.isEmpty) {
-            isAllDomainFilled = false;
-          }
-        }
-      } else if (isHouseholdCasePlan &&
-          domainType == OvcCasePlanConstant.casePlanDomainType) {
-        String houseHoldCategorization = domainDataObject[
-        OvcCasePlanConstant.houseHoldCategorizationDataElement] ??
-            '';
-        if (houseHoldCategorization.isEmpty) {
-          isAllDomainFilled = false;
-        }
-      }
-    }
-    return isAllDomainFilled;
+    return isCasePlanValidWithoutGoals(
+      dataObject,
+      isHouseholdCasePlan: isHouseholdCasePlan,
+    );
   }
 
   static List<CasePlanGapServiceProvisionEvent>
@@ -190,66 +193,5 @@ class OvcCasePlanUtil {
     casePlanService.casePlanGapToServiceMonitoringLinkage ==
         casePlanGapToServiceMonitoringLinkage)
         .toList();
-  }
-
-  // ---------- NEW: group saved gap booleans by sub-section label ----------
-
-  static bool _isTrueish(dynamic v) {
-    final s = (v ?? '').toString().trim().toLowerCase();
-    return s == 'true' || s == '1' || s == 'yes';
-  }
-
-  /// Returns: { "Sub-section Name": ["Gap label A", "Gap label B"], ... }
-  static Map<String, List<String>> groupTrueFieldsBySubsection({
-    required String domainId,
-    required bool isHouseholdCasePlan,
-    required Map<String, dynamic> gapEvent,
-    String firstDate = '',
-  }) {
-    final sections = isHouseholdCasePlan
-        ? OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: firstDate)
-        : OvcServicesChildCasePlanGap.getFormSections(firstDate: firstDate);
-
-
-    final domain = sections.firstWhere(
-          (s) => s.id == domainId,
-      orElse: () => FormSection(
-        id: domainId,
-        name: domainId,
-        translatedName: domainId,
-        color: Colors.transparent,        // <- required
-        borderColor: Colors.transparent,  // <- commonly required in your app
-        inputFields: const [],
-        subSections: const [],
-      ),
-    );
-
-
-    final groups = <String, List<String>>{};
-
-    void collectFromSection(FormSection s, String groupName) {
-      for (final f in (s.inputFields ?? const [])) {
-        final v = gapEvent[f.id];
-        if (_isTrueish(v)) {
-          groups.putIfAbsent(groupName, () => <String>[]);
-          groups[groupName]!.add(f.name);
-        }
-      }
-    }
-
-    final subs = domain.subSections ?? const <FormSection>[];
-    if (subs.isNotEmpty) {
-      for (final sub in subs) {
-        collectFromSection(sub, sub.name);
-        for (final nested in (sub.subSections ?? const <FormSection>[])) {
-          collectFromSection(nested, nested.name);
-        }
-      }
-    } else {
-      collectFromSection(domain, domain.name);
-    }
-
-    groups.removeWhere((_, list) => list.isEmpty);
-    return groups;
   }
 }

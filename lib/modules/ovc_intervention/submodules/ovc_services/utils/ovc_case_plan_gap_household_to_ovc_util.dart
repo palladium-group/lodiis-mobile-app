@@ -1,307 +1,168 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
-import 'package:kb_mobile_app/models/case_plan_event.dart';
-import 'package:kb_mobile_app/models/case_plan_gap_event.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/services/ovc_case_plan_service.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_case_plan.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_util.dart';
 
 class OvcCasePlanGapHouseholdToOvcUtil {
-  /// Propagate selected HH case-plan gaps to every eligible child.
-  /// - Ensures a **linkage** is present on the child container before saving
-  /// - Stamps the same linkage on every child gap
-  /// - **Dedupes** child gaps by (linkage + selected toggles)
+  /// Propagate **household** case plan gaps to **children** for each domain found
+  /// in `dataObject`. Applies **age-based + generic** configs from
+  /// `OvcChildCasePlanConstant.domainToAutopopuledCasePlanGaps`.
+  ///
+  /// We upsert a child GAP event that carries the same
+  /// `casePlanToGapLinkage` as the household’s container so later services can
+  /// be tied correctly.
   static Future<void> autoSyncOvcsCasPlanGaps({
-    required String currentCasePlanDate,
+    required String currentCasePlanDate, // not used to filter; kept for parity
     required List<OvcHouseholdChild> childrens,
-    required Map dataObject, // HH case-plan dataObject
-    required String orgUnit,
-    required String eventDate,
+    required Map dataObject,            // household case plan form object
+    required String orgUnit,            // household orgUnit (fallback)
+    required String eventDate,          // household case plan date
   }) async {
     try {
-      final List<FormSection> casePlanSections =
-      OvcServicesCasePlan.getFormSections(firstDate: '');
-
-      for (final child in childrens) {
-        // Build the caregiver selection filtered by child's age
-        final sanitized = _getSanitizedCaregiverSelectionForChild(
-          caregiverDataObject: dataObject,
-          child: child,
+      // helper: allowed IDs for age per domain config
+      List<String> _validIdsForAge(String domainId, int age) {
+        final domainConfig = OvcChildCasePlanConstant
+            .domainToAutopopuledCasePlanGaps[domainId] ??
+            const <String, dynamic>{};
+        return OvcChildCasePlanConstant.getValidIdForAutoPopulatingServiceData(
+          domainConfig: domainConfig,
+          age: age,
         );
-        if (sanitized.isEmpty) {
+      }
+
+      // helper: merge HH domain gaps into one Map (truthy and non-empty only)
+      Map<String, dynamic> _mergeHouseholdGaps(Map domainMap) {
+        final merged = <String, dynamic>{};
+        final gaps = (domainMap['gaps'] as List?) ?? const [];
+        for (final g in gaps) {
+          final m = Map<String, dynamic>.from(g as Map);
+          m.forEach((k, v) {
+            final ks = '$k';
+            if (v == null) return;
+            if (v is bool && v == false) return;
+            if (v is String && v.trim().isEmpty) return;
+            // first one wins to keep intent (no override of existing)
+            merged.putIfAbsent(ks, () => v);
+          });
+        }
+        return merged;
+      }
+
+      // child GAP form sections (per domain)
+      List<FormSection> _childGapSections(String domainId) {
+        return OvcServicesChildCasePlanGap.getFormSections(firstDate: '')
+            .where((s) => (s.id ?? '') == domainId)
+            .toList();
+      }
+
+      const hiddenGapFields = <String>[
+        OvcCasePlanConstant.casePlanToGapLinkage,
+        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
+        OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
+      ];
+
+      for (final entry in dataObject.entries) {
+        final domainId = '${entry.key}';
+        // skip non-domain sections
+        if (domainId == OvcCasePlanConstant.casePlanLocatinSectionId ||
+            domainId == OvcCasePlanConstant.casePlanEventDateSectionId ||
+            domainId == OvcCasePlanConstant.householdCategorizationSection) {
           continue;
         }
 
-        // Merge with existing child CP for the same "currentCasePlanDate"
-        final merged = await _mergeIntoChildForDate(
-          currentCasePlanDate: currentCasePlanDate,
-          child: child,
-          caregiverSelection: sanitized,
-        );
+        final domainMap = Map<String, dynamic>.from(entry.value as Map);
+        // Need the CP linkage for this domain; derive if missing
+        String cpLinkage = (domainMap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '')
+            .toString()
+            .trim();
+        if (cpLinkage.isEmpty) {
+          cpLinkage =
+          (domainMap['eventId'] ?? '').toString().trim().isNotEmpty
+              ? domainMap['eventId']
+              : AppUtil.getUid();
+        }
 
-        // Persist per domain
-        for (final domainType in merged.keys) {
-          final Map<String, dynamic> domainCP =
-          Map<String, dynamic>.from(merged[domainType] as Map);
+        // merge HH gap flags/dates to a single map
+        final hhMergedGap = _mergeHouseholdGaps(domainMap);
 
-          // Always stamp domain on the child container (used by list renderers)
-          domainCP[OvcCasePlanConstant.casePlanDomainType] = domainType;
+        for (final child in childrens) {
+          final tei = child.teiData;
+          if (tei == null) continue;
 
-          // Ensure linkage on the container BEFORE saving
-          final linkageDe = OvcCasePlanConstant.casePlanToGapLinkage;
-          String cpLinkage = (domainCP[linkageDe] ?? '').toString().trim();
-          if (cpLinkage.isEmpty) {
-            cpLinkage = AppUtil.getUid();
-            domainCP[linkageDe] = cpLinkage;
+          // child age
+          final int age = int.tryParse(child.age ?? '0') ?? 0;
+          final allowed = _validIdsForAge(domainId, age).toSet();
+
+          // Build payload for child gap: allowed items present on HH
+          final childGap = <String, dynamic>{};
+          hhMergedGap.forEach((k, v) {
+            final ks = '$k';
+            if (!allowed.contains(ks)) return;
+            childGap[ks] = v;
+          });
+
+          // Always include link + date so it groups and is queryable
+          childGap[OvcCasePlanConstant.casePlanToGapLinkage] = cpLinkage;
+          // NOTE: we intentionally DO NOT set SP/MON linkages here;
+          // SP util will patch child's gap with SP linkage when a household service is saved.
+
+          // If no meaningful data (besides linkage), skip creating noise
+          final keys = childGap.keys.toSet();
+          final onlyLink =
+              keys.length <= 1 && keys.contains(OvcCasePlanConstant.casePlanToGapLinkage);
+          if (onlyLink) {
+            if (kDebugMode) {
+              debugPrint(
+                  '[GAP Propagation] No age-eligible HH gap fields for child ${child.id} in "$domainId". Skip.');
+            }
+            continue;
           }
 
-          // Get sections
-          final List<FormSection> domainFormSections =
-          casePlanSections.where((s) => s.id == domainType).toList();
-          final List<FormSection> domainGapSections =
-          OvcServicesChildCasePlanGap.getFormSections(firstDate: '')
-              .where((s) => s.id == domainType)
-              .toList();
-
-          // Remove transient keys
-          final String? existingEventId =
-          (domainCP['eventId'] ?? '').toString().trim().isEmpty
-              ? null
-              : domainCP['eventId'].toString();
-          domainCP.remove('eventId');
-
-          // Save/Update child container
-          await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcChildCasePlanConstant.program,
-            OvcChildCasePlanConstant.casePlanProgramStage,
-            orgUnit,
-            domainFormSections,
-            domainCP,
-            eventDate,
-            child.id,
-            existingEventId, // update if there is one
-            const [
-              OvcCasePlanConstant.casePlanToGapLinkage,
-              OvcCasePlanConstant.casePlanDomainType,
-            ],
-          );
-
-          // Dedupe & save child gaps
-          final List gaps = (domainCP['gaps'] as List?) ?? const [];
-          if (gaps.isEmpty) continue;
-
-          final existingForLinkage =
-          await OvcCasePlanService().getCasePlanGapEvents(
-            date: currentCasePlanDate,
+          // Upsert: find existing child gap by the same CP linkage
+          final existing = await OvcCasePlanUtil.getCasePlanGapsForLinkage(
+            teiId: tei.trackedEntityInstance ?? '',
             programStageId: OvcChildCasePlanConstant.casePlanGapProgramStage,
-            teiId: child.id!,
-            casePlanToGaps: [cpLinkage],
+            linkage: cpLinkage,
           );
 
-          final toggleIds = _collectToggleIds(domainGapSections);
-          final existingSignatures = <String>{};
-          for (final e in existingForLinkage) {
-            existingSignatures.add(
-              _gapSignature(Map<String, dynamic>.from(e.toDataObject()), toggleIds),
-            );
-          }
+          final sections = _childGapSections(domainId);
+          final childOrg = tei.orgUnit ?? orgUnit;
+          final childEventDate = eventDate; // same day as HH container
 
-          int saved = 0;
-          for (final g in gaps) {
-            final gap = Map<String, dynamic>.from(g as Map);
-
-            // stamp linkage to match container
-            gap[linkageDe] = cpLinkage;
-
-            // never rely on container eventId as linkage; use cpLinkage above
-            gap.remove('eventId');
-
-            final sig = _gapSignature(gap, toggleIds);
-            if (sig.isEmpty || existingSignatures.contains(sig)) continue;
-
+          try {
             await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
               OvcChildCasePlanConstant.program,
               OvcChildCasePlanConstant.casePlanGapProgramStage,
-              orgUnit,
-              domainGapSections,
-              gap,
-              eventDate,
-              child.id,
-              null,
-              const [
-                OvcCasePlanConstant.casePlanToGapLinkage,
-                OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-                OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
-              ],
+              childOrg,
+              sections,
+              childGap,
+              childEventDate,
+              tei.trackedEntityInstance,
+              existing.isNotEmpty ? existing.first.eventData?.event : null,
+              hiddenGapFields,
             );
-            existingSignatures.add(sig);
-            saved++;
+            if (kDebugMode) {
+              debugPrint(
+                  '[GAP Propagation] ${existing.isEmpty ? 'Created' : 'Updated'} child gap for ${child.id} (domain="$domainId").');
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              debugPrint(
+                  '[GAP Propagation] Failed for child ${child.id} in "$domainId": $e');
+            }
           }
-
-          // Debug
-          // ignore: avoid_print
-          print('[HH→Child] ${child.id} domain=$domainType linkage=$cpLinkage saved=$saved');
         }
       }
-    } catch (_) {
-      // swallow – don't break HH save flow
-    }
-  }
-
-  // ---------- helpers ----------
-
-  static Map<String, dynamic> _getSanitizedCaregiverSelectionForChild({
-    required Map caregiverDataObject,
-    required OvcHouseholdChild child,
-  }) {
-    // Age gating – re-use your constant map
-    final Map<String, Map> cfg =
-        OvcChildCasePlanConstant.domainToAutopopuledCasePlanGaps;
-
-    int age = int.tryParse((child.age ?? '').toString()) ?? 0;
-    final out = <String, dynamic>{};
-
-    for (final domain in cfg.keys) {
-      final selected = Map<String, dynamic>.from(
-        (caregiverDataObject[domain] ?? {}) as Map,
-      );
-      if (selected.isEmpty) continue;
-
-      // keep only fields that are "valid for age"
-      final List<String> valid =
-      OvcChildCasePlanConstant.getValidIdForAutoPopulatingServiceData(
-        domainConfig: cfg[domain] ?? {},
-        age: age,
-      );
-
-      final keptGaps = <Map<String, dynamic>>[];
-      final List gaps = (selected['gaps'] as List?) ?? const [];
-      for (final g in gaps) {
-        final m = Map<String, dynamic>.from(g as Map);
-        final filtered = <String, dynamic>{};
-        for (final k in m.keys) {
-          if (valid.contains(k)) filtered[k] = m[k];
-        }
-        if (filtered.isNotEmpty) keptGaps.add(filtered);
-      }
-      if (keptGaps.isEmpty) continue;
-
-      final container = <String, dynamic>{};
-      for (final k in selected.keys) {
-        if (valid.contains(k)) container[k] = selected[k];
-      }
-      // preserve linkage if HH already has one – helps "same plan" semantics
-      final lk = OvcCasePlanConstant.casePlanToGapLinkage;
-      if ((selected[lk] ?? '').toString().trim().isNotEmpty) {
-        container[lk] = selected[lk];
-      }
-      container['gaps'] = keptGaps;
-      out[domain] = container;
-    }
-    return out;
-  }
-
-  static Future<Map<String, dynamic>> _mergeIntoChildForDate({
-    required String currentCasePlanDate,
-    required OvcHouseholdChild child,
-    required Map<String, dynamic> caregiverSelection,
-  }) async {
-    final out = <String, dynamic>{};
-
-    // Pull existing child CP for that date
-    List<CasePlanEvent> childPlans = await OvcCasePlanService().getCasePlanEvents(
-      date: currentCasePlanDate,
-      programStageId: OvcChildCasePlanConstant.casePlanProgramStage,
-      teiId: child.id!,
-    );
-
-    // Map by domain for quick lookup
-    final byDomain = <String, CasePlanEvent>{};
-    for (final cp in childPlans) {
-      final d = cp.domainType ?? '';
-      if (d.isNotEmpty) byDomain[d] = cp;
-    }
-
-    // For each caregiver domain, either hydrate existing or prepare a fresh one
-    for (final domain in caregiverSelection.keys) {
-      final Map<String, dynamic> cg = Map<String, dynamic>.from(
-        caregiverSelection[domain] as Map,
-      );
-      final cp = byDomain[domain];
-
-      if (cp == null) {
-        // No child CP yet for this domain/date – pass caregiver selection
-        out[domain] = cg;
-        continue;
-      }
-
-      // Merge gaps on top of existing (by linkage alignment only; dedupe happens on save)
-      final obj = cp.toDataObject();
-      final linkageDe = OvcCasePlanConstant.casePlanToGapLinkage;
-      final cpLink = (cp.casePlanToGap ?? obj['eventId'] ?? '').toString();
-
-      final existingGaps = await OvcCasePlanService().getCasePlanGapEvents(
-        date: currentCasePlanDate,
-        programStageId: OvcChildCasePlanConstant.casePlanGapProgramStage,
-        teiId: child.id!,
-        casePlanToGaps: [cpLink],
-      );
-
-      final existingObjs = existingGaps.map((e) => e.toDataObject()).toList();
-
-      final mergedGaps = <Map<String, dynamic>>[];
-      final List cgGaps = (cg['gaps'] as List?) ?? const [];
-      for (final g in cgGaps) {
-        final m = Map<String, dynamic>.from(g as Map);
-        // force the container linkage onto gap
-        m[linkageDe] = cpLink;
-        // simple overlay (dedupe handled during save by signature)
-        mergedGaps.add(m);
-      }
-
-      obj['gaps'] = mergedGaps;
-      obj[OvcCasePlanConstant.casePlanToGapLinkage] = cpLink;
-      obj[OvcCasePlanConstant.casePlanDomainType] = domain;
-      out[domain] = obj;
-    }
-
-    return out;
-  }
-
-  static Set<String> _collectToggleIds(List<FormSection> gapSections) {
-    final ids = <String>{};
-    for (final s in gapSections) {
-      for (final f in (s.inputFields ?? const [])) {
-        ids.add(f.id);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[GAP Propagation] Fatal error: $e');
       }
     }
-    ids.removeAll({
-      OvcCasePlanConstant.casePlanToGapLinkage,
-      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-      OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
-      'eventId',
-      'eventDate',
-      'location',
-    });
-    return ids;
-  }
-
-  static String _gapSignature(
-      Map<String, dynamic> gap,
-      Set<String> candidateIds,
-      ) {
-    final on = <String>[];
-    for (final id in candidateIds) {
-      final v = (gap[id] ?? '').toString().toLowerCase();
-      if (v == 'true' || v == '1' || v == 'yes') on.add(id);
-    }
-    on.sort();
-    return on.join('|');
   }
 }
-

@@ -1,261 +1,72 @@
-
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_form_container.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_monitoring_view_container.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_provision_view_container.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_view.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
-import 'package:provider/provider.dart';
 
+// Grouped/collapsible gaps view
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/identified_gaps_grouped_view.dart';
+
+// GAP section builders (Household & Child)
+// NOTE: If your class names/files differ slightly, adjust these two imports.
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
+
+/// Container that renders Identified Gaps grouped by Benchmark/Subsection,
+/// collapsed by default, and only shows gaps with ≥ 1 recorded entry.
+///
+/// Required:
+/// - [isHouseholdCasePlan] : true for HH CP, false for Child CP
+/// - [formSectionColor]    : domain color used for accents
+/// - [domainId]            : FormSection.id of the current domain (e.g., 'Health')
+/// - [casePlanEvent]       : Map of the selected Case Plan event (should carry
+///                           OvcCasePlanConstant.casePlanToGapLinkage or at least event id)
+///
+/// Optional:
+/// - [gapToggleDataElements] : restrict which TRUE_ONLY DEs count as “gap toggles”
+/// - [onViewGapEvent]        : tap handler for a gap item (opens details, etc.)
 class CasePlanGapViewContainer extends StatelessWidget {
   const CasePlanGapViewContainer({
     Key? key,
-    required this.dataObject,
-    required this.formSectionColor,
     required this.isHouseholdCasePlan,
-    required this.hasEditAccessToCasePlan,
-    required this.enrollmentOuAccessible,
-    required this.isEditableMode,
-    required this.canAddDomainGaps,
+    required this.formSectionColor,
     required this.domainId,
-    required this.onInputValueChange,
-    required this.isOnCasePlanServiceProvision,
-    required this.isOnCasePlanServiceMonitoring,
+    required this.casePlanEvent,
+    this.gapToggleDataElements,
+    this.title = 'Identified gaps',
+    this.onViewGapEvent,
   }) : super(key: key);
 
   final bool isHouseholdCasePlan;
-  final bool hasEditAccessToCasePlan;
-  final bool enrollmentOuAccessible;
-  final bool isEditableMode;
-  final bool canAddDomainGaps;
-
-  final bool isOnCasePlanServiceProvision;
-  final bool isOnCasePlanServiceMonitoring;
-  final Map dataObject;
   final Color formSectionColor;
   final String domainId;
-  final Function onInputValueChange;
+  final Map<String, dynamic> casePlanEvent;
+  final String title;
 
-  final String caseToGapLinkage = OvcCasePlanConstant.casePlanToGapLinkage;
-  final String casePlanGapToServiceProvisionLinkage =
-      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
-  final String casePlanGapToServiceMonitoringLinkage =
-      OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
+  /// If provided, only these DE ids count as “gap toggles”.
+  final Set<String>? gapToggleDataElements;
 
-  // ---------- Helpers: strong typing & normalization ----------
+  /// Optional: open a details screen / bottom sheet for a specific gap event.
+  final void Function(Map dataObject)? onViewGapEvent;
 
-  /// Return a strongly-typed list `List<Map<String,dynamic>>` no matter what was in [raw].
-  List<Map<String, dynamic>> _asGapList(dynamic raw) {
-    if (raw is List) {
-      return raw
-          .where((e) => e is Map)
-          .map<Map<String, dynamic>>(
-              (e) => Map<String, dynamic>.from(e as Map))
-          .toList();
+  List<FormSection> _buildGapSections() {
+    // Build full GAP sections set; the grouped view filters to [domainId].
+    if (isHouseholdCasePlan) {
+      return OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: '');
+    } else {
+      return OvcServicesChildCasePlanGap.getFormSections(firstDate: '');
     }
-    if (raw is Map) {
-      return [Map<String, dynamic>.from(raw)];
-    }
-    return const <Map<String, dynamic>>[];
-  }
-
-  /// Merge a list of gap maps into a single map (last wins on duplicate keys).
-  Map<String, dynamic> _mergeGapObjects(List<Map<String, dynamic>> gaps) {
-    final out = <String, dynamic>{};
-    for (final g in gaps) {
-      out.addAll(g);
-    }
-    return out;
-  }
-
-  bool _hasCasePlanGaps(dynamic rawGaps) => _asGapList(rawGaps).isNotEmpty;
-
-  // -----------------------------------------------------------
-
-  void onAddOrEditCasePlanGap(
-      BuildContext context, {
-        Map? gapDataObject,
-        bool isOnEdit = false,
-      }) async {
-    final String caseToGapLinkageValue =
-    (dataObject[caseToGapLinkage] ?? AppUtil.getUid()).toString();
-    final String casePlanFirstGoal =
-    (dataObject[OvcCasePlanConstant.casePlanFirstGoal] ?? '').toString();
-    final String casePlansSecondGoal =
-    (dataObject[OvcCasePlanConstant.casePlansSecondGoal] ?? '').toString();
-
-    // Seed the object and linkages
-    gapDataObject = Map<String, dynamic>.from(gapDataObject ?? const {});
-    gapDataObject[casePlanGapToServiceProvisionLinkage] =
-        gapDataObject[casePlanGapToServiceProvisionLinkage] ??
-            AppUtil.getUid();
-    gapDataObject[casePlanGapToServiceMonitoringLinkage] =
-        gapDataObject[casePlanGapToServiceMonitoringLinkage] ??
-            AppUtil.getUid();
-    gapDataObject[OvcCasePlanConstant.casePlanFirstGoal] = casePlanFirstGoal;
-    gapDataObject[OvcCasePlanConstant.casePlansSecondGoal] =
-        casePlansSecondGoal;
-    gapDataObject[caseToGapLinkage] = caseToGapLinkageValue;
-
-    // Build sections per domain
-    List<FormSection> formSections = isHouseholdCasePlan
-        ? OvcHouseholdServicesCasePlanGaps.getFormSections(
-      firstDate: gapDataObject['eventDate'] ??
-          AppUtil.formattedDateTimeIntoString(DateTime.now()),
-    ).where((s) => s.id == domainId).toList()
-        : OvcServicesChildCasePlanGap.getFormSections(
-      firstDate: gapDataObject['eventDate'] ??
-          AppUtil.formattedDateTimeIntoString(DateTime.now()),
-    ).where((s) => s.id == domainId).toList();
-
-    formSections = formSections
-        .map((s) {
-      s.borderColor = Colors.transparent;
-      return s;
-    })
-        .toList();
-
-    const double ratio = 0.8;
-    final response = await AppUtil.showActionSheetModal(
-      context: context,
-      containerBody: CasePlanGapFormContainer(
-        formSections: formSections,
-        isEditableMode: isEditableMode,
-        formSectionColor: formSectionColor,
-        dataObject: gapDataObject,
-        isChildCasePlan: !isHouseholdCasePlan,
-      ),
-      initialHeightRatio: ratio,
-      maxHeightRatio: ratio,
-    );
-
-    if (response != null) {
-      // Normalize the existing list and the response
-      final List<Map<String, dynamic>> currentGaps =
-      _asGapList(dataObject['gaps']);
-      final Map<String, dynamic> res =
-      Map<String, dynamic>.from(response as Map);
-
-      // If editing, drop the previous one by eventId
-      final String prevEventId = (res['eventId'] ?? '').toString();
-      if (isOnEdit && prevEventId.isNotEmpty) {
-        currentGaps.removeWhere(
-                (g) => (g['eventId'] ?? '').toString() == prevEventId);
-      }
-
-      currentGaps.add(res);
-      onValueChange('gaps', currentGaps);
-    }
-  }
-
-  void onValueChange(String id, dynamic value) {
-    dataObject[id] = value;
-    onInputValueChange(dataObject);
   }
 
   @override
   Widget build(BuildContext context) {
-    final gapsList = _asGapList(dataObject['gaps']); // normalized once
+    final gapSections = _buildGapSections();
 
-    return Container(
-      margin: const EdgeInsets.symmetric(),
-      child: Column(
-        children: [
-          // Existing Gap cards / edit buttons
-          CasePlanGapView(
-            hasEditAccessToCasePlan: hasEditAccessToCasePlan,
-            isEditableMode: isEditableMode,
-            isOnCasePlanServiceProvision: isOnCasePlanServiceProvision,
-            isOnCasePlanServiceMonitoring: isOnCasePlanServiceMonitoring,
-            domainId: domainId,
-            formSectionColor: formSectionColor,
-            isHouseholdCasePlan: isHouseholdCasePlan,
-            casePlanGapObjects: gapsList, // safe typed list
-            onEdiCasePlanGap: (dynamic gapDataObject) => onAddOrEditCasePlanGap(
-              context,
-              gapDataObject: gapDataObject,
-              isOnEdit: true,
-            ),
-          ),
-
-          // Service Provision / Monitoring blocks (only if we have at least one gap)
-          Visibility(
-            visible: gapsList.isNotEmpty,
-            child: Container(
-              margin: const EdgeInsets.symmetric(),
-              child: Column(
-                children: [
-                  Visibility(
-                    visible: isOnCasePlanServiceProvision,
-                    child: CasePlanGapServiceProvisionViewContainer(
-                      domainId: domainId,
-                      formSectionColor: formSectionColor,
-                      casePlanGap: _mergeGapObjects(gapsList), // <- typed Map<String,dynamic>
-                      isHouseholdCasePlan: isHouseholdCasePlan,
-                      enrollmentOuAccessible: enrollmentOuAccessible,
-                    ),
-                  ),
-                  Visibility(
-                    visible: isOnCasePlanServiceMonitoring,
-                    child: CasePlanGapServiceMonitoringViewContainer(
-                      domainId: domainId,
-                      formSectionColor: formSectionColor,
-                      casePlanGap: _mergeGapObjects(gapsList), // <- typed Map<String,dynamic>
-                      isHouseholdCasePlan: isHouseholdCasePlan,
-                      enrollmentOuAccessible: enrollmentOuAccessible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Generate Plan Button (hidden on service/monitoring pages)
-          Visibility(
-            visible: (isEditableMode && canAddDomainGaps) &&
-                !(isOnCasePlanServiceMonitoring || isOnCasePlanServiceProvision),
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 10.0),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  disabledForegroundColor:
-                  formSectionColor.withOpacity(0.38),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: formSectionColor),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                onPressed: () => onAddOrEditCasePlanGap(context),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 15.0,
-                    horizontal: 40.0,
-                  ),
-                  child: Consumer<LanguageTranslationState>(
-                    builder: (context, languageTranslationState, child) => Text(
-                      languageTranslationState.isSesothoLanguage
-                          ? "Eketsa sekheo"
-                          : 'Generate Plan',
-                      style: const TextStyle().copyWith(
-                        color: formSectionColor,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return IdentifiedGapsGroupedView(
+      isHouseholdCasePlan: isHouseholdCasePlan,
+      formSectionColor: formSectionColor,
+      domainId: domainId,
+      casePlan: casePlanEvent,
+      gapSections: gapSections,
+      gapToggleDataElements: gapToggleDataElements,
+      onViewGapEvent: onViewGapEvent,
     );
   }
 }
-

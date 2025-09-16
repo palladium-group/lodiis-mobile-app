@@ -12,51 +12,42 @@ import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/events.dart';
 
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/household_service_provision.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_service_provision.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 
 import '../../ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 
-class CasePlanGapServiceProvisionView extends StatefulWidget {
-  const CasePlanGapServiceProvisionView({
+class IdentifiedGapsGroupedView extends StatefulWidget {
+  const IdentifiedGapsGroupedView({
     Key? key,
     required this.isHouseholdCasePlan,
-    required this.hasEditAccess,
     required this.formSectionColor,
     required this.domainId,
-    required this.casePlanGap,
-    required this.onEditCasePlanService,
-    required this.onViewCasePlanService,
+    required this.casePlan, // Map of the selected Case Plan event
+    required this.gapSections, // GAP form sections (HH or Child)
+    this.gapToggleDataElements,
+    this.onViewGapEvent,
+    this.title = 'Identified gaps',
   }) : super(key: key);
 
   final bool isHouseholdCasePlan;
-  final bool hasEditAccess;
   final Color formSectionColor;
   final String domainId;
-
-  /// Must include:
-  ///  - OvcCasePlanConstant.casePlanToGapLinkage
-  ///  - OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage
-  final Map<String, dynamic> casePlanGap;
-
-  final void Function(Map dataObject) onEditCasePlanService;
-  final void Function(Map dataObject) onViewCasePlanService;
+  final Map<String, dynamic> casePlan;
+  final List<FormSection> gapSections;
+  final Set<String>? gapToggleDataElements;
+  final void Function(Map dataObject)? onViewGapEvent;
+  final String title;
 
   @override
-  State<CasePlanGapServiceProvisionView> createState() =>
-      _CasePlanGapServiceProvisionViewState();
+  State<IdentifiedGapsGroupedView> createState() => _IdentifiedGapsGroupedViewState();
 }
 
-class _CasePlanGapServiceProvisionViewState
-    extends State<CasePlanGapServiceProvisionView> {
+class _IdentifiedGapsGroupedViewState extends State<IdentifiedGapsGroupedView> {
   static const String _cpKey = OvcCasePlanConstant.casePlanToGapLinkage;
-  static const String _spKey =
-      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
 
-  String get _stage => widget.isHouseholdCasePlan
-      ? OvcHouseholdCasePlanConstant.casePlanGapServiceProvisionProgramStage
-      : OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage;
+  String get _gapStage => widget.isHouseholdCasePlan
+      ? OvcHouseholdCasePlanConstant.casePlanGapProgramStage
+      : OvcChildCasePlanConstant.casePlanGapProgramStage;
 
   final Map<String, bool> _expandedByGroup = {};
 
@@ -66,7 +57,6 @@ class _CasePlanGapServiceProvisionViewState
   }
 
   Map<String, dynamic> _toPlainObject(dynamic ev) {
-    // Normalizes Events → { dataElement: value, ..., eventDate, event }
     try {
       if (ev is Events) {
         final out = <String, dynamic>{};
@@ -104,11 +94,11 @@ class _CasePlanGapServiceProvisionViewState
     return const {};
   }
 
-  Map<String, _ServiceMeta> _serviceMetaByDe({
+  Map<String, _GapMeta> _gapMetaByDe({
     required List<FormSection> sections,
     required bool isSesotho,
   }) {
-    final map = <String, _ServiceMeta>{};
+    final map = <String, _GapMeta>{};
 
     final FormSection domain = sections.firstWhere(
           (s) => (s.id ?? '') == widget.domainId,
@@ -143,28 +133,29 @@ class _CasePlanGapServiceProvisionViewState
           : owner.name) ??
           '')
           : (owner.name ?? '');
+
       for (final f in owner.inputFields ?? const <InputField>[]) {
-        if (f.valueType == 'TRUE_ONLY' &&
-            OvcCasePlanConstant.casePlanServiceProvisionResults
-                .contains(f.id)) {
+        final isToggle =
+            f.valueType == 'TRUE_ONLY' &&
+                (widget.gapToggleDataElements == null ||
+                    widget.gapToggleDataElements!.contains(f.id));
+        if (isToggle) {
           final label = isSesotho
-              ? ((f.translatedName?.isNotEmpty == true
-              ? f.translatedName
-              : f.name) ??
-              '')
+              ? ((f.translatedName?.isNotEmpty == true ? f.translatedName : f.name) ?? '')
               : (f.name ?? '');
-          map[f.id ?? ''] = _ServiceMeta(
-            id: f.id ?? '',
-            label: label,
-            groupLabel: ownerLabel,
-          );
+          final id = f.id ?? '';
+          map[id] = _GapMeta(id: id, label: label, groupLabel: ownerLabel);
         }
       }
     }
     return map;
   }
 
-  String? _firstNonEmptyReason(Map<String, dynamic> values) {
+  String? _firstNonEmptyComment(Map<String, dynamic> values) {
+    for (final de in OvcCasePlanConstant.casePlanServiceProvisionReasons) {
+      final v = values[de];
+      if (v != null && (v.toString().trim()).isNotEmpty) return v.toString();
+    }
     for (final de in OvcCasePlanConstant.casePlanServiceProvisionReasons) {
       final v = values[de];
       if (v != null && (v.toString().trim()).isNotEmpty) return v.toString();
@@ -177,54 +168,49 @@ class _CasePlanGapServiceProvisionViewState
     final isSesotho =
     context.select<LanguageTranslationState, bool>((s) => s.isSesothoLanguage);
 
-    // 1) Source SP form sections (HH or Child)
-    final List<FormSection> sections = widget.isHouseholdCasePlan
-        ? HouseholdServiceProvision.getFormSections(firstDate: '')
-        : OvcServicesChildServiceProvision.getFormSections(firstDate: '');
+    final meta = _gapMetaByDe(sections: widget.gapSections, isSesotho: isSesotho);
 
-    // 2) Build service metadata (de → label, group)
-    final serviceMeta = _serviceMetaByDe(sections: sections, isSesotho: isSesotho);
-
-    // 3) Get all events for the SP stage
     final events = context
-        .select<ServiceEventDataState, List<Events>>((s) => s.eventsForStage(_stage));
+        .select<ServiceEventDataState, List<Events>>((s) => s.eventsForStage(_gapStage));
 
-    // 4) Filter by the current CP/SP linkage (only events for the selected gap)
-    final cp = (widget.casePlanGap[_cpKey] ?? '').toString();
-    final sp = (widget.casePlanGap[_spKey] ?? '').toString();
-    final filtered = <Map<String, dynamic>>[];
+    final cpLinkValue = (widget.casePlan[_cpKey] ??
+        widget.casePlan['event'] ??
+        widget.casePlan['eventId'] ??
+        '')
+        .toString();
+
+    final gapEvents = <Map<String, dynamic>>[];
     for (final ev in events) {
       final obj = _toPlainObject(ev);
-      if ((obj[_cpKey] ?? '') == cp && (obj[_spKey] ?? '') == sp) {
-        filtered.add(obj);
+      if ((obj[_cpKey] ?? '') == cpLinkValue) {
+        gapEvents.add(obj);
       }
     }
 
-    // 5) Build events-by-service map (only true toggles)
-    final byService = <String, List<Map<String, dynamic>>>{};
-    for (final obj in filtered) {
-      for (final entry in serviceMeta.entries) {
+    final byGap = <String, List<Map<String, dynamic>>>{};
+    for (final obj in gapEvents) {
+      for (final entry in meta.entries) {
         final de = entry.key;
         if (_isTrueLike(obj[de])) {
-          byService.putIfAbsent(de, () => <Map<String, dynamic>>[]).add(obj);
+          byGap.putIfAbsent(de, () => <Map<String, dynamic>>[]).add(obj);
         }
       }
     }
 
-    // 6) Group services (but keep only those with >=1 entries)
-    final groups = <String, List<_ServiceMeta>>{};
-    for (final m in serviceMeta.values) {
-      final hasEntries = (byService[m.id]?.isNotEmpty ?? false);
-      if (!hasEntries) continue;
-      groups.putIfAbsent(m.groupLabel, () => <_ServiceMeta>[]).add(m);
+    final groups = <String, List<_GapMeta>>{};
+    for (final m in meta.values) {
+      final has = (byGap[m.id]?.isNotEmpty ?? false);
+      if (!has) continue;
+      groups.putIfAbsent(m.groupLabel, () => <_GapMeta>[]).add(m);
     }
 
-    // If nothing to show, keep it clean
     if (groups.isEmpty) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(
-          'No recorded services for this gap yet.',
+          isSesotho
+              ? 'Ha ho likheo tse ngolisitsoeng bakeng sa moralo ona.'
+              : 'No identified gaps for this case plan yet.',
           style: TextStyle(
             color: widget.formSectionColor.withOpacity(0.75),
             fontStyle: FontStyle.italic,
@@ -233,9 +219,8 @@ class _CasePlanGapServiceProvisionViewState
       );
     }
 
-    // Sort groups by title
     final groupEntries = groups.entries.toList()
-      ..sort((a, b) => (a.key.toLowerCase()).compareTo(b.key.toLowerCase()));
+      ..sort((a, b) => a.key.toLowerCase().compareTo(b.key.toLowerCase()));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,13 +229,8 @@ class _CasePlanGapServiceProvisionViewState
         final items = entry.value
           ..sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
 
-        // Counts for header chip
-        final servicesCount = items.length;
-        final totalEntries = items.fold<int>(
-          0,
-              (acc, m) => acc + (byService[m.id]?.length ?? 0),
-        );
-
+        final gapsCount = items.length;
+        final totalEntries = items.fold<int>(0, (acc, g) => acc + (byGap[g.id]?.length ?? 0));
         final initiallyExpanded = _expandedByGroup[groupLabel] ?? false;
 
         return Container(
@@ -258,9 +238,7 @@ class _CasePlanGapServiceProvisionViewState
           decoration: BoxDecoration(
             color: widget.formSectionColor.withOpacity(0.045),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: widget.formSectionColor.withOpacity(0.22),
-            ),
+            border: Border.all(color: widget.formSectionColor.withOpacity(0.22)),
           ),
           child: Theme(
             data: Theme.of(context).copyWith(
@@ -270,11 +248,9 @@ class _CasePlanGapServiceProvisionViewState
             ),
             child: ExpansionTile(
               initiallyExpanded: initiallyExpanded,
-              onExpansionChanged: (v) =>
-                  setState(() => _expandedByGroup[groupLabel] = v),
+              onExpansionChanged: (v) => setState(() => _expandedByGroup[groupLabel] = v),
               tilePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-              childrenPadding:
-              const EdgeInsets.only(left: 8, right: 8, bottom: 10),
+              childrenPadding: const EdgeInsets.only(left: 8, right: 8, bottom: 10),
               title: Row(
                 children: [
                   Expanded(
@@ -287,42 +263,41 @@ class _CasePlanGapServiceProvisionViewState
                       ),
                     ),
                   ),
-                  _Chip(
-                    label:
-                    '$servicesCount service${servicesCount == 1 ? '' : 's'}',
+                  _MiniChip(
+                    label: '$gapsCount gap${gapsCount == 1 ? '' : 's'}',
                     color: widget.formSectionColor,
                   ),
                   const SizedBox(width: 6),
-                  _Chip(
+                  _MiniChip(
                     label: '$totalEntries entr${totalEntries == 1 ? 'y' : 'ies'}',
                     color: widget.formSectionColor,
                   ),
                 ],
               ),
-              children: items.map((meta) {
-                final list = byService[meta.id] ?? const <Map<String, dynamic>>[];
+              children: items.map((gapMeta) {
+                final list = byGap[gapMeta.id] ?? const <Map<String, dynamic>>[];
                 final count = list.length;
-                // Guard: Should always be >0 due to filtering above, but keep safe
                 if (count == 0) return const SizedBox.shrink();
                 return ListTile(
                   dense: true,
                   visualDensity: const VisualDensity(vertical: -2),
                   title: Text(
-                    meta.label,
+                    gapMeta.label,
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   subtitle: Text(
                     '$count entr${count == 1 ? 'y' : 'ies'}',
                     style: TextStyle(color: widget.formSectionColor.withOpacity(0.8)),
                   ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _showEventsSheet(
+                  trailing: widget.onViewGapEvent != null ? const Icon(Icons.chevron_right) : null,
+                  onTap: widget.onViewGapEvent == null
+                      ? null
+                      : () => _showGapEventsSheet(
                     context: context,
                     color: widget.formSectionColor,
-                    serviceLabel: meta.label,
+                    gapLabel: gapMeta.label,
                     events: list,
-                    onTapEvent: widget.onViewCasePlanService,
-                    firstNonEmptyReason: _firstNonEmptyReason,
+                    onTapEvent: widget.onViewGapEvent!,
                   ),
                 );
               }).toList(),
@@ -333,13 +308,12 @@ class _CasePlanGapServiceProvisionViewState
     );
   }
 
-  Future<void> _showEventsSheet({
+  Future<void> _showGapEventsSheet({
     required BuildContext context,
     required Color color,
-    required String serviceLabel,
+    required String gapLabel,
     required List<Map<String, dynamic>> events,
     required void Function(Map dataObject) onTapEvent,
-    required String? Function(Map<String, dynamic>) firstNonEmptyReason,
   }) async {
     await showModalBottomSheet(
       context: context,
@@ -356,9 +330,7 @@ class _CasePlanGapServiceProvisionViewState
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12)
-                ],
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12)],
               ),
               child: Column(
                 children: [
@@ -377,7 +349,7 @@ class _CasePlanGapServiceProvisionViewState
                       children: [
                         Expanded(
                           child: Text(
-                            serviceLabel,
+                            gapLabel,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -392,8 +364,7 @@ class _CasePlanGapServiceProvisionViewState
                               color: color.withOpacity(0.08),
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            child: Text(
-                                '${events.length} entr${events.length == 1 ? 'y' : 'ies'}'),
+                            child: Text('${events.length} entr${events.length == 1 ? 'y' : 'ies'}'),
                           ),
                         const SizedBox(width: 8),
                       ],
@@ -404,7 +375,7 @@ class _CasePlanGapServiceProvisionViewState
                     child: events.isEmpty
                         ? Center(
                       child: Text(
-                        'No services recorded yet.',
+                        'No gap events recorded.',
                         style: TextStyle(color: color.withOpacity(0.7)),
                       ),
                     )
@@ -414,22 +385,17 @@ class _CasePlanGapServiceProvisionViewState
                       separatorBuilder: (_, __) => const Divider(height: 1),
                       itemBuilder: (_, index) {
                         final obj = events[index];
-                        final date = AppUtil.getDateIntoDateTimeFormat(
-                          obj['eventDate'],
-                        ) ??
+                        final date = AppUtil.getDateIntoDateTimeFormat(obj['eventDate']) ??
                             (obj['eventDate'] ?? '');
-                        final comment = firstNonEmptyReason(obj) ?? '';
+                        final comment = _firstNonEmptyComment(obj) ?? '';
                         return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 6),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           title: Text('$date'),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 2),
-                              const Text('Service provided: Yes'),
                               if (comment.isNotEmpty) ...[
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 2),
                                 Text('Comment: $comment'),
                               ],
                             ],
@@ -450,21 +416,15 @@ class _CasePlanGapServiceProvisionViewState
   }
 }
 
-class _ServiceMeta {
+class _GapMeta {
   final String id;
   final String label;
   final String groupLabel;
-  _ServiceMeta({
-    required this.id,
-    required this.label,
-    required this.groupLabel,
-  });
+  _GapMeta({required this.id, required this.label, required this.groupLabel});
 }
 
-class _Chip extends StatelessWidget {
-  const _Chip({Key? key, required this.label, required this.color})
-      : super(key: key);
-
+class _MiniChip extends StatelessWidget {
+  const _MiniChip({Key? key, required this.label, required this.color}) : super(key: key);
   final String label;
   final Color color;
 
@@ -488,4 +448,3 @@ class _Chip extends StatelessWidget {
     );
   }
 }
-
