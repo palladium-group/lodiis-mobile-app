@@ -13,6 +13,9 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_monitoring_view.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/identified_gaps_grouped.dart';
 
+import '../../../../../../models/form_section.dart';
+import '../../models/ovc_services_child_case_plan_gap.dart';
+import '../../models/ovc_services_household_case_plan_gaps.dart';
 import 'case_plan_gap_view_container.dart';
 
 class CasePlanGapServiceMonitoringViewContainer extends StatefulWidget {
@@ -38,6 +41,13 @@ class CasePlanGapServiceMonitoringViewContainer extends StatefulWidget {
 
 class _CasePlanGapServiceMonitoringViewContainerState
     extends State<CasePlanGapServiceMonitoringViewContainer> {
+
+  List<FormSection> _gapSectionsForDomain(String domainId) {
+    final all = widget.isHouseholdCasePlan
+        ? OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: '')
+        : OvcServicesChildCasePlanGap.getFormSections(firstDate: '');
+    return all.where((s) => (s.id ?? '') == domainId).toList();
+  }
   Future<String?> _pickMonitoringType(BuildContext context) async {
     final options = <String>['Assessment monitoring', 'Viral load monitoring'];
     return showModalBottomSheet<String>(
@@ -123,18 +133,19 @@ class _CasePlanGapServiceMonitoringViewContainerState
             ? (sel.currentOvcHousehold?.hasExitedProgram == true)
             : (sel.currentOvcHousehold?.hasExitedProgram == true ||
             sel.currentOvcHouseholdChild?.hasExitedProgram == true);
-
+        final gapSections = _gapSectionsForDomain(widget.domainId);
         return Column(
           children: [
             // grouped gaps
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
               child: CasePlanGapViewContainer(
+                gapSections: gapSections,
+                title: 'Case Plan Gaps',
                 isHouseholdCasePlan: widget.isHouseholdCasePlan, // or false for child CP
                 formSectionColor: const Color(0xFF4A9F46), // use your domain color
                 domainId: widget.domainId,                 // e.g. 'Health'
                 casePlanEvent: widget.casePlanGap,
-                title: 'Identified gaps',// must include CP linkage or event id
                 onViewGapEvent: (gapEvent) {
                   // optional: navigate to details / view gap
                   // Navigator.push(...);

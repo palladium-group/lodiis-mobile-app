@@ -17,6 +17,9 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
+import '../../../../../../models/form_section.dart' show FormSection;
+import '../../models/ovc_services_child_case_plan_gap.dart';
+import '../../models/ovc_services_household_case_plan_gaps.dart';
 import 'case_plan_gap_view_container.dart';
 
 class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
@@ -55,6 +58,13 @@ class CasePlanGapServiceProvisionViewContainer extends StatefulWidget {
 
 class _CasePlanGapServiceProvisionViewContainerState
     extends State<CasePlanGapServiceProvisionViewContainer> {
+
+  List<FormSection> _gapSectionsForDomain(String domainId) {
+    final all = widget.isHouseholdCasePlan
+        ? OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: '')
+        : OvcServicesChildCasePlanGap.getFormSections(firstDate: '');
+    return all.where((s) => (s.id ?? '') == domainId).toList();
+  }
   static const String _cpKey = OvcCasePlanConstant.casePlanToGapLinkage;
   static const String _spKey =
       OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
@@ -144,7 +154,7 @@ class _CasePlanGapServiceProvisionViewContainerState
         final hasExited = state.currentOvcHousehold?.hasExitedProgram == true ||
             (!widget.isHouseholdCasePlan &&
                 state.currentOvcHouseholdChild?.hasExitedProgram == true);
-
+        final gapSections = _gapSectionsForDomain(widget.domainId);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -155,11 +165,12 @@ class _CasePlanGapServiceProvisionViewContainerState
                 child:
 
                 CasePlanGapViewContainer(
+                  gapSections: gapSections,
+                  title: 'Case Plan Gaps',
                   isHouseholdCasePlan: widget.isHouseholdCasePlan, // or false for child CP
                   formSectionColor: const Color(0xFF4A9F46), // use your domain color
                   domainId: widget.domainId,                 // e.g. 'Health'
                   casePlanEvent: widget.casePlanGap,
-                  title: 'Identified gaps',// must include CP linkage or event id
                   onViewGapEvent: (gapEvent) {
                     // optional: navigate to details / view gap
                     // Navigator.push(...);

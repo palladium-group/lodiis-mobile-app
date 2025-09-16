@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,12 +10,15 @@ import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/events.dart';
 
+// Shared heading
+
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/household_service_provision.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_service_provision.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 
 import '../../ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
+import '../cp_section_heading.dart';
 
 class CasePlanGapServiceProvisionView extends StatefulWidget {
   const CasePlanGapServiceProvisionView({
@@ -35,9 +37,7 @@ class CasePlanGapServiceProvisionView extends StatefulWidget {
   final Color formSectionColor;
   final String domainId;
 
-  /// Must include:
-  ///  - OvcCasePlanConstant.casePlanToGapLinkage
-  ///  - OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage
+  /// Must include CP->Gap & Gap->SP linkages
   final Map<String, dynamic> casePlanGap;
 
   final void Function(Map dataObject) onEditCasePlanService;
@@ -66,7 +66,6 @@ class _CasePlanGapServiceProvisionViewState
   }
 
   Map<String, dynamic> _toPlainObject(dynamic ev) {
-    // Normalizes Events → { dataElement: value, ..., eventDate, event }
     try {
       if (ev is Events) {
         final out = <String, dynamic>{};
@@ -145,8 +144,7 @@ class _CasePlanGapServiceProvisionViewState
           : (owner.name ?? '');
       for (final f in owner.inputFields ?? const <InputField>[]) {
         if (f.valueType == 'TRUE_ONLY' &&
-            OvcCasePlanConstant.casePlanServiceProvisionResults
-                .contains(f.id)) {
+            OvcCasePlanConstant.casePlanServiceProvisionResults.contains(f.id)) {
           final label = isSesotho
               ? ((f.translatedName?.isNotEmpty == true
               ? f.translatedName
@@ -177,19 +175,19 @@ class _CasePlanGapServiceProvisionViewState
     final isSesotho =
     context.select<LanguageTranslationState, bool>((s) => s.isSesothoLanguage);
 
-    // 1) Source SP form sections (HH or Child)
+    final servicesTitle = isSesotho ? 'Litšebeletso Tse Fanoeng' : 'Services Provided';
+
+    // sections & service metadata
     final List<FormSection> sections = widget.isHouseholdCasePlan
         ? HouseholdServiceProvision.getFormSections(firstDate: '')
         : OvcServicesChildServiceProvision.getFormSections(firstDate: '');
-
-    // 2) Build service metadata (de → label, group)
     final serviceMeta = _serviceMetaByDe(sections: sections, isSesotho: isSesotho);
 
-    // 3) Get all events for the SP stage
+    // stage events
     final events = context
         .select<ServiceEventDataState, List<Events>>((s) => s.eventsForStage(_stage));
 
-    // 4) Filter by the current CP/SP linkage (only events for the selected gap)
+    // Filter by CP/SP (current gap)
     final cp = (widget.casePlanGap[_cpKey] ?? '').toString();
     final sp = (widget.casePlanGap[_spKey] ?? '').toString();
     final filtered = <Map<String, dynamic>>[];
@@ -200,7 +198,7 @@ class _CasePlanGapServiceProvisionViewState
       }
     }
 
-    // 5) Build events-by-service map (only true toggles)
+    // Events per service toggle
     final byService = <String, List<Map<String, dynamic>>>{};
     for (final obj in filtered) {
       for (final entry in serviceMeta.entries) {
@@ -211,7 +209,7 @@ class _CasePlanGapServiceProvisionViewState
       }
     }
 
-    // 6) Group services (but keep only those with >=1 entries)
+    // Group services by subsection label, keep only with entries
     final groups = <String, List<_ServiceMeta>>{};
     for (final m in serviceMeta.values) {
       final hasEntries = (byService[m.id]?.isNotEmpty ?? false);
@@ -219,117 +217,129 @@ class _CasePlanGapServiceProvisionViewState
       groups.putIfAbsent(m.groupLabel, () => <_ServiceMeta>[]).add(m);
     }
 
-    // If nothing to show, keep it clean
-    if (groups.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(
-          'No recorded services for this gap yet.',
-          style: TextStyle(
-            color: widget.formSectionColor.withOpacity(0.75),
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-      );
-    }
-
-    // Sort groups by title
-    final groupEntries = groups.entries.toList()
-      ..sort((a, b) => (a.key.toLowerCase()).compareTo(b.key.toLowerCase()));
-
+    // Header + grouped list
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: groupEntries.map((entry) {
-        final groupLabel = entry.key.isNotEmpty ? entry.key : widget.domainId;
-        final items = entry.value
-          ..sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
-
-        // Counts for header chip
-        final servicesCount = items.length;
-        final totalEntries = items.fold<int>(
-          0,
-              (acc, m) => acc + (byService[m.id]?.length ?? 0),
-        );
-
-        final initiallyExpanded = _expandedByGroup[groupLabel] ?? false;
-
-        return Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          decoration: BoxDecoration(
-            color: widget.formSectionColor.withOpacity(0.045),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: widget.formSectionColor.withOpacity(0.22),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        CpSectionHeading(
+          title: servicesTitle,
+          color: widget.formSectionColor,
+          icon: Icons.assignment_turned_in_rounded,
+        ),
+        if (groups.isEmpty)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Text(
+              isSesotho
+                  ? 'Ha hona litšebeletso tse ngolisitsoeng bakeng sa lekhalo lena.'
+                  : 'No recorded services for this gap yet.',
+              style: TextStyle(
+                color: widget.formSectionColor.withOpacity(0.75),
+                fontStyle: FontStyle.italic,
+              ),
             ),
-          ),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              dividerColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-            ),
-            child: ExpansionTile(
-              initiallyExpanded: initiallyExpanded,
-              onExpansionChanged: (v) =>
-                  setState(() => _expandedByGroup[groupLabel] = v),
-              tilePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-              childrenPadding:
-              const EdgeInsets.only(left: 8, right: 8, bottom: 10),
-              title: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      groupLabel,
-                      style: TextStyle(
-                        color: widget.formSectionColor.withOpacity(0.95),
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: .2,
-                      ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: groups.entries.map((entry) {
+                final groupLabel = entry.key.isNotEmpty ? entry.key : widget.domainId;
+                final items = entry.value
+                  ..sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
+
+                final servicesCount = items.length;
+                final totalEntries = items.fold<int>(
+                  0,
+                      (acc, m) => acc + (byService[m.id]?.length ?? 0),
+                );
+
+                final initiallyExpanded = _expandedByGroup[groupLabel] ?? false;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    color: widget.formSectionColor.withOpacity(0.045),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: widget.formSectionColor.withOpacity(0.22),
                     ),
                   ),
-                  _Chip(
-                    label:
-                    '$servicesCount service${servicesCount == 1 ? '' : 's'}',
-                    color: widget.formSectionColor,
-                  ),
-                  const SizedBox(width: 6),
-                  _Chip(
-                    label: '$totalEntries entr${totalEntries == 1 ? 'y' : 'ies'}',
-                    color: widget.formSectionColor,
-                  ),
-                ],
-              ),
-              children: items.map((meta) {
-                final list = byService[meta.id] ?? const <Map<String, dynamic>>[];
-                final count = list.length;
-                // Guard: Should always be >0 due to filtering above, but keep safe
-                if (count == 0) return const SizedBox.shrink();
-                return ListTile(
-                  dense: true,
-                  visualDensity: const VisualDensity(vertical: -2),
-                  title: Text(
-                    meta.label,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: Text(
-                    '$count entr${count == 1 ? 'y' : 'ies'}',
-                    style: TextStyle(color: widget.formSectionColor.withOpacity(0.8)),
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _showEventsSheet(
-                    context: context,
-                    color: widget.formSectionColor,
-                    serviceLabel: meta.label,
-                    events: list,
-                    onTapEvent: widget.onViewCasePlanService,
-                    firstNonEmptyReason: _firstNonEmptyReason,
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      dividerColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    ),
+                    child: ExpansionTile(
+                      initiallyExpanded: initiallyExpanded,
+                      onExpansionChanged: (v) =>
+                          setState(() => _expandedByGroup[groupLabel] = v),
+                      tilePadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                      childrenPadding:
+                      const EdgeInsets.only(left: 8, right: 8, bottom: 10),
+                      title: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              groupLabel,
+                              style: TextStyle(
+                                color: widget.formSectionColor.withOpacity(0.95),
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: .2,
+                              ),
+                            ),
+                          ),
+                          _Chip(
+                            label:
+                            '$servicesCount service${servicesCount == 1 ? '' : 's'}',
+                            color: widget.formSectionColor,
+                          ),
+                          const SizedBox(width: 6),
+                          _Chip(
+                            label:
+                            '$totalEntries entr${totalEntries == 1 ? 'y' : 'ies'}',
+                            color: widget.formSectionColor,
+                          ),
+                        ],
+                      ),
+                      children: items.map((meta) {
+                        final list = byService[meta.id] ?? const <Map<String, dynamic>>[];
+                        final count = list.length;
+                        if (count == 0) return const SizedBox.shrink();
+                        return ListTile(
+                          dense: true,
+                          visualDensity: const VisualDensity(vertical: -2),
+                          title: Text(
+                            meta.label,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(
+                            '$count entr${count == 1 ? 'y' : 'ies'}',
+                            style: TextStyle(
+                                color:
+                                widget.formSectionColor.withOpacity(0.8)),
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => _showEventsSheet(
+                            context: context,
+                            color: widget.formSectionColor,
+                            serviceLabel: meta.label,
+                            events: list,
+                            onTapEvent: widget.onViewCasePlanService,
+                            firstNonEmptyReason: _firstNonEmptyReason,
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 );
               }).toList(),
             ),
           ),
-        );
-      }).toList(),
+      ],
     );
   }
 
