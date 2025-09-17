@@ -26,6 +26,7 @@ class CasePlanGapServiceMonitoringViewContainer extends StatefulWidget {
     required this.casePlanGap,
     required this.isHouseholdCasePlan,
     required this.enrollmentOuAccessible,
+    required  this.tittle,
   }) : super(key: key);
 
   final String domainId;
@@ -33,6 +34,7 @@ class CasePlanGapServiceMonitoringViewContainer extends StatefulWidget {
   final Map<String, dynamic> casePlanGap;
   final bool isHouseholdCasePlan;
   final bool enrollmentOuAccessible;
+  final String tittle;
 
   @override
   State<CasePlanGapServiceMonitoringViewContainer> createState() =>
@@ -141,9 +143,9 @@ class _CasePlanGapServiceMonitoringViewContainerState
               margin: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
               child: CasePlanGapViewContainer(
                 gapSections: gapSections,
-                title: 'Case Plan Gaps',
+                title: widget.tittle,
                 isHouseholdCasePlan: widget.isHouseholdCasePlan, // or false for child CP
-                formSectionColor: const Color(0xFF4A9F46), // use your domain color
+                formSectionColor: widget.formSectionColor, // use your domain color
                 domainId: widget.domainId,                 // e.g. 'Health'
                 casePlanEvent: widget.casePlanGap,
                 onViewGapEvent: (gapEvent) {

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,13 +11,11 @@ import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/events.dart';
 
-// Shared heading
-
+// Shared heading & constants
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/household_service_provision.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_service_provision.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
-
 import '../../ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 import '../cp_section_heading.dart';
 
@@ -30,6 +29,7 @@ class CasePlanGapServiceProvisionView extends StatefulWidget {
     required this.casePlanGap,
     required this.onEditCasePlanService,
     required this.onViewCasePlanService,
+    this.name, // optional custom title (e.g., 'Health SERVICES')
   }) : super(key: key);
 
   final bool isHouseholdCasePlan;
@@ -42,6 +42,8 @@ class CasePlanGapServiceProvisionView extends StatefulWidget {
 
   final void Function(Map dataObject) onEditCasePlanService;
   final void Function(Map dataObject) onViewCasePlanService;
+
+  final String? name;
 
   @override
   State<CasePlanGapServiceProvisionView> createState() =>
@@ -59,6 +61,7 @@ class _CasePlanGapServiceProvisionViewState
       : OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage;
 
   final Map<String, bool> _expandedByGroup = {};
+  bool _sectionExpanded = true; // controls collapse/expand of the whole view
 
   bool _isTrueLike(dynamic v) {
     final s = (v ?? '').toString().trim().toLowerCase();
@@ -129,8 +132,8 @@ class _CasePlanGapServiceProvisionViewState
         name: isSesotho
             ? (domain.translatedName?.isNotEmpty == true
             ? domain.translatedName!
-            : (domain.name ?? widget.domainId))
-            : (domain.name ?? widget.domainId),
+            : (domain.name))
+            : (domain.name),
         inputFields: domain.inputFields,
       )
     ];
@@ -170,12 +173,43 @@ class _CasePlanGapServiceProvisionViewState
     return null;
   }
 
+  // --- Collapsible header (without changing CpSectionHeading) ---
+  Widget _buildCollapsibleHeader(String title) {
+    // We overlay a chevron and make the whole header tappable.
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () => setState(() => _sectionExpanded = !_sectionExpanded),
+      child: Stack(
+        alignment: Alignment.centerRight,
+        children: [
+          // Keep space on right so chevron doesn't cover the title
+          Padding(
+            padding: const EdgeInsets.only(right: 40.0),
+            child: CpSectionHeading(
+              title: title,
+              color: widget.formSectionColor,
+              icon: Icons.assignment_turned_in_rounded,
+            ),
+          ),
+          Positioned(
+            right: 12,
+            child: Icon(
+              _sectionExpanded ? Icons.expand_less : Icons.expand_more,
+              color: widget.formSectionColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isSesotho =
     context.select<LanguageTranslationState, bool>((s) => s.isSesothoLanguage);
 
-    final servicesTitle = isSesotho ? 'Litšebeletso Tse Fanoeng' : 'Services Provided';
+    // Title, overridable by container
+    final servicesTitle = widget.name ?? 'Services Provided';
 
     // sections & service metadata
     final List<FormSection> sections = widget.isHouseholdCasePlan
@@ -217,128 +251,131 @@ class _CasePlanGapServiceProvisionViewState
       groups.putIfAbsent(m.groupLabel, () => <_ServiceMeta>[]).add(m);
     }
 
-    // Header + grouped list
+    // Body content
+    final Widget body = groups.isEmpty
+        ? Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Text(
+        isSesotho
+            ? 'Ha hona litšebeletso tse ngolisitsoeng bakeng sa lekhalo lena.'
+            : 'No recorded services for this gap yet.',
+        style: TextStyle(
+          color: widget.formSectionColor.withOpacity(0.75),
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    )
+        : Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: groups.entries.map((entry) {
+          final groupLabel = entry.key.isNotEmpty ? entry.key : widget.domainId;
+          final items = entry.value
+            ..sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
+
+          final servicesCount = items.length;
+          final totalEntries =
+          items.fold<int>(0, (acc, m) => acc + (byService[m.id]?.length ?? 0));
+
+          final initiallyExpanded = _expandedByGroup[groupLabel] ?? false;
+
+          return Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: widget.formSectionColor.withOpacity(0.045),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: widget.formSectionColor.withOpacity(0.22),
+              ),
+            ),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                dividerColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              child: ExpansionTile(
+                initiallyExpanded: initiallyExpanded,
+                onExpansionChanged: (v) =>
+                    setState(() => _expandedByGroup[groupLabel] = v),
+                tilePadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                childrenPadding:
+                const EdgeInsets.only(left: 8, right: 8, bottom: 10),
+                title: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        groupLabel,
+                        style: TextStyle(
+                          color: widget.formSectionColor.withOpacity(0.95),
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: .2,
+                        ),
+                      ),
+                    ),
+                    _Chip(
+                      label:
+                      '$servicesCount service${servicesCount == 1 ? '' : 's'}',
+                      color: widget.formSectionColor,
+                    ),
+                    const SizedBox(width: 6),
+                    _Chip(
+                      label:
+                      '$totalEntries entr${totalEntries == 1 ? 'y' : 'ies'}',
+                      color: widget.formSectionColor,
+                    ),
+                  ],
+                ),
+                children: items.map((meta) {
+                  final list = byService[meta.id] ?? const <Map<String, dynamic>>[];
+                  final count = list.length;
+                  if (count == 0) return const SizedBox.shrink();
+                  return ListTile(
+                    dense: true,
+                    visualDensity: const VisualDensity(vertical: -2),
+                    title: Text(
+                      meta.label,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      '$count entr${count == 1 ? 'y' : 'ies'}',
+                      style: TextStyle(
+                        color: widget.formSectionColor.withOpacity(0.8),
+                      ),
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => _showEventsSheet(
+                      context: context,
+                      color: widget.formSectionColor,
+                      serviceLabel: meta.label,
+                      events: list,
+                      onTapEvent: widget.onViewCasePlanService,
+                      firstNonEmptyReason: _firstNonEmptyReason,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+
+    // Header + collapsible body (no extra spacing when collapsed)
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        CpSectionHeading(
-          title: servicesTitle,
-          color: widget.formSectionColor,
-          icon: Icons.assignment_turned_in_rounded,
+        _buildCollapsibleHeader(servicesTitle),
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 160),
+          crossFadeState: _sectionExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          firstChild: const SizedBox.shrink(), // no space when collapsed
+          secondChild: body,
         ),
-        if (groups.isEmpty)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Text(
-              isSesotho
-                  ? 'Ha hona litšebeletso tse ngolisitsoeng bakeng sa lekhalo lena.'
-                  : 'No recorded services for this gap yet.',
-              style: TextStyle(
-                color: widget.formSectionColor.withOpacity(0.75),
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: groups.entries.map((entry) {
-                final groupLabel = entry.key.isNotEmpty ? entry.key : widget.domainId;
-                final items = entry.value
-                  ..sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
-
-                final servicesCount = items.length;
-                final totalEntries = items.fold<int>(
-                  0,
-                      (acc, m) => acc + (byService[m.id]?.length ?? 0),
-                );
-
-                final initiallyExpanded = _expandedByGroup[groupLabel] ?? false;
-
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(
-                    color: widget.formSectionColor.withOpacity(0.045),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: widget.formSectionColor.withOpacity(0.22),
-                    ),
-                  ),
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      dividerColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                    ),
-                    child: ExpansionTile(
-                      initiallyExpanded: initiallyExpanded,
-                      onExpansionChanged: (v) =>
-                          setState(() => _expandedByGroup[groupLabel] = v),
-                      tilePadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-                      childrenPadding:
-                      const EdgeInsets.only(left: 8, right: 8, bottom: 10),
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              groupLabel,
-                              style: TextStyle(
-                                color: widget.formSectionColor.withOpacity(0.95),
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: .2,
-                              ),
-                            ),
-                          ),
-                          _Chip(
-                            label:
-                            '$servicesCount service${servicesCount == 1 ? '' : 's'}',
-                            color: widget.formSectionColor,
-                          ),
-                          const SizedBox(width: 6),
-                          _Chip(
-                            label:
-                            '$totalEntries entr${totalEntries == 1 ? 'y' : 'ies'}',
-                            color: widget.formSectionColor,
-                          ),
-                        ],
-                      ),
-                      children: items.map((meta) {
-                        final list = byService[meta.id] ?? const <Map<String, dynamic>>[];
-                        final count = list.length;
-                        if (count == 0) return const SizedBox.shrink();
-                        return ListTile(
-                          dense: true,
-                          visualDensity: const VisualDensity(vertical: -2),
-                          title: Text(
-                            meta.label,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          subtitle: Text(
-                            '$count entr${count == 1 ? 'y' : 'ies'}',
-                            style: TextStyle(
-                                color:
-                                widget.formSectionColor.withOpacity(0.8)),
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => _showEventsSheet(
-                            context: context,
-                            color: widget.formSectionColor,
-                            serviceLabel: meta.label,
-                            events: list,
-                            onTapEvent: widget.onViewCasePlanService,
-                            firstNonEmptyReason: _firstNonEmptyReason,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
       ],
     );
   }
@@ -365,7 +402,8 @@ class _CasePlanGapServiceProvisionViewState
             return Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16)),
                 boxShadow: [
                   BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12)
                 ],
@@ -397,7 +435,8 @@ class _CasePlanGapServiceProvisionViewState
                         ),
                         if (events.isNotEmpty)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: color.withOpacity(0.08),
                               borderRadius: BorderRadius.circular(14),
@@ -424,23 +463,20 @@ class _CasePlanGapServiceProvisionViewState
                       separatorBuilder: (_, __) => const Divider(height: 1),
                       itemBuilder: (_, index) {
                         final obj = events[index];
-                        final date = AppUtil.getDateIntoDateTimeFormat(
-                          obj['eventDate'],
-                        ) ??
-                            (obj['eventDate'] ?? '');
+                        final date = obj['eventDate'] ?? '';
                         final comment = firstNonEmptyReason(obj) ?? '';
                         return ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 6),
-                          title: Text('$date'),
+                          title: const Text('Event Details'),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 2),
-                              const Text('Service provided: Yes'),
+                              Text('Date of Service: $date'),
                               if (comment.isNotEmpty) ...[
                                 const SizedBox(height: 4),
-                                Text('Comment: $comment'),
+                                Text('Comments: $comment'),
                               ],
                             ],
                           ),
@@ -498,4 +534,3 @@ class _Chip extends StatelessWidget {
     );
   }
 }
-

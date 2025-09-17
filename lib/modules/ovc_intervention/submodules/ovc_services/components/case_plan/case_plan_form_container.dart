@@ -11,17 +11,12 @@ import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
 
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_form_container.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/identified_gaps_grouped.dart';
-
-// SP & MON view containers (they render their own add buttons and lists)
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_provision_view_container.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_gap_service_monitoring_view_container.dart';
 
-// Gap schemas
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_household_case_plan_gaps.dart';
 
-// Constants
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
 import 'case_plan_gap_view_container.dart';
@@ -49,7 +44,7 @@ class CasePlanFormContainer extends StatefulWidget {
   final Color formSectionColor;
   final FormSection formSection;
   final bool isEditableMode;
-  final Map dataObject; // domain scoped value (String->dynamic expected)
+  final Map dataObject; // domain scoped value
   final Function(dynamic value) onInputValueChange;
 
   final bool isHouseholdCasePlan;
@@ -65,7 +60,6 @@ class CasePlanFormContainer extends StatefulWidget {
 
 class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
   // ---------------- helpers ----------------
-
   List<FormSection> _gapSectionsForDomain(String domainId) {
     final all = widget.isHouseholdCasePlan
         ? OvcHouseholdServicesCasePlanGaps.getFormSections(firstDate: '')
@@ -73,10 +67,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     return all.where((s) => (s.id ?? '') == domainId).toList();
   }
 
-  Map<String, dynamic> _mergedGapForDomain(
-      List<Map<String, dynamic>> gaps,
-      ) {
-    // Merge ticked/true-ish flags (skip metadata keys)
+  Map<String, dynamic> _mergedGapForDomain(List<Map<String, dynamic>> gaps) {
     const skip = {
       'eventId',
       'eventDate',
@@ -84,7 +75,6 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
       UserAccountReference.implementingPartnerDataElement,
       UserAccountReference.subImplementingPartnerDataElement,
       UserAccountReference.serviceProviderDataElement,
-      // stable linkages live on the domain object; we don't merge them from gap blobs
       OvcCasePlanConstant.casePlanToGapLinkage,
       OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
       OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
@@ -92,15 +82,12 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     final out = <String, dynamic>{};
     for (final g in gaps) {
       g.forEach((k, v) {
-        if (!skip.contains(k)) {
-          out[k] = out[k] ?? v;
-        }
+        if (!skip.contains(k)) out[k] = out[k] ?? v;
       });
     }
     return out;
   }
 
-  /// Ensure this domain has stable linkage keys (cp/sp/mon) only once, post-frame.
   void _ensureStableLinkOnDomainValue(
       Map<String, dynamic> domainValue,
       String domainId,
@@ -110,31 +97,22 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     const monKey = OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
 
     bool changed = false;
-
     if ((domainValue[cpKey] ?? '').toString().isEmpty) {
       domainValue[cpKey] = AppUtil.getUid();
       changed = true;
       if (kDebugMode) {
-        debugPrint('[CasePlanForm] Set stable "$cpKey" => ${domainValue[cpKey]} for domain=$domainId');
+        debugPrint('[CasePlanForm] Set "$cpKey" => ${domainValue[cpKey]} ($domainId)');
       }
     }
     if ((domainValue[spKey] ?? '').toString().isEmpty) {
       domainValue[spKey] = AppUtil.getUid();
       changed = true;
-      if (kDebugMode) {
-        debugPrint('[CasePlanForm] Set stable "$spKey" => ${domainValue[spKey]} for domain=$domainId');
-      }
     }
     if ((domainValue[monKey] ?? '').toString().isEmpty) {
       domainValue[monKey] = AppUtil.getUid();
       changed = true;
-      if (kDebugMode) {
-        debugPrint('[CasePlanForm] Set stable "$monKey" => ${domainValue[monKey]} for domain=$domainId');
-      }
     }
-
     if (changed) {
-      // Persist back to parent form state safely after the current frame
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widget.onInputValueChange(Map<String, dynamic>.from(domainValue));
       });
@@ -162,7 +140,8 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
       maxHeightRatio: 0.95,
       containerBody: CasePlanGapFormContainer(
         formSections: gapSections,
-        isEditableMode: widget.isEditableMode && widget.hasEditAccessToCasePlan,
+        isEditableMode:
+        widget.isEditableMode && widget.hasEditAccessToCasePlan,
         formSectionColor: widget.formSectionColor,
         dataObject: seed,
         isHouseholdCasePlan: widget.isHouseholdCasePlan,
@@ -170,9 +149,8 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     );
 
     if (result is Map) {
-      final domainMap = Map<String, dynamic>.from(
-        widget.dataObject.map((k, v) => MapEntry('$k', v)),
-      );
+      final domainMap =
+      Map<String, dynamic>.from(widget.dataObject.map((k, v) => MapEntry('$k', v)));
       final currentGaps =
           (domainMap['gaps'] as List?)
               ?.map((e) => Map<String, dynamic>.from(e as Map))
@@ -202,15 +180,13 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
   }
 
   // ------------- build ---------------------
-
   @override
   Widget build(BuildContext context) {
     final formState = context.watch<ServiceFormState>();
 
     final String domainId = widget.formSection.id ?? '';
-    final Map<String, dynamic> domainValue = Map<String, dynamic>.from(
-      widget.dataObject.map((k, v) => MapEntry('$k', v)),
-    );
+    final Map<String, dynamic> domainValue =
+    Map<String, dynamic>.from(widget.dataObject.map((k, v) => MapEntry('$k', v)));
     final List<Map<String, dynamic>> gaps =
         (domainValue['gaps'] as List?)
             ?.map((e) => Map<String, dynamic>.from(e as Map))
@@ -228,29 +204,12 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
           'gapsCount=${gaps.length}');
     }
 
-    // Ensure stable link keys exist (done safely post-frame)
     _ensureStableLinkOnDomainValue(domainValue, domainId);
 
-    // For grouped view schema lookup (labels/sub-sections)
     final gapSections = _gapSectionsForDomain(domainId);
-    final FormSection gapDomain = gapSections.isNotEmpty
-        ? gapSections.first
-        : FormSection(
-      id: domainId,
-      name: domainId,
-      translatedName: domainId,
-      color: widget.formSectionColor,
-      borderColor: widget.formSectionColor,
-      inputFields: const [],
-      subSections: const [],
-    );
-
     final mergedGap = _mergedGapForDomain(gaps);
-    final gapsTitle = 'Case Plan Gaps';
-    // Only show grouped gaps here when on the Case Plan page
     final bool showGroupedHere = widget.isOnCasePlanPage;
 
-    // Stable linkages pulled from domain value (must be non-empty)
     const cpKey = OvcCasePlanConstant.casePlanToGapLinkage;
     const spKey = OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
     const monKey = OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
@@ -258,8 +217,10 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     final String cpLink = (domainValue[cpKey] ?? '').toString();
     final String spLink = (domainValue[spKey] ?? '').toString();
     final String monLink = (domainValue[monKey] ?? '').toString();
-    // Build sections explicitly (match your real class names if different)
-// Localize outside (keep container simple)
+
+    final canShowAddButton = widget.isOnCasePlanPage &&
+        widget.hasEditAccessToCasePlan &&
+        widget.canAddDomainGaps;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -279,61 +240,68 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
         ),
 
         // 2) Grouped Identified Gaps (only on Case Plan page)
-        if (showGroupedHere && gaps.isNotEmpty) ...[
-          const SizedBox(height: 8),
+        if (showGroupedHere && (widget.formSection.id == 'Health' || widget.formSection.id == 'Safe') || widget.formSection.id == 'Safe'|| widget.formSection.id == 'School') ...[
+          const SizedBox(height: 6),
 
-
-          CasePlanGapViewContainer(
-          title: gapsTitle,
-          isHouseholdCasePlan: widget.isHouseholdCasePlan,
-          formSectionColor: widget.formSectionColor,
-          domainId: domainId,
-          casePlanEvent: domainValue, // CP event map
-          gapSections: gapSections,
-          // gapToggleDataElements: {'deId1','deId2'}, // optional
-          onViewGapEvent: (gapEvent) { /* open details */ },
-    ),
-
-
-    ],
-
-        const SizedBox(height: 8),
-
-        // 3) Case Plan page action button (Generate plan)
-        if (widget.isOnCasePlanPage &&
-            widget.hasEditAccessToCasePlan &&
-            widget.canAddDomainGaps)
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: widget.formSectionColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                padding:
-                const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-              ),
-              onPressed: _openGeneratePlan,
-              child: const Text(
-                'GENERATE PLAN',
-                style: TextStyle(
-                  color: Color(0xFFFAFAFA),
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w700,
+          // Reserve right space so chevron in the inner header stays visible.
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Give the container a right padding so the chevron isn’t covered by the button
+              Padding(
+                padding: const EdgeInsets.only(right: 88.0), // space for button
+                child: CasePlanGapViewContainer(
+                  margin: const EdgeInsets.only(bottom: 6), // tighter between domains
+                  title: widget.formSection.name,
+                  isHouseholdCasePlan: widget.isHouseholdCasePlan,
+                  formSectionColor: widget.formSectionColor,
+                  domainId: domainId,
+                  casePlanEvent: domainValue,
+                  gapSections: gapSections,
+                  onViewGapEvent: (_) {},
                 ),
               ),
-            ),
+
+              if (canShowAddButton)
+                Positioned(
+                  // align with header baseline, not on top of chevron
+                  right: 12,
+                  top: 10,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: widget.formSectionColor),
+                      foregroundColor: widget.formSectionColor,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: _openGeneratePlan,
+                    child: const Text(
+                      '+ Gaps',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
+        ],
 
-        // 4) On SP/MON pages, render their containers.
-        //    We pass both the merged gap flags map AND the raw domain gaps list,
-        //    PLUS stable linkages so their list queries and add flows work.
+        const SizedBox(height: 6),
+
+        // 3) On SP/MON pages, render their containers.
         if (gaps.isNotEmpty) ...[
-          const SizedBox(height: 10),
-
           if (widget.isOnCasePlanServiceProvision)
             CasePlanGapServiceProvisionViewContainer(
+              tittle: widget.formSection.name,
               domainId: domainId,
               formSectionColor: widget.formSectionColor,
               casePlanGap: <String, dynamic>{
@@ -343,7 +311,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
                 'eventDate': (domainValue['eventDate'] ?? '').toString(),
                 'location': (domainValue['location'] ?? '').toString(),
               },
-              domainGaps: gaps, // <-- powers grouped header in SP view
+              domainGaps: gaps,
               isHouseholdCasePlan: widget.isHouseholdCasePlan,
               enrollmentOuAccessible: widget.enrollmentOuAccessible,
               showIdentifiedGapsHeader: true,
@@ -351,6 +319,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
 
           if (widget.isOnCasePlanServiceMonitoring)
             CasePlanGapServiceMonitoringViewContainer(
+              tittle: widget.formSection.name,
               domainId: domainId,
               formSectionColor: widget.formSectionColor,
               casePlanGap: <String, dynamic>{

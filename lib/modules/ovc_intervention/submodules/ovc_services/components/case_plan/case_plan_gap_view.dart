@@ -56,11 +56,7 @@ class CasePlanGapViewContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        CpSectionHeading(
-          title: gapTitle,
-          color: formSectionColor,
-          icon: Icons.warning_amber_rounded,
-        ),
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6.0),
           child: IdentifiedGapsGroupedView(
