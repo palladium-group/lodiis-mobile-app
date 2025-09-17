@@ -95,6 +95,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
   // Remove both Goal fields from UI
   static const String _goal1Id = OvcCasePlanConstant.casePlanFirstGoal;
   static const String _goal2Id = OvcCasePlanConstant.casePlansSecondGoal;
+  static const String _householdCategorization = OvcCasePlanConstant.houseHoldCategorizationDataElement;
 
   @override
   void initState() {
@@ -110,7 +111,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
   FormSection _cloneSectionWithoutGoals(FormSection s) {
     final keptInputs = <InputField>[];
     for (final f in (s.inputFields ?? const <InputField>[])) {
-      if (f.id == _goal1Id || f.id == _goal2Id) continue;
+      if (f.id == _goal1Id || f.id == _goal2Id || f.id == _householdCategorization) continue;
       keptInputs.add(f);
     }
     final keptSubs = <FormSection>[];
