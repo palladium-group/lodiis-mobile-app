@@ -244,15 +244,6 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
       );
 
       if (widget.isHouseholdCasePlan) {
-        // Your existing propagation (keep it)
-        await OvcCasePlanGapHouseholdToOvcUtil.autoSyncOvcsCasPlanGaps(
-          currentCasePlanDate: widget.currentCasePlanDate,
-          childrens: children,
-          dataObject: dataObject,
-          orgUnit: orgUnit,
-          eventDate: casePlanEventDate,
-        );
-
         // ✅ NEW: also ensure each child has a CP event (same cpLink) and a GAP per domain
         for (final key in dataObject.keys) {
           // skip non-domain sections
