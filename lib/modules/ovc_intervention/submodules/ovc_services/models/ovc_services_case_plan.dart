@@ -8,7 +8,6 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 class OvcServicesCasePlan {
   static List<String> getMandatoryField() {
     return [
-      OvcCasePlanConstant.houseHoldCategorizationDataElement,
       "eventDate"
     ];
   }

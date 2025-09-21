@@ -95,6 +95,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
   // Remove both Goal fields from UI
   static const String _goal1Id = OvcCasePlanConstant.casePlanFirstGoal;
   static const String _goal2Id = OvcCasePlanConstant.casePlansSecondGoal;
+  static const String _householdCategorization = OvcCasePlanConstant.houseHoldCategorizationDataElement;
 
   @override
   void initState() {
@@ -110,7 +111,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
   FormSection _cloneSectionWithoutGoals(FormSection s) {
     final keptInputs = <InputField>[];
     for (final f in (s.inputFields ?? const <InputField>[])) {
-      if (f.id == _goal1Id || f.id == _goal2Id) continue;
+      if (f.id == _goal1Id || f.id == _goal2Id || f.id == _householdCategorization) continue;
       keptInputs.add(f);
     }
     final keptSubs = <FormSection>[];
@@ -243,15 +244,6 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
       );
 
       if (widget.isHouseholdCasePlan) {
-        // Your existing propagation (keep it)
-        await OvcCasePlanGapHouseholdToOvcUtil.autoSyncOvcsCasPlanGaps(
-          currentCasePlanDate: widget.currentCasePlanDate,
-          childrens: children,
-          dataObject: dataObject,
-          orgUnit: orgUnit,
-          eventDate: casePlanEventDate,
-        );
-
         // ✅ NEW: also ensure each child has a CP event (same cpLink) and a GAP per domain
         for (final key in dataObject.keys) {
           // skip non-domain sections

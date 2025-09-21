@@ -240,7 +240,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
         ),
 
         // 2) Grouped Identified Gaps (only on Case Plan page)
-        if (showGroupedHere && (widget.formSection.id == 'Health' || widget.formSection.id == 'Safe') || widget.formSection.id == 'Safe'|| widget.formSection.id == 'School') ...[
+        if (showGroupedHere && widget.canAddDomainGaps) ...[
           const SizedBox(height: 6),
 
           // Reserve right space so chevron in the inner header stays visible.
