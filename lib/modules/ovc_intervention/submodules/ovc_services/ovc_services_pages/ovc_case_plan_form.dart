@@ -30,6 +30,7 @@ import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_child_info_top_header.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/components/ovc_household_top_header.dart';
 
+import 'package:kb_mobile_app/modules/ovc_intervention/services/ovc_case_plan_service.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/services/ovc_enrollment_household_service.dart';
 
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/components/case_plan/case_plan_form_container.dart';
@@ -42,7 +43,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_util.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_gap_household_to_ovc_util.dart';
 
-// ✅ NEW: call the HH→child sync that ensures child CP + GAP exist and are linked
+// (Optional utility you already import elsewhere)
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_household_to_ovc_util.dart';
 
 class OvcCasePlanForm extends StatefulWidget {
@@ -92,10 +93,11 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
   final List<String> mandatoryFields = OvcServicesCasePlan.getMandatoryField();
   final Map mandatoryFieldObject = {};
 
-  // Remove both Goal fields from UI
+  // IDs we hide/remove
   static const String _goal1Id = OvcCasePlanConstant.casePlanFirstGoal;
   static const String _goal2Id = OvcCasePlanConstant.casePlansSecondGoal;
-  static const String _householdCategorization = OvcCasePlanConstant.houseHoldCategorizationDataElement;
+  static const String _householdCategorization =
+      OvcCasePlanConstant.houseHoldCategorizationDataElement;
 
   @override
   void initState() {
@@ -103,7 +105,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
     _setFormMetadata();
   }
 
-  // Recursively clone sections without both goals
+  // --- UI helpers: remove goals from sections ---
   List<FormSection> _stripGoalsFromSections(List<FormSection> sections) {
     return sections.map(_cloneSectionWithoutGoals).toList();
   }
@@ -144,7 +146,6 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
     );
     final withoutGoals = _stripGoalsFromSections(base);
 
-    // Your previous filtering
     for (FormSection formSection in withoutGoals) {
       if (!(['Safe', 'Stable', 'Schooled'].contains(formSection.id))) {
         borderColors[formSection.id] = formSection.borderColor;
@@ -184,7 +185,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
         .setFormFieldState(formSectionId, value);
   }
 
-  /// Simple validation: at least one domain has gaps (and date/location if required)
+  // --- Validation: at least one domain must have a gap ---
   bool _hasAtLeastOneGap(Map dataObject) {
     for (final key in dataObject.keys) {
       if (key == OvcCasePlanConstant.casePlanLocatinSectionId ||
@@ -196,6 +197,39 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
       if (gaps.isNotEmpty) return true;
     }
     return false;
+  }
+
+  // --- FIXED: For CHILD plans, reuse HH cpLink per domain+date (pass casePlanGaps: []) ---
+  Future<String?> _resolveHhCpLinkageForDomain({
+    required String domainId,
+    required String currentCasePlanDate,
+  }) async {
+    if (widget.isHouseholdCasePlan) return null;
+
+    try {
+      final hh = Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+          .currentOvcHousehold;
+      final teiId = hh?.teiData?.trackedEntityInstance ?? '';
+      if (teiId.isEmpty) return null;
+
+      // Your service now requires casePlanGaps (list). Pass empty list to fetch all for the date.
+      final hhGaps = await OvcCasePlanService().getCasePlanGapEvents(
+        date: currentCasePlanDate,
+        programStageId: OvcHouseholdCasePlanConstant.casePlanGapProgramStage,
+        teiId: teiId,
+        casePlanToGaps: const [], // <-- required param satisfied
+      );
+
+      for (final e in hhGaps) {
+        final m = e.toDataObject();
+        final d = (m[OvcCasePlanConstant.casePlanDomainType] ?? '').toString();
+        if (d == domainId) {
+          final link = (m[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString();
+          if (link.isNotEmpty) return link;
+        }
+      }
+    } catch (_) {}
+    return null;
   }
 
   void onSaveCasePlan({required Map dataObject}) async {
@@ -375,15 +409,28 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
       }
 
       try {
+        // Stamp domain
         domainDataObject[domainTypeDe] = domainType;
 
+        // CHILD: reuse HH cp linkage if available for same domain+date
+        if (!widget.isHouseholdCasePlan) {
+          final hhLink = await _resolveHhCpLinkageForDomain(
+            domainId: domainType.toString(),
+            currentCasePlanDate: widget.currentCasePlanDate,
+          );
+          if (hhLink != null && hhLink.isNotEmpty) {
+            domainDataObject[linkageDe] = hhLink;
+          }
+        }
+
+        // Fallback linkage
         if ((domainDataObject[linkageDe] ?? '').toString().isEmpty) {
           domainDataObject[linkageDe] =
               domainDataObject['eventId'] ?? AppUtil.getUid();
         }
         final cpLinkage = (domainDataObject[linkageDe] ?? '').toString();
 
-        // Save/Update container
+        // Save/Update domain container (goals removed)
         final domainFormSections =
         allSections.where((s) => s.id == domainType).toList();
         final containerToSave = _clean(domainDataObject, removeGoals: true);
@@ -400,13 +447,12 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
           containerHidden,
         );
 
-        // Save gaps (subSections supported by passing the parent FormSection)
+        // Save gaps using same cpLinkage
         final gapSections = _gapSectionsForDomain(domainType);
         for (final g in gaps) {
           final gap = Map<String, dynamic>.from(g as Map);
-          if ((gap[linkageDe] ?? '').toString().isEmpty) {
-            gap[linkageDe] = cpLinkage;
-          }
+          gap[linkageDe] = cpLinkage;
+
           final gapToSave = _clean(gap);
           if (gapToSave.keys.where((k) => k != 'eventId').isEmpty) continue;
 
@@ -423,7 +469,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
           );
         }
       } catch (_) {
-        // keep going per domain
+        // continue per domain
       }
     }
   }
@@ -437,7 +483,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
       dataObject[OvcCasePlanConstant.householdCategorizationSection] as Map?;
       final hhCat = hhCatSection == null
           ? ''
-          : (hhCatSection[OvcCasePlanConstant.houseHoldCategorizationDataElement] ?? '')
+          : (hhCatSection[OvcCasePlanConstant.houseHoldCategorizationDataElement] ??
+          '')
           .toString();
       if (hhCat.isEmpty) return;
 
@@ -450,7 +497,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
         inputFieldIds: [BeneficiaryIdentification.householdCategorization],
       );
 
-      Provider.of<OvcInterventionListState>(context, listen: false).refreshOvcList();
+      Provider.of<OvcInterventionListState>(context, listen: false)
+          .refreshOvcList();
       Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
           .refetchCurrentHousehold();
       Provider.of<ServiceEventDataState>(context, listen: false)
@@ -479,7 +527,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
       body: SubPageBody(
         body: Consumer<LanguageTranslationState>(
           builder: (context, languageTranslationState, child) {
-            final String? currentLanguage = languageTranslationState.currentLanguage;
+            final String? currentLanguage =
+                languageTranslationState.currentLanguage;
             return Consumer<OvcHouseholdCurrentSelectionState>(
               builder: (context, currentSel, child) {
                 final OvcHousehold? currentOvcHousehold =
@@ -504,7 +553,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
                         children: [
                           widget.isHouseholdCasePlan
                               ? OvcHouseholdInfoTopHeader(
-                            currentOvcHousehold: currentOvcHousehold,
+                            currentOvcHousehold:
+                            currentOvcHousehold,
                           )
                               : const OvcChildInfoTopHeader(),
                           Container(
@@ -515,7 +565,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
                             child: Column(
                               children: formSections
                                   .where(
-                                    (formSection) => formSection.id == 'Schooled'
+                                    (formSection) =>
+                                formSection.id == 'Schooled'
                                     ? beneficiaryAge > 5
                                     : true,
                               )
@@ -524,31 +575,40 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
                                     (formSection) => Container(
                                   margin: const EdgeInsets.symmetric(),
                                   child: CasePlanFormContainer(
-                                    mandatoryFieldObject: mandatoryFieldObject,
+                                    mandatoryFieldObject:
+                                    mandatoryFieldObject,
                                     canAddDomainGaps: ![
-                                      OvcCasePlanConstant.householdCategorizationSection,
-                                      OvcCasePlanConstant.casePlanLocatinSectionId,
-                                      OvcCasePlanConstant.casePlanEventDateSectionId,
+                                      OvcCasePlanConstant
+                                          .householdCategorizationSection,
+                                      OvcCasePlanConstant
+                                          .casePlanLocatinSectionId,
+                                      OvcCasePlanConstant
+                                          .casePlanEventDateSectionId,
                                     ].contains(formSection.id),
                                     formSectionColor:
                                     borderColors[formSection.id] ??
                                         Colors.transparent,
                                     formSection: formSection,
-                                    isEditableMode:
-                                    serviceFormState.isEditableMode,
-                                    dataObject: dataObject[formSection.id] ?? {},
+                                    isEditableMode: serviceFormState
+                                        .isEditableMode,
+                                    dataObject:
+                                    dataObject[formSection.id] ??
+                                        {},
                                     onInputValueChange: (value) =>
-                                        onInputValueChange(formSection.id, value),
-                                    isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                                    hasEditAccessToCasePlan:
-                                    widget.hasEditAccessToCasePlan,
-                                    enrollmentOuAccessible:
-                                    widget.enrollmentOuAccessible,
-                                    isOnCasePlanPage: widget.isOnCasePlanPage,
-                                    isOnCasePlanServiceProvision:
-                                    widget.isOnCasePlanServiceProvision,
-                                    isOnCasePlanServiceMonitoring:
-                                    widget.isOnCasePlanServiceMonitoring,
+                                        onInputValueChange(
+                                            formSection.id, value),
+                                    isHouseholdCasePlan:
+                                    widget.isHouseholdCasePlan,
+                                    hasEditAccessToCasePlan: widget
+                                        .hasEditAccessToCasePlan,
+                                    enrollmentOuAccessible: widget
+                                        .enrollmentOuAccessible,
+                                    isOnCasePlanPage:
+                                    widget.isOnCasePlanPage,
+                                    isOnCasePlanServiceProvision: widget
+                                        .isOnCasePlanServiceProvision,
+                                    isOnCasePlanServiceMonitoring: widget
+                                        .isOnCasePlanServiceMonitoring,
                                   ),
                                 ),
                               )
@@ -557,7 +617,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
                                   Container(
                                     margin: const EdgeInsets.symmetric(),
                                     child: Visibility(
-                                      visible: serviceFormState.isEditableMode,
+                                      visible: serviceFormState
+                                          .isEditableMode,
                                       child: EntryFormSaveButton(
                                         label: _isSaving
                                             ? currentLanguage == 'lesotho'
@@ -567,11 +628,14 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
                                             ? 'Boloka'
                                             : 'Save',
                                         labelColor: Colors.white,
-                                        buttonColor: const Color(0xFF4B9F46),
+                                        buttonColor:
+                                        const Color(0xFF4B9F46),
                                         fontSize: 15.0,
-                                        onPressButton: () => onSaveCasePlan(
-                                          dataObject: serviceFormState.formState,
-                                        ),
+                                        onPressButton: () =>
+                                            onSaveCasePlan(
+                                              dataObject:
+                                              serviceFormState.formState,
+                                            ),
                                       ),
                                     ),
                                   ),
@@ -588,7 +652,8 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
           },
         ),
       ),
-      bottomNavigationBar: const InterventionBottomNavigationBarContainer(),
+      bottomNavigationBar:
+      const InterventionBottomNavigationBarContainer(),
     );
   }
 }
