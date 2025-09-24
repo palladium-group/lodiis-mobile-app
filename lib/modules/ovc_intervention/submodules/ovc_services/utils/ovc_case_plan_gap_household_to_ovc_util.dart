@@ -1,29 +1,317 @@
 
 import 'package:flutter/foundation.dart';
+
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
+
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
+import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
+
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_case_plan.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 
+/// HH → Children (container + gaps propagation; NO services/monitoring)
+/// Copied behavior from the working OvcCasePlanHouseholdToOvcUtil:
+/// - ensure child CP container (update if exists)
+/// - propagate only NEW gap DEs for the SAME cpLinkage
+/// - age-filtered DEs using OvcChildCasePlanConstant.domainToAutopopuledCasePlanGaps
 class OvcCasePlanGapHouseholdToOvcUtil {
   // Prevent double writes within a single cascade
   static final Set<String> _inFlight = <String>{};
 
-  // Meta keys we keep as-is on gap payloads
-  static const Set<String> _metaKeys = {
-    'eventDate',
-    OvcCasePlanConstant.casePlanToGapLinkage,
-    OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-    OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
-  };
+  // ---------------- small helpers ----------------
 
+  static int _asInt(dynamic v, {int fallback = 0}) {
+    if (v == null) return fallback;
+    if (v is int) return v;
+    final s = v.toString().trim();
+    final i = int.tryParse(s);
+    return i ?? fallback;
+  }
+
+  static int _coerceAge(OvcHouseholdChild child) {
+    final a = _asInt(child.age, fallback: 0);
+    return a >= 0 ? a : 0;
+  }
+
+  static String _childName(OvcHouseholdChild c) {
+    final parts = <String>[];
+    if ((c.firstName ?? '').trim().isNotEmpty) parts.add(c.firstName!.trim());
+    if ((c.surname ?? '').trim().isNotEmpty) parts.add(c.surname!.trim());
+    final name = parts.join(' ');
+    if (name.isNotEmpty) return name;
+    return c.id ?? c.toString();
+  }
+
+  static bool _isTrueLike(dynamic v) {
+    if (v is bool) return v;
+    final s = (v ?? '').toString().trim().toLowerCase();
+    return s == 'true' || s == '1' || s == 'yes' || s == 'y';
+  }
+
+  static List<String> _validIdsForChildAge({
+    required Map domainConfig,
+    required int age,
+  }) {
+    final valid = <String>[];
+
+    final generic = (domainConfig['generic'] ?? const <String>[]);
+    if (generic is List) {
+      for (final it in generic) {
+        final s = it?.toString();
+        if (s != null && s.isNotEmpty) valid.add(s);
+      }
+    }
+
+    final ageBased = (domainConfig['ageBased'] ?? const <Map>[]);
+    if (ageBased is List) {
+      for (final dyn in ageBased) {
+        if (dyn is! Map) continue;
+        final minAge = _asInt(dyn['minAge'], fallback: -0x7fffffff);
+        final maxAge = _asInt(dyn['maxAge'], fallback: 0x7fffffff);
+        if (age >= minAge && age < maxAge) {
+          final ids = dyn['ids'];
+          if (ids is List) {
+            for (final it in ids) {
+              final s = it?.toString();
+              if (s != null && s.isNotEmpty) valid.add(s);
+            }
+          }
+        }
+      }
+    }
+    return valid.toSet().toList();
+  }
+
+  // ---------------- existing reads (dedupe intelligence) ----------------
+
+  /// Returns the eventId of an existing **child CP container** (case plan stage)
+  /// that matches the given domain and cpLink; null if none.
+  static Future<String?> _findExistingChildCpEventId({
+    required String teiId,
+    required String domainId,
+    required String cpLink,
+  }) async {
+    final all =
+    await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(
+      teiId,
+    );
+    final stageId = OvcChildCasePlanConstant.casePlanProgramStage;
+    String? found;
+
+    for (final e in all) {
+      if (e.programStage != stageId) continue;
+      // materialize dataValues into a map
+      final dvMap = <String, dynamic>{};
+      final raw = e.dataValues;
+      if (raw is Map) {
+        raw.forEach((k, v) => dvMap['$k'] = v);
+      } else if (raw is List) {
+        for (final row in raw) {
+          if (row is Map && row['dataElement'] != null) {
+            dvMap['${row['dataElement']}'] = row['value'];
+          }
+        }
+      }
+      final link =
+      (dvMap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString();
+      final dom =
+      (dvMap[OvcCasePlanConstant.casePlanDomainType] ?? '').toString();
+      if (link == cpLink && dom == domainId) {
+        found = e.event;
+        break;
+      }
+    }
+    return (found != null && found!.trim().isNotEmpty) ? found : null;
+  }
+
+  /// Collect all TRUE DE IDs from the child GAP stage for the given cpLink.
+  static Future<Set<String>> _existingTrueGapIdsForLinkage({
+    required String teiId,
+    required String cpLink,
+  }) async {
+    final out = <String>{};
+    final all =
+    await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(
+      teiId,
+    );
+    final stageId = OvcChildCasePlanConstant.casePlanGapProgramStage;
+
+    for (final e in all) {
+      if (e.programStage != stageId) continue;
+      // build map
+      final dvMap = <String, dynamic>{};
+      final raw = e.dataValues;
+      if (raw is Map) {
+        raw.forEach((k, v) => dvMap['$k'] = v);
+      } else if (raw is List) {
+        for (final row in raw) {
+          if (row is Map && row['dataElement'] != null) {
+            dvMap['${row['dataElement']}'] = row['value'];
+          }
+        }
+      }
+      // require same cpLink
+      final link =
+      (dvMap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString();
+      if (link != cpLink) continue;
+
+      // collect TRUE toggles
+      dvMap.forEach((de, val) {
+        if (de == OvcCasePlanConstant.casePlanToGapLinkage ||
+            de == OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage ||
+            de == OvcCasePlanConstant.casePlanGapToMonitoringLinkage ||
+            de == 'eventDate') {
+          return;
+        }
+        if (_isTrueLike(val)) out.add('$de');
+      });
+    }
+    return out;
+  }
+
+  // ---------------- writers (container + gaps) ----------------
+
+  /// Ensure child has a CP container for (domainId, cpLink). **Updates** if one already exists.
+  static Future<void> _ensureChildCasePlanContainer({
+    required String domainId,
+    required String cpLink,
+    required String orgUnit,
+    required String eventDate,
+    required TrackedEntityInstance tei,
+  }) async {
+    final containerSections = OvcServicesCasePlan
+        .getFormSections(firstDate: '')
+        .where((s) => (s.id ?? '') == domainId)
+        .toList();
+
+    final payload = <String, dynamic>{
+      OvcCasePlanConstant.casePlanToGapLinkage: cpLink,
+      OvcCasePlanConstant.casePlanDomainType: domainId,
+      'eventDate': eventDate,
+    };
+
+    final existingEventId = await _findExistingChildCpEventId(
+      teiId: tei.trackedEntityInstance ?? '',
+      domainId: domainId,
+      cpLink: cpLink,
+    );
+
+    await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+      OvcChildCasePlanConstant.program,
+      OvcChildCasePlanConstant.casePlanProgramStage,
+      orgUnit,
+      containerSections,
+      payload,
+      eventDate,
+      tei.trackedEntityInstance,
+      existingEventId, // <-- update if present, create otherwise
+      <String>[
+        OvcCasePlanConstant.casePlanToGapLinkage,
+        OvcCasePlanConstant.casePlanDomainType,
+      ],
+    );
+  }
+
+  /// Create a child GAP event filtered to valid DEs and **not already TRUE**.
+  static Future<void> _createChildGapEvent({
+    required String domainId,
+    required Map<String, dynamic> hhGapObject,
+    required List<String> allowedIds,
+    required String cpLink,
+    required String orgUnit,
+    required String eventDate,
+    required TrackedEntityInstance tei,
+  }) async {
+    final gapSections = OvcServicesChildCasePlanGap
+        .getFormSections(firstDate: '')
+        .where((s) => (s.id ?? '') == domainId)
+        .toList();
+
+    // IDs already present for this linkage
+    final already = await _existingTrueGapIdsForLinkage(
+      teiId: tei.trackedEntityInstance ?? '',
+      cpLink: cpLink,
+    );
+
+    final allowed = <String>{
+      ...allowedIds,
+      OvcCasePlanConstant.casePlanToGapLinkage,
+      OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
+      OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
+      'eventDate',
+    };
+
+    final toSave = <String, dynamic>{};
+
+    hhGapObject.forEach((k, v) {
+      final ks = k.toString();
+      if (!allowed.contains(ks)) return;
+
+      // linkage and eventDate are always kept
+      if (ks == OvcCasePlanConstant.casePlanToGapLinkage ||
+          ks == OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage ||
+          ks == OvcCasePlanConstant.casePlanGapToMonitoringLinkage ||
+          ks == 'eventDate') {
+        toSave[ks] = v;
+        return;
+      }
+
+      // only add NEW true-ish toggles that are not already in child's GAPs
+      if (_isTrueLike(v) && !already.contains(ks)) {
+        toSave[ks] = true; // normalize
+      }
+    });
+
+    // force link + date
+    toSave[OvcCasePlanConstant.casePlanToGapLinkage] = cpLink;
+    toSave['eventDate'] = eventDate;
+
+    // If there are no NEW DEs besides meta (link/date), skip creating noise
+    final hasNewToggle = toSave.keys.any((k) =>
+    k != OvcCasePlanConstant.casePlanToGapLinkage &&
+        k != OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage &&
+        k != OvcCasePlanConstant.casePlanGapToMonitoringLinkage &&
+        k != 'eventDate');
+
+    if (!hasNewToggle) {
+      if (kDebugMode) {
+        debugPrint(
+          '[GAP Propagation] No new gap DEs for ${tei.trackedEntityInstance} (domain="$domainId"). Skip create.',
+        );
+      }
+      return;
+    }
+
+    await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
+      OvcChildCasePlanConstant.program,
+      OvcChildCasePlanConstant.casePlanGapProgramStage,
+      orgUnit,
+      gapSections,
+      toSave,
+      eventDate,
+      tei.trackedEntityInstance,
+      null, // always a new gap event if there is something new to add
+      <String>[
+        OvcCasePlanConstant.casePlanToGapLinkage,
+        OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
+        OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
+      ],
+    );
+  }
+
+  // ---------------- PUBLIC API (HH form calls only this) ----------------
+
+  /// For each domain in HH dataObject:
+  ///  - ensure a child CP container for (domain, cpLink) (update if exists)
+  ///  - for each HH gap in that domain, add only NEW true DEs to the child (age-filtered)
   static Future<void> autoSyncOvcsCasPlanGaps({
-    required String currentCasePlanDate, // not used here (kept for parity)
+    required String currentCasePlanDate, // kept for parity (not used)
     required List<OvcHouseholdChild> childrens,
-    required Map dataObject,            // HH CP object (domainId -> {...})
+    required Map dataObject,            // HH CP object (domainId -> {..., gaps: [...]})
     required String orgUnit,
     required String eventDate,
   }) async {
@@ -31,160 +319,79 @@ class OvcCasePlanGapHouseholdToOvcUtil {
       for (final entry in dataObject.entries) {
         final domainId = '${entry.key}';
 
-        // Skip non-domain containers
+        // skip non-domain sections
         if (domainId == OvcCasePlanConstant.casePlanLocatinSectionId ||
             domainId == OvcCasePlanConstant.casePlanEventDateSectionId ||
             domainId == OvcCasePlanConstant.householdCategorizationSection) {
           continue;
         }
 
-        final domainMap = Map<String, dynamic>.from(entry.value as Map);
+        final domainMap = Map<String, dynamic>.from(entry.value as Map? ?? {});
+        final cpLinkDe = OvcCasePlanConstant.casePlanToGapLinkage;
 
-        // HH CP linkage for this domain (stable)
-        String cpLinkage =
-        (domainMap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '')
-            .toString()
-            .trim();
-        if (cpLinkage.isEmpty) {
-          cpLinkage = (domainMap['eventId'] ?? '').toString().trim().isNotEmpty
+        // Resolve linkage for this domain
+        String cpLink = (domainMap[cpLinkDe] ?? '').toString().trim();
+        if (cpLink.isEmpty) {
+          cpLink = (domainMap['eventId'] ?? '').toString().trim().isNotEmpty
               ? domainMap['eventId']
               : AppUtil.getUid();
         }
 
-        // HH truthy gap IDs for this domain (merged)
-        final hhTrue = _mergeHouseholdGaps(domainMap);
-        if (kDebugMode) {
-          debugPrint(
-              '[GAP Propagation] DOMAIN="$domainId" HH gap IDs=${hhTrue.keys.toList()} cpLink=$cpLinkage');
-        }
-        if (hhTrue.isEmpty) continue;
+        // HH gaps list
+        final gaps = (domainMap['gaps'] as List?) ?? const [];
 
         for (final child in childrens) {
-          final tei = child.teiData?.trackedEntityInstance ?? '';
-          final childOrg = child.teiData?.orgUnit ?? orgUnit;
+          final tei = child.teiData;
+          if (tei == null) continue;
 
-          // TEI sanity — skip if not credible (prevents “One Power” type duplicates)
-          if (!_looksLikeTei(tei)) {
-            if (kDebugMode) {
-              debugPrint(
-                  '[GAP Propagation] SKIP (no valid TEI). childId="${child.id}" tei="$tei" domain="$domainId"');
-            }
-            continue;
-          }
-
-          final guardKey = '$tei|$domainId|$cpLinkage';
-          if (_inFlight.contains(guardKey)) {
-            if (kDebugMode) {
-              debugPrint('[GAP Propagation] SKIP duplicate pass guard=$guardKey');
-            }
-            continue;
-          }
+          final childOrg = tei.orgUnit ?? orgUnit;
+          final guardKey = '${tei.trackedEntityInstance}|$domainId|$cpLink';
+          if (_inFlight.contains(guardKey)) continue;
           _inFlight.add(guardKey);
 
           try {
-            // Age-allowed DE IDs (filters HH)
-            final age = int.tryParse(child.age ?? '0') ?? 0;
-            final allowedIds = _allowedIdsForAge(domainId, age);
-            final hhEligibleIds =
-            hhTrue.keys.where((id) => allowedIds.contains(id)).toSet();
-
-            if (kDebugMode) {
-              debugPrint(
-                  '[GAP Propagation] TEI=$tei domain="$domainId" age=$age '
-                      'allowed=${allowedIds.length} hhEligible=${hhEligibleIds.length}');
-            }
-            if (hhEligibleIds.isEmpty) {
-              if (kDebugMode) {
-                debugPrint(
-                    '[GAP Propagation] No age-eligible HH gap IDs for TEI=$tei domain="$domainId".');
-              }
-              continue;
-            }
-
-            // Read all existing stage events for child and make snapshot
-            final snap = await _snapshotChildGapStage(tei: tei);
-            if (kDebugMode) {
-              debugPrint(
-                  '[GAP Propagation] Read events for TEI=$tei stage=${OvcChildCasePlanConstant.casePlanGapProgramStage} '
-                      'count=${snap.stageEventsCount}');
-              debugPrint(
-                  '[GAP Propagation] Snapshot TEI=$tei hasAny=${snap.hadAnyStageEvent} '
-                      'latestId=${snap.latestEventId ?? "<none>"} unionIds=${snap.unionTrueIds.length}');
-            }
-
-            // Choose baseline TRUE set:
-            // Prefer per-linkage; if none, fallback to stage-wide union
-            final existingForCp = snap.trueIdsByLinkage[cpLinkage] ?? <String>{};
-            final baselineTrue =
-            existingForCp.isNotEmpty ? existingForCp : snap.unionTrueIds;
-
-            // Only NEW ids
-            final newIds = hhEligibleIds.difference(baselineTrue);
-            if (newIds.isEmpty) {
-              if (kDebugMode) {
-                debugPrint(
-                    '[GAP Propagation] TEI=$tei domain="$domainId" '
-                        'All gap IDs already present (cpLink=$cpLinkage). SKIP.');
-              }
-              continue;
-            }
-
-            // Build payload: ONLY new ids + (always) linkage + eventDate
-            final payload = <String, dynamic>{
-              OvcCasePlanConstant.casePlanToGapLinkage: cpLinkage,
-              'eventDate': eventDate,
-            };
-            for (final id in newIds) {
-              payload[id] = true;
-            }
-
-            // Save strategy:
-            // - If child has any stage event: UPDATE the latest (retrofit linkage if absent)
-            // - Else: CREATE a new event
-            final List<FormSection> sections = OvcServicesChildCasePlanGap
-                .getFormSections(firstDate: '')
-                .where((s) => (s.id ?? '') == domainId)
-                .toList();
-
-            final eventIdToUpdate =
-            snap.hadAnyStageEvent ? snap.latestEventId : null;
-
-            await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-              OvcChildCasePlanConstant.program,
-              OvcChildCasePlanConstant.casePlanGapProgramStage,
-              childOrg,
-              sections,
-              payload,
-              eventDate,
-              tei,
-              eventIdToUpdate,
-              const [
-                // DO NOT hide CP→Gap linkage — it must persist!
-                OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
-                OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
-              ],
+            // 1) ensure container
+            await _ensureChildCasePlanContainer(
+              domainId: domainId,
+              cpLink: cpLink,
+              orgUnit: childOrg,
+              eventDate: eventDate,
+              tei: tei,
             );
 
-            // Make the change instantly visible to this cascade
-            // Update both the per-linkage set and the union set
-            snap.trueIdsByLinkage
-                .putIfAbsent(cpLinkage, () => <String>{})
-                .addAll(newIds);
-            snap.unionTrueIds.addAll(newIds);
+            // 2) propagate each HH gap (respecting age-based allowed ids)
+            final Map domainCfg = OvcChildCasePlanConstant
+                .domainToAutopopuledCasePlanGaps[domainId] ??
+                const <String, dynamic>{};
+            final age = _coerceAge(child);
+            final allowedIds = _validIdsForChildAge(
+              domainConfig: domainCfg,
+              age: age,
+            );
 
-            if (kDebugMode) {
-              final verb = eventIdToUpdate == null ? 'Created' : 'Updated';
-              debugPrint(
-                '[GAP Propagation] $verb child gap for TEI=$tei '
-                    '(domain="$domainId"). Added gap IDs: ${newIds.join(", ")} | '
-                    'nowStageHas=${snap.hadAnyStageEvent || eventIdToUpdate == null} latest=${eventIdToUpdate ?? "<new>"}',
+            for (final g in gaps) {
+              final gap = Map<String, dynamic>.from(g as Map);
+              await _createChildGapEvent(
+                domainId: domainId,
+                hhGapObject: gap,
+                allowedIds: allowedIds,
+                cpLink: cpLink,
+                orgUnit: childOrg,
+                eventDate: eventDate,
+                tei: tei,
               );
             }
-          } catch (e) {
+
             if (kDebugMode) {
               debugPrint(
-                  '[GAP Propagation] Save failed for TEI=${child.teiData?.trackedEntityInstance ?? child.id} '
-                      'in domain="$domainId": $e');
+                '[GAP Propagation] Processed child ${_childName(child)} (domain="$domainId").',
+              );
+            }
+          } catch (e, st) {
+            if (kDebugMode) {
+              debugPrint(
+                  '[GAP Propagation] ERROR for child ${_childName(child)} => $e');
+              debugPrint('$st');
             }
           } finally {
             _inFlight.remove(guardKey);
@@ -197,119 +404,4 @@ class OvcCasePlanGapHouseholdToOvcUtil {
       }
     }
   }
-
-  // ---------- Helpers (purely inside this file) ----------
-
-  static bool _isTrueLike(dynamic v) {
-    final s = (v ?? '').toString().trim().toLowerCase();
-    return v == true || s == 'true' || s == '1' || s == 'yes' || s == 'y';
-  }
-
-  // Merge HH domain gaps into a single map of TRUE DE ids
-  static Map<String, bool> _mergeHouseholdGaps(Map domainMap) {
-    final out = <String, bool>{};
-    final gaps = (domainMap['gaps'] as List?) ?? const [];
-    for (final g in gaps) {
-      final m = Map<String, dynamic>.from(g as Map);
-      m.forEach((k, v) {
-        if (_isTrueLike(v)) out['$k'] = true;
-      });
-    }
-    return out;
-  }
-
-  // Age filter
-  static Set<String> _allowedIdsForAge(String domainId, int age) {
-    final cfg = OvcChildCasePlanConstant
-        .domainToAutopopuledCasePlanGaps[domainId] ??
-        const <String, dynamic>{};
-    return OvcChildCasePlanConstant.getValidIdForAutoPopulatingServiceData(
-      domainConfig: cfg,
-      age: age,
-    ).toSet();
-  }
-
-  // TEI shape guard (very basic, avoids names being used as TEIs)
-  static bool _looksLikeTei(String tei) {
-    if (tei.isEmpty) return false;
-    // DHIS2 TEIs are usually 11-char UID-ish, but installations vary.
-    // Require >= 8 alnum to avoid obvious names.
-    final ok = RegExp(r'^[A-Za-z0-9]{8,}$').hasMatch(tei);
-    return ok;
-  }
-
-  // Snapshot of child's GAP stage: events count, latest, union TRUE ids and map by linkage
-  static Future<_StageSnapshot> _snapshotChildGapStage({required String tei}) async {
-    final events =
-    await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(
-      tei,
-    );
-    final stageId = OvcChildCasePlanConstant.casePlanGapProgramStage;
-
-    final stage = events.where((e) => e.programStage == stageId).toList();
-    stage.sort((a, b) {
-      final da = DateTime.tryParse('${a.eventDate ?? ''}');
-      final db = DateTime.tryParse('${b.eventDate ?? ''}');
-      if (da != null && db != null) return db.compareTo(da);
-      return (b.eventDate ?? '').toString().compareTo('${a.eventDate ?? ''}');
-    });
-
-    final union = <String>{};
-    final byLinkage = <String, Set<String>>{};
-    final linkageDe = OvcCasePlanConstant.casePlanToGapLinkage;
-
-    for (final ev in stage) {
-      final dvs = (ev.dataValues as List?) ?? const [];
-      String linkage = '';
-      // First pass: extract linkage
-      for (final dv in dvs) {
-        if (dv is Map && dv['dataElement'] == linkageDe) {
-          linkage = (dv['value'] ?? '').toString().trim();
-          break;
-        }
-      }
-
-      // Collect true DEs
-      final setForLink = linkage.isNotEmpty
-          ? byLinkage.putIfAbsent(linkage, () => <String>{})
-          : null;
-
-      for (final dv in dvs) {
-        if (dv is! Map || dv['dataElement'] == null) continue;
-        final de = '${dv['dataElement']}';
-        final val = (dv['value'] ?? '').toString().trim().toLowerCase();
-        final isTrue = val == 'true' || val == '1' || val == 'yes' || val == 'y';
-        if (isTrue) {
-          union.add(de);
-          if (setForLink != null) setForLink.add(de);
-        }
-      }
-    }
-
-    final latestId =
-    stage.isNotEmpty ? (stage.first.event ?? '').toString() : null;
-
-    return _StageSnapshot(
-      stageEventsCount: stage.length,
-      hadAnyStageEvent: stage.isNotEmpty,
-      latestEventId: (latestId != null && latestId.isNotEmpty) ? latestId : null,
-      unionTrueIds: union,
-      trueIdsByLinkage: byLinkage,
-    );
-  }
-}
-
-class _StageSnapshot {
-  final int stageEventsCount;
-  final bool hadAnyStageEvent;
-  final String? latestEventId;
-  final Set<String> unionTrueIds;
-  final Map<String, Set<String>> trueIdsByLinkage;
-  _StageSnapshot({
-    required this.stageEventsCount,
-    required this.hadAnyStageEvent,
-    required this.latestEventId,
-    required this.unionTrueIds,
-    required this.trueIdsByLinkage,
-  });
 }
