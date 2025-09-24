@@ -769,30 +769,28 @@ class OvcServicesChildWellbeingAssessment {
                       ]),
 
                   InputField(
-                      id: 'child_immunization_checkbox',
-                      name: 'Which of the following has the child received according to schedule?',
-                      translatedName: 'Ngooana o fumane life ho tse latelang ka nako ea tsona?',
-                      valueType: 'CHECK_BOX',
+                      id: 'oHhVRXZhKO2',
+                      name: 'Has the child received deworming medication?',
+                      translatedName: 'Na ngoana o fumane moriana oa manyooa?',
+                      valueType: 'BOOLEAN',
                       inputColor: const Color(0xFF4B9F46),
-                      labelColor: const Color(0xFF1A3518),
-                      options: [
-                        InputFieldOption(
-                            code: 'Ws4XNKa3NpF',
-                            name: 'Deworming Medication',
-                            translatedName: 'Moriana oa manyooa'),
-                        InputFieldOption(
-                            code: 'DUOFvJnn1R7',
-                            name: 'Vitamin A',
-                            translatedName: 'Vitamin A'),
-                        InputFieldOption(
-                            code: 'MiSYfeKhOUC',
-                            name: 'Immunization',
-                            translatedName: 'Immunization'),
-                        InputFieldOption(
-                            code: 'NZE7E1vQwgx',
-                            name: 'None of the above',
-                            translatedName: 'Ha ho ea e fumaneng'),
-                      ]),
+                      labelColor: const Color(0xFF455B44)),
+
+                  InputField(
+                      id: 'Gj7v80HBpqe',
+                      name: 'Has the child received Viatamin A?',
+                      translatedName: 'Na ngoana o fumane moriana oa Vitamin A?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF455B44)),
+
+                  InputField(
+                      id: 'mfGAORfY4TO',
+                      name: 'Has the child received immunization',
+                      translatedName: 'Na ngoana o fumane ente?',
+                      valueType: 'BOOLEAN',
+                      inputColor: const Color(0xFF4B9F46),
+                      labelColor: const Color(0xFF455B44)),
 
                   InputField(
                       id: 'OBugEkynJG0',
