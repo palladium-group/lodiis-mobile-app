@@ -836,17 +836,17 @@ class OvcEnrollmentChild {
         inputFields: [
           InputField(
             id: 'wmKqYZML8GA',
-            name: '1. Child/Adolescent living with HIV?',
-            translatedName: "1. Na ngoana o phela le ts'oaetso ea HIV?",
+            name: 'Child/Adolescent living with HIV?',
+            translatedName: "Na ngoana o phela le ts'oaetso ea HIV?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'BOOLEAN',
           ),
           InputField(
             id: 'GMcljM7jbNG',
-            name: '2. HIV exposed infants (HEI)?',
+            name: 'HIV exposed infants (HEI)?',
             translatedName:
-                "2. Na ke ngoana ea tsoetsoeng ke 'm'e ea phelang le ts'oaetso ea HIV (HEI)?",
+                "Na ke ngoana ea tsoetsoeng ke 'm'e ea phelang le ts'oaetso ea HIV (HEI)?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'BOOLEAN',
@@ -854,25 +854,34 @@ class OvcEnrollmentChild {
 
           InputField(
             id: 'ZKMhrjWoXnD',
-            name: '3. Child of people living with HIV (PLHIV)?',
+            name: 'Child of people living with HIV (PLHIV)?',
             translatedName:
-                "3. Na ke ngoana ea phelang le batho nang le HIV? (CPLHIV)?",
+                "Na ke ngoana ea phelang le batho nang le HIV? (CPLHIV)?",
+            inputColor: const Color(0xFFB0C7EA),
+            labelColor: const Color(0xFF737373),
+            valueType: 'BOOLEAN',
+          ),
+          InputField(
+            id: 'K9YUYGM2dZD',
+            name: 'Child Headed Household?',
+            translatedName:
+            "Child Headed Household?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'BOOLEAN',
           ),
           InputField(
             id: 'tHbPB5hrbOc',
-            name: '4. Adolescent Girl who is Pregnant',
-            translatedName: "4. Na ngoana/moroetsana o imme?",
+            name: 'Adolescent Girl who is Pregnant',
+            translatedName: "Na ngoana/moroetsana o imme?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'BOOLEAN',
           ),
           InputField(
             id: 'wGFmu7DhNGV',
-            name: '5. Adolescent Girl who is a young mother',
-            translatedName: "5. Ke ngoana oa moroetsana ea anyesang?",
+            name: 'Adolescent Girl who is a young mother',
+            translatedName: "Ke ngoana oa moroetsana ea anyesang?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'BOOLEAN',
@@ -880,7 +889,7 @@ class OvcEnrollmentChild {
           ),
           InputField(
             id: 'FYjxxvyugEt',
-            name: '6. Child of Adolescent Girl who is Breastfeeding',
+            name: 'Child of Adolescent Girl who is Breastfeeding',
             translatedName: "6. Na ngoana ke ngoana oa motsoetse a anyesang?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
@@ -888,8 +897,8 @@ class OvcEnrollmentChild {
           ),
           InputField(
             id: 'NqhUKijE4hB',
-            name: '7.  Sibling of CALHIV ',
-            translatedName: "7. Na ngoana ke oabo ea phela le ts'oaetso ea HIV?",
+            name: 'Sibling of CALHIV ',
+            translatedName: "Na ngoana ke oabo ea phela le ts'oaetso ea HIV?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),
             valueType: 'BOOLEAN',
@@ -920,6 +929,10 @@ class OvcEnrollmentChild {
                 name: 'Child of PLHIV',
                 translatedName:
                     "Na ke ngoana a phelang le batho banang le HIV (CPLHIV)?",
+              ),
+              InputFieldOption(
+                code: 'Child Headed Household',
+                name: 'Child Headed Household',
               ),
 
               InputFieldOption(

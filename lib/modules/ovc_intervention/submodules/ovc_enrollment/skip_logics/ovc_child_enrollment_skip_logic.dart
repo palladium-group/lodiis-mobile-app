@@ -106,7 +106,13 @@ class OvcChildEnrollmentSkipLogic {
     for (String inputFieldId in inputFieldIds) {
       int age = AppUtil.getAgeInYear(dataObject['qZP982qpSPS']);
       String value = '${dataObject[inputFieldId]}';
-
+      int cargiverAge = AppUtil.getAgeInYear(caregiverDateOfBirth);
+ print('CaregiverAge $cargiverAge');
+      if(cargiverAge < 18){
+        dataObject['K9YUYGM2dZD'] = true;
+      }else {
+        dataObject['K9YUYGM2dZD'] = false;
+      }
 
       if (inputFieldId == 'iS9mAp3jDaU') {
         // Build the hide-map fresh each pass so changes to Sex re-render options correctly
