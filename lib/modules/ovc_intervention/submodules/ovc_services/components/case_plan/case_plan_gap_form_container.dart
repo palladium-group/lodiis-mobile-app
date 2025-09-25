@@ -256,6 +256,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
 
   Future<void> _applyCaregiverAssessmentToGaps(Map<String, String?> a) async {
     // Assessment DEs (household)
+    const pregnantDE = 'nSh4v0iBjKW';
+    const ancDE = 'fINHdGnfAMA';
     const hivStatusDE = 'vNeOE9abQBB';
     const artStatusDE = 'Icgkv0xkUow';
     const areYouCoughingDE = 'tMvluCbiiUm';
@@ -276,6 +278,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const cd4testingDE = 'tYN12Es3707';
 
     // Gap DEs
+    const ancGapDE = 'vbUdFOsYrxP';
     const hivAdherenceGapDE = 'HKCv7lkLexo';
     const hivTreatGapDE = 'ylSjcj6cv42';
     const tbTreatGapDE = 'bRv4ZZy5MDH';
@@ -326,6 +329,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     }
 
     // caregiver values
+    final attandingANC = _isTrue(a[ancDE]);
     final hiv = _normHiv(a[hivStatusDE]);
     final hivPositive = hiv == 'Positive';
     final onArt = _isTrue(a[artStatusDE]);
@@ -345,6 +349,17 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final testdforCD4 = _isTrue(a[cd4testingDE]);
     final overSixMonthsOnArt = moreThanSixMonthsOnArt(a);
 
+    final hh =
+        context.read<OvcHouseholdCurrentSelectionState>().currentOvcHousehold;
+    final children = hh?.children ?? const <OvcHouseholdChild>[];
+    final isFemale = _isTrue(hh?.sex == 'Female');
+  if(a[hivStatusDE] == null){
+  dataObject[htsGapDE] = true;
+  }
+
+    if( isFemale && a[pregnantDE] == 'Yes' && !attandingANC){
+      dataObject[ancGapDE] = true;
+    }
     if (overSixMonthsOnArt && !testForVL) {
       dataObject[viralLoadTestingGapDE] = true;
     }
@@ -385,9 +400,19 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
 
     // CHILD-driven additions (caregiver NOT positive scenarios)
     if (!hivPositive) {
-      final hh =
-          context.read<OvcHouseholdCurrentSelectionState>().currentOvcHousehold;
-      final children = hh?.children ?? const <OvcHouseholdChild>[];
+
+      for (final child in children) {
+        final tei = (child.id ?? '').toString();
+        if (tei.isEmpty) continue;
+        final age = _ageFromChild(child);
+        if (age < 0 || age > 8) continue;
+        final childVals = await _latestValuesForChildAssessment(tei);
+        final childHiv = _normHiv(childVals['c5TMWtM4VVJ']);
+        if (childHiv == 'Positive') {
+          dataObject[artLiteracyGapDE] = true;
+          break;
+        }
+      }
 
       for (final child in children) {
         final tei = (child.id ?? '').toString();
@@ -399,9 +424,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
           if (age < 4) dataObject[feedingsessionsGapDE] = true;
           dataObject[dewormingGapDE] = true;
         }
-
         if (age < 0 || age > 8) continue;
-
         final childVals = await _latestValuesForChildAssessment(tei);
         final childHiv = _normHiv(childVals['c5TMWtM4VVJ']);
         if (childHiv == 'Positive') {
@@ -438,7 +461,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     }
 
     // Child assessment DEs
-    const hivStatusDE = 'c5TMWtM4VVJ';
+    const highRiskAssessDE = 'hivriskres';
+    const underFiveCLinicDE = 'eDuHTPn7rhh';
+    const hivStatusDE = 'vNeOE9abQBB';
     const malnutritionSignsDE = 'OBugEkynJG0';
     const feelingSupportedDE = 'KFCBwn7ypws';
     const artStatusDE = 'Icgkv0xkUow';
@@ -448,8 +473,16 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const havefever = 'VETgonq6tFr';
     const lastTestedDE = 'Uv26fX0HQvO';
     const oralHealthMessagingDE = 'wRhamvRZj87';
+    const hadsexwithmorethanone = 'upkFeuyd1fX';
+    const sexwithoucondomPositve = 'R38Mm0YgXcx';
+    const sexwithoucondomUnknown = 'qoKPxEkgfdh';
+    const genitalsores = 'B46Zeuzafkg';
+    const vltestingDE = 'sLyfb45aLkl';
+    const cd4testingDE = 'tYN12Es3707';
 
     // Gap DEs
+    const eidTestingGapDE = 'WcSjQ6oQ4dw';
+    const uderFiveClinicGapDE = 'wR6vGDR8nHi';
     const foodSupplementsGapDE = 'uvJV4WGc5ct';
     const hivSndGapDE = 'cx4xBY4jZXM';
     const disclosureSupportGapDE = 'eQTJrTcKzVK';
@@ -460,6 +493,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const artLiteracyGapDE = 'vqRohVpTK2G';
     const htsGapDE = 'XoSPWmpWXCy';
     const oralHealthGapDE = 'ztDAwmkSwKf';
+    const enhancedAdherenceCouncilingGapDE = 'XuZIbkwn5yi';
+    const psycosocialsupportGapDE = 'WiPTQhWLVU1';
+    const viralLoadTestingGapDE = 'bepi3n6Z4T0';
+    const cd4TestingGapDE = 'SHWV7e088RT';
 
     final hiv = _normHiv(a[hivStatusDE]);
     final malnutrition = _isTrue(a[malnutritionSignsDE]);
@@ -473,6 +510,40 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final hasFever = _isTrue(a[havefever]);
     final recentTest = _testedWithin3Months(a[lastTestedDE]);
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
+    final attendingUnderFiveClinic = _isTrue(a[underFiveCLinicDE]);
+    final childisHei = _isTrue(child.isHei);
+    final childTestedAsperHeiAlg = _isTrue(child.testedHeiAlgorithm);
+    final hadsexWithMoreThanOne = _isTrue(a[hadsexwithmorethanone]);
+    final sexWithouCondomPositive = _isTrue(a[sexwithoucondomPositve]);
+    final sexWithouCondomUnknown = _isTrue(a[sexwithoucondomUnknown]);
+    final genitalSores = _isTrue(a[genitalsores]);
+    final testForVL = _isTrue(a[vltestingDE]);
+    final testdforCD4 = _isTrue(a[cd4testingDE]);
+
+
+    if (!hivPositive && !recentTest) {
+      if (hadsexWithMoreThanOne ||
+          sexWithouCondomPositive ||
+          sexWithouCondomUnknown ||
+          genitalSores) {
+        dataObject[htsGapDE] = true;
+      }
+    }
+
+
+    if(childisHei){
+      if(!childTestedAsperHeiAlg){
+        dataObject[eidTestingGapDE] = true;
+      }
+
+    }
+
+    if( age < 5 && !attendingUnderFiveClinic){
+      dataObject[uderFiveClinicGapDE] = true;
+    }
+    if(age > 3 && a[hivStatusDE] == null){
+      dataObject[htsGapDE] = true;
+    }
 
     if (age >= 0 && age <= 5 && malnutrition) {
       dataObject[foodSupplementsGapDE] = true;
@@ -491,7 +562,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         dataObject[comArtAdherenceGapDE] = true;
         dataObject[artLiteracyGapDE] = true;
       }
-      if (!hivPositive && !recentTest) dataObject[htsGapDE] = true;
+      if (age > 8 && !hivPositive && !recentTest) dataObject[htsGapDE] = true;
+      if (age > 3 && age <= 8 && a[highRiskAssessDE] == 'High risk') dataObject[htsGapDE] = true;
     } else {
       if (hivPositive) {
         dataObject[hivAdherenceGapDE] = true;
