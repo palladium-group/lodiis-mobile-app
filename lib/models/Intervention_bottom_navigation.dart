@@ -59,7 +59,7 @@ class InterventionBottomNavigation {
     ),
     InterventionBottomNavigation(
       id: 'exit',
-      name: 'Exit',
+      name: 'Closure',
       translatedName: 'Etsoa',
       svgIcon: 'assets/icons/exit-navigation-icon.svg',
     ),
