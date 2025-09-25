@@ -8,7 +8,7 @@ class HouseholdServicesOngoingMonitoring {
     return [
       FormSection(
           id: '',
-          name: 'For those who were referred and changing HIV status',
+          name: 'Household Monitoring',
           translatedName: 'Sebakeng sa ba fetisitsoeng le ba fetotseng sephetho sa tsoaetso ea HIV',
           color: const Color(0xFF4D9E49),
           inputFields: [
@@ -22,7 +22,7 @@ class HouseholdServicesOngoingMonitoring {
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF737373),
-             isReadOnly: true
+
             ),
 
             InputField(
