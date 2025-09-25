@@ -24,7 +24,7 @@ class OvcHouseholdServicesCasePlanGaps {
               inputFields: [
                 InputField(
                     id: 'bRv4ZZy5MDH',
-                    name: 'Refer for TB Presumptive',
+                    name: 'Refer for TB Testing',
                     translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
                     valueType: 'TRUE_ONLY',
                     isReadOnly: true,
@@ -34,12 +34,13 @@ class OvcHouseholdServicesCasePlanGaps {
                 InputField(
                     id: 'mvDI6Jr40kI',
                     allowFuturePeriod: true,
-                    name: '( TB Treatment ) Projected date for completion',
-                    translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                    name: '( TB Testing ) Projected date for completion',
+                    translatedName: 'Letsatsi la tlhahlobo ea TB',
                     valueType: 'DATE',
                     firstDate: firstDate,
                     inputColor: const Color(0xFF4D9E49),
                     labelColor: const Color(0xFF737373)),
+
                 InputField(
                     id: 'cx4xBY4jZXM',
                     name: 'HIV Prevention,Care and Treatment Messaging',
@@ -364,6 +365,24 @@ class OvcHouseholdServicesCasePlanGaps {
               color: const Color(0xFF4D9E49),
               borderColor: const Color(0xFF4D9E49),
               inputFields: [
+                InputField(
+                    id: 'vbUdFOsYrxP',
+                    name: 'Refer for ANC services',
+                    translatedName: 'Tšebeletso ea ANC',
+                    valueType: 'TRUE_ONLY',
+                    isReadOnly: true,
+                    inputColor: const Color(0xFF4D9E49),
+                    labelColor: const Color(0xFF737373)),
+
+                InputField(
+                    id: 'nV5blRoSKnK',
+                    allowFuturePeriod: true,
+                    name: 'Date for ANC referral  to be completed',
+                    translatedName: 'Letsatsi la tlhahlobo ea TB',
+                    valueType: 'DATE',
+                    firstDate: firstDate,
+                    inputColor: const Color(0xFF4D9E49),
+                    labelColor: const Color(0xFF737373)),
 
               ],
 

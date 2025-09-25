@@ -46,7 +46,7 @@ class OvcHouseholdMonitoringTopBarSelection extends StatelessWidget {
                       child: Text(
                         currentLanguage == 'lesotho'
                             ? "Ts'ebeletso"
-                            : 'Service',
+                            : 'Assessment Monitor',
                         style: const TextStyle().copyWith(
                           fontSize: 14.0,
                           color: !isClicked

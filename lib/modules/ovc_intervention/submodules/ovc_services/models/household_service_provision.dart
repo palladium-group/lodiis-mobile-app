@@ -41,7 +41,7 @@ class HouseholdServiceProvision {
                       labelColor: const Color(0xFF737373)),
                   InputField(
                       id: 'y8ToqnbVz1o',
-                      name: 'HIV Prevention,Care and Treatment MessagingComment',
+                      name: 'HIV Prevention,Care and Treatment Messaging Comment',
                       translatedName: 'Tlhaloso ea HIVS&D',
                       valueType: 'TEXT',
                       inputColor: const Color(0xFF4D9E49),
@@ -92,6 +92,7 @@ class HouseholdServiceProvision {
                       valueType: 'TEXT',
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
+
                 ]
             ),
             FormSection(
@@ -369,6 +370,29 @@ class HouseholdServiceProvision {
                       id: 'AStxMCkJhi5',
                       name: 'ANY HEALTH RELATED Comment',
                       translatedName: 'Tlhaloso ea ANY HEALTH RELATED',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                    id: 'kzN0Pylj9m4',
+                    name: 'ANC service Provided',
+                    valueType: 'TRUE_ONLY',
+                    translatedName: 'Litsebeletso tsa TBTREAT li fanoe',
+                    inputColor: const Color(0xFF4D9E49),
+                    labelColor: const Color(0xFF737373),
+                  ),
+                  InputField(
+                      id: 'NLNwk2zH4pp',
+                      name: 'ANC Service Provision Date',
+                      translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa TBTREAT',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'taavmnOAOJ4',
+                      name: 'ANC Service Comment',
+                      translatedName: 'Tlhaloso ea ANC',
                       valueType: 'TEXT',
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),

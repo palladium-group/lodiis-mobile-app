@@ -212,15 +212,7 @@ class _CasePlanGapServiceMonitoringFormContainerState
             widget.gapServiceMonitoringObject['eventId'],
             hiddenFields,
           );
-          if (widget.isHouseholdCasePlan) {
-            await OvcCasePlanServiceMonitoringHouseholdToOvcUtil
-                .autoSyncOvcsCasePlanServiceMonitoring(
-                    childrens: childrens,
-                    dataObject: widget.gapServiceMonitoringObject,
-                    domainId: widget.domainId,
-                    orgUnit: orgUnit,
-                    eventDate: eventDate);
-          }
+
           Provider.of<ServiceEventDataState>(context, listen: false)
               .resetServiceEventDataState(beneficiary.trackedEntityInstance);
           String? currentLanguage =

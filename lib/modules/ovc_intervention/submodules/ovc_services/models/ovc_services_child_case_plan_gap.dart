@@ -61,7 +61,7 @@ class OvcServicesChildCasePlanGap {
 
                   InputField(
                       id: 'bRv4ZZy5MDH',
-                      name: 'TB Testing',
+                      name: 'Refer for TB Testing',
                       translatedName: 'Tšebeletso a TBTREAT',
                       valueType: 'TRUE_ONLY',
                       isReadOnly: true,
@@ -179,6 +179,7 @@ class OvcServicesChildCasePlanGap {
                       name: 'Refer for ART Initiation',
                       translatedName: 'Tšebeletso a ART',
                       valueType: 'TRUE_ONLY',
+                      isReadOnly: true,
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
                   InputField(
@@ -371,6 +372,32 @@ class OvcServicesChildCasePlanGap {
                 color: const Color(0xFF4D9E49),
                 borderColor: const Color(0xFF4D9E49),
                 inputFields: [
+                  InputField(
+                      id: 'wR6vGDR8nHi',
+                      name: 'Refer for Under 5 Clinic',
+                      translatedName: 'Tšebeletso ea Under 5 Clinic ',
+                      valueType: 'TRUE_ONLY',
+                      isReadOnly: true,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'RoLYRif2Gle',
+                      allowFuturePeriod: true,
+                      name: 'Date for Under 5 clinic referral to be completed',
+                      translatedName: 'Letsatsi la HTS le tla phetheloa',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+
+                  InputField(
+                      id: 'WcSjQ6oQ4dw',
+                      name: 'Refer for EID Services',
+                      translatedName: 'Tšebeletso a HTS ',
+                      valueType: 'TRUE_ONLY',
+                      isReadOnly: true,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
 
                 ]
 

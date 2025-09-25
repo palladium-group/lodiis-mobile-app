@@ -243,10 +243,23 @@ mixin OvcCasePlanGapSkipLogic {
       if (inputFieldId == 'bRv4ZZy5MDH' && value != 'true') {
         hiddenFields[inputFieldId] = true;
         hiddenFields['mvDI6Jr40kI'] = true;
-        hiddenFields['OPmcOXe5Ogy'] = true;
-        hiddenFields['Wc58mUb3AXg'] = true;
-        hiddenFields['IhzyIy3tzo0'] = true;
       }
+
+      if (inputFieldId == 'vbUdFOsYrxP' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['nV5blRoSKnK'] = true;
+
+      }
+      if (inputFieldId == 'wR6vGDR8nHi' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['RoLYRif2Gle'] = true;
+
+      }
+      if (inputFieldId == 'WcSjQ6oQ4dw' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+
+      }
+
       if (inputFieldId == 'ylSjcj6cv42' && value != 'true') {
         hiddenFields[inputFieldId] = true;
         hiddenFields['JDqgRJlOSeZ'] = true;
