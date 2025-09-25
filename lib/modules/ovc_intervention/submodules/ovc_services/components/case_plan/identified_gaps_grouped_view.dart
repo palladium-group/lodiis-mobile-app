@@ -266,10 +266,7 @@ class _IdentifiedGapsGroupedViewState extends State<IdentifiedGapsGroupedView> {
                     color: widget.formSectionColor,
                   ),
                   const SizedBox(width: 6),
-                  _MiniChip(
-                    label: '$totalEntries entr${totalEntries == 1 ? 'y' : 'ies'}',
-                    color: widget.formSectionColor,
-                  ),
+
                 ],
               ),
               children: items.map((gapMeta) {
@@ -283,20 +280,8 @@ class _IdentifiedGapsGroupedViewState extends State<IdentifiedGapsGroupedView> {
                     gapMeta.label,
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
-                  subtitle: Text(
-                    '$count entr${count == 1 ? 'y' : 'ies'}',
-                    style: TextStyle(color: widget.formSectionColor.withOpacity(0.8)),
-                  ),
-                  trailing: widget.onViewGapEvent != null ? const Icon(Icons.chevron_right) : null,
-                  onTap: widget.onViewGapEvent == null
-                      ? null
-                      : () => _showGapEventsSheet(
-                    context: context,
-                    color: widget.formSectionColor,
-                    gapLabel: gapMeta.label,
-                    events: list,
-                    onTapEvent: widget.onViewGapEvent!,
-                  ),
+                  
+
                 );
               }).toList(),
             ),

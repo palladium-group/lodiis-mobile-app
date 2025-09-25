@@ -317,15 +317,10 @@ class _CasePlanGapServiceProvisionViewState
                     ),
                     _Chip(
                       label:
-                      '$servicesCount service${servicesCount == 1 ? '' : 's'}',
+                      '$servicesCount service${servicesCount == 1 ? '' : 's' } Provided',
                       color: widget.formSectionColor,
                     ),
                     const SizedBox(width: 6),
-                    _Chip(
-                      label:
-                      '$totalEntries entr${totalEntries == 1 ? 'y' : 'ies'}',
-                      color: widget.formSectionColor,
-                    ),
                   ],
                 ),
                 children: items.map((meta) {
@@ -340,7 +335,7 @@ class _CasePlanGapServiceProvisionViewState
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     subtitle: Text(
-                      '$count entr${count == 1 ? 'y' : 'ies'}',
+                      '$count time${count == 1 ? '' : 's'}',
                       style: TextStyle(
                         color: widget.formSectionColor.withOpacity(0.8),
                       ),
