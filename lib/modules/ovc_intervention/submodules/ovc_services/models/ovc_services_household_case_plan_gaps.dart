@@ -397,12 +397,4 @@ class OvcHouseholdServicesCasePlanGaps {
       ),
     ];
   }
-
-  static List<String> getMandatoryFields() {
-    return FormUtil.getAllFormSectionInpiutFields(
-      getFormSections(
-        firstDate: '',
-      ),
-    );
-  }
 }

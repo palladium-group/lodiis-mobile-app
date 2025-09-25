@@ -168,9 +168,9 @@ class OvcEnrollmentHousehold {
             valueType: 'DATE',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF737373),
-            minAgeInYear: 18,
+            minAgeInYear: 13,
             hint: "Caregiver age should be 10(CHH) years and above",
-            translatedHint: "Lilemo tsa mohlokomeli li be 10+",
+            translatedHint: "Lilemo tsa mohlokomeli li be 13+",
           ),
           InputField(
             id: 'ls9hlz2tyol',
