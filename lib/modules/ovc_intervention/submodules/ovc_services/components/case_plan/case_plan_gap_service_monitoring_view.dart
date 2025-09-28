@@ -1,36 +1,40 @@
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
-import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
-import 'package:kb_mobile_app/models/case_plan_gap_service_monitoring_event.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
+import 'package:provider/provider.dart';
+
+import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
+
+import 'package:kb_mobile_app/modules/ovc_intervention/services/ovc_case_plan_service.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
-import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/utils/ovc_case_plan_util.dart';
-import 'package:provider/provider.dart';
+import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
+
+import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
+import 'package:kb_mobile_app/models/case_plan_gap_service_monitoring_event.dart';
 
 class CasePlanGapServiceMonitoringView extends StatefulWidget {
   const CasePlanGapServiceMonitoringView({
     Key? key,
     required this.domainId,
     required this.formSectionColor,
-    required this.casePlanGap,
+    required this.casePlanGap, // MUST contain casePlanToGapLinkage
     required this.isHouseholdCasePlan,
     required this.hasEditAccess,
-    required this.onEditCasePlanServiceMonitoring,
     required this.onViewCasePlanServiceMonitoring,
+    required this.onEditCasePlanServiceMonitoring,
+    this.title = 'Monitoring',
   }) : super(key: key);
 
+  final String title;
   final String domainId;
   final Color formSectionColor;
-  final Map casePlanGap;
+  final Map<String, dynamic> casePlanGap;
   final bool isHouseholdCasePlan;
   final bool hasEditAccess;
 
-  final Function onEditCasePlanServiceMonitoring;
-  final Function onViewCasePlanServiceMonitoring;
+  final void Function(Map dataObject) onViewCasePlanServiceMonitoring;
+  final void Function(Map dataObject) onEditCasePlanServiceMonitoring;
 
   @override
   State<CasePlanGapServiceMonitoringView> createState() =>
@@ -39,201 +43,157 @@ class CasePlanGapServiceMonitoringView extends StatefulWidget {
 
 class _CasePlanGapServiceMonitoringViewState
     extends State<CasePlanGapServiceMonitoringView> {
-  String casePlanGapToServiceMonitoringLinkage = '';
-  String programStage = '';
-  bool _isViewReady = false;
+  bool _loading = true;
+
+  /// Be lenient: items can be either `CasePlanGapServiceMonitoringEvent`
+  /// or `Map<String, dynamic>` depending on the service version.
+  List<dynamic> _items = const [];
+
+  String get _cp =>
+      (widget.casePlanGap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '')
+          .toString();
 
   @override
-  void initState() {
-    super.initState();
-    _setViewMetadata();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetch();
   }
 
-  _setViewMetadata() {
-    programStage = widget.isHouseholdCasePlan
-        ? OvcHouseholdCasePlanConstant.casePlanGapServiceMonitoringProgramStage
-        : OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage;
-    casePlanGapToServiceMonitoringLinkage = widget
-            .casePlanGap[OvcCasePlanConstant.casePlanGapToMonitoringLinkage] ??
-        '';
-    _isViewReady = true;
-    setState(() {});
+  Future<void> _fetch() async {
+    setState(() => _loading = true);
+    try {
+      final sel =
+      Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false);
+      final teiId = widget.isHouseholdCasePlan
+          ? (sel.currentOvcHousehold?.teiData?.trackedEntityInstance ?? '')
+          : (sel.currentOvcHouseholdChild?.teiData?.trackedEntityInstance ?? '');
+
+      final stageId = widget.isHouseholdCasePlan
+          ? OvcHouseholdCasePlanConstant.casePlanGapServiceMonitoringProgramStage
+          : OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage;
+
+      // May return List<CasePlanGapServiceMonitoringEvent> OR List<Map<String,dynamic>>
+      final raw = await OvcCasePlanService()
+          .getCasePlanServiceMonitoringEventsForCp(
+        date: '', // ALL dates
+        programStageId: stageId,
+        teiId: teiId,
+        casePlanToGapLinkage: _cp,
+      );
+
+      List<dynamic> list;
+      if (raw is List) {
+        list = raw;
+      } else {
+        list = const <dynamic>[];
+      }
+
+      if (kDebugMode) {
+        debugPrint(
+            '[MON List] domain="${widget.domainId}" cp="$_cp" count=${list.length}');
+      }
+      setState(() {
+        _items = list;
+        _loading = false;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[MON List] error: $e');
+      }
+      setState(() => _loading = false);
+    }
+  }
+
+  Map<String, dynamic> _asDataObject(dynamic item) {
+    if (item is CasePlanGapServiceMonitoringEvent) {
+      return item.toDataObject();
+    }
+    if (item is Map) {
+      // Make sure map is typed
+      return Map<String, dynamic>.from(item as Map);
+    }
+    return <String, dynamic>{};
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageTranslationState>(
-        builder: (context, languageTranslationState, child) {
-      String currentLanguage = languageTranslationState.currentLanguage;
-      return Consumer<ServiceEventDataState>(
-          builder: (context, serviceEventDataState, child) {
-        bool isLoading = serviceEventDataState.isLoading;
-        List<CasePlanGapServiceMonitoringEvent> casePlanServiceMonitorings =
-            OvcCasePlanUtil.getCasePlanGapServiceMonitoringEvents(
-                eventListByProgramStage:
-                    serviceEventDataState.eventListByProgramStage,
-                programStageIds: [programStage],
-                casePlanGapToServiceMonitoringLinkage:
-                    casePlanGapToServiceMonitoringLinkage);
-        return isLoading || !_isViewReady
-            ? const CircularProcessLoader(
-                color: Colors.blueGrey,
-              )
-            : Column(
-                children: [
-                  Visibility(
-                    visible: casePlanServiceMonitorings.isNotEmpty,
-                    child: Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(
-                        'Monitoring',
-                        style: const TextStyle().copyWith(
-                          color: widget.formSectionColor,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  ...casePlanServiceMonitorings.map(
-                    (casePlanServiceMonitoring) {
-                      int index = casePlanServiceMonitorings
-                              .indexOf(casePlanServiceMonitoring) +
-                          1;
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 5.0,
-                        ),
-                        child: Row(
-                          children: [
-                            _getTableViewWidget(
-                              currentLanguage,
-                              casePlanServiceMonitoring,
-                              index,
-                            ),
-                            _getActionIcon(
-                              icon: 'assets/icons/expand_icon.svg',
-                              onTap: () =>
-                                  widget.onViewCasePlanServiceMonitoring(
-                                OvcCasePlanUtil.getMappedEventObject(
-                                    casePlanServiceMonitoring.eventData!),
-                              ),
-                            ),
-                            Consumer<CurrentUserState>(
-                              builder: (context, currentUserState, child) {
-                                bool isKbFacilitySocialWorker =
-                                    currentUserState.isKbFacilitySocialWorker;
-                                return Visibility(
-                                  visible: !isKbFacilitySocialWorker &&
-                                      widget.hasEditAccess &&
-                                      casePlanServiceMonitoring
-                                          .canCurrentUserEdit,
-                                  child: _getActionIcon(
-                                    icon: 'assets/icons/edit-icon.svg',
-                                    onTap: () =>
-                                        widget.onEditCasePlanServiceMonitoring(
-                                      OvcCasePlanUtil.getMappedEventObject(
-                                          casePlanServiceMonitoring.eventData!),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ).toList()
-                ],
-              );
-      });
-    });
-  }
-
-  Widget _getActionIcon({
-    required String icon,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 7.0,
-          horizontal: 7.0,
-        ),
-        child: SvgPicture.asset(
-          icon,
-          colorFilter: ColorFilter.mode(
-            widget.formSectionColor,
-            BlendMode.srcIn,
+    if (_cp.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    if (_loading) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 8),
+        child: CircularProcessLoader(color: Colors.blueGrey),
+      );
+    }
+    if (_items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          'No monitoring recorded for this Case Plan yet.',
+          style: TextStyle(
+            color: widget.formSectionColor.withOpacity(0.7),
+            fontStyle: FontStyle.italic,
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  Expanded _getTableViewWidget(
-    String currentLanguage,
-    CasePlanGapServiceMonitoringEvent casePlanServiceMonitoring,
-    int index,
-  ) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(),
-        child: Table(
-          children: [
-            TableRow(
-              children: [
-                _getTableCell(
-                  color: const Color(
-                    0xFF8A9589,
-                  ),
-                  label: currentLanguage == 'lesotho' ? 'Letsatsi' : 'Date',
-                ),
-                _getTableCell(
-                  color: const Color(
-                    0xFF8A9589,
-                  ),
-                  label: '',
-                )
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // simple header
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: Text(
+            widget.title,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: widget.formSectionColor,
             ),
-            TableRow(
-              children: [
-                _getTableCell(
-                  color: const Color(
-                    0xFF1A3518,
-                  ),
-                  label: casePlanServiceMonitoring.date!,
-                ),
-                _getTableCell(
-                  color: const Color(
-                    0xFF1A3518,
-                  ),
-                  label: 'Monitoring $index',
-                )
-              ],
-            ),
-          ],
+          ),
         ),
-      ),
-    );
-  }
+        ..._items.map((e) {
+          final data = _asDataObject(e);
+          final eventDate = (data['eventDate'] ?? '').toString();
+          final location = (data['location'] ?? '').toString();
+          final subtitle = [
+            if (eventDate.isNotEmpty) eventDate,
+            if (location.isNotEmpty) location,
+          ].join(' • ');
 
-  Widget _getTableCell({
-    required String label,
-    required Color color,
-  }) {
-    return TableCell(
-      child: Text(
-        label,
-        style: const TextStyle().copyWith(
-          color: color,
-          fontSize: 12.0,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+          return Card(
+            elevation: 0.5,
+            margin: const EdgeInsets.only(bottom: 8),
+            child: ListTile(
+              dense: true,
+              title: const Text(
+                'Monitoring',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(subtitle),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: 'View',
+                    icon: const Icon(Icons.remove_red_eye_outlined),
+                    onPressed: () =>
+                        widget.onViewCasePlanServiceMonitoring(data),
+                  ),
+                  if (widget.hasEditAccess)
+                    IconButton(
+                      tooltip: 'Edit',
+                      icon: const Icon(Icons.edit_outlined),
+                      onPressed: () =>
+                          widget.onEditCasePlanServiceMonitoring(data),
+                    ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ],
     );
   }
 }

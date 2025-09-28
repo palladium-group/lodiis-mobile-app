@@ -98,7 +98,7 @@ class MonitoringHomeListContainer extends StatelessWidget {
                                                       text: currentLanguage ==
                                                               'lesotho'
                                                           ? 'Phano ea Litsebeletso (moralo oa lintlafatso tsa lelapa ${assessmentIndex + 1}) '
-                                                          : 'Services Monitoring (Case plan ${assessmentIndex + 1})',
+                                                          : 'Services Monitorin (Case plan ${assessmentIndex + 1})',
                                                       style: const TextStyle()
                                                           .copyWith(
                                                         color: const Color(
