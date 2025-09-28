@@ -8,10 +8,9 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/c
 import '../cp_section_heading.dart';
 
 /// Container that renders Identified Gaps grouped by Benchmark/Subsection.
-/// - Title (current domain) is COLLAPSIBLE
-/// - When collapsed: ONLY the title is visible
-/// - When expanded: shows gapSections preview + IdentifiedGapsGroupedView
-/// - NEW: optional trailingAction shown on the same row as the title (right side)
+/// - Collapsible title row (chevron on the right)
+/// - When expanded: shows grouped gaps + (NEW) an optional footer widget *after* the gaps
+/// - Use [footerAfterGaps] for "+ Gaps" so it collapses with the gaps.
 class CasePlanGapViewContainer extends StatefulWidget {
   const CasePlanGapViewContainer({
     Key? key,
@@ -24,7 +23,9 @@ class CasePlanGapViewContainer extends StatefulWidget {
     this.gapToggleDataElements,
     this.onViewGapEvent,
     this.margin,
-    this.trailingAction, // 👈 NEW
+    this.trailingAction,   // kept for backward compat (stays in header)
+    this.footerAfterGaps,  // NEW: rendered inside expanded body after gaps
+    this.initiallyExpanded = false,
   }) : super(key: key);
 
   final String title;
@@ -38,15 +39,21 @@ class CasePlanGapViewContainer extends StatefulWidget {
   final void Function(Map dataObject)? onViewGapEvent;
   final EdgeInsetsGeometry? margin;
 
-  /// Optional widget shown on the right side of the header row
+  /// Optional widget shown on the right side of the header row (stays visible when collapsed).
   final Widget? trailingAction;
+
+  /// NEW: Optional widget placed *below* the gaps, inside expanded area (collapses with the gaps).
+  final Widget? footerAfterGaps;
+
+  /// Start open?
+  final bool initiallyExpanded;
 
   @override
   State<CasePlanGapViewContainer> createState() => _CasePlanGapViewContainerState();
 }
 
 class _CasePlanGapViewContainerState extends State<CasePlanGapViewContainer> {
-  bool _expanded = false;
+  late bool _expanded = widget.initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +62,13 @@ class _CasePlanGapViewContainerState extends State<CasePlanGapViewContainer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 🔹 Collapsible current domain title (tap to expand/collapse)
-          // We overlay a right-side "action bar" that contains [trailingAction] and the chevron.
+          // Header: Title + (optional) trailingAction + chevron
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Stack(
               alignment: Alignment.centerRight,
               children: [
-                // Add right padding so header text never sits under the action bar
+                // Add right padding so text doesn't sit under action/chevron
                 Padding(
                   padding: EdgeInsets.only(right: widget.trailingAction == null ? 38.0 : 120.0),
                   child: CpSectionHeading(
@@ -70,17 +76,15 @@ class _CasePlanGapViewContainerState extends State<CasePlanGapViewContainer> {
                     color: widget.formSectionColor,
                   ),
                 ),
-
-                // Right-side action bar: [trailingAction] then chevron, horizontally
                 Positioned(
                   right: 8,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (widget.trailingAction != null) ...[
-                        // Make sure taps on the trailing action don't toggle the header
+                        // Absorb taps so they don't toggle expand/collapse
                         GestureDetector(
-                          onTap: () {}, // absorb
+                          onTap: () {}, // keep header collapsed/expanded state unchanged
                           behavior: HitTestBehavior.opaque,
                           child: widget.trailingAction!,
                         ),
@@ -97,18 +101,14 @@ class _CasePlanGapViewContainerState extends State<CasePlanGapViewContainer> {
             ),
           ),
 
-          // 🔹 EXPANDED CONTENT:
-          //     - gapSections preview (benchmarks/subsections)
-          //     - IdentifiedGapsGroupedView (the actual domain gaps list)
+          // Body: Gaps + (NEW) footerAfterGaps; both collapse together
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 180),
-            crossFadeState:
-            _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            crossFadeState: _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
             firstChild: const SizedBox.shrink(),
             secondChild: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // The grouped gaps (visible only when expanded)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6.0),
                   child: IdentifiedGapsGroupedView(
@@ -121,6 +121,13 @@ class _CasePlanGapViewContainerState extends State<CasePlanGapViewContainer> {
                     onViewGapEvent: widget.onViewGapEvent,
                   ),
                 ),
+                if (widget.footerAfterGaps != null) ...[
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                    child: widget.footerAfterGaps!,
+                  ),
+                ],
               ],
             ),
           ),
@@ -129,4 +136,3 @@ class _CasePlanGapViewContainerState extends State<CasePlanGapViewContainer> {
     );
   }
 }
-

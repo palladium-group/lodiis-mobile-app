@@ -110,7 +110,7 @@ class _OvcCasePlanFormState extends State<OvcCasePlanForm> {
   FormSection _cloneSectionWithoutGoals(FormSection s) {
     final keptInputs = <InputField>[];
     for (final f in (s.inputFields ?? const <InputField>[])) {
-      if (f.id == _goal1Id || f.id == _goal2Id || f.id == _householdCategorization) {
+      if (f.id == _goal1Id || f.id == _goal2Id) {
         continue;
       }
       keptInputs.add(f);

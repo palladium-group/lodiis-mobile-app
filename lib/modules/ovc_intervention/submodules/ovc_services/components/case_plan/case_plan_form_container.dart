@@ -19,6 +19,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/m
 
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
+import '../../../../../../app_state/language_translation_state/language_translation_state.dart';
 import 'case_plan_gap_view_container.dart';
 
 class CasePlanFormContainer extends StatefulWidget {
@@ -140,8 +141,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
       maxHeightRatio: 0.95,
       containerBody: CasePlanGapFormContainer(
         formSections: gapSections,
-        isEditableMode:
-        widget.isEditableMode && widget.hasEditAccessToCasePlan,
+        isEditableMode: widget.isEditableMode && widget.hasEditAccessToCasePlan,
         formSectionColor: widget.formSectionColor,
         dataObject: seed,
         isHouseholdCasePlan: widget.isHouseholdCasePlan,
@@ -219,7 +219,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
     final String monLink = (domainValue[monKey] ?? '').toString();
 
     final canShowAddButton = widget.isOnCasePlanPage &&
-        widget.hasEditAccessToCasePlan &&
+        widget.hasEditAccessToCasePlan && widget.isEditableMode &&
         widget.canAddDomainGaps;
 
     return Column(
@@ -243,57 +243,46 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
         if (showGroupedHere && widget.canAddDomainGaps) ...[
           const SizedBox(height: 6),
 
-          // Reserve right space so chevron in the inner header stays visible.
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Give the container a right padding so the chevron isn’t covered by the button
-              Padding(
-                padding: const EdgeInsets.only(right: 88.0), // space for button
-                child: CasePlanGapViewContainer(
-                  margin: const EdgeInsets.only(bottom: 6), // tighter between domains
-                  title: widget.formSection.name,
-                  isHouseholdCasePlan: widget.isHouseholdCasePlan,
-                  formSectionColor: widget.formSectionColor,
-                  domainId: domainId,
-                  casePlanEvent: domainValue,
-                  gapSections: gapSections,
-                  onViewGapEvent: (_) {},
-                ),
-              ),
-
-              if (canShowAddButton)
-                Positioned(
-                  // align with header baseline, not on top of chevron
-                  right: 12,
-                  top: 10,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: widget.formSectionColor),
-                      foregroundColor: widget.formSectionColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: _openGeneratePlan,
-                    child: const Text(
-                      '+ Gaps',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+          CasePlanGapViewContainer(
+    title: widget.formSection.name,
+    isHouseholdCasePlan: widget.isHouseholdCasePlan,
+    formSectionColor: widget.formSectionColor,
+    domainId: domainId,
+    casePlanEvent: domainValue,
+    gapSections: gapSections,
+    onViewGapEvent: (_) {},
+    // trailingAction: null, // <- stop using this for + Gaps
+    footerAfterGaps: canShowAddButton
+    ? Align(
+    alignment: Alignment.center,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+                color: widget.formSectionColor),
+            borderRadius: BorderRadius.circular(12.0),
           ),
-        ],
+          padding: const EdgeInsets.all(15.0),
+        ),
+    onPressed: _openGeneratePlan,
+        child: Consumer<LanguageTranslationState>(
+          builder: (context, lang, _) => Text(
+            lang.isSesothoLanguage
+                ? 'TLATSA TŠEBELETSO'
+                : 'ADD GAPS',
+            style: TextStyle(
+              color: widget.formSectionColor,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ),
+    )
+        : null,
+    )
+
+    ],
 
         const SizedBox(height: 6),
 
