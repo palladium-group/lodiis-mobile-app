@@ -152,6 +152,10 @@ class OvcChildEnrollmentSkipLogic {
         hiddenFields['ZKMhrjWoXnD'] = true;
       }
 
+      if (inputFieldId == 'XYPRtYgQUF8' && value != 'Yes'  ){
+        hiddenFields['fINHdGnfAMA'] = true;
+      }
+
       if (inputFieldId == 'iS9mAp3jDaU') {
         if (value == 'Biological mother') {
           assignedFields['R9e8v9r3lMM'] = 'Yes';
