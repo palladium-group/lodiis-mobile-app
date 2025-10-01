@@ -3,28 +3,78 @@ import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/input_field_option.dart';
 
+import '../../../../../core/constants/app_hierarchy_reference.dart';
+
 class HouseholdServicesOngoingMonitoring {
   static List<FormSection> getFormSections() {
     return [
       FormSection(
-          id: '',
-          name: 'Household Monitoring',
-          translatedName: 'Sebakeng sa ba fetisitsoeng le ba fetotseng sephetho sa tsoaetso ea HIV',
-          color: const Color(0xFF4D9E49),
+          name: 'DOMAIN HEALTH',
+          id: 'domainhealth',
+          translatedName: 'BOPHELO',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
           inputFields: [
+            InputField(
+              id: 'nSh4v0iBjKW',
+              name: 'Are you currently pregnant?',
+              translatedName: 'Na u mokhachane nakong ea joale?',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+              options: [
+                InputFieldOption(code: 'Yes', name: 'Yes', translatedName: 'E'),
+                InputFieldOption(code: 'No', name: 'No', translatedName: 'Che'),
+                InputFieldOption(
+                    code: 'Don\'t Know',
+                    name: 'Don\'t Know',
+                    translatedName: 'Ha ke tsebe')
+              ],
+            ),
+            InputField(
+              id: 'fINHdGnfAMA',
+              name: 'Are you attending an ANC clinic for this pregnancy?',
+              translatedName:
+              'Na u tsamaea tleleniking ea bakhachane nakong ea joale?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'LHf5EZmkZ5q',
+              name:
+              'Which clinic/facility are you currently seeking ANC services?',
+              translatedName:
+              'U tsamaea tleleniking efe ho fumana litšebeletso tsa bokhachane?',
+              valueType: 'ORGANISATION_UNIT',
+              allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
+              inputColor: const Color(0xFF4B9F46),
+              showCountryLevelTree: true,
+              labelColor: const Color(0xFF1A3518),
+            ),
 
             InputField(
-              id: 'BvNaiaoxc6w',
-              name: 'Has the caregiver ever been tested for HIV?',
-              translatedName: 'Mohlokomeli o kile a hlahlobela HIV?',
-              description: 'If no refer for testing',
-              translatedDescription: 'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+              id: 'dCIDHw3RrQ9',
+              name: 'Are you Breastfeeding?',
+              translatedName:
+              "Na ua ants'a?",
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF737373),
-
             ),
 
+            InputField(
+              id: 'BvNaiaoxc6w',
+              name: 'Have you ever been tested for HIV?',
+              translatedName: 'U kile oa hlahlobela HIV?',
+              description: 'If no refer for testing',
+              translatedDescription:
+              'Ha asa hlahloba  fetesitsa setsing sa tlhabollo',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+              //isReadOnly: true
+            ),
             InputField(
                 id: 'Uv26fX0HQvO',
                 name: 'If ever tested, when?',
@@ -52,8 +102,7 @@ class HouseholdServicesOngoingMonitoring {
                   ),
                 ],
                 inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)
-            ),
+                labelColor: const Color(0xFF1A3518)),
             InputField(
                 id: 'vNeOE9abQBB',
                 name: 'What were the results of your last HIV test?',
@@ -61,7 +110,6 @@ class HouseholdServicesOngoingMonitoring {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
-
                 options: [
                   InputFieldOption(
                       code: 'Positive',
@@ -75,9 +123,16 @@ class HouseholdServicesOngoingMonitoring {
                       code: 'Unknown',
                       name: 'Unknown',
                       translatedName: 'Tse sa tsejoeng'),
-
                 ]),
 
+            InputField(
+              id: 'EEclxMv9xXk',
+              name: 'Has there been any possible exposure (e.g., unprotected sex, new partner, shared needles) that might put you at risk of HIV infection?',
+              translatedName: 'Na ho bile le monyetla oa ho pepeseha (mohlala, thobalano e sa sireletsehang, molekane e mocha, ho arolelana nale) o ka u behang kotsing ea tšoaetso ea HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
 
             InputField(
               id: 'Icgkv0xkUow',
@@ -87,8 +142,6 @@ class HouseholdServicesOngoingMonitoring {
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF1A3518),
             ),
-
-
             InputField(
                 id: 'ubin7MjQ5OI',
                 name: 'How long have you been on ART?',
@@ -102,7 +155,6 @@ class HouseholdServicesOngoingMonitoring {
                   InputFieldOption(
                       code: 'more than six months',
                       name: 'more than six months'),
-
                 ]),
             InputField(
                 id: 'sLyfb45aLkl',
@@ -144,7 +196,6 @@ class HouseholdServicesOngoingMonitoring {
                       code: 'Not documented',
                       name: 'Not documented',
                       translatedName: 'Ha a tsebe'),
-
                 ]),
 
             InputField(
@@ -160,7 +211,7 @@ class HouseholdServicesOngoingMonitoring {
 
             InputField(
               id: 'tYN12Es3707',
-              name: 'If virally unsuppressed, do you have CD4 results?',
+              name: 'Do you have CD4 results?',
               translatedName: 'U na le sephetho sa CD4 na?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4B9F46),
@@ -206,75 +257,7 @@ class HouseholdServicesOngoingMonitoring {
                       code: 'Yes', name: 'Yes', translatedName: 'E'),
                   InputFieldOption(
                       code: 'No', name: 'No', translatedName: 'Che'),
-
                 ]),
-            InputField(
-                id: 'ToWhhydys',
-                name: 'To whom have you disclosed your status?',
-                translatedName:
-                'Ke mang eo u mo joetsitseng ka boemo a hao a HIV?',
-                valueType: 'CHECK_BOX',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Dl3tIlQxsrd',
-                      name: 'My child',
-                      translatedName: 'Ngoana oaka'),
-                  InputFieldOption(
-                      code: 'CHuwbETwj8o',
-                      name: 'My spouse',
-                      translatedName: 'Molekane oaka'),
-                  InputFieldOption(
-                      code: 'MJGmlQevBsM',
-                      name: 'A friend/neighbor',
-                      translatedName: 'Motsoalle/Moahisane '),
-                  InputFieldOption(
-                      code: 'pCHKaQptcwn',
-                      name: 'Boyfriend/ girlfriend',
-                      translatedName: 'Mohlankana oaka/Kharebe eaka'),
-                  InputFieldOption(
-                      code: 'Wfu966TC3M5',
-                      name: 'Member of the family',
-                      translatedName: 'Moruti'),
-                  InputFieldOption(
-                      code: 'J5hjKDmiE6a',
-                      name: 'Pastor or priest',
-                      translatedName: 'Moruti kapa moprista'),
-                  InputFieldOption(
-                      code: 'HLPSkYfLYlS',
-                      name: 'Other',
-                      translatedName: 'Tse ling'),
-                  // InputFieldOption(
-                  //     code: 'mSc4D4Ij3KN', name: 'NA', translatedName: 'N/A')
-                ]),
-            InputField(
-                id: 'I3hI2UTkKyx',
-                name: 'Other, Specify (disclosed HIV status to)',
-                translatedName: 'Tse ling, hlakisa',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518)),
-
-            InputField(
-              id: 'pJ1UrnLU9mh',
-              name: 'Is the caregiver Preganant?',
-              translatedName:
-              "Na mohlokomeli o mmeleng?",
-              valueType: 'BOOLEAN',
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF737373),
-            ),
-
-            InputField(
-              id: 'dCIDHw3RrQ9',
-              name: 'Is the caregiver Breastfeeding?',
-              translatedName:
-              "Na mohlokomeli oa ants'a?",
-              valueType: 'BOOLEAN',
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF737373),
-            ),
 
             InputField(
                 id: 'KFCBwn7ypws',
@@ -298,21 +281,132 @@ class HouseholdServicesOngoingMonitoring {
                       code: 'No Response',
                       name: 'No Response',
                       translatedName: 'Ha hona Karabo'),
-                  // InputFieldOption(
-                  //     code: 'NA', name: 'NA', translatedName: 'N/A')
                 ]),
 
             InputField(
-              id: 'wRhamvRZj87',
-              name: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and others Would you like to be given information regarding them?',
-              translatedName: 'Bokamoso offers different health education, such as; Oral health messaging and Prevention of child injuries and othersWould you like to be given information regarding them?',
+                id: 'wRhamvRZj87',
+                name: 'Would you like to receive information on Oral Health?',
+                translatedName: 'U ka thabela ho fumana thuto ka bohloeki ba lehano?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518)),
+
+            InputField(
+                id: 'ImAyVEpwmNS',
+                name:
+                'Are you on TB treatment?',
+                translatedName:
+                'Na u noa lithlare tsa lefuba?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+          ]),
+      FormSection(
+          name: 'TB SECTION',
+          id: 'tbsection',
+          description: 'TB SCREENING',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+          inputFields: [
+
+            InputField(
+                id: 'tMvluCbiiUm',
+                name:
+                'Are you coughing?',
+                translatedName:
+                'Are you coughing?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'P9hiqrTjAdg',
+                name: 'Have you lost weight (without trying)?',
+                translatedName:
+                'Have you lost weight (without trying)?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'Y8Xzy7bEWsi',
+                name: 'Do you have drenching/soaking sweats at night?',
+                translatedName: 'Do you have drenching/soaking sweats at night?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'VETgonq6tFr',
+                name: 'Do you have fevers?',
+                translatedName: 'Do you have fevers?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF737373)),
+
+          ]),
+      FormSection(
+          name: 'NUTRITION SECTION',
+          id: 'ntsection',
+          description: 'NUTRITION',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+          inputFields: [
+            InputField(
+                id: 'iqBsSAfCyJb',
+                name: 'Which food groups do you regularly eat?',
+                translatedName: 'Ke mefuta efe ea lijo eo u ejang khafetsa?',
+                description: 'Energy foods, Body Building foods or Protective foods',
+                translatedDescription: 'Limatlafatsi, Li haha mmele kapa lithibela mafu',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(code: '1', name: 'One type of food group', translatedName: 'Mofuta ole mong'),
+                  InputFieldOption(
+                      code: '2', name: 'Two types of food groups', translatedName: 'Mefuta e mmeli'),
+                  InputFieldOption(
+                      code: '3', name: 'All types of food groups', translatedName: 'Mefuta eohle')
+                ]),
+          ]),
+      FormSection(
+          name: 'HIV SECTION',
+          id: 'hivscreening',
+          description: 'HIV SCREENING',
+          color: const Color(0xFF4B9F46),
+          borderColor: const Color(0xFF4B9F46),
+          inputFields: [
+            InputField(
+              id: 'upkFeuyd1fX',
+              name: 'Had sex with more than 1 sexual partner?',
+              translatedName: 'Had sex with more than 1 sexual partner?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'R38Mm0YgXcx',
+              name: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              translatedName: 'In the past 12 months Have you had sex without a condom with someone living with HIV?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'qoKPxEkgfdh',
+              name: 'In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              translatedName: '7. In last 12 month have you had unprotected sexual intercourse with a partner of unknown HIV status?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'B46Zeuzafkg',
+              name: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
+              translatedName: 'In the past 12 months have you had/currently have genital sores or unusual leakage?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4B9F46),
               labelColor: const Color(0xFF1A3518),
             ),
 
-            //     ]),
-          ]),
+          ])
 
     ];
   }
