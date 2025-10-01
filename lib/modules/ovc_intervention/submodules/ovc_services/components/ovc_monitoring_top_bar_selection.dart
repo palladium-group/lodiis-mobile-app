@@ -1,89 +1,95 @@
+
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:provider/provider.dart';
 
-class OvcMonitoringTopBarSelection extends StatelessWidget {
-  final VoidCallback onSelectSchoolMonitoring;
-  final VoidCallback onSelectServiceMonitoring;
-  final bool isClicked;
+enum ChildMonTab { assessment, viralLoad, hei }
 
-  const OvcMonitoringTopBarSelection(
-      {Key? key,
-      required this.onSelectSchoolMonitoring,
-      required this.onSelectServiceMonitoring,
-      this.isClicked = false})
-      : super(key: key);
+class OvcMonitoringTopBarSelection extends StatelessWidget {
+  final VoidCallback onSelectAssessment;
+  final VoidCallback onSelectViralLoad;
+  final VoidCallback onSelectHei;
+
+  final ChildMonTab selected;
+  final bool isVLEligible;
+  final bool isHEIEligible;
+
+  const OvcMonitoringTopBarSelection({
+    Key? key,
+    required this.onSelectAssessment,
+    required this.onSelectViralLoad,
+    required this.onSelectHei,
+    required this.selected,
+    this.isVLEligible = false,
+    this.isHEIEligible = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageTranslationState>(
       builder: (context, languageTranslationState, child) {
-        String currentLanguage = languageTranslationState.currentLanguage;
+        final isSesotho = languageTranslationState.isSesothoLanguage;
 
-        return ClipRRect(
-          clipBehavior: Clip.hardEdge,
-          borderRadius: const BorderRadius.only(),
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 15.0,
-            ),
-            child: Container(
-              decoration: const BoxDecoration(color: Colors.black12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: !isClicked
-                            ? const Color(0xFF4B9F46)
-                            : Colors.transparent,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5.0,
-                          horizontal: 5.0,
-                        ),
-                      ),
-                      onPressed: onSelectServiceMonitoring,
-                      child: Text(
-                        currentLanguage == 'lesotho'
-                            ? "Ts'ebeletso"
-                            : 'Service',
-                        style: const TextStyle().copyWith(
-                          fontSize: 14.0,
-                          color: !isClicked
-                              ? Colors.white
-                              : const Color(0xFF1A3518),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+        TextStyle tabStyle(bool active, bool enabled) => TextStyle(
+          fontSize: 14.0,
+          fontWeight: FontWeight.bold,
+          color: active
+              ? Colors.white
+              : (enabled ? const Color(0xFF1A3518) : Colors.black38),
+        );
+
+        Color bg(bool active) => active ? const Color(0xFF4B9F46) : Colors.transparent;
+
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 15.0),
+          decoration: const BoxDecoration(color: Colors.black12),
+          child: Row(
+            children: [
+              // Assessment
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: bg(selected == ChildMonTab.assessment),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
                   ),
-                  Expanded(
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: isClicked
-                            ? const Color(0xFF4B9F46)
-                            : Colors.transparent,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5.0,
-                          horizontal: 5.0,
-                        ),
-                      ),
-                      onPressed: onSelectSchoolMonitoring,
-                      child: Text(
-                        currentLanguage == 'lesotho' ? 'Sekolo' : 'School',
-                        style: const TextStyle().copyWith(
-                          fontSize: 14.0,
-                          color: isClicked
-                              ? Colors.white
-                              : const Color(0xFF1A3518),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  onPressed: onSelectAssessment,
+                  child: Text(
+                    isSesotho ? "Ts'ebeletso" : 'Assessment',
+                    style: tabStyle(selected == ChildMonTab.assessment, true),
                   ),
-                ],
+                ),
               ),
-            ),
+
+              // Viral Load
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: bg(selected == ChildMonTab.viralLoad),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+                  ),
+                  onPressed: onSelectViralLoad, // screen handles eligibility + toast
+                  child: Text(
+                    'Viral Load',
+                    style: tabStyle(selected == ChildMonTab.viralLoad, isVLEligible),
+                  ),
+                ),
+              ),
+
+              // HEI Card (visible always; screen handles toast & gating)
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: bg(selected == ChildMonTab.hei),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+                  ),
+                  onPressed: onSelectHei,
+                  child: Text(
+                    isSesotho ? 'HEI Karete' : 'HEI Card',
+                    style: tabStyle(selected == ChildMonTab.hei, isHEIEligible),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
