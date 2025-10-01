@@ -1,30 +1,27 @@
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_event_data_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_household_current_selection_state.dart';
-
 import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
 import 'package:kb_mobile_app/core/components/entry_forms/entry_form_container.dart';
 import 'package:kb_mobile_app/core/constants/app_hierarchy_reference.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
-
 import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/ovc_household.dart';
 import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
-
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/household_services_ongoing_monitoring.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_ongoing_monitoring.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/household_case_plan/constants/ovc_household_case_plan_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/skip_logics/ovc_service_monitoring_skip_logic.dart';
+import 'package:provider/provider.dart';
 
 class CasePlanGapServiceMonitoringFormContainer extends StatefulWidget {
   const CasePlanGapServiceMonitoringFormContainer({
@@ -41,7 +38,7 @@ class CasePlanGapServiceMonitoringFormContainer extends StatefulWidget {
   final String domainId;
   final String casePlanGapDate;
   final Color formSectionColor;
-  final Map gapServiceMonitoringObject;
+  final Map gapServiceMonitoringObject; // MUST contain cp linkage on open
   final bool isHouseholdCasePlan;
   final bool enrollmentOuAccessible;
   final bool isEditableMode;
@@ -61,21 +58,8 @@ class _CasePlanGapServiceMonitoringFormContainerState
   List unFilledMandatoryFields = [];
   Map mandatoryFieldObject = {};
 
-  // ---- Ensure CP + Domain (and stable MON id) are always present on the object ----
-  void _ensureCpAndDomainOnObject(Map obj) {
-    const cpKey  = OvcCasePlanConstant.casePlanToGapLinkage;
-    const domKey = OvcCasePlanConstant.casePlanDomainType;
-    const monKey = OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
-
-    // domain must always be stamped
-    obj[domKey] = widget.domainId;
-
-    // keep a stable monitoring linkage if missing
-    final cp = (obj[cpKey] ?? '').toString();
-    if ((obj[monKey] ?? '').toString().isEmpty && cp.isNotEmpty) {
-      obj[monKey] = '$cp|${widget.domainId}';
-    }
-  }
+  static const String _cpDe = OvcCasePlanConstant.casePlanToGapLinkage;
+  static const String _monDe = OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
 
   @override
   void initState() {
@@ -84,36 +68,34 @@ class _CasePlanGapServiceMonitoringFormContainerState
   }
 
   void setFormMetdata() {
-    final household = Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
-        .currentOvcHousehold;
+    OvcHousehold? household = Provider.of<OvcHouseholdCurrentSelectionState>(
+      context,
+      listen: false,
+    ).currentOvcHousehold;
 
     mandatoryFieldObject.clear();
+
     formSections = widget.isHouseholdCasePlan
         ? HouseholdServicesOngoingMonitoring.getFormSections()
         : OvcServicesOngoingMonitoring.getFormSections();
 
-    formSections = formSections
-        .where((formSection) =>
-    formSection.id == widget.domainId ||
-        formSection.id == '' ||
-        formSection.id == null)
-        .toList();
+    formSections = formSections;
 
-    // Event date section
+    // Add event date section at the top
     formSections = [
       AppUtil.getServiceProvisionEventDateSection(
         inputColor: widget.formSectionColor,
         labelColor: const Color(0xFF1A3518),
         sectionLabelColor: widget.formSectionColor,
-        formSectionLabel: 'Service Monitoring Date',
-        inputFieldLabel: 'Service Monitoring On',
+        formSectionLabel: 'Monitoring Date',
+        inputFieldLabel: 'Monitoring On',
         firstDate: widget.casePlanGapDate,
       ),
       ...formSections
     ];
+
     mandatoryFields = ['eventDate'];
 
-    // Optional Location
     if (!widget.enrollmentOuAccessible) {
       formSections = [
         AppUtil.getServiceProvisionLocationSection(
@@ -129,22 +111,25 @@ class _CasePlanGapServiceMonitoringFormContainerState
         ),
         ...formSections
       ];
-      final orgUnit = (widget.gapServiceMonitoringObject['location'] ?? '').toString();
+      String orgUnit = widget.gapServiceMonitoringObject['location'] ?? '';
       onInputValueChange('location', orgUnit);
       mandatoryFields.add('location');
     }
 
-    formSections = formSections.map((f) => f..borderColor = Colors.transparent).toList();
-    for (final field in mandatoryFields) {
+    formSections = formSections
+        .map((formSection) => formSection..borderColor = Colors.transparent)
+        .toList();
+
+    for (String field in mandatoryFields) {
       mandatoryFieldObject[field] = true;
     }
 
-    // Ensure CP + Domain present on the object before skip logic
-    _ensureCpAndDomainOnObject(widget.gapServiceMonitoringObject);
+    // Ensure linkages exist in the object before rendering
+    _ensureLinkages();
 
-    Timer(const Duration(milliseconds: 200), () {
+    Timer(const Duration(milliseconds: 200), () async {
       _isFormReady = true;
-      evaluateSkipLogics(
+     await  evaluateSkipLogics(
         context,
         formSections,
         widget.gapServiceMonitoringObject,
@@ -153,20 +138,42 @@ class _CasePlanGapServiceMonitoringFormContainerState
         household?.sex,
         household?.caregiverTestedForHiv,
         household?.artInitiationDate,
+       household?.age
       );
       setState(() {});
     });
   }
 
+  void _ensureLinkages() {
+    final domain = widget.domainId;
+    final cp = (widget.gapServiceMonitoringObject[_cpDe] ??
+        widget.gapServiceMonitoringObject['cp'] ??
+        '')
+        .toString();
+
+    if (cp.isEmpty && kDebugMode) {
+      debugPrint(
+          '[MON Init] WARNING: cp linkage missing in gapServiceMonitoringObject. '
+              'This should be set by the ViewContainer (cp=$cp, domain=$domain)');
+    }
+
+    final mon = '$cp|$domain';
+    if ((widget.gapServiceMonitoringObject[_monDe] ?? '').toString().isEmpty) {
+      widget.gapServiceMonitoringObject[_monDe] = mon;
+    }
+
+    if (kDebugMode) {
+      debugPrint('[MON Init] domain=$domain cp="$cp" mon="$mon" keys=${widget.gapServiceMonitoringObject.keys.toList()}');
+    }
+  }
+
   void onInputValueChange(String id, dynamic value) {
-    final household = Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
-        .currentOvcHousehold;
+    OvcHousehold? household = Provider.of<OvcHouseholdCurrentSelectionState>(
+      context,
+      listen: false,
+    ).currentOvcHousehold;
 
     widget.gapServiceMonitoringObject[id] = value;
-
-    // Keep CP + Domain stamped as user edits
-    _ensureCpAndDomainOnObject(widget.gapServiceMonitoringObject);
-
     setState(() {});
     evaluateSkipLogics(
       context,
@@ -177,16 +184,17 @@ class _CasePlanGapServiceMonitoringFormContainerState
       household?.sex,
       household?.caregiverTestedForHiv,
       household?.artInitiationDate,
+      household?.age
     );
   }
 
-  Future<void> onSaveCasePlanMonitoring() async {
-    final hasAnyField = FormUtil.hasAtLeastOnFieldFilled(
+  void onSaveCasePlanMonitoring() async {
+    bool hasAtLeastOneFilled = FormUtil.hasAtLeastOnFieldFilled(
       hiddenFields: hiddenFields,
       formSections: formSections,
       dataObject: widget.gapServiceMonitoringObject,
     );
-    final allMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
+    bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       widget.gapServiceMonitoringObject,
       hiddenFields: hiddenFields,
@@ -195,6 +203,7 @@ class _CasePlanGapServiceMonitoringFormContainerState
         formSections: formSections,
       ),
     );
+
     unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
       mandatoryFields,
       widget.gapServiceMonitoringObject,
@@ -204,59 +213,66 @@ class _CasePlanGapServiceMonitoringFormContainerState
         formSections: formSections,
       ),
     );
-
     setState(() {});
-    if (!allMandatoryFilled) {
+
+    if (!hadAllMandatoryFilled) {
       AppUtil.showToastMessage(message: 'Please fill all mandatory fields');
       return;
     }
-    if (!hasAnyField) {
+    if (!hasAtLeastOneFilled) {
       AppUtil.showToastMessage(message: 'Please fill at least one field');
       return;
     }
 
-    // Ensure CP + Domain before save
-    _ensureCpAndDomainOnObject(widget.gapServiceMonitoringObject);
-
-    const cpKey  = OvcCasePlanConstant.casePlanToGapLinkage;
-    const domKey = OvcCasePlanConstant.casePlanDomainType;
-    final cp = (widget.gapServiceMonitoringObject[cpKey] ?? '').toString();
-    if (cp.isEmpty) {
-      AppUtil.showToastMessage(
-        message: 'Missing Case Plan link. Please open monitoring from a Case Plan domain.',
-      );
-      return;
-    }
-    widget.gapServiceMonitoringObject[domKey] = widget.domainId;
-
     _isSaving = true;
     setState(() {});
-
     try {
+      // Force linkages
+      final domain = widget.domainId;
+      final cp = (widget.gapServiceMonitoringObject[_cpDe] ??
+          widget.gapServiceMonitoringObject['cp'] ??
+          '')
+          .toString();
+      final mon = '$cp|$domain';
+
+      widget.gapServiceMonitoringObject[_cpDe] = cp;
+      widget.gapServiceMonitoringObject[_monDe] = mon;
+
+      // program + stage
+      final isHH = widget.isHouseholdCasePlan;
+      final program = isHH
+          ? OvcHouseholdCasePlanConstant.program
+          : OvcChildCasePlanConstant.program;
+      final stage = isHH
+          ? OvcHouseholdCasePlanConstant.casePlanGapServiceMonitoringProgramStage
+          : OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage;
+
+      // tei + orgUnit + date
       final sel = Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false);
-      final TrackedEntityInstance beneficiary = widget.isHouseholdCasePlan
-          ? (sel.currentOvcHousehold?.teiData)!
-          : (sel.currentOvcHouseholdChild?.teiData)!;
+      TrackedEntityInstance beneficiary = isHH
+          ? sel.currentOvcHousehold!.teiData!
+          : sel.currentOvcHouseholdChild!.teiData!;
 
-      String orgUnit = (widget.gapServiceMonitoringObject['location'] ?? '').toString();
-      if (orgUnit.isEmpty) orgUnit = (beneficiary.orgUnit ?? '');
+      String orgUnit =
+          widget.gapServiceMonitoringObject['location'] ?? beneficiary.orgUnit ?? '';
+      if (orgUnit.isEmpty) orgUnit = beneficiary.orgUnit ?? '';
+      String eventDate = widget.gapServiceMonitoringObject['eventDate'];
 
-      final String eventDate = (widget.gapServiceMonitoringObject['eventDate'] ?? '').toString();
+      if (kDebugMode) {
+        debugPrint('[MON Save] isHH=$isHH '
+            'tei=${beneficiary.trackedEntityInstance} '
+            'ou=$orgUnit date=$eventDate cp=$cp mon=$mon domain=$domain '
+            'stage=$stage keys=${widget.gapServiceMonitoringObject.keys.toList()}');
+      }
 
-      // Include CP link & domain in hidden fields so they are actually persisted
-      final List<String> hidden = <String>[
-        OvcCasePlanConstant.casePlanToGapLinkage,
-        OvcCasePlanConstant.casePlanDomainType,
+      // Save (don’t hide CP; MON can be hidden if you don’t want it edited)
+      final hidden = <String>[
         OvcCasePlanConstant.casePlanGapToMonitoringLinkage,
       ];
 
       await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-        widget.isHouseholdCasePlan
-            ? OvcHouseholdCasePlanConstant.program
-            : OvcChildCasePlanConstant.program,
-        widget.isHouseholdCasePlan
-            ? OvcHouseholdCasePlanConstant.casePlanGapServiceMonitoringProgramStage
-            : OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage,
+        program,
+        stage,
         orgUnit,
         formSections,
         widget.gapServiceMonitoringObject,
@@ -269,19 +285,18 @@ class _CasePlanGapServiceMonitoringFormContainerState
       Provider.of<ServiceEventDataState>(context, listen: false)
           .resetServiceEventDataState(beneficiary.trackedEntityInstance);
 
-      final lang = Provider.of<LanguageTranslationState>(context, listen: false)
-          .currentLanguage;
+      final currentLanguage =
+          Provider.of<LanguageTranslationState>(context, listen: false)
+              .currentLanguage;
       AppUtil.showToastMessage(
-        message: lang == 'lesotho'
-            ? 'Fomo e bolokeile'
-            : 'Form has been saved successfully',
-      );
-      if (Navigator.canPop(context)) Navigator.pop(context);
+          message: currentLanguage == 'lesotho'
+              ? 'Fomo e bolokeile'
+              : 'Form has been saved successfully');
+      Navigator.pop(context);
     } catch (e) {
-      AppUtil.showToastMessage(message: e.toString());
-    } finally {
       _isSaving = false;
       setState(() {});
+      AppUtil.showToastMessage(message: e.toString());
     }
   }
 
@@ -289,8 +304,7 @@ class _CasePlanGapServiceMonitoringFormContainerState
   Widget build(BuildContext context) {
     return Consumer<LanguageTranslationState>(
       builder: (context, languageTranslationState, child) {
-        final currentLanguage = languageTranslationState.currentLanguage;
-
+        String currentLanguage = languageTranslationState.currentLanguage;
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 15.0),
           child: !_isFormReady
@@ -322,12 +336,12 @@ class _CasePlanGapServiceMonitoringFormContainerState
                       padding: const EdgeInsets.symmetric(vertical: 22.0),
                       child: Text(
                         _isSaving
-                            ? (currentLanguage == 'lesotho'
-                            ? 'E ntse e boloka...'
-                            : 'SAVING MONITORING ...')
-                            : (currentLanguage == 'lesotho'
-                            ? 'Boloka Tlhokomelo'
-                            : 'SAVE MONITORING'),
+                            ? currentLanguage == 'lesotho'
+                            ? 'E ntse e boloka tlhahlobo e hlophisitsoeng ea lelapa'
+                            : 'SAVING MONITORING ...'
+                            : currentLanguage == 'lesotho'
+                            ? 'Boloka tlhahlobo e hlophisitsoeng ea lelapa'
+                            : 'SAVE MONITORING',
                         style: const TextStyle(
                           color: Color(0xFFFAFAFA),
                           fontSize: 14.0,
@@ -345,4 +359,3 @@ class _CasePlanGapServiceMonitoringFormContainerState
     );
   }
 }
-
