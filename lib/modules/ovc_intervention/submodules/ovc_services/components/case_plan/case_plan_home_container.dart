@@ -158,16 +158,16 @@ class CasePlanHomeContainer extends StatelessWidget {
                             ? 'Litsebeletso tsa lelapa'
                             : 'Household Service Provision'
                         : isOnCasePlanServiceMonitoring
-                            ? 'Household Service monitoring tool'
+                            ? 'Household  monitoring tool'
                             : 'Household Case Plan Form'
                     : isOnCasePlanServiceProvision
                         ? currentLanguage == 'lesotho'
                             ? 'Phano ea Litsebeletso'
-                            : 'Service Provision'
+                            : 'Child Service Provision'
                         : isOnCasePlanServiceMonitoring
                             ? currentLanguage == 'lesotho'
                                 ? "Sesebelisoa sa Tlhokomelo ya Ts'ebeletso"
-                                : 'Service monitoring tool'
+                                : 'Child monitoring tool'
                             : 'Child Case Plan Form',
                 isOnCasePlanPage: isOnCasePlanPage,
                 enrollmentOuAccessible: enrollmentOuAccessible,

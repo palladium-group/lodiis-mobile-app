@@ -26,22 +26,19 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_monitor/pages/ovc_school_monitoring/skip_logics/ovc_child_school_monitoring_skip_logic.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../../../../models/ovc_household.dart';
-import '../../../../../../../components/ovc_household_top_header.dart';
 import '../../../../../models/ovc_viral_load_monitoring.dart';
-import '../constants/household_viral_load_monitoring_constant.dart';
 
-class OvcViralLoadMonitoringForm extends StatefulWidget {
-  const OvcViralLoadMonitoringForm({Key? key}) : super(key: key);
+class OvcChildViralLoadMonitoringForm extends StatefulWidget {
+  const OvcChildViralLoadMonitoringForm({Key? key}) : super(key: key);
 
   @override
-  State<OvcViralLoadMonitoringForm> createState() =>
-      _OvcViralLoadMonitoringFormState();
+  State<OvcChildViralLoadMonitoringForm> createState() =>
+      _OvcChildViralLoadMonitoringFormState();
 }
 
-class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm> {
+class _OvcChildViralLoadMonitoringFormState extends State<OvcChildViralLoadMonitoringForm> {
   String? currentLanguage;
-  final String label = 'Caregiver VL Monitoring tool';
+  final String label = 'Child Viral Load monitoring tool';
   final String translatedName =
       'Sesebelisoa sa ho lekola tšebetso ea Sekolo sa Bana';
   List<FormSection>? formSections;
@@ -64,13 +61,13 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
   }
 
   void setFormSections() {
-    var currentHH =
+    var currentOvc =
         Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
-            .currentOvcHousehold;
+            .currentOvcHouseholdChild;
     var defaultFormSections = OvcViralLoadMonitoring.getFormSections(
-        enrollmentDate: currentHH?.createdDate ?? '');
+        enrollmentDate: currentOvc?.createdDate ?? '');
     mandatoryFields = ['eventDate'];
-    if (currentHH?.enrollmentOuAccessible == true) {
+    if (currentOvc?.enrollmentOuAccessible == true) {
       formSections = defaultFormSections;
     } else {
       FormSection serviceProvisionForm =
@@ -124,7 +121,7 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
   void onSaveForm(
       BuildContext context,
       Map dataObject,
-      OvcHousehold? currentOvcHousehold,
+      OvcHouseholdChild? currentOvcHouseholdChild,
       ) async {
     bool hadAllMandatoryFilled = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
@@ -154,22 +151,22 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
       String? eventId = dataObject['eventId'];
       List<String> hiddenFields = [];
       String orgUnit =
-          dataObject['location'] ?? currentOvcHousehold?.orgUnit ?? '';
+          dataObject['location'] ?? currentOvcHouseholdChild?.orgUnit ?? '';
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcViralLoadMonitoringConstant.program,
-            OvcViralLoadMonitoringConstant.programStage,
+            OvcSchoolMonitoringConstant.program,
+            OvcSchoolMonitoringConstant.programStage,
             orgUnit,
             formSections!,
             dataObject,
             eventDate,
-            currentOvcHousehold?.id,
+            currentOvcHouseholdChild?.id,
             eventId,
             hiddenFields)
             .then(
               (_) {
             Provider.of<ServiceEventDataState>(context, listen: false)
-                .resetServiceEventDataState(currentOvcHousehold?.id);
+                .resetServiceEventDataState(currentOvcHouseholdChild?.id);
             Timer(const Duration(seconds: 1), () {
               setState(() {
                 isSaving = false;
@@ -223,21 +220,19 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
         ),
         body: SubPageBody(
           body: Consumer<LanguageTranslationState>(
-            builder: (context, languageTranslationState, household) {
+            builder: (context, languageTranslationState, child) {
               String? currentLanguage =
                   languageTranslationState.currentLanguage;
               return Consumer<OvcHouseholdCurrentSelectionState>(
-                builder: (context, ovcHouseholdCurrentSelectionState, household) {
-                  OvcHousehold? currentOvcHousehold =
+                builder: (context, ovcHouseholdCurrentSelectionState, child) {
+                  OvcHouseholdChild? currentOvcHouseholdChild =
                       ovcHouseholdCurrentSelectionState
-                          .currentOvcHousehold;
+                          .currentOvcHouseholdChild;
                   return Consumer<ServiceFormState>(
-                    builder: (context, serviceFormState, household) {
+                    builder: (context, serviceFormState, child) {
                       return Column(
                         children: [
-                           OvcHouseholdInfoTopHeader(
-                        currentOvcHousehold: currentOvcHousehold,
-                      ),
+                          const OvcChildInfoTopHeader(),
                           Container(
                             child: !isFormReady
                                 ? const CircularProcessLoader(
@@ -286,7 +281,7 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
                                     onPressButton: () => onSaveForm(
                                         context,
                                         serviceFormState.formState,
-                                        currentOvcHousehold),
+                                        currentOvcHouseholdChild),
                                   ),
                                 )
                               ],

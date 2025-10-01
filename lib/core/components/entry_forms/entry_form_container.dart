@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
@@ -39,7 +40,7 @@ class EntryFormContainer extends StatelessWidget {
   final List? unFilledMandatoryFields;
 
   bool shouldShowSection(FormSection formSection) {
-    List<String> inputFieldIds = FormUtil.getFormFieldIds(
+    final inputFieldIds = FormUtil.getFormFieldIds(
       [formSection],
       includeLocationId: true,
     );
@@ -55,10 +56,10 @@ class EntryFormContainer extends StatelessWidget {
     setFieldErrors();
     return Consumer<LanguageTranslationState>(
       builder: (context, languageTranslationState, child) {
-        String? currentLanguage = languageTranslationState.currentLanguage;
+        final String? currentLanguage = languageTranslationState.currentLanguage;
         return Consumer<CurrentUserState>(
           builder: (context, currentUserState, child) {
-            List<String?> currentUserCountryLevelReferences =
+            final currentUserCountryLevelReferences =
                 currentUserState.currentUserCountryLevelReferences;
             return Column(
               children: formSections!.map((FormSection formSection) {
@@ -69,153 +70,162 @@ class EntryFormContainer extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 10.0),
                     child: MaterialCard(
-                        elevation: elevation,
-                        body: Container(
-                          margin: formSection.name != ''
-                              ? const EdgeInsets.symmetric(
-                                  vertical: 10.0,
-                                )
-                              : const EdgeInsets.only(
-                                  bottom: 10.0,
-                                ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              left: BorderSide(
-                                color: formSection.borderColor!,
-                                width: 8.0,
-                              ),
+                      elevation: elevation,
+                      body: Container(
+                        margin: formSection.name != ''
+                            ? const EdgeInsets.symmetric(vertical: 10.0)
+                            : const EdgeInsets.only(bottom: 10.0),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              color: formSection.borderColor!,
+                              width: 8.0,
                             ),
-                            color: formSection.backgroundColor,
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Visibility(
-                                visible: formSection.name != '',
-                                child: Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  margin: const EdgeInsets.only(left: 5.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: Text(
+                          color: formSection.backgroundColor,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Visibility(
+                              visible: formSection.name != '',
+                              child: Container(
+                                padding: const EdgeInsets.all(10.0),
+                                margin: const EdgeInsets.only(left: 5.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
                                         currentLanguage == 'lesotho' &&
-                                                formSection.translatedName !=
-                                                    null
+                                            formSection.translatedName != null
                                             ? formSection.translatedName!
                                             : formSection.name,
                                         style: const TextStyle().copyWith(
-                                            color: formSection.color,
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold),
-                                      ))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible: formSection.description != '',
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 15.0,
-                                    horizontal: 10.0,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          currentLanguage == 'lesotho' &&
-                                                  formSection
-                                                          .translatedDescription !=
-                                                      null
-                                              ? formSection
-                                                  .translatedDescription!
-                                              : formSection.description!,
-                                          style: const TextStyle().copyWith(
-                                              color: formSection.color,
-                                              fontSize: 14.0,
-                                              fontStyle: FontStyle.italic,
-                                              fontWeight: FontWeight.normal),
+                                          color: formSection.color,
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Visibility(
-                                visible: formSection.name != '',
-                                child: LineSeparator(
-                                  color: formSection.color.withOpacity(0.1),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                  vertical: formSection.name != '' ? 5.0 : 0.0,
+                            ),
+                            Visibility(
+                              visible: formSection.description != '',
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15.0,
                                   horizontal: 10.0,
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                  vertical: formSection.name != '' ? 10.0 : 0.0,
-                                  horizontal: 10.0,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: formSection.inputFields!
-                                      .map(
-                                        (InputField inputField) => Visibility(
-                                          visible: hiddenFields == null ||
-                                              '${hiddenFields![inputField.id]}'
-                                                      .trim() !=
-                                                  'true',
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                                top: 10.0),
-                                            child: InputFieldContainer(
-                                              lastUpdatedId:
-                                                  lastUpdatedId ?? '',
-                                              currentUserCountryLevelReferences:
-                                                  currentUserCountryLevelReferences,
-                                              hiddenFields: hiddenFields,
-                                              inputField: inputField,
-                                              hiddenInputFieldOptions:
-                                                  hiddenInputFieldOptions ?? {},
-                                              currentLanguage: currentLanguage,
-                                              isEditableMode: isEditableMode,
-                                              mandatoryFieldObject:
-                                                  isEditableMode
-                                                      ? mandatoryFieldObject
-                                                      : {},
-                                              dataObject: dataObject,
-                                              onInputValueChange:
-                                                  (String id, dynamic value) =>
-                                                      onInputValueChange!(
-                                                          id, value),
-                                            ),
-                                          ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        currentLanguage == 'lesotho' &&
+                                            formSection.translatedDescription != null
+                                            ? formSection.translatedDescription!
+                                            : formSection.description!,
+                                        style: const TextStyle().copyWith(
+                                          color: formSection.color,
+                                          fontSize: 14.0,
+                                          fontStyle: FontStyle.italic,
+                                          fontWeight: FontWeight.normal,
                                         ),
-                                      )
-                                      .toList(),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              EntrySubFormContainer(
-                                lastUpdatedId: lastUpdatedId ?? '',
-                                currentUserCountryLevelReferences:
-                                    currentUserCountryLevelReferences,
-                                hiddenFields: hiddenFields ?? {},
-                                hiddenSections: hiddenSections ?? {},
-                                hiddenInputFieldOptions:
-                                    hiddenInputFieldOptions ?? {},
-                                currentLanguage: currentLanguage,
-                                subSections: formSection.subSections,
-                                dataObject: dataObject,
-                                isEditableMode: isEditableMode,
-                                mandatoryFieldObject: mandatoryFieldObject,
-                                onInputValueChange: onInputValueChange,
-                                unFilledMandatoryFields:
-                                    unFilledMandatoryFields,
-                              )
-                            ],
-                          ),
-                        )),
+                            ),
+                            Visibility(
+                              visible: formSection.name != '',
+                              child: LineSeparator(
+                                color: formSection.color.withOpacity(0.1),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: formSection.name != '' ? 5.0 : 0.0,
+                                horizontal: 10.0,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                vertical: formSection.name != '' ? 10.0 : 0.0,
+                                horizontal: 10.0,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: formSection.inputFields!
+                                    .map(
+                                      (InputField inputField) => Visibility(
+                                    visible: hiddenFields == null ||
+                                        '${hiddenFields![inputField.id]}'
+                                            .trim() !=
+                                            'true',
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 10.0),
+                                      child: InputFieldContainer(
+                                        lastUpdatedId: lastUpdatedId ?? '',
+                                        currentUserCountryLevelReferences:
+                                        currentUserCountryLevelReferences,
+                                        hiddenFields: hiddenFields,
+                                        inputField: inputField,
+                                        hiddenInputFieldOptions:
+                                        hiddenInputFieldOptions ?? {},
+                                        currentLanguage: currentLanguage,
+                                        isEditableMode: isEditableMode,
+                                        mandatoryFieldObject: isEditableMode
+                                            ? mandatoryFieldObject
+                                            : {},
+                                        dataObject: dataObject,
+                                        // ───────────── FIX: preserve values on single-arg handlers ─────────────
+                                        onInputValueChange:
+                                            (String id, dynamic value) {
+                                          if (onInputValueChange == null) return;
+                                          try {
+                                            // Most parents expect (id, value)
+                                            Function.apply(
+                                              onInputValueChange!,
+                                              [id, value],
+                                            );
+                                          } catch (_) {
+                                            // Some parents expect a merged domain map
+                                            final merged = <dynamic, dynamic>{}
+                                              ..addAll((dataObject ?? {}))
+                                              ..[id] = value;
+                                            Function.apply(
+                                              onInputValueChange!,
+                                              [merged],
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                    .toList(),
+                              ),
+                            ),
+                            EntrySubFormContainer(
+                              lastUpdatedId: lastUpdatedId ?? '',
+                              currentUserCountryLevelReferences:
+                              currentUserCountryLevelReferences,
+                              hiddenFields: hiddenFields ?? {},
+                              hiddenSections: hiddenSections ?? {},
+                              hiddenInputFieldOptions:
+                              hiddenInputFieldOptions ?? {},
+                              currentLanguage: currentLanguage,
+                              subSections: formSection.subSections,
+                              dataObject: dataObject,
+                              isEditableMode: isEditableMode,
+                              mandatoryFieldObject: mandatoryFieldObject,
+                              onInputValueChange: onInputValueChange,
+                              unFilledMandatoryFields: unFilledMandatoryFields,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 );
               }).toList(),
@@ -227,20 +237,15 @@ class EntryFormContainer extends StatelessWidget {
   }
 
   void setFieldErrors() {
-    if (unFilledMandatoryFields != null &&
-        unFilledMandatoryFields!.isNotEmpty) {
-      for (var section in formSections!) {
-        for (var inputField in section.inputFields!) {
-          if (unFilledMandatoryFields!.contains(inputField.id)) {
-            inputField.hasError = true;
-          } else {
-            inputField.hasError = false;
-          }
+    if (unFilledMandatoryFields != null && unFilledMandatoryFields!.isNotEmpty) {
+      for (final section in formSections!) {
+        for (final inputField in section.inputFields!) {
+          inputField.hasError = unFilledMandatoryFields!.contains(inputField.id);
         }
       }
     } else {
-      for (var section in formSections!) {
-        for (var inputField in section.inputFields!) {
+      for (final section in formSections!) {
+        for (final inputField in section.inputFields!) {
           inputField.hasError = false;
         }
       }
