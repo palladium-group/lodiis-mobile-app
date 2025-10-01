@@ -168,9 +168,9 @@ class OvcEnrollmentHousehold {
             valueType: 'DATE',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF737373),
-            minAgeInYear: 13,
+            minAgeInYear: 10,
             hint: "Caregiver age should be 10(CHH) years and above",
-            translatedHint: "Lilemo tsa mohlokomeli li be 13+",
+            translatedHint: "Lilemo tsa mohlokomeli li be 10+",
           ),
           InputField(
             id: 'ls9hlz2tyol',
@@ -183,6 +183,44 @@ class OvcEnrollmentHousehold {
           ),
 
           //Reasons for enrolling
+          InputField(
+              id: 'E2dgl8TtkTq',
+              name: 'Reasons for enrolling child headed household',
+              translatedName: 'Mabaka a ho ngolisa lelapa le etelletsoeng pele ke ngoana',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+              options: [
+                InputFieldOption(
+                    code: 'Single/Double orphans',
+                    name: 'Single/Double orphans',
+                    translatedName: 'Khutsana/Khutsana-khulu'),
+                InputFieldOption(
+                    code: 'Neglected children (more than 90 days without providing any form of support)',
+                    name: 'Neglected children (more than 90 days without providing any form of support)',
+                    translatedName: 'Bana ba nyahlalitsoeng ho feta matsatsi a 90'),
+                InputFieldOption(
+                    code: 'Child marriage (and there is no caregiver who lives with them)',
+                    name: 'Child marriage (and there is no caregiver who lives with them)',
+                    translatedName: 'Bana ba nyalaneng ho se mohlokomeli lelapeng'),
+                InputFieldOption(
+                    translatedName: 'Bana ba batsoali ba chankaneng',
+                    code: 'Children of imprisoned parents',
+                    name: 'Children of imprisoned parents'),
+                InputFieldOption(
+                    translatedName: 'Tse ling',
+                    code: 'Other (Specify)',
+                    name: 'Other (Specify)'),
+              ]),
+
+          InputField(
+              id: 'os6aZeXPkCM',
+              name: 'Other, Specify (Child-headed reason)',
+              translatedName: 'Tse ling, hlakisa',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+          ),
 
           InputField(
             id: 'tNdoR0jYr7R',

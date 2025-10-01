@@ -41,7 +41,16 @@ class OvcHouseholdEnrollmentSkipLogic {
         hiddenFields['l7op0btSqSc'] = true;
       }
 
+      if (inputFieldId == 'ls9hlz2tyol') {
+        final intValue = int.tryParse(value) ?? 0;
+        if (intValue >= 18) {
+          hiddenFields['E2dgl8TtkTq'] = true;
+        }
+      }
 
+      if (inputFieldId == 'E2dgl8TtkTq' && value != 'Other (Specify)') {
+        hiddenFields['os6aZeXPkCM']= true;
+      }
 
       if (inputFieldId == 'oSKX8fFQdWc' && value != 'Positive') {
         hiddenFields['l7op0btSqSc'] = true;
