@@ -520,6 +520,15 @@ class OvcEnrollmentChild {
                   valueType: 'BOOLEAN'),
 
               InputField(
+                id: 'fINHdGnfAMA',
+                name: 'Are you attending an ANC clinic for this pregnancy?',
+                translatedName:
+                'Na u tsamaea tleleniking ea bakhachane nakong ea joale?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),),
+
+              InputField(
                   id: 'wGFmu7DhNGV',
                   name: 'Do you have a child?',
                   translatedName: 'Do you have a child?',
@@ -537,16 +546,6 @@ class OvcEnrollmentChild {
                   id: 'ZGH70UbL2O1',
                   name: 'Are you still breastfeeding? ',
                   translatedName: 'Do you have a child?',
-                  inputColor: const Color(0xFF4B9F46),
-                  labelColor: const Color(0xFF737373),
-                  valueType: 'BOOLEAN'),
-
-
-
-              InputField(
-                  id: 'OcY02VcD7fm',
-                  name: 'Child Health Card available?',
-                  translatedName: 'Child Health Card available?',
                   inputColor: const Color(0xFF4B9F46),
                   labelColor: const Color(0xFF737373),
                   valueType: 'BOOLEAN'),
@@ -940,8 +939,8 @@ class OvcEnrollmentChild {
                 name: 'Sibling',
               ),
               InputFieldOption(
-                code: 'Child of Adolescent Girl who is Breastfeeding',
-                name: 'Child of Adolescent Girl who is Breastfeeding',
+                code: 'Child of Adolescent Girl who is a young mother',
+                name: 'Child of Adolescent Girl who is a young mother',
               ),
               InputFieldOption(
                 code: 'Sibling for CALHIV',
