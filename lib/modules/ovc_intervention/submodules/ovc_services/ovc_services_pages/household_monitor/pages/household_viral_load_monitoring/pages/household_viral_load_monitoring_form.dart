@@ -29,6 +29,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../../../../models/ovc_household.dart';
 import '../../../../../../../components/ovc_household_top_header.dart';
 import '../../../../../models/ovc_viral_load_monitoring.dart';
+import '../constants/household_viral_load_monitoring_constant.dart';
 
 class OvcViralLoadMonitoringForm extends StatefulWidget {
   const OvcViralLoadMonitoringForm({Key? key}) : super(key: key);
@@ -156,8 +157,8 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
           dataObject['location'] ?? currentOvcHousehold?.orgUnit ?? '';
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcSchoolMonitoringConstant.program,
-            OvcSchoolMonitoringConstant.programStage,
+            OvcViralLoadMonitoringConstant.program,
+            OvcViralLoadMonitoringConstant.programStage,
             orgUnit,
             formSections!,
             dataObject,
