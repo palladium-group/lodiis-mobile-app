@@ -1,219 +1,188 @@
 
-import 'package:kb_mobile_app/core/offline_db/event_offline/event_offline_provider.dart';
 
-import 'package:kb_mobile_app/models/events.dart';
+import 'package:kb_mobile_app/core/offline_db/event_offline/event_offline_provider.dart';
 import 'package:kb_mobile_app/models/case_plan_event.dart';
 import 'package:kb_mobile_app/models/case_plan_gap_event.dart';
-import 'package:kb_mobile_app/models/case_plan_gap_service_provision_event.dart';
 import 'package:kb_mobile_app/models/case_plan_gap_service_monitoring_event.dart';
-
+import 'package:kb_mobile_app/models/case_plan_gap_service_provision_event.dart';
+import 'package:kb_mobile_app/models/events.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 
-class OvcCasePlanService {
-  OvcCasePlanService();
+extension _SafeStr on Object? {
+  String get s => (this ?? '').toString();
 
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
+  DateTime? parseUtc(String t) {}
+}
 
-  Future<List<Events>> _fetchByTeiStageAndMaybeDate({
-    required String date,
-    required String programStageId,
-    required String teiId,
-  }) async {
-    // When date == '' return ALL events for the TEI + stage (no date filter)
-    if (date.trim().isEmpty) {
-      return EventOfflineProvider().getEventByTeiByEventDateByProgramStage(date: date, programStageId: programStageId, teiId: teiId);
-         //.getEventByTeiAndProgramStage(teiId: teiId, programStageId: programStageId);
+extension _AsDate on String {
+  DateTime? get asDate {
+    final t = trim();
+    if (t.isEmpty) return null;
+    const fmts = [
+      'yyyy-MM-dd',
+      "yyyy-MM-dd'T'HH:mm:ss",
+      "yyyy-MM-dd HH:mm:ss",
+    ];
+    for (final f in fmts) {
+      try {
+        return DateTime.tryParse(f)!.parseUtc(t);
+      } catch (_) {}
     }
-    return EventOfflineProvider().getEventByTeiByEventDateByProgramStage(
-      date: date,
-      programStageId: programStageId,
-      teiId: teiId,
-    );
+    return DateTime.tryParse(t);
   }
+}
 
-  // ---------------------------------------------------------------------------
-  // Case Plan (container) events
-  // ---------------------------------------------------------------------------
-
+class OvcCasePlanService {
   Future<List<CasePlanEvent>> getCasePlanEvents({
     required String date,
     required String programStageId,
     required String teiId,
   }) async {
-    final events = await _fetchByTeiStageAndMaybeDate(
+    final events =
+    await EventOfflineProvider().getEventByTeiByEventDateByProgramStage(
       date: date,
       programStageId: programStageId,
       teiId: teiId,
     );
     return events
-        .map((e) => CasePlanEvent().toDataModel(eventData: e))
+        .map((eventData) => CasePlanEvent().toDataModel(eventData: eventData))
         .toList();
   }
 
-  // ---------------------------------------------------------------------------
-  // GAP events
-  // ---------------------------------------------------------------------------
-
-  /// NOTE: `casePlanToGaps` is historically unused in this app build, we keep the
-  /// signature for backwards compatibility.
   Future<List<CasePlanGapEvent>> getCasePlanGapEvents({
     required String date,
     required String programStageId,
     required String teiId,
     required List casePlanToGaps,
   }) async {
-    final events = await _fetchByTeiStageAndMaybeDate(
+    final events =
+    await EventOfflineProvider().getEventByTeiByEventDateByProgramStage(
       date: date,
       programStageId: programStageId,
       teiId: teiId,
     );
     return events
-        .map((e) => CasePlanGapEvent().toDataModel(eventData: e))
+        .map(
+          (eventData) => CasePlanGapEvent().toDataModel(eventData: eventData),
+    )
         .toList();
   }
 
-  /// All GAP events for a specific Case Plan linkage (cpLink).
-  Future<List<CasePlanGapEvent>> getCasePlanGapEventsForCp({
-    required String date, // '' => all
-    required String programStageId,
-    required String teiId,
-    required String casePlanToGapLinkage,
-  }) async {
-    final list = await getCasePlanGapEvents(
-      date: date,
-      programStageId: programStageId,
-      teiId: teiId,
-      casePlanToGaps: const [],
-    );
-    final cp = casePlanToGapLinkage.trim();
-    return list
-        .where((m) => (m.casePlanGapToServiceMonitoring ?? '').toString().trim() == cp)
-        .toList();
-  }
-
-  // ---------------------------------------------------------------------------
-  // SERVICE PROVISION events
-  // ---------------------------------------------------------------------------
-
-  /// Legacy method: filters by SP linkage (casePlanGapToServiceProvisionLinkage).
-  Future<List<CasePlanGapServiceProvisionEvent>> getCasePlanServiceProvisonEvents({
+  Future<List<CasePlanGapServiceProvisionEvent>>
+  getCasePlanServiceProvisonEvents({
     required String date,
     required String programStageId,
     required String teiId,
     required String casePlanGapToServiceProvisionLinkage,
   }) async {
-    final events = await _fetchByTeiStageAndMaybeDate(
+    final events =
+    await EventOfflineProvider().getEventByTeiByEventDateByProgramStage(
       date: date,
       programStageId: programStageId,
       teiId: teiId,
     );
-    final models = events
-        .map((e) => CasePlanGapServiceProvisionEvent().toDataModel(eventData: e))
-        .toList();
-    final link = casePlanGapToServiceProvisionLinkage.trim();
-    return models
-        .where((m) => (m.casePlanGapToServiceProvisionLinkage ?? '')
-        .toString()
-        .trim() ==
-        link)
+    return events
+        .map((eventData) => CasePlanGapServiceProvisionEvent()
+        .toDataModel(eventData: eventData))
+        .where((m) =>
+    (m.casePlanGapToServiceProvisionLinkage ?? '') ==
+        casePlanGapToServiceProvisionLinkage)
         .toList();
   }
 
-  /// New convenience: list all services for a given Case Plan (via cpLink)
-  /// We filter by the **CP** (OvcCasePlanConstant.casePlanToGapLinkage),
-  /// not the SP linkage.
-  Future<List<CasePlanGapServiceProvisionEvent>> getCasePlanServiceProvisionEventsForCp({
-    required String date, // '' => all
-    required String programStageId,
-    required String teiId,
-    required String casePlanToGapLinkage,
-  }) async {
-    final events = await _fetchByTeiStageAndMaybeDate(
-      date: date,
-      programStageId: programStageId,
-      teiId: teiId,
-    );
-    final models = events
-        .map((e) => CasePlanGapServiceProvisionEvent().toDataModel(eventData: e))
-        .toList();
-
-    final cp = casePlanToGapLinkage.trim();
-    final cpDe = OvcCasePlanConstant.casePlanToGapLinkage;
-
-    // Some model classes may not expose cp directly; fallback to raw dataValues if needed.
-    return models.where((m) {
-      // First try the explicit field
-      final fromModel = (m.casePlanGapToServiceProvisionLinkage ?? '').toString().trim();
-      if (fromModel.isNotEmpty) return fromModel == cp;
-
-      // Fallback: check raw map if present
-      final raw = m.toDataObject();
-      final rawCp = (raw[cpDe] ?? '').toString().trim();
-      return rawCp == cp;
-    }).toList();
-  }
-
-  // ---------------------------------------------------------------------------
-  // MONITORING events
-  // ---------------------------------------------------------------------------
-
-  /// Legacy method: filters by MON linkage (casePlanGapToServiceMonitoringLinkage).
-  Future<List<CasePlanGapServiceMonitoringEvent>> getCasePlanServiceMonitoringEvents({
+  Future<List<CasePlanGapServiceMonitoringEvent>>
+  getCasePlanServiceMonitoringEvents({
     required String date,
     required String programStageId,
     required String teiId,
     required String casePlanGapToServiceMonitoringLinkage,
   }) async {
-    final events = await _fetchByTeiStageAndMaybeDate(
+    final events =
+    await EventOfflineProvider().getEventByTeiByEventDateByProgramStage(
       date: date,
       programStageId: programStageId,
       teiId: teiId,
     );
-    final models = events
-        .map((e) => CasePlanGapServiceMonitoringEvent().toDataModel(eventData: e))
-        .toList();
-    final link = casePlanGapToServiceMonitoringLinkage.trim();
-    return models
-        .where((m) => (m.casePlanGapToServiceMonitoringLinkage ?? '')
-        .toString()
-        .trim() ==
-        link)
+    return events
+        .map((eventData) => CasePlanGapServiceMonitoringEvent()
+        .toDataModel(eventData: eventData))
+        .where((m) =>
+    (m.casePlanGapToServiceMonitoringLinkage ?? '') ==
+        casePlanGapToServiceMonitoringLinkage)
         .toList();
   }
 
-  /// New convenience: list **all monitoring events for the same Case Plan** (cpLink).
-  /// This is what your UI wants when it says: “show all monitoring for this CP”.
-  Future<List<CasePlanGapServiceMonitoringEvent>> getCasePlanServiceMonitoringEventsForCp({
-    required String date, // '' => all
-    required String programStageId,
+  // ----------------------------------------------------------------------------
+  // NEW: list ALL monitoring events for the same CP (and domain) from CP date,
+  // using getTrackedEntityInstanceEvents() since provider has no "by stage" API
+  // ----------------------------------------------------------------------------
+  Future<List<CasePlanGapServiceMonitoringEvent>>
+  getCasePlanServiceMonitoringEventsForCpSinceDate({
     required String teiId,
-    required String casePlanToGapLinkage,
+    required String programStageId, // HH or Child MON stage
+    required String cpLinkage,      // OvcCasePlanConstant.casePlanToGapLinkage
+    required String domainId,       // 'Health' | 'Safe' | 'Stable' | 'Schooled'
+    required String fromDate,       // casePlanDate or CP eventDate
   }) async {
-    final events = await _fetchByTeiStageAndMaybeDate(
-      date: date,
-      programStageId: programStageId,
-      teiId: teiId,
-    );
-    final models = events
-        .map((e) => CasePlanGapServiceMonitoringEvent().toDataModel(eventData: e))
-        .toList();
+    // 1) read ALL events for this TEI
+    final allForTei =
+    await EventOfflineProvider().getTrackedEntityInstanceEvents([teiId]);
 
-    final cp = casePlanToGapLinkage.trim();
-    final cpDe = OvcCasePlanConstant.casePlanToGapLinkage;
+    // 2) filter by stage first
+    final stageEvents =
+    allForTei.where((e) => (e.programStage ?? '') == programStageId).toList();
 
-    // Filter by CP linkage (not by MON linkage)
-    return models.where((m) {
-      // Prefer explicit field on the model if it exists
-      final fromModel = (m.casePlanGapToServiceMonitoringLinkage ?? '').toString().trim();
-      if (fromModel.isNotEmpty) return fromModel == cp;
+    // Debug: raw load
+    // ignore: avoid_print
+    print('[MON Service] RAW events read: tei="$teiId" stage="$programStageId" total=${stageEvents.length}');
 
-      // Fallback to raw map if needed
-      final raw = m.toDataObject();
-      final rawCp = (raw[cpDe] ?? '').toString().trim();
-      return rawCp == cp;
-    }).toList();
+    final from = fromDate.s.asDate ?? DateTime.fromMillisecondsSinceEpoch(0);
+    final monStable = '$cpLinkage|$domainId';
+
+    int matched = 0, skipped = 0, badDate = 0, emptyCp = 0;
+
+    final list = <CasePlanGapServiceMonitoringEvent>[];
+    for (final ev in stageEvents) {
+      final model = CasePlanGapServiceMonitoringEvent().toDataModel(eventData: ev);
+
+      // date gate (>= CP date)
+      final d = model.eventData!.eventDate.s.asDate;
+      if (d == null) {
+        badDate++;
+        continue;
+      }
+      if (d.isBefore(from)) {
+        skipped++;
+        continue;
+      }
+
+      // linkage checks
+      final cp = model.casePlanGapToServiceMonitoringLinkage.s;
+      final mon = model.casePlanGapToServiceMonitoringLinkage.s;
+
+      if (cp.isEmpty && mon.isEmpty) {
+        emptyCp++;
+        continue;
+      }
+
+      final ok = (cp == cpLinkage) || (mon == monStable);
+      if (!ok) {
+        skipped++;
+        continue;
+      }
+
+      matched++;
+      list.add(model);
+    }
+
+    list.sort((a, b) => b.eventData!.eventDate.s.compareTo(a.eventData!.eventDate.s));
+
+    // Debug: filter result
+    // ignore: avoid_print
+    print('[MON Service] FILTER result for cp="$cpLinkage": matched=$matched, emptyCp=$emptyCp, skipped=$skipped');
+    // ignore: avoid_print
+    print('[MON Service] FINAL list for cp="$cpLinkage": count=${list.length}');
+
+    return list;
   }
 }
-
