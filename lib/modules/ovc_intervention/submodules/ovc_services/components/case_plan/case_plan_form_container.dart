@@ -308,7 +308,7 @@ class _CasePlanFormContainerState extends State<CasePlanFormContainer> {
 
           if (widget.isOnCasePlanServiceMonitoring)
             CasePlanGapServiceMonitoringViewContainer(
-              tittle: widget.formSection.name,
+              tittle: 'MONITORING LIST',
               domainId: domainId,
               formSectionColor: widget.formSectionColor,
               casePlanGap: <String, dynamic>{
