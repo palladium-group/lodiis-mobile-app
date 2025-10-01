@@ -24,7 +24,7 @@ class OvcHouseholdReferralSkipLogic {
     inputFieldIds = inputFieldIds.toSet().toList();
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
-      if (inputFieldId == 'qAed23reDPP' ) {
+      if (inputFieldId == 'qAed23reDPP' && value != 'Community') {
         hiddenSections['SeRefoCo'] = true;
       }
       if (inputFieldId == 'qAed23reDPP' && value != 'Facility') {

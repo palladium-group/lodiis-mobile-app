@@ -52,29 +52,7 @@ class OvcReferralTopBarSelection extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: isClicked
-                          ? const Color(0xFF4B9F46)
-                          : Colors.transparent,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 5.0,
-                        horizontal: 5.0,
-                      ),
-                    ),
-                    onPressed: onSelectCLOReferral,
-                    child: Text(
-                      'CLO Referral',
-                      style: const TextStyle().copyWith(
-                        fontSize: 14.0,
-                        color:
-                            isClicked ? Colors.white : const Color(0xFF1A3518),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),
