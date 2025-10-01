@@ -63,11 +63,6 @@ class OvcReferral {
                   labelColor: const Color(0xFF737373),
                   options: [
                     InputFieldOption(
-                        code: 'Clinical Services', name: 'Clinical Services'),
-                    InputFieldOption(
-                        code: 'Post abuse case management',
-                        name: 'Post abuse case management'),
-                    InputFieldOption(
                         code: 'Social Services', name: 'Social Services'),
                   ]),
               InputField(
@@ -78,120 +73,7 @@ class OvcReferral {
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(
-                      code: 'STI Screening',
-                      name: 'STI Screening',
-                      translatedName: 'Tlhahlobo ea mafu a likobo'),
-                  InputFieldOption(
-                      code: 'STI Treatment',
-                      name: 'STI Treatment',
-                      translatedName: 'Kalafo ea  mafu a likobo'),
-                  InputFieldOption(
-                      code: 'HIV Testing and counselling',
-                      name: 'HIV Testing and counselling',
-                      translatedName: 'Tlhahlobo le tlhabollo ea HIV'),
-                  InputFieldOption(
-                      code: 'Evaluation for ARVs/HAART',
-                      name: 'Evaluation for ARVs/HAART',
-                      translatedName: 'Tlhahlobo ea ho qala Li-ARV '),
-                  InputFieldOption(
-                      code: 'Post abuse case management',
-                      name: 'Post abuse case management'),
-                  InputFieldOption(
-                      code: 'ART and Adherence',
-                      name: 'ART and Adherence',
-                      translatedName:
-                          'Kalafo le tiisetso ea li-ARV batho ba phelang le HIV'),
-                  InputFieldOption(
-                      code: 'PMTCT Services',
-                      name: 'PMTCT Services',
-                      translatedName:
-                          'Thibelo ea phetisetso ea tšoaetso ho tloha ho ’ma ho ea leseeng'),
-                  InputFieldOption(
-                      code: 'Cervical Cancer Screening',
-                      name: 'Cervical Cancer Screening'),
-                  InputFieldOption(code: 'ECD', name: 'ECD'),
-                  InputFieldOption(
-                      code: 'FamilyPlanningSRH',
-                      name: 'Family planning/SRH',
-                      translatedName: 'Thero ea malapa/SRH'),
-                  InputFieldOption(
-                      code: 'Condom supply',
-                      name: 'Condom supply',
-                      translatedName: 'Phano ea likhohlopo'),
-                  InputFieldOption(
-                      code: 'TB screening',
-                      name: 'TB screening',
-                      translatedName: 'Tlhahlobo ea lefuba '),
-                  InputFieldOption(
-                      code: 'TB treatment',
-                      name: 'TB treatment',
-                      translatedName: 'Kalafo ea lefuba'),
-                  InputFieldOption(
-                      code: 'Nutrition',
-                      name: 'Nutrition',
-                      translatedName: 'Phepo e nepahetseng'),
-                  InputFieldOption(
-                      code: 'HTS',
-                      name: 'HTS'),
 
-                  InputFieldOption(
-                      code: 'ANC',
-                      name: 'ANC'),
-                  InputFieldOption(
-                      code: 'VMMC',
-                      name: 'VMMC',
-                      translatedName:
-                          'Ho tlosoa ha karoloana ea letlalo la botona ka boithaopo'),
-                  InputFieldOption(code: 'EID Testing', name: 'EID Testing'),
-                  InputFieldOption(code: 'PrEP/PEP', name: 'PrEP/PEP'),
-                  InputFieldOption(code: 'PMTCT', name: 'PMTCT'),
-                  InputFieldOption(
-                      code: 'Treatment Support (TB/ARV)',
-                      name: 'Treatment Support (TB/ARV)'),
-                  InputFieldOption(
-                      code: 'Youth friendly services',
-                      name: 'Youth friendly services',
-                      translatedName: 'Litšebeletsong tsa bacha '),
-                  InputFieldOption(
-                      code: 'Gender Based Violence',
-                      name: 'Gender Based Violence'),
-                  InputFieldOption(
-                      code: 'Domestic Violence Support group',
-                      name: 'Domestic Violence Support group',
-                      translatedName:
-                          'Sehlopha sa tšehetso ea ba hlekefetsoang ka malapeng'),
-                  InputFieldOption(
-                      code: 'Income generating activity',
-                      name: 'Income generating activity',
-                      translatedName: 'Mekhoa ea boipheliso'),
-                  InputFieldOption(
-                      code: 'Orphan Care & Support',
-                      name: 'Orphan Care & Support',
-                      translatedName: 'Tlhokomelo le tšehetso ea likhutsana'),
-                  InputFieldOption(
-                      code: 'Psycho-social Support',
-                      name: 'Psycho-social Support',
-                      translatedName: 'Tšehetso maikutlong'),
-                  InputFieldOption(
-                      code: 'PLHIV support group',
-                      name: 'PLHIV support group',
-                      translatedName: 'Sehlopha sa tšehetso ea '),
-                  InputFieldOption(
-                      code: 'Referral to post abuse care services',
-                      name: 'Referral to post abuse care services'),
-                  InputFieldOption(
-                      code: 'Violence Against Children',
-                      name: 'Violence Against Children'),
-                  InputFieldOption(code: 'CAG', name: 'CAG'),
-                  InputFieldOption(
-                      code: 'Home based care visits',
-                      name: 'Home based care visits',
-                      translatedName:
-                          'Tlhokomelo/ts’ebeletso e fanoang malapeng'),
-                  InputFieldOption(
-                      code: 'Educational and vocational support',
-                      name: 'Educational and vocational support'),
                   InputFieldOption(
                       code: 'Social grants', name: 'Social grants'),
                 ],
@@ -234,9 +116,9 @@ class OvcReferral {
                 options: [
                   InputFieldOption(
                       code: 'Clinical Services', name: 'Clinical Services'),
-                  InputFieldOption(
+                 /* InputFieldOption(
                       code: 'Post abuse case management',
-                      name: 'Post abuse case management'),
+                      name: 'Post abuse case management'),*/
                   InputFieldOption(
                       code: 'Social Services', name: 'Social Services'),
                 ],
@@ -249,25 +131,11 @@ class OvcReferral {
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF737373),
                 options: [
-                  InputFieldOption(
-                      code: 'STI Screening',
-                      name: 'STI Screening',
-                      translatedName: 'Tlhahlobo ea mafu a likobo'),
-                  InputFieldOption(
-                      code: 'STI Treatment',
-                      name: 'STI Treatment',
-                      translatedName: 'Kalafo ea  mafu a likobo'),
+
                   InputFieldOption(
                       code: 'HIV Testing and counselling',
                       name: 'HIV Testing and counselling',
                       translatedName: 'Tlhahlobo le tlhabollo ea HIV'),
-                  InputFieldOption(
-                      code: 'Evaluation for ARVs/HAART',
-                      name: 'Evaluation for ARVs/HAART',
-                      translatedName: 'Tlhahlobo ea ho qala Li-ARV '),
-                  InputFieldOption(
-                      code: 'Post abuse case management',
-                      name: 'Post abuse case management'),
                   InputFieldOption(
                       code: 'ART and Adherence',
                       name: 'ART and Adherence',
@@ -278,22 +146,7 @@ class OvcReferral {
                       name: 'PMTCT Services',
                       translatedName:
                           'Thibelo ea phetisetso ea tšoaetso ho tloha ho ’ma ho ea leseeng'),
-                  InputFieldOption(
-                      code: 'Cervical Cancer Screening',
-                      name: 'Cervical Cancer Screening'),
-                  InputFieldOption(code: 'ECD', name: 'ECD'),
-                  InputFieldOption(
-                      code: 'FamilyPlanningSRH',
-                      name: 'Family planning/SRH',
-                      translatedName: 'Thero ea malapa '),
-                  InputFieldOption(
-                      code: 'Condom supply',
-                      name: 'Condom supply',
-                      translatedName: 'Phano ea likhohlopo'),
-                  InputFieldOption(
-                      code: 'TB screening',
-                      name: 'TB screening',
-                      translatedName: 'Tlhahlobo ea lefuba '),
+
                   InputFieldOption(
                       code: 'TB treatment',
                       name: 'TB treatment',
@@ -304,62 +157,11 @@ class OvcReferral {
                       translatedName: 'Phepo e nepahetseng'),
                   InputFieldOption(code: 'HTS', name: 'HTS'),
                   InputFieldOption(code: 'ANC', name: 'ANC'),
-                  InputFieldOption(
-                      code: 'VMMC',
-                      name: 'VMMC',
-                      translatedName:
-                          'Ho tlosoa ha karoloana ea letlalo la botona ka boithaopo'),
                   InputFieldOption(code: 'EID Testing', name: 'EID Testing'),
-                  InputFieldOption(code: 'PrEP/PEP', name: 'PrEP/PEP'),
                   InputFieldOption(code: 'PMTCT', name: 'PMTCT'),
                   InputFieldOption(
-                      code: 'Treatment Support (TB/ARV)',
-                      name: 'Treatment Support (TB/ARV)'),
-                  InputFieldOption(
-                      code: 'Youth friendly services',
-                      name: 'Youth friendly services',
-                      translatedName: 'Litšebeletsong tsa bacha '),
-                  InputFieldOption(
-                      code: 'Gender Based Violence',
-                      name: 'Gender Based Violence'),
-                  InputFieldOption(
-                      code: 'Domestic Violence Support group',
-                      name: 'Domestic Violence Support group',
-                      translatedName:
-                          'Sehlopha sa tšehetso ea ba hlekefetsoang ka malapeng'),
-                  InputFieldOption(
-                      code: 'Income generating activity',
-                      name: 'Income generating activity',
-                      translatedName: 'Mekhoa ea boipheliso'),
-                  InputFieldOption(
-                      code: 'Orphan Care & Support',
-                      name: 'Orphan Care & Support',
-                      translatedName: 'Tlhokomelo le tšehetso ea likhutsana'),
-                  InputFieldOption(
-                      code: 'Psycho-social Support',
-                      name: 'Psycho-social Support',
-                      translatedName: 'Tšehetso maikutlong'),
-                  InputFieldOption(
-                      code: 'PLHIV support group',
-                      name: 'PLHIV support group',
-                      translatedName: 'Sehlopha sa tšehetso ea '),
-                  InputFieldOption(
-                      code: 'Referral to post abuse care services',
-                      name: 'Referral to post abuse care services'),
-                  InputFieldOption(
-                      code: 'Violence Against Children',
-                      name: 'Violence Against Children'),
-                  InputFieldOption(code: 'CAG', name: 'CAG'),
-                  InputFieldOption(
-                      code: 'Home based care visits',
-                      name: 'Home based care visits',
-                      translatedName:
-                          'Tlhokomelo/ts’ebeletso e fanoang malapeng'),
-                  InputFieldOption(
-                      code: 'Educational and vocational support',
-                      name: 'Educational and vocational support'),
-                  InputFieldOption(
-                      code: 'Social grants', name: 'Social grants'),
+                      code: 'Treatment Support HIV',
+                      name: 'Treatment Support HIV'),
                 ],
               ),
               InputField(
