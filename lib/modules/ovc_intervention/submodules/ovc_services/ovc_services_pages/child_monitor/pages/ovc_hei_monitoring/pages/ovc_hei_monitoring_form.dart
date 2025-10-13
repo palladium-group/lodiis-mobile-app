@@ -66,7 +66,7 @@ class _OvcHeiMonitoringFormState extends State<OvcHeiMonitoringForm> {
             .currentOvcHouseholdChild;
     var defaultFormSections = OvcHeiMonitoring.getFormSections(
         enrollmentDate: currentOvc?.createdDate ?? '');
-    mandatoryFields = ['eventDate'];
+    mandatoryFields = ['eventDate',...OvcHeiMonitoring.getMandatoryFields()];
     if (currentOvc?.enrollmentOuAccessible == true) {
       formSections = defaultFormSections;
     } else {
