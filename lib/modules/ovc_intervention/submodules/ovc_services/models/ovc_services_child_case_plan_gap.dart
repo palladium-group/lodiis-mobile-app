@@ -398,7 +398,24 @@ class OvcServicesChildCasePlanGap {
                       isReadOnly: true,
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'vbUdFOsYrxP',
+                      name: 'Refer for ANC services',
+                      translatedName: 'Tšebeletso ea ANC',
+                      valueType: 'TRUE_ONLY',
+                      isReadOnly: true,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
 
+                  InputField(
+                      id: 'nV5blRoSKnK',
+                      allowFuturePeriod: true,
+                      name: 'Date for ANC referral  to be completed',
+                      translatedName: 'Letsatsi la tlhahlobo ea TB',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
                 ]
 
 
