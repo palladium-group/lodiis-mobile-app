@@ -28,8 +28,10 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../../../../models/ovc_household.dart';
 import '../../../../../../../components/ovc_household_top_header.dart';
+import '../../../../../models/household_services_ongoing_monitoring.dart';
 import '../../../../../models/ovc_viral_load_monitoring.dart';
 import '../constants/household_viral_load_monitoring_constant.dart';
+import '../skip_logics/household_viral_load_monitoring_skip_logics.dart';
 
 class OvcViralLoadMonitoringForm extends StatefulWidget {
   const OvcViralLoadMonitoringForm({Key? key}) : super(key: key);
@@ -69,7 +71,7 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
             .currentOvcHousehold;
     var defaultFormSections = OvcViralLoadMonitoring.getFormSections(
         enrollmentDate: currentHH?.createdDate ?? '');
-    mandatoryFields = ['eventDate'];
+    mandatoryFields = ['eventDate',...OvcViralLoadMonitoring.getMandatoryFields()];
     if (currentHH?.enrollmentOuAccessible == true) {
       formSections = defaultFormSections;
     } else {
@@ -106,7 +108,7 @@ class _OvcViralLoadMonitoringFormState extends State<OvcViralLoadMonitoringForm>
           () async {
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
-        await OvcChildSchoolMonitoringSkipLogic.evaluateSkipLogics(
+        await OvcHouseholdViralLoadMonitoringSkipLogic.evaluateSkipLogics(
           context,
           formSections!,
           dataObject,
