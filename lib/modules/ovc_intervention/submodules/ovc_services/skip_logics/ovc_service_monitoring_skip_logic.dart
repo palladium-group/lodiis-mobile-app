@@ -25,6 +25,7 @@ class OvcServiceMonitoringSkipLogic {
   static Map hiddenInputFieldOptions = {};
   /// Evaluate skip logics for the monitoring form.
   /// This implementation intentionally does NOTHING that hides inputs/sections.
+
   Future<void> evaluateSkipLogics(
       BuildContext context,
       List<FormSection> formSections,
@@ -35,7 +36,8 @@ class OvcServiceMonitoringSkipLogic {
       bool? caregiverTestedForHiv,
       DateTime? artInitiationDate,
       String? age
-      ) async {
+      ) async
+  {
     // Show everything by default
     hiddenFields.clear();
     hiddenSections.clear();
@@ -115,13 +117,15 @@ class OvcServiceMonitoringSkipLogic {
         hiddenFields['o1GBFscjs4y'] = true;
       }
 
-      if (hivStatus!='Positive') {
+      if (inputFieldId =='vNeOE9abQBB' && value != 'Positive') {
         hiddenFields['BYZu8p33lzP'] = true;
         hiddenFields['KFCBwn7ypws'] = true;
-        hiddenFields['Uv26fX0HQvO'] = false;
 
-      }else{
-        hiddenFields['Uv26fX0HQvO'] = true;
+
+      }
+      if(caregiverTestedForHiv == true){
+        dataObject['BvNaiaoxc6w'] = caregiverTestedForHiv;
+
       }
       // if(inputFieldId=='Uv26fX0HQvO' && value == 'Less than 3 months' || (inputFieldId=='Uv26fX0HQvO' && value == 'null') || (caregiverTestedForHiv == false) || (hivStatus =='Positive')) {
       //   hiddenSections['hivscreening'] = true;
@@ -143,7 +147,7 @@ class OvcServiceMonitoringSkipLogic {
 
         bool showScreening = false;
 
-        if (hivStatus == 'Negative') {
+        if (inputFieldId == 'vNeOE9abQBB' && value == 'Negative') {
           if (testedDuration != 'Less than 3 months' && testedDuration != '' ) {
             showScreening = true;
           } else if (testedDuration == 'Less than 3 months' && exposure == 'true') {
@@ -201,13 +205,13 @@ class OvcServiceMonitoringSkipLogic {
         hiddenFields['nSh4v0iBjKW'] = true; // Pregnant
         hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
       }
-      if (caregiverTestedForHiv != true){
+     /* if (caregiverTestedForHiv != true){
         hiddenFields['Uv26fX0HQvO'] = true;
         hiddenFields['vNeOE9abQBB'] = true;
         hiddenFields['Icgkv0xkUow'] = true;
         hiddenFields['sLyfb45aLkl'] = true;
 
-      }
+      }*/
 
 
 
@@ -216,32 +220,29 @@ class OvcServiceMonitoringSkipLogic {
         hiddenFields['fINHdGnfAMA']=true;
         hiddenFields['LHf5EZmkZ5q']=true;
       }
+      if(inputFieldId=='fINHdGnfAMA' && value !='true') {
+        hiddenFields['LHf5EZmkZ5q']=true;
+      }
       if (artInitiationDate != null) {
         final now = DateTime.now();
         final sixMonthsFromNow = DateTime(now.year, now.month - 6, now.day);
 
-        // Check if ART start date is before six months from now
-        if (artInitiationDate.isBefore(sixMonthsFromNow)) {
-          dataObject['ubin7MjQ5OI'] = 'more than six months';
 
-        } else {
-          dataObject['ubin7MjQ5OI'] = 'less than six months';
-          hiddenFields['sLyfb45aLkl']=true;
-        }
       }
 
 
       if (inputFieldId == 'BvNaiaoxc6w') {
-        if (hivStatus != null) {
+
+        if (hivStatus != null && hivStatus == 'Positive') {
           dataObject[inputFieldId] = caregiverTestedForHiv;
-
-        } else if (hivStatus == null) {
+          dataObject['vNeOE9abQBB']=hivStatus;
           hiddenFields['Uv26fX0HQvO'] = true;
-          // hiddenFields['T4grVrCVDkk'] = true;
-          dataObject[inputFieldId] = 'false';
         }
-      }
 
+      }
+if(inputFieldId == 'BvNaiaoxc6w' && value != 'true'){
+  hiddenFields['Uv26fX0HQvO'] = true;
+}
 
 
       if (inputFieldId == 'blod3xZ2dPP' && value != '1') {
@@ -284,7 +285,7 @@ class OvcServiceMonitoringSkipLogic {
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
-          dataObject[inputFieldId] = hivStatus;
+         // dataObject[inputFieldId] = hivStatus;
 
           if (dataObject[inputFieldId] != 'Positive') {
             hiddenFields['sLyfb45aLkl'] = true;
@@ -294,21 +295,11 @@ class OvcServiceMonitoringSkipLogic {
         }
       }
 
-      if (inputFieldId == 'Icgkv0xkUow') {
-        if (artStatus != null) {
-          // print('ART satatus at Assessment== $artStatus');
-          //  print('Boelng: $sex');
-          //  print(' Na o kila hlahloba: $caregiverTestedForHiv');
-          // print(' Date: $artInitiationDate');
-          dataObject[inputFieldId] = artStatus;
-          if (artStatus != true){
-            hiddenFields['ubin7MjQ5OI'] = true;
-            hiddenFields['sLyfb45aLkl'] = true;
-          }
 
-        }
-      }
-
+if(inputFieldId=='Icgkv0xkUow' && value != 'true'){
+  hiddenFields['ubin7MjQ5OI']=true;
+  hiddenFields['sLyfb45aLkl']=true;
+}
       if (inputFieldId == 'UffKzmI4698' && value != 'true') {
         hiddenFields['Icgkv0xkUow'] = true;
         hiddenFields['ubin7MjQ5OI'] = true;
@@ -317,7 +308,7 @@ class OvcServiceMonitoringSkipLogic {
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
-          dataObject[inputFieldId] = hivStatus;
+        //  dataObject[inputFieldId] = hivStatus;
           if (dataObject[inputFieldId] == 'Negative') {
             hiddenFields['sLyfb45aLkl'] = true;
             hiddenFields['aRNGDZcwWmS'] = true;
@@ -339,7 +330,7 @@ class OvcServiceMonitoringSkipLogic {
 
       if (inputFieldId == 'vNeOE9abQBB') {
         if (hivStatus != null) {
-          dataObject[inputFieldId] = hivStatus;
+         // dataObject[inputFieldId] = hivStatus;
           if (dataObject[inputFieldId] == 'Positive') {
             dynamic onArtToTreatHiv = dataObject['blod3xZ2dPP'] ?? '';
             if ('$onArtToTreatHiv' == '0') {
@@ -435,8 +426,22 @@ class OvcServiceMonitoringSkipLogic {
         hiddenFields['JcaEaDrtOFj'] = true;
       }
     }
-
+    for (String sectionId in hiddenSections.keys) {
+      List<FormSection> allFormSections =
+      FormUtil.getFlattenFormSections(formSections);
+      List<String> hiddenSectionInputFieldIds = FormUtil.getFormFieldIds(
+          allFormSections
+              .where((formSection) => formSection.id == sectionId)
+              .toList());
+      for (String inputFieldId in hiddenSectionInputFieldIds) {
+        hiddenFields[inputFieldId] = true;
+      }
+    }
+    resetValuesForHiddenFields(context, hiddenFields.keys);
+    resetValuesForHiddenSections(context, formSections);
+    resetValuesForHiddenInputFieldOptions(context);
   }
+
 
   /// Clears values for fields that are hidden (no-op now since nothing is hidden).
   void resetValuesForHiddenFields(BuildContext context, Iterable keys) {
@@ -444,6 +449,7 @@ class OvcServiceMonitoringSkipLogic {
       if (hiddenFields[id] == true) {
         assignInputFieldValue(context, id as String, null);
       }
+
     }
   }
   void resetValuesForHiddenSections(
