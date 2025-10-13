@@ -25,6 +25,7 @@ class OvcHouseholdChild {
   bool? isHei;
   bool? artStatus;
   bool? testedHeiAlgorithm;
+  String? pregnancyStatus;
   TrackedEntityInstance? teiData;
 
   OvcHouseholdChild({
@@ -49,11 +50,13 @@ class OvcHouseholdChild {
     this.tested,
     this.isHei,
     this.artStatus,
-    this.testedHeiAlgorithm
+    this.testedHeiAlgorithm,
+    this.pregnancyStatus,
+
   });
 
   bool get isClHiv => '$hivStatus' == 'Positive';
-
+  bool get isPregnant => '$pregnancyStatus' == 'Yes';
   Map toMap({
     required String parentId,
   }) {
@@ -108,6 +111,7 @@ class OvcHouseholdChild {
       'GMcljM7jbNG',
       'l7op0btSqSc',
       'IQX90Pjcrdh',
+      'XYPRtYgQUF8',
 
       BeneficiaryIdentification.phoneNumber,
       BeneficiaryIdentification.primaryUIC,
@@ -127,7 +131,7 @@ class OvcHouseholdChild {
     Object artStatus = (_parseBool(data['l7op0btSqSc']) ?? '');
     Object testedHeiAlgorithm = (_parseBool(data['IQX90Pjcrdh']) ?? '');
     String hivStatus = data['oSKX8fFQdWc'] ?? '';
-
+  String pregnancyStatus = data['XYPRtYgQUF8'] ?? '';
     return OvcHouseholdChild(
         id: tei.trackedEntityInstance,
         firstName: data['WTZ7GLTrE8Q'] ?? '',
@@ -150,7 +154,7 @@ class OvcHouseholdChild {
         isHei: isHei is bool ? isHei  : null,
         artStatus: artStatus is bool ? artStatus : null,
         testedHeiAlgorithm: testedHeiAlgorithm is bool ? testedHeiAlgorithm : null,
-
+        pregnancyStatus:pregnancyStatus,
         hasExitedProgram:
             data[OvcInterventionConstant.programStatus] == 'Exit');
   }
