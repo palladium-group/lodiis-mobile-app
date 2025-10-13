@@ -38,6 +38,9 @@ class CasePlanGapServiceProvisionFormContainer extends StatefulWidget {
     required this.domainId,
     required this.isEditableMode,
     required this.formSectionColor,
+
+    /// NEW: list of DE ids to hide because they were provided today already
+    this.preHiddenFieldIds = const <String>[],
   }) : super(key: key);
 
   final Map gapServiceObject;
@@ -46,6 +49,9 @@ class CasePlanGapServiceProvisionFormContainer extends StatefulWidget {
   final String domainId;
   final bool isEditableMode;
   final Color formSectionColor;
+
+  /// fields to hide (e.g. “Nutrition messaging” DE) — already provided today
+  final List<String> preHiddenFieldIds;
 
   @override
   State<CasePlanGapServiceProvisionFormContainer> createState() =>
@@ -67,7 +73,6 @@ class _CasePlanGapServiceProvisionFormContainerState
   static const String spKey =
       OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage;
 
-  /// Make SP stable per (CP, domain)
   String _stableSp(String cp, String domain) => '$cp|$domain';
 
   @override
@@ -79,7 +84,7 @@ class _CasePlanGapServiceProvisionFormContainerState
   void _setFormMetadata() {
     if (kDebugMode) {
       debugPrint(
-          '[SP Form] init for domain="${widget.domainId}" isHH=${widget.isHouseholdCasePlan}, editable=${widget.isEditableMode}');
+          '[SP Form] init domain="${widget.domainId}" HH=${widget.isHouseholdCasePlan} editable=${widget.isEditableMode}');
     }
 
     mandatoryFieldObject.clear();
@@ -108,7 +113,7 @@ class _CasePlanGapServiceProvisionFormContainerState
       ),
     );
 
-    // Add location selector section when OU is not accessible
+    // If OU not accessible, add Location section
     if (!widget.enrollmentOuAccessible) {
       formSections = [
         AppUtil.getServiceProvisionLocationSection(
@@ -124,7 +129,6 @@ class _CasePlanGapServiceProvisionFormContainerState
         ),
         ...formSections
       ];
-      // pre-seed location if present
       final orgUnit = (widget.gapServiceObject['location'] ?? '').toString();
       if (orgUnit.isNotEmpty) {
         onInputValueChange('location', orgUnit);
@@ -137,7 +141,7 @@ class _CasePlanGapServiceProvisionFormContainerState
       mandatoryFieldObject[f] = true;
     }
 
-    // Ensure stable cp/sp are present on the working object
+    // Ensure stable cp/sp on working object
     final cp = (widget.gapServiceObject[cpKey] ?? '').toString();
     if (cp.isNotEmpty) {
       final stable = _stableSp(cp, widget.domainId);
@@ -146,7 +150,7 @@ class _CasePlanGapServiceProvisionFormContainerState
       }
     }
 
-    // Evaluate skip-logic async (after UI builds)
+    // Evaluate skip-logic after first frame
     Timer(const Duration(milliseconds: 150), () {
       _isFormReady = true;
       evaluateSkipLogics(context, formSections, widget.gapServiceObject);
@@ -159,9 +163,24 @@ class _CasePlanGapServiceProvisionFormContainerState
     if (kDebugMode) debugPrint('[SP Form] onChange "$id"="$value"');
     setState(() {});
     evaluateSkipLogics(context, formSections, widget.gapServiceObject);
-    // clear any previous mandatory marks
     _unFilledMandatoryFields = [];
     setState(() {});
+  }
+
+  /// Merge skip-logic hidden fields with “already-today” hidden field IDs
+  Map<String, bool> _mergedHiddenFields() {
+    final merged = <String, bool>{};
+
+    // 1) From skip logic mixin (hiddenFields map)
+    if (hiddenFields.isNotEmpty) {
+      hiddenFields.forEach((k, v) => merged[k] = v == true);
+    }
+
+    // 2) From view container (preHiddenFieldIds list)
+    for (final id in widget.preHiddenFieldIds) {
+      merged[id] = true;
+    }
+    return merged;
   }
 
   List<String> _serviceProvisionDates() {
@@ -175,31 +194,24 @@ class _CasePlanGapServiceProvisionFormContainerState
   }
 
   Future<void> _save() async {
-    // Validate required linkages so list-views can find this event later
-    final String cpLink =
-    (widget.gapServiceObject[cpKey] ?? '').toString().trim();
-
+    final String cpLink = (widget.gapServiceObject[cpKey] ?? '').toString().trim();
     if (cpLink.isEmpty) {
       AppUtil.showToastMessage(
           message:
           'Case plan linkage missing. Open from the Service Provision tab again.');
-      if (kDebugMode) {
-        debugPrint('[SP Save] ABORT: missing cp');
-      }
+      if (kDebugMode) debugPrint('[SP Save] ABORT: missing cp');
       return;
     }
 
-    // Enforce a stable SP per (CP, domain)
     final stableSp = _stableSp(cpLink, widget.domainId);
     if ((widget.gapServiceObject[spKey] ?? '').toString() != stableSp) {
       widget.gapServiceObject[spKey] = stableSp;
     }
 
-    // Mandatory check (DATE + location if applicable)
     final hasAll = FormUtil.hasAllMandatoryFieldsFilled(
       mandatoryFields,
       widget.gapServiceObject,
-      hiddenFields: hiddenFields,
+      hiddenFields: _mergedHiddenFields(),
       checkBoxInputFields: FormUtil.getInputFieldByValueType(
         valueType: 'CHECK_BOX',
         formSections: formSections,
@@ -208,7 +220,7 @@ class _CasePlanGapServiceProvisionFormContainerState
     _unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
       mandatoryFields,
       widget.gapServiceObject,
-      hiddenFields: hiddenFields,
+      hiddenFields: _mergedHiddenFields(),
       checkBoxInputFields: FormUtil.getInputFieldByValueType(
         valueType: 'CHECK_BOX',
         formSections: formSections,
@@ -223,18 +235,14 @@ class _CasePlanGapServiceProvisionFormContainerState
     _isSaving = true;
     setState(() {});
     try {
-      // Resolve beneficiary & orgUnit
       final hhSel =
       Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false);
       final TrackedEntityInstance beneficiary = widget.isHouseholdCasePlan
           ? hhSel.currentOvcHousehold!.teiData!
           : hhSel.currentOvcHouseholdChild!.teiData!;
       String orgUnit = (widget.gapServiceObject['location'] ?? '').toString();
-      if (orgUnit.isEmpty) {
-        orgUnit = beneficiary.orgUnit ?? '';
-      }
+      orgUnit = orgUnit.isEmpty ? (beneficiary.orgUnit ?? '') : orgUnit;
 
-      // Pick event date = earliest of provided DATEs (or today)
       final dateList =
       _serviceProvisionDates().where((e) => e.toString().isNotEmpty).toList();
       final eventDate = widget.gapServiceObject['eventDate'] ??
@@ -250,20 +258,14 @@ class _CasePlanGapServiceProvisionFormContainerState
           : OvcChildCasePlanConstant.casePlanGapServiceProvisionProgramStage;
 
       if (kDebugMode) {
-        debugPrint(
-            '[SP Save] domain="${widget.domainId}" HH=${widget.isHouseholdCasePlan}');
+        debugPrint('[SP Save] domain="${widget.domainId}" HH=${widget.isHouseholdCasePlan}');
         debugPrint('[SP Save] program=$program stage=$stage');
-        debugPrint(
-            '[SP Save] tei=${beneficiary.trackedEntityInstance} ou=$orgUnit');
+        debugPrint('[SP Save] tei=${beneficiary.trackedEntityInstance} ou=$orgUnit');
         debugPrint('[SP Save] date=$eventDate');
         debugPrint('[SP Save] linkages: cp="$cpLink", sp="$stableSp"');
-        debugPrint(
-            '[SP Save] eventId="${widget.gapServiceObject['eventId'] ?? ''}"');
-        debugPrint(
-            '[SP Save] payload keys=${widget.gapServiceObject.keys.toList()}');
+        debugPrint('[SP Save] eventId="${widget.gapServiceObject['eventId'] ?? ''}"');
       }
 
-      // DO NOT hide cp/sp, we must persist them for listing
       await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
         program,
         stage,
@@ -273,10 +275,9 @@ class _CasePlanGapServiceProvisionFormContainerState
         eventDate,
         beneficiary.trackedEntityInstance,
         widget.gapServiceObject['eventId'],
-        const [cpKey,spKey],
+        const [cpKey, spKey], // keep linkages persisted but hidden in UI
       );
 
-      // Propagate to eligible children (only in HH SP)
       if (widget.isHouseholdCasePlan) {
         final childrens =
             hhSel.currentOvcHousehold?.children ?? <OvcHouseholdChild>[];
@@ -290,7 +291,6 @@ class _CasePlanGapServiceProvisionFormContainerState
         );
       }
 
-      // Refresh event lists so the view re-renders
       Provider.of<ServiceEventDataState>(context, listen: false)
           .resetServiceEventDataState(beneficiary.trackedEntityInstance);
 
@@ -298,8 +298,9 @@ class _CasePlanGapServiceProvisionFormContainerState
           Provider.of<LanguageTranslationState>(context, listen: false)
               .currentLanguage;
       AppUtil.showToastMessage(
-        message:
-        lang == 'lesotho' ? 'Fomo e bolokeile' : 'Form has been saved successfully',
+        message: lang == 'lesotho'
+            ? 'Fomo e bolokeile'
+            : 'Form has been saved successfully',
       );
       if (mounted) Navigator.pop(context);
     } catch (e) {
@@ -311,6 +312,8 @@ class _CasePlanGapServiceProvisionFormContainerState
 
   @override
   Widget build(BuildContext context) {
+    final mergedHidden = _mergedHiddenFields();
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15.0),
       child: !_isFormReady
@@ -318,8 +321,8 @@ class _CasePlanGapServiceProvisionFormContainerState
           : Column(
         children: [
           EntryFormContainer(
-            hiddenFields: hiddenFields, // from skip-logic mixin (Map)
-            hiddenSections: hiddenSections, // from skip-logic mixin (List)
+            hiddenFields: mergedHidden,
+            hiddenSections: hiddenSections,
             elevation: 0.0,
             formSections: formSections,
             mandatoryFieldObject: mandatoryFieldObject,
@@ -347,8 +350,7 @@ class _CasePlanGapServiceProvisionFormContainerState
                     onPressed: _save,
                     child: Container(
                       alignment: Alignment.center,
-                      padding:
-                      const EdgeInsets.symmetric(vertical: 22.0),
+                      padding: const EdgeInsets.symmetric(vertical: 22.0),
                       child: Text(
                         label,
                         style: const TextStyle(
@@ -368,7 +370,7 @@ class _CasePlanGapServiceProvisionFormContainerState
     );
   }
 
-  // ------------ helpers for error messages (unchanged) ------------
+  // ------------ helpers for error labels (unchanged) ------------
   List<String> getInputFieldsLabel(
       List<FormSection> formSections,
       List<String> inputFieldIds,
