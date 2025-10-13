@@ -49,11 +49,9 @@ class _CasePlanGapServiceMonitoringViewContainerState
   static const _monKey = OvcCasePlanConstant.casePlanGapToMonitoringLinkage;
 
   String _s(Object? v) => (v ?? '').toString();
-
-  DateTime? _asDate(String s) {
-    final t = s.trim();
-    if (t.isEmpty) return null;
-    return DateTime.tryParse(t);
+  String _ymd(dynamic v) {
+    final s = (v ?? '').toString().trim();
+    return s.isEmpty ? '' : (s.length >= 10 ? s.substring(0, 10) : s);
   }
 
   Map<String, String> _dvMap(Events e) {
@@ -81,9 +79,9 @@ class _CasePlanGapServiceMonitoringViewContainerState
       'location': seed?['location'] ?? widget.casePlanGap['location'] ?? '',
     };
 
-    // ✅ FIX: resolve CP safely (no `.isNotEmpty` on null)
-    final resolvedCp = obj[_cpKey] ?? widget.casePlanGap[_cpKey];
-    final cp = _s(resolvedCp);
+    // Resolve CP safely
+    final cpResolved = obj[_cpKey] ?? widget.casePlanGap[_cpKey];
+    final cp = _s(cpResolved);
     if (cp.isEmpty) {
       if (kDebugMode) {
         debugPrint('[MON ViewContainer] ABORT open: missing CP (domain=${widget.domainId})');
@@ -92,16 +90,9 @@ class _CasePlanGapServiceMonitoringViewContainerState
       return;
     }
 
-    // Stable MON link
+    // Set stable MON link in seed
     obj[_cpKey]  = cp;
     obj[_monKey] = _stableMon(cp, widget.domainId);
-
-    final dateInfo = _s(obj['eventDate'] ?? obj['casePlanDate']);
-    final ou = _s(obj['location']);
-    if (kDebugMode) {
-      debugPrint('[MON ViewContainer] open sheet '
-          'domain=${widget.domainId} cp=$cp date=$dateInfo ou=$ou edit=$editable');
-    }
 
     await AppUtil.showActionSheetModal(
       context: context,
@@ -119,6 +110,82 @@ class _CasePlanGapServiceMonitoringViewContainerState
     );
   }
 
+  /// When + Monitoring is clicked:
+  /// - Look for today's monitoring (by _monKey + eventDate == today)
+  /// - If found, prompt to open the latest one instead of creating new
+  Future<void> _onAddMonitoringPressed() async {
+    final stageId = widget.isHouseholdCasePlan
+        ? OvcHouseholdCasePlanConstant.casePlanGapServiceMonitoringProgramStage
+        : OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage;
+
+    final cpLink = _s(widget.casePlanGap[_cpKey]);
+    if (cpLink.isEmpty) {
+      AppUtil.showToastMessage(message: 'Missing Case Plan link for ${widget.domainId}');
+      return;
+    }
+    final monStable = _stableMon(cpLink, widget.domainId);
+    final today = _ymd(DateTime.now().toIso8601String());
+
+    // Pull all events in this stage
+    final sed = Provider.of<ServiceEventDataState>(context, listen: false);
+    final byStage = sed.eventListByProgramStage;
+    final allStageEvents = TrackedEntityInstanceUtil
+        .getAllEventListFromServiceDataStateByProgramStages(byStage, <String>[stageId]);
+
+    // Filter: same _monKey and eventDate == today
+    final todays = <Events>[];
+    for (final ev in allStageEvents) {
+      final dvs = _dvMap(ev);
+      final evMon = _s(dvs[_monKey]);
+      if (evMon != monStable) continue;
+      if (_ymd(ev.eventDate) == today) {
+        todays.add(ev);
+      }
+    }
+
+    // If any today -> offer to open the latest one
+    if (todays.isNotEmpty) {
+      todays.sort((a, b) => _s(b.eventDate).compareTo(_s(a.eventDate)));
+      final latest = todays.first;
+
+      final res = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Monitoring already exists today'),
+          content: const Text(
+            'A monitoring for this case plan already exists for today. Do you want to open it?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel',style: TextStyle(color: Colors.green))
+              ,
+
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Open',style: TextStyle(color: Colors.green)),
+            ),
+          ],
+        ),
+      );
+
+      if (res == true) {
+        final seed = <String, dynamic>{
+          'eventId': latest.event,
+          'eventDate': latest.eventDate,
+          'location': latest.orgUnit,
+          ..._dvMap(latest),
+        };
+        await _openMonitoringSheet(seed: seed, editable: true);
+      }
+      return; // Do not create new
+    }
+
+    // Otherwise proceed to create new
+    await _openMonitoringSheet(editable: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final stageId = widget.isHouseholdCasePlan
@@ -126,12 +193,6 @@ class _CasePlanGapServiceMonitoringViewContainerState
         : OvcChildCasePlanConstant.casePlanGapServiceMonitoringProgramStage;
 
     final cpLink = _s(widget.casePlanGap[_cpKey]);
-    final cpDateStr = _s(
-      widget.casePlanGap['casePlanDate']?.toString().isNotEmpty == true
-          ? widget.casePlanGap['casePlanDate']
-          : widget.casePlanGap['eventDate'],
-    );
-    final cpDate = _asDate(cpDateStr) ?? DateTime.fromMillisecondsSinceEpoch(0);
     final monStable = _stableMon(cpLink, widget.domainId);
 
     return Card(
@@ -196,7 +257,7 @@ class _CasePlanGapServiceMonitoringViewContainerState
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-                                    onPressed: () => _openMonitoringSheet(editable: true),
+                                    onPressed: _onAddMonitoringPressed,
                                     child: const Text(
                                       '+ Monitoring',
                                       style: TextStyle(
@@ -238,15 +299,12 @@ class _CasePlanGapServiceMonitoringViewContainerState
                   <String>[stageId],
                 );
 
-                // Filter to same CP (or stable mon) and >= CP date
+                // Filter ONLY by _monKey
                 final filtered = <Events>[];
                 for (final ev in allStageEvents) {
-                  final d = _asDate(_s(ev.eventDate));
-                  if (d == null || d.isBefore(cpDate)) continue;
                   final dvs = _dvMap(ev);
-                  final evCp  = _s(dvs[_cpKey]);
                   final evMon = _s(dvs[_monKey]);
-                  if (evCp == cpLink || evMon == monStable) {
+                  if (evMon == monStable) {
                     filtered.add(ev);
                   }
                 }
@@ -254,7 +312,7 @@ class _CasePlanGapServiceMonitoringViewContainerState
 
                 if (kDebugMode) {
                   debugPrint('[MON List] domain="${widget.domainId}" '
-                      'stage="$stageId" cp="$cpLink" from="$cpDateStr" '
+                      'stage="$stageId" mon="$monStable" '
                       'total=${allStageEvents.length} filtered=${filtered.length}');
                 }
 
@@ -296,7 +354,6 @@ class _CasePlanGapServiceMonitoringViewContainerState
                         'location': ev.orgUnit,
                         ..._dvMap(ev),
                       };
-                      // Row shows DATE ONLY (no CP subtitle)
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
                         child: Container(
@@ -315,7 +372,7 @@ class _CasePlanGapServiceMonitoringViewContainerState
                               child: Text('$idx'),
                             ),
                             title: Text(
-                              _s(ev.eventDate), // ✅ date only
+                              _s(ev.eventDate), // date only
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 14,
@@ -345,3 +402,4 @@ class _CasePlanGapServiceMonitoringViewContainerState
     );
   }
 }
+
