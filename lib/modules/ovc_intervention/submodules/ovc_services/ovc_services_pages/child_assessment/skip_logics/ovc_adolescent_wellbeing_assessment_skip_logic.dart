@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/service_form_state.dart';
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
+import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../../../../models/ovc_household.dart';
 
 class OvcAdolescentWellBeingAssessmentSkipLogic {
   static Map hiddenFields = {};
   static Map hiddenSections = {};
 
-  static Future evaluateSkipLogics(BuildContext context,
-      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? isTested, bool? artStatus) async {
+  static Future evaluateSkipLogics(OvcHouseholdChild? child,BuildContext context,
+      List<FormSection> formSections, Map dataObject, String? hivStatus, bool? isTested, bool? artStatus) async
+  {
     hiddenFields.clear();
     hiddenSections.clear();
     hiddenSections['domainschooltsasekolo'] = true;
@@ -226,12 +230,17 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
 
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
+
       bool isFieldHidden = hiddenFields[inputFieldId] ?? false;
+
+      if(child!.isPregnant){
+        dataObject['nSh4v0iBjKW'] = 'Yes';
+      }
 
       if (inputFieldId == 'vNeOE9abQBB'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;
-         //print('Statuss: $hivStatus');
+
         }
 
       }
