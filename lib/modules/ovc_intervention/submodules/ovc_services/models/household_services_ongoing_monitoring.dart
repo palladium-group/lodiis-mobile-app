@@ -4,8 +4,17 @@ import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/input_field_option.dart';
 
 import '../../../../../core/constants/app_hierarchy_reference.dart';
+import '../../../../../core/utils/form_util.dart';
 
 class HouseholdServicesOngoingMonitoring {
+  static List<String> getMandatoryFields() {
+    return FormUtil.getAllFormSectionInpiutFields(
+      getFormSections(
+
+      ),
+    );
+  }
+
   static List<FormSection> getFormSections() {
     return [
       FormSection(
@@ -65,7 +74,7 @@ class HouseholdServicesOngoingMonitoring {
 
             InputField(
               id: 'BvNaiaoxc6w',
-              name: 'Have you ever been tested for HIV?',
+              name: 'Have you ever been tested for HIV',
               translatedName: 'U kile oa hlahlobela HIV?',
               description: 'If no refer for testing',
               translatedDescription:
@@ -77,7 +86,7 @@ class HouseholdServicesOngoingMonitoring {
             ),
             InputField(
                 id: 'Uv26fX0HQvO',
-                name: 'If ever tested, when?',
+                name: 'When?',
                 translatedName: 'Haeba Karabo le “E”, neng',
                 description:
                 'If over six months (or their window period) refer for testing ',
@@ -126,7 +135,7 @@ class HouseholdServicesOngoingMonitoring {
                 ]),
 
             InputField(
-              id: 'EEclxMv9xXk',
+                id: 'EEclxMv9xXk',
               name: 'Has there been any possible exposure (e.g., unprotected sex, new partner, shared needles) that might put you at risk of HIV infection?',
               translatedName: 'Na ho bile le monyetla oa ho pepeseha (mohlala, thobalano e sa sireletsehang, molekane e mocha, ho arolelana nale) o ka u behang kotsing ea tšoaetso ea HIV?',
               valueType: 'BOOLEAN',
