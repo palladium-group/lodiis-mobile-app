@@ -35,7 +35,7 @@ class _OvcChildServiceHomeState extends State<OvcChildServiceHome> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const OvcChildAssessment(),
+        builder: (context) => OvcChildAssessment(),
       ),
     );
   }
@@ -148,9 +148,7 @@ class _OvcChildServiceHomeState extends State<OvcChildServiceHome> {
                               shrinkWrap: true,
                               children: ovcChildServiceHomeCards
                                   .where((ovcChildServiceCard) =>
-                                      ovcChildServiceCard.id != 'clhiv_art' ||
-                                      (ovcChildServiceCard.id == 'clhiv_art' &&
-                                          currentOvcSelection!.isClHiv))
+                                      ovcChildServiceCard.id != 'clhiv_art')
                                   .map(
                                 (OvcChildServiceHomeConstant
                                     ovcChildServiceHomeCard) {
