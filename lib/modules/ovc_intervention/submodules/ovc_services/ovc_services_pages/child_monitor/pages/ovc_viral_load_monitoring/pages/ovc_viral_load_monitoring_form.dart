@@ -27,6 +27,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:provider/provider.dart';
 
 import '../../../../../models/ovc_viral_load_monitoring.dart';
+import '../skip_logics/ovc_child_viral_load_skip_logic.dart';
 
 class OvcChildViralLoadMonitoringForm extends StatefulWidget {
   const OvcChildViralLoadMonitoringForm({Key? key}) : super(key: key);
@@ -66,7 +67,7 @@ class _OvcChildViralLoadMonitoringFormState extends State<OvcChildViralLoadMonit
             .currentOvcHouseholdChild;
     var defaultFormSections = OvcViralLoadMonitoring.getFormSections(
         enrollmentDate: currentOvc?.createdDate ?? '');
-    mandatoryFields = ['eventDate'];
+    mandatoryFields = ['eventDate',...OvcViralLoadMonitoring.getMandatoryFields()];
     if (currentOvc?.enrollmentOuAccessible == true) {
       formSections = defaultFormSections;
     } else {
@@ -103,7 +104,7 @@ class _OvcChildViralLoadMonitoringFormState extends State<OvcChildViralLoadMonit
           () async {
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
-        await OvcChildSchoolMonitoringSkipLogic.evaluateSkipLogics(
+        await OvcViralLoadMonitoringSkipLogic.evaluateSkipLogics(
           context,
           formSections!,
           dataObject,

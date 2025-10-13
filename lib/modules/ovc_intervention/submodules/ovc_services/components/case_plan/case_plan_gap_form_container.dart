@@ -54,6 +54,7 @@ class CasePlanGapFormContainer extends StatefulWidget {
 }
 
 class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
+
     with OvcCasePlanGapSkipLogic {
   Map mandatoryFieldObject = {};
   List mandatoryFields = [];
@@ -232,7 +233,12 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         final tei = (child.id ?? '').toString();
         if (tei.isNotEmpty) {
           final childVals = await _latestValuesForChildAssessment(tei);
-          await _applyChildAssessmentToGaps(childVals, child);
+          final monitoringVals = context
+              .read<ServiceEventDataState>()
+              .latestValuesForStage(OvcChildCasePlanConstant
+              .casePlanGapServiceMonitoringProgramStage);
+          final source = monitoringVals.isEmpty ? childVals : monitoringVals;
+          await _applyChildAssessmentToGaps(source, child);
         }
       }
 
@@ -461,7 +467,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     }
 
     // Child assessment DEs
+    const pregnantDE = 'nSh4v0iBjKW';
+    const ancDE = 'fINHdGnfAMA';
     const highRiskAssessDE = 'hivriskres';
+    const durationOnArt = 'ubin7MjQ5OI';
     const underFiveCLinicDE = 'eDuHTPn7rhh';
     const hivStatusDE = 'vNeOE9abQBB';
     const malnutritionSignsDE = 'OBugEkynJG0';
@@ -479,8 +488,15 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const genitalsores = 'B46Zeuzafkg';
     const vltestingDE = 'sLyfb45aLkl';
     const cd4testingDE = 'tYN12Es3707';
+    const viralLoadResultsDE = 'aRNGDZcwWmS';
 
+
+    bool moreThanSixMonthsOnArt(Map<String, String?> m) {
+      final raw = (m[durationOnArt] ?? '').toString().trim().toLowerCase();
+      return raw == 'more than six months';
+    }
     // Gap DEs
+    const ancGapDE = 'vbUdFOsYrxP';
     const eidTestingGapDE = 'WcSjQ6oQ4dw';
     const uderFiveClinicGapDE = 'wR6vGDR8nHi';
     const foodSupplementsGapDE = 'uvJV4WGc5ct';
@@ -498,6 +514,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const viralLoadTestingGapDE = 'bepi3n6Z4T0';
     const cd4TestingGapDE = 'SHWV7e088RT';
 
+
+    final attandingANC = _isTrue(a[ancDE]);
     final hiv = _normHiv(a[hivStatusDE]);
     final malnutrition = _isTrue(a[malnutritionSignsDE]);
     final feelingSupported = a[feelingSupportedDE];
@@ -519,8 +537,25 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final genitalSores = _isTrue(a[genitalsores]);
     final testForVL = _isTrue(a[vltestingDE]);
     final testdforCD4 = _isTrue(a[cd4testingDE]);
+    final overSixMonthsOnArt = moreThanSixMonthsOnArt(a);
+    final viralLoadResults = a[viralLoadResultsDE];
 
+    final isFemale = _isTrue(child.sex == 'Female');
 
+    if( isFemale && !attandingANC){
+      dataObject[ancGapDE] = true;
+    }
+    if (overSixMonthsOnArt && !testForVL) {
+      dataObject[viralLoadTestingGapDE] = true;
+    }
+    if (hivPositive && (viralLoadResults ?? '').isNotEmpty) {
+      if (viralLoadResults == 'High (above 1,000 copies/ml)') {
+        if (!testdforCD4) {
+          dataObject[cd4TestingGapDE] = true;
+        }
+        dataObject[enhancedAdherenceCouncilingGapDE] = true;
+      }
+    }
     if (!hivPositive && !recentTest) {
       if (hadsexWithMoreThanOne ||
           sexWithouCondomPositive ||

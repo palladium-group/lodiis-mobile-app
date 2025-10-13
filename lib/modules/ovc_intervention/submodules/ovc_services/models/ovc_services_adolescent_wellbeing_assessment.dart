@@ -487,6 +487,54 @@ class OvcServicesWellbeingAssessment {
           borderColor: const Color(0xFF4D9E49),
           inputFields: [
             InputField(
+              id: 'nSh4v0iBjKW',
+              name: 'Are you currently pregnant?',
+              translatedName: 'Na u mokhachane nakong ea joale?',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+              options: [
+                InputFieldOption(code: 'Yes', name: 'Yes', translatedName: 'E'),
+                InputFieldOption(code: 'No', name: 'No', translatedName: 'Che'),
+                InputFieldOption(
+                    code: 'Don\'t Know',
+                    name: 'Don\'t Know',
+                    translatedName: 'Ha ke tsebe')
+              ],
+            ),
+            InputField(
+              id: 'fINHdGnfAMA',
+              name: 'Are you attending an ANC clinic for this pregnancy?',
+              translatedName:
+              'Na u tsamaea tleleniking ea bakhachane nakong ea joale?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF1A3518),
+            ),
+            InputField(
+              id: 'LHf5EZmkZ5q',
+              name:
+              'Which clinic/facility are you currently seeking ANC services?',
+              translatedName:
+              'U tsamaea tleleniking efe ho fumana litšebeletso tsa bokhachane?',
+              valueType: 'ORGANISATION_UNIT',
+              allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
+              inputColor: const Color(0xFF4B9F46),
+              showCountryLevelTree: true,
+              labelColor: const Color(0xFF1A3518),
+            ),
+
+            InputField(
+              id: 'dCIDHw3RrQ9',
+              name: 'Are you Breastfeeding?',
+              translatedName:
+              "Na ua ants'a?",
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4B9F46),
+              labelColor: const Color(0xFF737373),
+            ),
+
+            InputField(
                 id: 'MkoDGBOBo06',
                 name: 'Where do you access health services?',
                 translatedName:

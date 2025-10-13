@@ -518,16 +518,7 @@ class OvcEnrollmentChild {
                   inputColor: const Color(0xFF4B9F46),
                   labelColor: const Color(0xFF737373),
                   valueType: 'BOOLEAN'),
-
-              InputField(
-                id: 'fINHdGnfAMA',
-                name: 'Are you attending an ANC clinic for this pregnancy?',
-                translatedName:
-                'Na u tsamaea tleleniking ea bakhachane nakong ea joale?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),),
-
+              
               InputField(
                   id: 'wGFmu7DhNGV',
                   name: 'Do you have a child?',
@@ -879,7 +870,7 @@ class OvcEnrollmentChild {
           ),
           InputField(
             id: 'wGFmu7DhNGV',
-            name: 'Adolescent Girl who is a young mother',
+              name: 'Adolescent Girl who is a young mother',
             translatedName: "Ke ngoana oa moroetsana ea anyesang?",
             inputColor: const Color(0xFFB0C7EA),
             labelColor: const Color(0xFF737373),

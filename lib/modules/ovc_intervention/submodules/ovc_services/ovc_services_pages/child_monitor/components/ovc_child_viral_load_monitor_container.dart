@@ -94,7 +94,7 @@ class OvcChildViralLoadMonitorContainer extends StatelessWidget {
                           bool isKbFacilitySocialWorker =
                               currentUserState.isKbFacilitySocialWorker;
                           return Visibility(
-                            visible: !isKbFacilitySocialWorker &&
+                            visible: isKbFacilitySocialWorker &&
                                 eventData.enrollmentOuAccessible!,
                             child: Container(
                               margin: const EdgeInsets.symmetric(

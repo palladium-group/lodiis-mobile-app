@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:kb_mobile_app/core/constants/program_status.dart';
@@ -12,16 +13,27 @@ class OvcHouseholdCardBody extends StatelessWidget {
   }) : super(key: key);
 
   final OvcHousehold ovcHousehold;
-  Expanded _getOvcHouseholdDetailsWidget({
-    required String value,
+
+  bool get _isChildHeaded {
+    final ageStr = (ovcHousehold.age ?? '').toString().trim();
+    final age = int.tryParse(ageStr) ?? 0;
+    return age > 0 && age < 18;
+  }
+
+  Expanded _cell({
+    required String text,
     required int flex,
     required Color color,
+    TextOverflow overflow = TextOverflow.ellipsis,
+    int maxLines = 1,
   }) {
     return Expanded(
       flex: flex,
       child: Text(
-        value,
-        style: const TextStyle().copyWith(
+        text,
+        maxLines: maxLines,
+        overflow: overflow,
+        style: TextStyle(
           fontSize: 14.0,
           color: color,
           fontWeight: FontWeight.w500,
@@ -30,148 +42,163 @@ class OvcHouseholdCardBody extends StatelessWidget {
     );
   }
 
-  Container _getOvcHouseholdRowWidget({
-    required String key,
-    required String value,
+  /// Standard two-column row (1:2 flex) used everywhere
+  Widget _kvRow({
+    required String label,
+    required Widget valueRight, // so we can inject badge next to name
   }) {
     return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 2.0,
-      ),
+      margin: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _getOvcHouseholdDetailsWidget(
-            value: key,
-            flex: 1,
-            color: const Color(0XFF536852),
-          ),
-          _getOvcHouseholdDetailsWidget(
-            value: value,
-            flex: 2,
-            color: const Color(0XFF92A791),
-          ),
+          _cell(text: label, flex: 1, color: const Color(0XFF536852)),
+          Expanded(flex: 2, child: valueRight),
         ],
       ),
     );
   }
 
-  Widget _getStatus({
-    required String programStatus,
-    required int flex,
-  }) {
-    return Row(
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 5.0,
+  /// CHH badge (same as before, compact)
+  Widget _chhBadge() {
+    return Tooltip(
+      message: 'Child-headed household',
+      preferBelow: false,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFFE29F), Color(0xFFFFF7D1)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          decoration: BoxDecoration(
-            color: (programStatus == ProgramStatus.active
-                    ? const Color(0xFF4B9F46)
-                    : programStatus == ProgramStatus.transferred
-                        ? Colors.amberAccent
-                        : programStatus == ProgramStatus.exit
-                            ? Colors.redAccent
-                            : programStatus == ProgramStatus.graduated
-                                ? const Color(0xFF1F8DCE)
-                                : Colors.blueGrey)
-                .withOpacity(0.2),
-            border: Border.all(
-              color: programStatus == ProgramStatus.active
-                  ? const Color(0xFF4B9F46)
-                  : programStatus == ProgramStatus.transferred
-                      ? Colors.amberAccent
-                      : programStatus == ProgramStatus.exit
-                          ? Colors.redAccent
-                          : programStatus == ProgramStatus.graduated
-                              ? const Color(0xFF1F8DCE)
-                              : Colors.blueGrey,
-            ),
-            borderRadius: BorderRadius.circular(35.0),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8.0,
-            vertical: 2.0,
-          ),
-          child: Text(
-            programStatus,
-            style: const TextStyle().copyWith(
-              color: programStatus == ProgramStatus.active
-                  ? const Color(0xFF4B9F46)
-                  : programStatus == ProgramStatus.transferred
-                      ? Colors.amberAccent.shade700
-                      : programStatus == ProgramStatus.exit
-                          ? Colors.redAccent
-                          : programStatus == ProgramStatus.graduated
-                              ? const Color(0xFF1F8DCE)
-                              : Colors.blueGrey,
-              fontSize: 12.0,
-            ),
-          ),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: const Color(0xFF8C6A00).withOpacity(0.25)),
         ),
-        // work around to avoid large status icon
-        Expanded(child: Container())
-      ],
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.child_care_rounded, size: 14, color: Color(0xFF1A3518)),
+            SizedBox(width: 6),
+            Text(
+              'CHH',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1A3518),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Container _getHouseholdStatusRow({
-    required String status,
-    required String key,
-  }) {
-    return status.isEmpty
-        ? Container()
-        : Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 2.0,
-            ),
-            child: Row(
-              children: [
-                _getOvcHouseholdDetailsWidget(
-                  value: key,
-                  flex: 1,
-                  color: const Color(0XFF536852),
-                ),
-                Expanded(
-                    flex: 2, child: _getStatus(programStatus: status, flex: 2))
-              ],
-            ),
-          );
+  Widget _statusPill(String programStatus) {
+    if (programStatus.isEmpty) return const SizedBox.shrink();
+
+    final Color baseColor = programStatus == ProgramStatus.active
+        ? const Color(0xFF4B9F46)
+        : programStatus == ProgramStatus.transferred
+        ? Colors.amberAccent
+        : programStatus == ProgramStatus.exit
+        ? Colors.redAccent
+        : programStatus == ProgramStatus.graduated
+        ? const Color(0xFF1F8DCE)
+        : Colors.blueGrey;
+
+    final Color textColor = programStatus == ProgramStatus.transferred
+        ? Colors.amberAccent.shade700
+        : baseColor;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
+      decoration: BoxDecoration(
+        color: baseColor.withOpacity(0.16),
+        border: Border.all(color: baseColor),
+        borderRadius: BorderRadius.circular(35.0),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+      child: Text(
+        programStatus,
+        style: TextStyle(color: textColor, fontSize: 12.0),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageTranslationState>(
       builder: (context, languageTranslationState, child) {
-        String? currentLanguage = languageTranslationState.currentLanguage;
-        return Container(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 13.0,
-            vertical: 10.0,
+        final String? currentLanguage = languageTranslationState.currentLanguage;
+
+        // Right-value widgets for each row (keeps consistent alignment)
+        final caregiverRight = Row(
+          children: [
+            Expanded(
+              child: Text(
+                ovcHousehold.toString(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 14.0,
+                  color: Color(0XFF92A791),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            if (_isChildHeaded) const SizedBox(width: 8),
+            if (_isChildHeaded) _chhBadge(),
+          ],
+        );
+
+        final createdRight = Text(
+          ovcHousehold.createdDate ?? '',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 14.0,
+            color: Color(0XFF92A791),
+            fontWeight: FontWeight.w500,
           ),
+        );
+
+        final locationRight = Text(
+          ovcHousehold.location ?? '',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 14.0,
+            color: Color(0XFF92A791),
+            fontWeight: FontWeight.w500,
+          ),
+        );
+
+        final statusRight = Align(
+          alignment: Alignment.centerLeft,
+          child: _statusPill(ovcHousehold.houseHoldStatus ?? ''),
+        );
+
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 10.0),
           child: Column(
             children: [
-              _getOvcHouseholdRowWidget(
-                key: currentLanguage == 'lesotho' ? 'Mohlokomeli' : 'Caregiver',
-                value: ovcHousehold.toString(),
+              _kvRow(
+                label: currentLanguage == 'lesotho' ? 'Mohlokomeli' : 'Caregiver',
+                valueRight: caregiverRight,
               ),
-              _getOvcHouseholdRowWidget(
-                key: "Created",
-                value: ovcHousehold.createdDate!,
+              _kvRow(label: 'Created', valueRight: createdRight),
+              _kvRow(
+                label: currentLanguage == 'lesotho' ? 'Sebaka' : 'Location',
+                valueRight: locationRight,
               ),
-              _getOvcHouseholdRowWidget(
-                key: currentLanguage == 'lesotho' ? 'Sebaka' : 'Location',
-                value: ovcHousehold.location!,
-              ),
-              _getHouseholdStatusRow(
-                key: currentLanguage == 'lesotho' ? 'Boemo' : 'Status',
-                status: ovcHousehold.houseHoldStatus ?? '',
+              _kvRow(
+                label: currentLanguage == 'lesotho' ? 'Boemo' : 'Status',
+                valueRight: statusRight,
               ),
               OvcHouseholdChildCount(
                 currentLanguage: currentLanguage,
                 ovcHousehold: ovcHousehold,
-              )
+              ),
             ],
           ),
         );

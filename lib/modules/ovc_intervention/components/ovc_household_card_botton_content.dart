@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kb_mobile_app/app_state/enrollment_service_form_state/enrollment_form_state.dart';
@@ -46,13 +47,77 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
   final bool canViewChildExit;
   final bool isIncomingReferral;
 
+  // ---------- Badges ----------
+  Widget _badgeCLHIV() {
+    const base = Color(0xFFC62828); // deep red
+    return Tooltip(
+      message: 'Child living with HIV',
+      child: Container(
+        margin: const EdgeInsets.only(left: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: base.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: base.withOpacity(0.5)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.medical_information_rounded, size: 14, color: base),
+            SizedBox(width: 6),
+            Text(
+              'CLHIV',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: base,
+                letterSpacing: .2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _badgeHEI() {
+    const base = Color(0xFF6A1B9A); // deep purple
+    return Tooltip(
+      message: 'HIV-exposed infant (HEI)',
+      child: Container(
+        margin: const EdgeInsets.only(left: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: base.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: base.withOpacity(0.5)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.child_care_rounded, size: 14, color: base),
+            SizedBox(width: 6),
+            Text(
+              'HEI',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: base,
+                letterSpacing: .2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void updateEnrollmentFormStateData(
-    BuildContext context,
-    OvcHouseholdChild child,
-    bool isEditableMode,
-  ) {
+      BuildContext context,
+      OvcHouseholdChild child,
+      bool isEditableMode,
+      ) {
     TrackedEntityInstance teiData = child.teiData!;
-    // Set hidden fields for editing
     Provider.of<EnrollmentFormState>(context, listen: false).resetFormState();
     Provider.of<EnrollmentFormState>(context, listen: false)
         .setFormFieldState('parentTrackedEntityInstance', ovcHousehold.id);
@@ -72,7 +137,7 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
       if (attributeObj['value'] != '' && '${attributeObj['value']}' != 'null') {
         Provider.of<EnrollmentFormState>(context, listen: false)
             .setFormFieldState(
-                attributeObj['attribute'], attributeObj['value']);
+            attributeObj['attribute'], attributeObj['value']);
       }
     }
     setCaregiverDataAttributes(context);
@@ -97,9 +162,9 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
     String formAutoSaveId =
         "${OvcRoutesConstant.ovcChildEditFormPage}_$beneficiaryId";
     FormAutoSave formAutoSave =
-        await FormAutoSaveOfflineService().getSavedFormAutoData(formAutoSaveId);
+    await FormAutoSaveOfflineService().getSavedFormAutoData(formAutoSaveId);
     bool shouldResumeWithUnSavedChanges =
-        await AppResumeRoute().shouldResumeWithUnSavedChanges(
+    await AppResumeRoute().shouldResumeWithUnSavedChanges(
       context,
       formAutoSave,
       beneficiaryName: child.toString(),
@@ -127,9 +192,7 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
     );
   }
 
-  void onAddNewChild(
-    BuildContext context,
-  ) async {
+  void onAddNewChild(BuildContext context) async {
     setOvcHouseholdCurrentSelection(context, null);
     Provider.of<EnrollmentFormState>(context, listen: false).resetFormState();
     Provider.of<EnrollmentFormState>(context, listen: false)
@@ -142,7 +205,7 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
     String formAutoSaveId =
         "${OvcRoutesConstant.ovcChildEditFormPage}_$beneficiaryId";
     FormAutoSave formAutoSave =
-        await FormAutoSaveOfflineService().getSavedFormAutoData(formAutoSaveId);
+    await FormAutoSaveOfflineService().getSavedFormAutoData(formAutoSaveId);
     bool shouldResumeWithUnSavedChanges = await AppResumeRoute()
         .shouldResumeWithUnSavedChanges(context, formAutoSave);
     if (shouldResumeWithUnSavedChanges) {
@@ -195,9 +258,9 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
   }
 
   bool _getSyncStatusOfChild(
-    OvcHouseholdChild ovcHouseholdChild,
-    List<String> unsyncedTeiReferences,
-  ) {
+      OvcHouseholdChild ovcHouseholdChild,
+      List<String> unsyncedTeiReferences,
+      ) {
     int teiIndex = unsyncedTeiReferences.indexOf(ovcHouseholdChild.id!);
     return teiIndex == -1;
   }
@@ -207,26 +270,21 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
     return Consumer<LanguageTranslationState>(
       builder: (context, languageState, child) => Column(
         children: [
-          const LineSeparator(
-            color: Color(0xFFECF5EC),
-          ),
+          const LineSeparator(color: Color(0xFFECF5EC)),
           Container(
-            margin:
-                const EdgeInsets.symmetric(horizontal: 13.0, vertical: 10.0),
+            margin: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 10.0),
             child: Row(
               children: [
                 Container(
-                    margin: const EdgeInsets.only(right: 10.0),
-                    child:
-                        SvgPicture.asset('assets/icons/children_ovc_icon.svg')),
+                  margin: const EdgeInsets.only(right: 10.0),
+                  child: SvgPicture.asset('assets/icons/children_ovc_icon.svg'),
+                ),
                 Expanded(
                   child: Text(
-                    currentLanguage == 'lesotho'
-                        ? 'Lethathamo la bana'
-                        : 'Children List',
+                    currentLanguage == 'lesotho' ? 'Lethathamo la bana' : 'Children List',
                     style: const TextStyle().copyWith(
                       fontSize: 14.0,
-                      color: const Color(0xFF536852),
+                      color: Color(0xFF536852),
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -235,144 +293,135 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
             ),
           ),
           Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 13.0,
-              vertical: 10.0,
-            ),
+            margin: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 10.0),
             child: Column(
-              children: ovcHousehold.children!.map(
-                (OvcHouseholdChild ovcHouseholdChild) {
-                  int index =
-                      ovcHousehold.children!.indexOf(ovcHouseholdChild) + 1;
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '$index. ${ovcHouseholdChild.toString()}',
-                          style: const TextStyle().copyWith(
-                              fontSize: 14.0,
-                              color: const Color(0xFF536852),
-                              fontWeight: FontWeight.w500),
+              children: ovcHousehold.children!.map((OvcHouseholdChild ovcHouseholdChild) {
+                final int index = ovcHousehold.children!.indexOf(ovcHouseholdChild) + 1;
+
+                // Left side: Name + inline badges (CLHIV / HEI)
+                final leftNameWithBadges = Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '$index. ${ovcHouseholdChild.toString()}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle().copyWith(
+                          fontSize: 14.0,
+                          color: Color(0xFF536852),
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Visibility(
-                            visible: ovcHouseholdChild.isChildPrimary == true,
-                            child: Icon(
-                              Icons.key,
-                              color: ovcHouseholdChild.ovcStatus ==
-                                      ProgramStatus.exit
-                                  ? Colors.amberAccent
-                                  : const Color(0xFF4B9F46),
-                            ),
+                    ),
+                    if (ovcHouseholdChild.isClHiv == true) _badgeCLHIV(),
+                    if (ovcHouseholdChild.isHei == true) _badgeHEI(),
+                  ],
+                );
+
+                return Row(
+                  children: [
+                    Expanded(child: leftNameWithBadges),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                       /* Visibility(
+                          visible: ovcHouseholdChild.isChildPrimary == true,
+                          child: Icon(
+                            Icons.key,
+                            color: ovcHouseholdChild.ovcStatus == ProgramStatus.exit
+                                ? Colors.amberAccent
+                                : const Color(0xFF4B9F46),
                           ),
-                          Consumer<SynchronizationStatusState>(builder:
-                              (context, synchronizationStatusState, child) {
-                            List<String> unsyncedTeiReferences =
-                                synchronizationStatusState
-                                    .unsyncedTeiReferences;
+                        ),*/
+                        Consumer<SynchronizationStatusState>(
+                          builder: (context, synchronizationStatusState, child) {
+                            final unsyncedTeiReferences =
+                                synchronizationStatusState.unsyncedTeiReferences;
                             return BeneficiarySyncStatusIndicator(
                               isSynced: _getSyncStatusOfChild(
-                                  ovcHouseholdChild, unsyncedTeiReferences),
+                                ovcHouseholdChild,
+                                unsyncedTeiReferences,
+                              ),
                             );
-                          }),
-                          Visibility(
-                            visible: canViewChildService ||
-                                canViewChildInfo ||
-                                canViewChildExit,
+                          },
+                        ),
+                        Visibility(
+                          visible: canViewChildService || canViewChildInfo || canViewChildExit,
+                          child: InkWell(
+                            onTap: () => canViewChildExit
+                                ? onViewChildExit(context, ovcHouseholdChild)
+                                : canViewChildInfo
+                                ? onViewChildInfo(context, ovcHouseholdChild)
+                                : canViewChildService
+                                ? onViewChildService(context, ovcHouseholdChild)
+                                : null,
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                languageState.currentLanguage == 'lesotho' ? 'SHEBA' : 'VIEW',
+                                style: const TextStyle().copyWith(
+                                  fontSize: 12.0,
+                                  color: Color(0xFF4B9F46),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: canViewChildReferral,
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10.0),
                             child: InkWell(
-                              onTap: () => canViewChildExit
-                                  ? onViewChildExit(context, ovcHouseholdChild)
-                                  : canViewChildInfo
-                                      ? onViewChildInfo(
-                                          context, ovcHouseholdChild)
-                                      : canViewChildService
-                                          ? onViewChildService(
-                                              context, ovcHouseholdChild)
-                                          : null,
+                              onTap: () => onViewChildReferral(context, ovcHouseholdChild),
                               child: Container(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
-                                  languageState.currentLanguage == 'lesotho'
-                                      ? 'SHEBA'
-                                      : 'VIEW',
+                                  languageState.currentLanguage == 'lesotho' ? 'PHETISETSO' : 'REFERRAL',
                                   style: const TextStyle().copyWith(
                                     fontSize: 12.0,
-                                    color: const Color(0xFF4B9F46),
+                                    color: Color(0xFF4B9F46),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          Visibility(
-                            visible: canViewChildReferral,
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                left: 10.0,
-                              ),
-                              child: InkWell(
-                                onTap: () => onViewChildReferral(
-                                    context, ovcHouseholdChild),
-                                child: Container(
-                                  padding: const EdgeInsets.all(
-                                    10.0,
-                                  ),
-                                  child: Text(
-                                    languageState.currentLanguage == 'lesotho'
-                                        ? 'PHETISETSO'
-                                        : 'REFERRAL',
-                                    style: const TextStyle().copyWith(
-                                      fontSize: 12.0,
-                                      color: const Color(0xFF4B9F46),
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                        ),
+                        Visibility(
+                          visible: canEditChildInfo &&
+                              ovcHouseholdChild.enrollmentOuAccessible! &&
+                              ovcHouseholdChild.hasExitedProgram != true &&
+                              ovcHousehold.hasExitedProgram != true,
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10.0),
+                            child: InkWell(
+                              onTap: () => onEditChildInfo(context, ovcHouseholdChild),
+                              child: Container(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  languageState.currentLanguage == 'lesotho' ? 'FETOLA' : 'EDIT',
+                                  style: const TextStyle().copyWith(
+                                    fontSize: 12.0,
+                                    color: Color(0xFF4B9F46),
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          Visibility(
-                            visible: canEditChildInfo &&
-                                ovcHouseholdChild.enrollmentOuAccessible! &&
-                                ovcHouseholdChild.hasExitedProgram != true &&
-                                ovcHousehold.hasExitedProgram != true,
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 10.0),
-                              child: InkWell(
-                                onTap: () =>
-                                    onEditChildInfo(context, ovcHouseholdChild),
-                                child: Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text(
-                                    languageState.currentLanguage == 'lesotho'
-                                        ? 'FETOLA'
-                                        : 'EDIT',
-                                    style: const TextStyle().copyWith(
-                                      fontSize: 12.0,
-                                      color: const Color(0xFF4B9F46),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  );
-                },
-              ).toList(),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }).toList(),
             ),
           ),
           Visibility(
-              visible: canAddChild && ovcHousehold.enrollmentOuAccessible!,
-              child: const LineSeparator(
-                color: Color(0xFFECF5EC),
-              )),
+            visible: canAddChild && ovcHousehold.enrollmentOuAccessible!,
+            child: const LineSeparator(color: Color(0xFFECF5EC)),
+          ),
           Visibility(
             visible: canAddChild &&
                 ovcHousehold.enrollmentOuAccessible! &&
@@ -391,7 +440,7 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
                         : 'ADD CHILD',
                     style: const TextStyle().copyWith(
                       fontSize: 12.0,
-                      color: const Color(0xFF4B9F46),
+                      color: Color(0xFF4B9F46),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -404,3 +453,4 @@ class OvcHouseholdCardButtonContent extends StatelessWidget {
     );
   }
 }
+

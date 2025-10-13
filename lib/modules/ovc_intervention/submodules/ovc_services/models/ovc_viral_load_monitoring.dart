@@ -5,24 +5,16 @@ import 'package:kb_mobile_app/models/input_field.dart';
 import 'package:kb_mobile_app/models/input_field_option.dart';
 
 import '../../../../../core/utils/app_util.dart';
+import '../../../../../core/utils/form_util.dart';
 
 class OvcViralLoadMonitoring {
 
   static List<String> getMandatoryFields() {
-
-    return [
-      'Yu00G1uhiYN',
-      'RIpmBgYc0ZN',
-      'uVmlqLmHYpD',
-      'JgNSiXuArwl',
-      'wEKBn2SdrmA',
-      'FLI5NLYCqH9',
-      'QkoJ1afnMMK',
-      'IwM9O0a78QD',
-      'WKdeD28Oyn7',
-      'LaeDyUWYcoN',
-      'YxJQ58njlLM',
-    ];
+    return FormUtil.getAllFormSectionInpiutFields(
+      getFormSections(
+          enrollmentDate:''
+      ),
+    );
   }
 
   static List<FormSection> getFormSections({
@@ -44,18 +36,8 @@ class OvcViralLoadMonitoring {
         borderColor: const Color(0xFF4B9F46),
         inputFields: [
           InputField(
-            id: 'Yu00G1uhiYN',
-            name: 'Name of FBSW',
-            translatedName: 'Lebetso la mosebeletsi oa sechaba',
-            isReadOnly: true,
-            valueType: 'TEXT',
-            inputColor: const Color(0xFF4B9F46),
-            labelColor: const Color(0xFF1A3518),
-
-          ),
-          InputField(
             id: 'QInz3UAj6zC',
-            name: 'ART CARD: Date of ART Initiation',
+            name: 'Date of ART Initiation',
             valueType: 'DATE',
             allowFuturePeriod: true,
             inputColor: const Color(0xFF4B9F46),
@@ -63,14 +45,14 @@ class OvcViralLoadMonitoring {
           ),
           InputField(
             id: 'JgNSiXuArwl',
-            name: 'ART CARD ART Number',
+            name: 'ART Number',
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
           ),
           InputField(
             id: 'wEKBn2SdrmA',
-            name: 'ART CARD Facility Obtaining ART',
+            name: 'Facility Obtaining ART',
             valueType: 'ORGANISATION_UNIT',
             showCountryLevelTree: true,
             allowedSelectedLevels: [AppHierarchyReference.facilityLevel],
@@ -80,21 +62,21 @@ class OvcViralLoadMonitoring {
 
           InputField(
             id: 'FLI5NLYCqH9',
-            name: 'ART CARD Eligible for VL?',
+            name: 'Eligible for VL?',
             valueType: 'BOOLEAN',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
           ),
           InputField(
             id: 'QkoJ1afnMMK',
-            name: 'ART CARD: Reason for VL Non-Eligibility',
+            name: 'Reason for VL Non-Eligibility',
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
           ),
           InputField(
             id: 'IwM9O0a78QD',
-            name: 'ART CARD: VL Results',
+            name: 'VL Results',
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
@@ -120,7 +102,15 @@ class OvcViralLoadMonitoring {
           ),
           InputField(
             id: 'WKdeD28Oyn7',
-            name: 'ART CARD: Date of VL',
+            name: 'Date of VL results',
+            valueType: 'DATE',
+            allowFuturePeriod: true,
+            inputColor: const Color(0xFF4B9F46),
+            labelColor: const Color(0xFF1A3518),
+          ),
+          InputField(
+            id: 'WKdeD28Oyn7',
+            name: 'Due Date of Next VL results',
             valueType: 'DATE',
             allowFuturePeriod: true,
             inputColor: const Color(0xFF4B9F46),
@@ -150,8 +140,8 @@ class OvcViralLoadMonitoring {
             ],
           ),
           InputField(
-            id: 'yWE2jEJxMdB',
-            name: 'Reason not on MMD',
+            id: 'Jqicac4Kgly',
+            name: 'General Comment',
             valueType: 'TEXT',
             inputColor: const Color(0xFF4B9F46),
             labelColor: const Color(0xFF1A3518),
