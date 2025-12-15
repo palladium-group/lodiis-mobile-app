@@ -149,20 +149,25 @@ class _CasePlanGapServiceProvisionFormContainerState
         widget.gapServiceObject[spKey] = stable;
       }
     }
-
+    OvcHouseholdChild? currentHouseholdChild =
+        Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+            .currentOvcHouseholdChild;
     // Evaluate skip-logic after first frame
     Timer(const Duration(milliseconds: 150), () {
       _isFormReady = true;
-      evaluateSkipLogics(context, formSections, widget.gapServiceObject);
+      evaluateSkipLogics(context, formSections, widget.gapServiceObject,currentHouseholdChild!);
       if (mounted) setState(() {});
     });
   }
 
   void onInputValueChange(String id, dynamic value) {
+    OvcHouseholdChild? currentHouseholdChild =
+        Provider.of<OvcHouseholdCurrentSelectionState>(context, listen: false)
+            .currentOvcHouseholdChild;
     widget.gapServiceObject[id] = value;
     if (kDebugMode) debugPrint('[SP Form] onChange "$id"="$value"');
     setState(() {});
-    evaluateSkipLogics(context, formSections, widget.gapServiceObject);
+    evaluateSkipLogics(context, formSections, widget.gapServiceObject,currentHouseholdChild!);
     _unFilledMandatoryFields = [];
     setState(() {});
   }
