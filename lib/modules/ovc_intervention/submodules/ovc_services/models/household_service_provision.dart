@@ -46,6 +46,31 @@ class HouseholdServiceProvision {
                       valueType: 'TEXT',
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
+
+                  InputField(
+                    id: 'U0zYyliGuQo',
+                    name: 'Oral Health Service provided',
+                    translatedName: "Lits'ebeletso tsa Oral Health li fanoe",
+                    valueType: 'TRUE_ONLY',
+                    inputColor: const Color(0xFF4D9E49),
+                    labelColor: const Color(0xFF737373),
+                  ),
+                  InputField(
+                      id: 'PXo8jxReklh',
+                      name: 'Oral Health Service Provision Date',
+                      translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa Oral Health',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'OoODkEfZ4hq',
+                      name: 'Oral Health Comment',
+                      translatedName: 'Tlhaloso ea Oral Health',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+
                   InputField(
                     id: 'JnqldNamliR',
                     name: 'HTS Service provided',
