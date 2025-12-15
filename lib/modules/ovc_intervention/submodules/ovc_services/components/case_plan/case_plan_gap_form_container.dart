@@ -458,8 +458,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
       dataObject[tbTreatGapDE] = true;
     }
     if (hivPositive && !onArt) dataObject[hivTreatGapDE] = true;
+    if (_dietIsOneType(a)) dataObject[foodSupportGapDE] = true;
+
     if (hivPositive) {
-      if (_dietIsOneType(a)) dataObject[foodSupportGapDE] = true;
       dataObject[comArtAdherenceGapDE] = true;
       dataObject[artLiteracyGapDE] = true;
     }

@@ -47,29 +47,7 @@ class HouseholdServiceProvision {
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
 
-                  InputField(
-                    id: 'U0zYyliGuQo',
-                    name: 'Oral Health Service provided',
-                    translatedName: "Lits'ebeletso tsa Oral Health li fanoe",
-                    valueType: 'TRUE_ONLY',
-                    inputColor: const Color(0xFF4D9E49),
-                    labelColor: const Color(0xFF737373),
-                  ),
-                  InputField(
-                      id: 'PXo8jxReklh',
-                      name: 'Oral Health Service Provision Date',
-                      translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa Oral Health',
-                      valueType: 'DATE',
-                      firstDate: firstDate,
-                      inputColor: const Color(0xFF4D9E49),
-                      labelColor: const Color(0xFF737373)),
-                  InputField(
-                      id: 'OoODkEfZ4hq',
-                      name: 'Oral Health Comment',
-                      translatedName: 'Tlhaloso ea Oral Health',
-                      valueType: 'TEXT',
-                      inputColor: const Color(0xFF4D9E49),
-                      labelColor: const Color(0xFF737373)),
+
 
                   InputField(
                     id: 'JnqldNamliR',
@@ -257,26 +235,26 @@ class HouseholdServiceProvision {
 
                   InputField(
                     id: 'otd2tndsE4Z',
-                    name: 'HIV ADHERANCE SUPPORT Service provided',
+                    name: 'ADHERANCE SUPPORT Service provided',
                     translatedName:
-                    "Lits'ebeletso tsa HIV ADHERANCE SUPPORT li fanoe",
+                    "Lits'ebeletso tsa ADHERANCE SUPPORT li fanoe",
                     valueType: 'TRUE_ONLY',
                     inputColor: const Color(0xFF4D9E49),
                     labelColor: const Color(0xFF737373),
                   ),
                   InputField(
                       id: 'ruZFn94Hcyw',
-                      name: 'HIV ADHERANCE SUPPORT Service Provision Date',
+                      name: 'ADHERANCE SUPPORT Service Provision Date',
                       translatedName:
-                      'Letsatsi la Kabo ea Litšebeletso tsa HIV ADHERANCE SUPPORT',
+                      'Letsatsi la Kabo ea Litšebeletso tsa ADHERANCE SUPPORT',
                       valueType: 'DATE',
                       firstDate: firstDate,
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
                   InputField(
                       id: 'dwhnvU5m667',
-                      name: 'HIV ADHERANCE SUPPORT Comment',
-                      translatedName: 'Tlhaloso ea HIV ADHERANCE SUPPORT',
+                      name: 'ADHERANCE SUPPORT Comment',
+                      translatedName: 'Tlhaloso ea ADHERANCE SUPPORT',
                       valueType: 'TEXT',
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
@@ -289,7 +267,29 @@ class HouseholdServiceProvision {
                 color: const Color(0xFF4D9E49),
                 borderColor: const Color(0xFF4D9E49),
                 inputFields: [
-
+                  InputField(
+                    id: 'U0zYyliGuQo',
+                    name: 'Oral Health Service provided',
+                    translatedName: "Lits'ebeletso tsa Oral Health li fanoe",
+                    valueType: 'TRUE_ONLY',
+                    inputColor: const Color(0xFF4D9E49),
+                    labelColor: const Color(0xFF737373),
+                  ),
+                  InputField(
+                      id: 'PXo8jxReklh',
+                      name: 'Oral Health Service Provision Date',
+                      translatedName: 'Letsatsi la Kabo ea Litšebeletso tsa Oral Health',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'OoODkEfZ4hq',
+                      name: 'Oral Health Comment',
+                      translatedName: 'Tlhaloso ea Oral Health',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
                   InputField(
                     id: 'UKczyQWCB0L',
                     name: 'IMMUNIZATION Service provided',

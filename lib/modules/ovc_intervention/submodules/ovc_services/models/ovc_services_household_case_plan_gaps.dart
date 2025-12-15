@@ -90,8 +90,8 @@ class OvcHouseholdServicesCasePlanGaps {
               inputFields: [
                 InputField(
                     id: 'HKCv7lkLexo',
-                    name: 'Offer HIV adherence support',
-                    translatedName: 'Tšebeletso ea HIV ADHERANCE SUPPORT',
+                    name: 'Offer Adherence support',
+                    translatedName: 'Tšebeletso ea ADHERANCE SUPPORT',
                     valueType: 'TRUE_ONLY',
                     isReadOnly: true,
                     inputColor: const Color(0xFF4D9E49),
@@ -100,8 +100,8 @@ class OvcHouseholdServicesCasePlanGaps {
                 InputField(
                     id: 'JzlLk2tW4xh',
                     allowFuturePeriod: true,
-                    name: '( HIV ADHERANCE SUPPORT ) Projected date for completion',
-                    translatedName: 'Letsatsi la HIV ADHERANCE SUPPORT le tla phetheloa',
+                    name: '( ADHERANCE SUPPORT ) Projected date for completion',
+                    translatedName: 'Letsatsi la ADHERANCE SUPPORT le tla phetheloa',
                     valueType: 'DATE',
                     firstDate: firstDate,
                     inputColor: const Color(0xFF4D9E49),
