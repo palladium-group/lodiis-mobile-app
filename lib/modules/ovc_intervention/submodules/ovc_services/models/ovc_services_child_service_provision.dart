@@ -453,7 +453,7 @@ class OvcServicesChildServiceProvision {
                 labelColor: const Color(0xFF737373)),
             InputField(
               id: 'otd2tndsE4Z',
-              name: 'HIV ADHERANCE SUPPORT Service provided',
+              name: 'ADHERANCE SUPPORT Service provided',
               translatedName:
                   "Lits'ebeletso tsa HIV ADHERANCE SUPPORT li fanoe",
               valueType: 'TRUE_ONLY',
@@ -462,7 +462,7 @@ class OvcServicesChildServiceProvision {
             ),
             InputField(
                 id: 'ruZFn94Hcyw',
-                name: 'HIV ADHERANCE SUPPORT Service Provision Date',
+                name: 'ADHERANCE SUPPORT Service Provision Date',
                 translatedName:
                     'Letsatsi la Kabo ea Litšebeletso tsa HIV ADHERANCE SUPPORT',
                 valueType: 'DATE',
@@ -471,7 +471,7 @@ class OvcServicesChildServiceProvision {
                 labelColor: const Color(0xFF737373)),
             InputField(
                 id: 'dwhnvU5m667',
-                name: 'HIV ADHERANCE SUPPORT Comment',
+                name: 'ADHERANCE SUPPORT Comment',
                 translatedName: 'Tlhaloso ea HIV ADHERANCE SUPPORT',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
