@@ -938,7 +938,7 @@ class OvcServicesOngoingMonitoring {
                       name: 'Low (less than 1,000 copies/ml)',
                       translatedName: 'E tlase '),
                   InputFieldOption(
-                      code: 'Undetectable',
+                      code: 'Undetectable (0-50 copies/ml)',
                       name: 'Undetectable (0-50 copies/ml)',
                       translatedName: 'Ha e bonahale'),
                   InputFieldOption(
