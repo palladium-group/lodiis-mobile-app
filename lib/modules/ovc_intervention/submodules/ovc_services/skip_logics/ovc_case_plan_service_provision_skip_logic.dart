@@ -3,6 +3,7 @@ import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.da
 import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/current_user.dart';
 import 'package:kb_mobile_app/models/form_section.dart';
+import 'package:kb_mobile_app/models/ovc_household_child.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_case_plan_constant.dart';
 import 'package:provider/provider.dart';
 
@@ -15,12 +16,13 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
     BuildContext context,
     List<FormSection> formSections,
     Map dataObject,
+    OvcHouseholdChild currentHouseholdChild,
   ) async {
     hiddenFields.clear();
     hiddenSections.clear();
     CurrentUser? currentUser = Provider.of<CurrentUserState>(context, listen: false).currentUser;
     String implementingPartner = currentUser!.implementingPartner ?? "";
-
+    int childAge = int.parse(currentHouseholdChild.age!);
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -33,6 +35,12 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
 
     //TOODO add additional services
     dataObject.forEach((key, value) {
+      if(childAge < 9 ){
+        hiddenFields['HzI5X2yHef6']==true;
+        hiddenFields['FHvpd3Z5PAo']==true;
+        hiddenFields['yQkDGd2gLw2']==true;
+        hiddenFields['yQkDGd2gLw2']==true;
+      }
       if (key == 'pbcXNnAuzfh' && value == 'true') {
         hiddenFields['RIpmBgYc0ZN'] = hideServicesByImplementingPartner(
           "RIpmBgYc0ZN",
@@ -89,7 +97,19 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
           hiddenFields['sxlVgySosg3'] = false;
         }
       }
+      else if (key == 'vqRohVpTK2G' && value == 'true') {
+        hiddenFields['yQkDGd2gLw2'] = hideServicesByImplementingPartner(
+          "yQkDGd2gLw2",
+          implementingPartner,
+        );
 
+        var inputValue = '${dataObject['yQkDGd2gLw2']}';
+        if (inputValue == 'true') {
+
+          hiddenFields['lL8XiDgD8ZI'] = false;
+          hiddenFields['HfO5NXau7f2'] = false;
+        }
+      }
       else if (key == 'HKCv7lkLexo' && value == 'true') {
         hiddenFields['otd2tndsE4Z'] = hideServicesByImplementingPartner(
           "otd2tndsE4Z",
@@ -512,6 +532,22 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
 
         }
       }
+
+
+
+      else if (key == 'XuZIbkwn5yi' && value == 'true') {
+        hiddenFields['eGkOJf7odKm'] = hideServicesByImplementingPartner(
+          "eGkOJf7odKm",
+          implementingPartner,
+        );
+        var inputValue = '${dataObject['eGkOJf7odKm']}';
+        if (inputValue == 'true') {
+          hiddenFields['W6GgMkwmVuf'] = false;
+          hiddenFields['D8G720HroqU'] = false;
+
+        }
+      }
+
 
       else if (key == 'HsxFZOuV4oZ' && value == 'true') {
         hiddenFields['KvLYMr8F4vg'] = hideServicesByImplementingPartner(

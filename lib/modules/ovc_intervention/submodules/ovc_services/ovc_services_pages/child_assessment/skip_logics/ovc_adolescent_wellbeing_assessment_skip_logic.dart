@@ -230,13 +230,31 @@ class OvcAdolescentWellBeingAssessmentSkipLogic {
 
     for (String inputFieldId in inputFieldIds) {
       String value = '${dataObject[inputFieldId]}';
+      final int parsedAge = int.tryParse(child!.age!) ?? 0;
 
       bool isFieldHidden = hiddenFields[inputFieldId] ?? false;
+      if (child.sex != 'Female' || parsedAge < 14 || parsedAge > 56) {
+        hiddenFields['nSh4v0iBjKW'] = true; // Pregnant
+        hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
+      }
+      if(inputFieldId=='nSh4v0iBjKW' && value != 'Yes'){
 
+        hiddenFields['fINHdGnfAMA']=true;
+        hiddenFields['LHf5EZmkZ5q']=true;
+      }
+      if(inputFieldId == 'fINHdGnfAMA' && value != 'true'){
+        hiddenFields['LHf5EZmkZ5q']=true;
+      }
       if(child!.isPregnant){
         dataObject['nSh4v0iBjKW'] = 'Yes';
+      }else{
+        dataObject['nSh4v0iBjKW'] = child.pregnancyStatus;
       }
+      if(inputFieldId=='nSh4v0iBjKW' && value != 'Yes'){
 
+        hiddenFields['fINHdGnfAMA']=true;
+        hiddenFields['LHf5EZmkZ5q']=true;
+      }
       if (inputFieldId == 'vNeOE9abQBB'){
         if(hivStatus != null){
           dataObject[inputFieldId] = hivStatus;

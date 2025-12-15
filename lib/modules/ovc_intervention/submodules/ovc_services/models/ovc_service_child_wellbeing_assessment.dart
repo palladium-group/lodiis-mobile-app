@@ -222,7 +222,7 @@ class OvcServicesChildWellbeingAssessment {
                       name: 'Low (less than 1,000 copies/ml)',
                       translatedName: 'E tlase '),
                   InputFieldOption(
-                      code: 'Undetectable',
+                      code: 'Undetectable (0-50 copies/ml)',
                       name: 'Undetectable (0-50 copies/ml)',
                       translatedName: 'Ha e bonahale'),
                   InputFieldOption(
@@ -686,7 +686,7 @@ class OvcServicesChildWellbeingAssessment {
                             name: 'Fat free (Skim) milk',
                             translatedName: 'Fat free (Skim) milk'),
                         InputFieldOption(
-                            code: 'n/a',
+                            code: 'LkhRAewVIGn',
                             name: 'Not Applicable',
                             translatedName: 'Not Applicable'),
                       ]),
@@ -759,11 +759,11 @@ class OvcServicesChildWellbeingAssessment {
                             name: '11.5 cm or less(Red)',
                             translatedName: '11.5 cm or less'),
                         InputFieldOption(
-                            code: '11.5-12.5cm ',
+                            code: '11.5-12.5cm',
                             name: '11.5-12.5cm(Yellow) ',
                             translatedName: '11.5-12.5cm '),
                         InputFieldOption(
-                            code: '12.5cm or more ',
+                            code: '12.5cm or more',
                             name: '12.5cm or more(Green) ',
                             translatedName: '12.5cm or more '),
                       ]),

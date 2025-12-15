@@ -27,6 +27,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:provider/provider.dart';
 
 import '../../../../../models/ovc_hie_monitoring.dart';
+import '../constants/ovc_hei_monitoring_constant.dart';
 
 class OvcHeiMonitoringForm extends StatefulWidget {
   const OvcHeiMonitoringForm({Key? key}) : super(key: key);
@@ -154,8 +155,8 @@ class _OvcHeiMonitoringFormState extends State<OvcHeiMonitoringForm> {
           dataObject['location'] ?? currentOvcHouseholdChild?.orgUnit ?? '';
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcSchoolMonitoringConstant.program,
-            OvcSchoolMonitoringConstant.programStage,
+            OvcHeiMonitoringConstant.program,
+            OvcHeiMonitoringConstant.programStage,
             orgUnit,
             formSections!,
             dataObject,

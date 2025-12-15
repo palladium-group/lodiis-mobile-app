@@ -128,6 +128,7 @@ class _OvcServiceChildWellBeingAssessmentFormState
         formSections: formSections ?? [],
       ),
     );
+
     unFilledMandatoryFields = FormUtil.getUnFilledMandatoryFields(
       mandatoryFields,
       dataObject,
@@ -149,6 +150,7 @@ class _OvcServiceChildWellBeingAssessmentFormState
           dataObject['location'] ?? currentOvcHouseholdChild?.orgUnit ?? '';
       List<String> skippedFields = [
         'Wstcittf',
+        'hivriskres',
       ];
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(

@@ -934,6 +934,10 @@ class OvcEnrollmentChild {
                 name: 'Child of Adolescent Girl who is a young mother',
               ),
               InputFieldOption(
+                code: 'Child of Adolescent Girl who is Breastfeeding',
+                name: 'Child of Adolescent Girl who is Breastfeeding',
+              ),
+              InputFieldOption(
                 code: 'Sibling for CALHIV',
                 name: 'Sibling for CALHIV',
               ),

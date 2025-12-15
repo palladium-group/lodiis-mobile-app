@@ -14,6 +14,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_monitor/pages/ovc_viral_load_monitoring/pages/ovc_viral_load_monitoring_form.dart';
 import 'package:provider/provider.dart';
 
+import '../../../clhiv_art_card/constants/clhiv_art_card_constants.dart';
 import '../../components/ovc_child_viral_load_monitor_container.dart';
 
 class OvcViralLoadMonitoring extends StatefulWidget {
@@ -25,7 +26,7 @@ class OvcViralLoadMonitoring extends StatefulWidget {
 
 class _OvcViralLoadMonitoringState extends State<OvcViralLoadMonitoring> {
   final List<String> programStageIds = [
-    OvcSchoolMonitoringConstant.programStage
+    ClhivArtCardConstants.programStage
   ];
 
   bool _isSameDay(DateTime a, DateTime b) =>

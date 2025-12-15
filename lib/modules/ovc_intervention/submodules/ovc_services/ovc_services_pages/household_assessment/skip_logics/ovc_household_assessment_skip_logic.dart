@@ -176,7 +176,7 @@ class OvchouseHoldAssessmentSkipLogic {
       // Convert age String to int (default to 0 if null or invalid)
       final int parsedAge = int.tryParse(age ?? '') ?? 0;
 
-      if (sex != 'Female' || parsedAge < 18 || parsedAge > 56) {
+      if (sex != 'Female' || parsedAge < 14 || parsedAge > 56) {
         hiddenFields['nSh4v0iBjKW'] = true; // Pregnant
         hiddenFields['dCIDHw3RrQ9'] = true; // Breastfeeding
       }
@@ -193,6 +193,9 @@ class OvchouseHoldAssessmentSkipLogic {
       if(inputFieldId=='nSh4v0iBjKW' && value != 'Yes'){
 
         hiddenFields['fINHdGnfAMA']=true;
+        hiddenFields['LHf5EZmkZ5q']=true;
+      }
+      if(inputFieldId == 'fINHdGnfAMA' && value != 'true'){
         hiddenFields['LHf5EZmkZ5q']=true;
       }
       if (artInitiationDate != null) {
