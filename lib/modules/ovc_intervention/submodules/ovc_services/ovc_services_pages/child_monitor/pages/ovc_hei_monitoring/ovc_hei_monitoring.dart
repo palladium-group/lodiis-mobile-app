@@ -15,6 +15,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:provider/provider.dart';
 
 import '../../components/ovc_child_hei_monitor_container.dart';
+import 'constants/ovc_hei_monitoring_constant.dart';
 
 class OvcHeiMonitoring extends StatefulWidget {
   const OvcHeiMonitoring({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class OvcHeiMonitoring extends StatefulWidget {
 
 class _OvcHeiMonitoringState extends State<OvcHeiMonitoring> {
   final List<String> programStageIds = [
-    OvcSchoolMonitoringConstant.programStage
+    OvcHeiMonitoringConstant.programStage
   ];
 
   bool _isSameDay(DateTime a, DateTime b) =>
