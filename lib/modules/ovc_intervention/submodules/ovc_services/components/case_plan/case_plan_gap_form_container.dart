@@ -25,6 +25,9 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_service_well_being_assessment_constant.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/constants/ovc_household_assessment_constant.dart';
 
+import '../../../../../../models/events.dart';
+import '../../constants/ovc_case_plan_constant.dart';
+
 class CasePlanGapFormContainer extends StatefulWidget {
   const CasePlanGapFormContainer({
     Key? key,
@@ -156,34 +159,101 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
   }
 
   /// Collect **all** gap DEs ever saved as `true` in the Case Plan Gap stage
+
+  /// Collect gap DEs saved as `true`, but **only for the latest Case Plan**.
+  /// - Prefers strict filtering by CP linkage (casePlanToGapLinkage)
+  /// - Falls back to filtering by eventDate >= latest CP date if linkage missing
   Future<Set<String>> _existingGapTogglesAcrossAllEvents() async {
     final tei = _currentTei();
     if (tei == null) return <String>{};
 
-    final stageId = _runChildPath
+    // Stages
+    final gapStageId = _runChildPath
         ? OvcChildCasePlanConstant.casePlanGapProgramStage
         : OvcHouseholdCasePlanConstant.casePlanGapProgramStage;
 
+    // Case Plan stage (latest CP we should consider)
+    final casePlanStageId = _runChildPath
+        ? OvcChildCasePlanConstant.casePlanProgramStage
+        : OvcHouseholdCasePlanConstant.casePlanProgramStage;
+
+    // Load all events for this TEI
     final accessibleOrgUnits =
     await OrganisationUnitService().getOrganisationUnitAccessedByCurrentUser();
-    final events = await TrackedEntityInstanceUtil
+    final allEvents = await TrackedEntityInstanceUtil
         .getSavedTrackedEntityInstanceEventData(tei, accessibleOrgUnits: accessibleOrgUnits);
 
-    final existing = <String>{};
-    for (final e in events) {
-      if (e.programStage != stageId) continue;
-      final dvs = (e.dataValues as List?) ?? const [];
-      for (final dv in dvs) {
-        if (dv is Map && dv['dataElement'] != null) {
-          final val = (dv['value'] ?? '').toString().trim().toLowerCase();
-          if (val == 'true' || val == '1' || val == 'yes') {
-            existing.add(dv['dataElement'] as String);
-          }
+    // Find the latest Case Plan event (by parsed date, then string compare fallback)
+    Events? latestCp;
+    DateTime? latestCpDate;
+    for (final e in allEvents) {
+      if (e.programStage != casePlanStageId) continue;
+      final d = DateTime.tryParse(e.eventDate ?? '');
+      if (d != null) {
+        if (latestCpDate == null || d.isAfter(latestCpDate!)) {
+          latestCp = e;
+          latestCpDate = d;
+        }
+      } else {
+        // fallback if dates are strings
+        if (latestCp == null ||
+            (e.eventDate ?? '').compareTo(latestCp!.eventDate ?? '') > 0) {
+          latestCp = e;
         }
       }
     }
+
+    if (latestCp == null) {
+      // No case plan yet → treat as no existing gaps to filter out
+      return <String>{};
+    }
+
+    final latestCpId = (latestCp!.event ?? '').toString();
+    // If date failed to parse above, try again here or keep null
+    latestCpDate ??= DateTime.tryParse(latestCp!.eventDate ?? '');
+
+    // Build the set from gap events that belong to the latest CP only
+    final existing = <String>{};
+    for (final e in allEvents) {
+      if (e.programStage != gapStageId) continue;
+
+      // Read linkage (casePlanToGapLinkage) if present
+      String? cpLinkVal;
+      for (final dv in (e.dataValues as List? ?? const [])) {
+        if (dv is Map && (dv['dataElement'] ?? '') == OvcCasePlanConstant.casePlanToGapLinkage) {
+          cpLinkVal = (dv['value'] ?? '').toString();
+          break;
+        }
+      }
+
+      final belongsToLatestCp = (cpLinkVal != null && cpLinkVal == latestCpId);
+
+      // Fallback by date if link is missing: accept only events on/after latest CP date
+      bool passesDateFallback = false;
+      if (!belongsToLatestCp && latestCpDate != null) {
+        final evDate = DateTime.tryParse(e.eventDate ?? '');
+        if (evDate != null && !evDate.isBefore(latestCpDate!)) {
+          passesDateFallback = true;
+        }
+      }
+
+      if (!belongsToLatestCp && !passesDateFallback) continue;
+
+      // collect toggles marked true in this gap event
+      for (final dv in (e.dataValues as List? ?? const [])) {
+        if (dv is! Map) continue;
+        final de = (dv['dataElement'] ?? '').toString();
+        if (de.isEmpty) continue;
+        final val = (dv['value'] ?? '').toString().trim().toLowerCase();
+        if (val == 'true' || val == '1' || val == 'yes') {
+          existing.add(de);
+        }
+      }
+    }
+
     return existing;
   }
+
 
   // ----------------- prepare -----------------
 
@@ -542,7 +612,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
 
     final isFemale = _isTrue(child.sex == 'Female');
 
-    if( isFemale && !attandingANC){
+    if( isFemale && a[pregnantDE] == 'Yes' && !attandingANC){
       dataObject[ancGapDE] = true;
     }
     if (overSixMonthsOnArt && !testForVL) {
@@ -591,7 +661,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         dataObject[disclosureSupportGapDE] = true;
       }
       if (onArt) dataObject[hivAdherenceGapDE] = true;
-      if (coughing) dataObject[tbTreatGapDE] = true;
+      if (coughing || lostWeight || hasFever || haveDrenching) {
+        dataObject[tbTreatGapDE] = true;
+      }
       if (hivPositive && !onArt) dataObject[hivTreatGapDE] = true;
       if (hivPositive) {
         dataObject[comArtAdherenceGapDE] = true;
