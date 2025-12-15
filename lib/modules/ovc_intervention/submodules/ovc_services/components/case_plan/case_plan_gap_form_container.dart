@@ -444,7 +444,6 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         if (!testdforCD4) {
           dataObject[cd4TestingGapDE] = true;
         }
-        dataObject[viralLoadTestingGapDE] = true;
         dataObject[enhancedAdherenceCouncilingGapDE] = true;
       }
     }
