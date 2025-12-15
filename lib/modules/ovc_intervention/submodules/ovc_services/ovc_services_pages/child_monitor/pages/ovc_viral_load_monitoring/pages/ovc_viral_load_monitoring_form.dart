@@ -27,6 +27,7 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/o
 import 'package:provider/provider.dart';
 
 import '../../../../../models/ovc_viral_load_monitoring.dart';
+import '../../../../clhiv_art_card/constants/clhiv_art_card_constants.dart';
 import '../skip_logics/ovc_child_viral_load_skip_logic.dart';
 
 class OvcChildViralLoadMonitoringForm extends StatefulWidget {
@@ -155,8 +156,8 @@ class _OvcChildViralLoadMonitoringFormState extends State<OvcChildViralLoadMonit
           dataObject['location'] ?? currentOvcHouseholdChild?.orgUnit ?? '';
       try {
         await TrackedEntityInstanceUtil.savingTrackedEntityInstanceEventData(
-            OvcSchoolMonitoringConstant.program,
-            OvcSchoolMonitoringConstant.programStage,
+            ClhivArtCardConstants.program,
+            ClhivArtCardConstants.programStage,
             orgUnit,
             formSections!,
             dataObject,
