@@ -80,27 +80,40 @@ class OvcHeiMonitoring {
                       translatedName: 'Ha a tsebe'),
                 ]),
             InputField(
-                id: 'fuiWaufIUTs',
-                name: 'Feeding Options',
+                id: 'tTvZnqi89WL',
+                name: 'Risk stratification',
+                translatedName: 'Risk stratification',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'High',
+                      name: 'High',
+                      translatedName: 'High'),
+                  InputFieldOption(
+                      code: 'Low',
+                      name: 'Low',
+                      translatedName: 'Low'),
+                ]),
+
+            InputField(
+                id: 'bOqcf7qGjXC',
+                name: 'Prophylaxis given at birth',
                 translatedName: 'Boemo ba hau ba HIV ke bofe?',
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4B9F46),
                 labelColor: const Color(0xFF1A3518),
                 options: [
                   InputFieldOption(
-                      code: 'exclusive breastfeeding',
-                      name: 'Exclusive breastfeeding',
-                      translatedName: 'Exclusive breastfeeding'),
+                      code: 'AZT/NVP',
+                      name: 'AZT/NVP',
+                      translatedName: 'AZT/NVP'),
                   InputFieldOption(
-                      code: 'exclusive replacement feeding',
-                      name: 'Exclusive replacement feeding',
-                      translatedName: 'Exclusive replacement feeding'),
-                  InputFieldOption(
-                      code: 'mixed feeding',
-                      name: 'Mixed feeding',
-                      translatedName: 'Mixed feeding'),
+                      code: 'NVP only',
+                      name: 'NVP only',
+                      translatedName: 'NVP only'),
                 ]),
-
             InputField(
                 id: 'zhTX6aih7w0',
                 name: 'Appointments',
@@ -130,15 +143,47 @@ class OvcHeiMonitoring {
                       name: '18 months',
                       translatedName: '18 months'),
                 ]),
+            InputField(
+                id: 'BNWLmvSXCb2',
+                name: 'EID Test Results',
+                translatedName: 'Boemo ba hau ba HIV ke bofe?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Positive',
+                      name: 'Positive',
+                      translatedName: 'Positive'),
+                  InputFieldOption(
+                      code: 'Negative',
+                      name: 'Negative',
+                      translatedName: 'Negative'),
+                ]),
 
             InputField(
-                id: 'cJHVdETPtB1',
-                name: 'Date stopped breastfeeding',
-                translatedName: 'Letsatsi leo o emisitseng kanyeso',
-                valueType: 'DATE',
-                firstDate: enrollmentDate,
-              inputColor: const Color(0xFF4B9F46),
-              labelColor: const Color(0xFF1A3518)),
+                id: 'VzNqtfinj3B',
+                name: 'Final Outcome (18 months) Test Done',
+                translatedName: 'Boemo ba hau ba HIV ke bofe?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: '1',
+                      name: 'Yes',
+                      translatedName: 'E'),
+                  InputFieldOption(
+                      code: '0',
+                      name: 'No',
+                      translatedName: 'Che'),
+                  InputFieldOption(
+                      code: '0.000001',
+                      name: 'NA',
+                      translatedName: 'NA'),
+
+                ]),
+
           ])
     ];
   }
