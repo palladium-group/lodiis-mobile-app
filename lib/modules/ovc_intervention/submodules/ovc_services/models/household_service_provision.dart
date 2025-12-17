@@ -392,6 +392,37 @@ class HouseholdServiceProvision {
                       labelColor: const Color(0xFF737373)),
 
 
+
+                  InputField(
+                    id: 'J2VVqKMlJX0',
+                    name: 'Food Demonstration Service Provided',
+                    translatedName: "Lits'ebeletso tsa Food Demonstration",
+                    valueType: 'TRUE_ONLY',
+                    inputColor: const Color(0xFF4D9E49),
+                    labelColor: const Color(0xFF737373),
+                  ),
+                  InputField(
+                      id: 'c3CO4fvK7ZQ',
+                      name: 'Food Demonstration Service Provision Date',
+                      translatedName:
+                      'Letsatsi la Kabo ea Litšebeletso Food Demonstration',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'B95FIqPFBjY',
+                      name: 'Food Demonstration Description',
+                      translatedName: 'Tlhaloso ea Food Demonstration',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+
+
+
+
+
+
                 ]
             ),
             FormSection(

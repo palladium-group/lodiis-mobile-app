@@ -366,8 +366,8 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const oralHealthGapDE = 'ztDAwmkSwKf';
     const foodSupportGapDE = 'EaJTFrklMo5';
     const disclosureSupportGapDE = 'eQTJrTcKzVK';
-    const dewormingGapDE = 'x4yAqv4z2Xv';
     const feedingsessionsGapDE = 'zkbTGkrT6bH';
+    const foodDemoGapDE = 'qHLlldnWvPl';
     const enhancedAdherenceCouncilingGapDE = 'XuZIbkwn5yi';
     const psycosocialsupportGapDE = 'WiPTQhWLVU1';
     const viralLoadTestingGapDE = 'bepi3n6Z4T0';
@@ -486,10 +486,10 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         final childHiv = _normHiv(childVals['c5TMWtM4VVJ']);
         if (childHiv == 'Positive') {
           dataObject[artLiteracyGapDE] = true;
+          print("childresults:$childHiv");
           break;
         }
       }
-
       for (final child in children) {
         final tei = (child.id ?? '').toString();
         if (tei.isEmpty) continue;
@@ -497,14 +497,21 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
 
         // age-based nutrition
         if (age >= 0 && age <= 5) {
-          if (age < 4) dataObject[feedingsessionsGapDE] = true;
-          dataObject[dewormingGapDE] = true;
+
+          dataObject[feedingsessionsGapDE] = true;
+          dataObject[foodDemoGapDE] = true;
         }
         if (age < 0 || age > 8) continue;
         final childVals = await _latestValuesForChildAssessment(tei);
-        final childHiv = _normHiv(childVals['c5TMWtM4VVJ']);
+        final childHiv = _normHiv(childVals['vNeOE9abQBB']);
+        final childVLresults = childVals['aRNGDZcwWmS'];
         if (childHiv == 'Positive') {
           dataObject[artLiteracyGapDE] = true;
+          dataObject[comArtAdherenceGapDE] = true;
+            if (childVLresults == 'High (above 1,000 copies/ml)') {
+              dataObject[enhancedAdherenceCouncilingGapDE] = true;
+
+          }
           break;
         }
       }
@@ -559,7 +566,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const vltestingDE = 'sLyfb45aLkl';
     const cd4testingDE = 'tYN12Es3707';
     const viralLoadResultsDE = 'aRNGDZcwWmS';
-
+    const dewormingDE = 'oHhVRXZhKO2';
+    const vitaminADE = 'Gj7v80HBpqe';
+    const immunizationDE = 'mfGAORfY4TO';
 
     bool moreThanSixMonthsOnArt(Map<String, String?> m) {
       final raw = (m[durationOnArt] ?? '').toString().trim().toLowerCase();
@@ -583,6 +592,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     const psycosocialsupportGapDE = 'WiPTQhWLVU1';
     const viralLoadTestingGapDE = 'bepi3n6Z4T0';
     const cd4TestingGapDE = 'SHWV7e088RT';
+    const dewormingGapDE = 'x4yAqv4z2Xv';
+    const vitaminAGapDE = 'dr1Oa2hfJHK';
+    const immunizationGapDE = 'QrDmo9mOK41';
 
 
     final attandingANC = _isTrue(a[ancDE]);
@@ -598,6 +610,9 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final hasFever = _isTrue(a[havefever]);
     final recentTest = _testedWithin3Months(a[lastTestedDE]);
     final oralHealthFlag = _isTrue(a[oralHealthMessagingDE]);
+    final receivedDeworming = _isTrue(a[dewormingDE]);
+    final receivedVitaminA = _isTrue(a[vitaminADE]);
+    final receivedImmunization = _isTrue(a[immunizationDE]);
     final attendingUnderFiveClinic = _isTrue(a[underFiveCLinicDE]);
     final childisHei = _isTrue(child.isHei);
     final childTestedAsperHeiAlg = _isTrue(child.testedHeiAlgorithm);
@@ -611,7 +626,11 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final viralLoadResults = a[viralLoadResultsDE];
 
     final isFemale = _isTrue(child.sex == 'Female');
-
+if(!receivedImmunization){
+  dataObject[immunizationGapDE] = true;
+}
+if(!receivedVitaminA){dataObject[vitaminAGapDE]=true;}
+if(!receivedDeworming){dataObject[dewormingGapDE]=true;}
     if( isFemale && a[pregnantDE] == 'Yes' && !attandingANC){
       dataObject[ancGapDE] = true;
     }

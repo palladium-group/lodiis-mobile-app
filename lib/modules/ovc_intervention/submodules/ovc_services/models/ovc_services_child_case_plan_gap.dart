@@ -7,7 +7,6 @@ class OvcServicesChildCasePlanGap {
   static List<FormSection> getFormSections({
     required String firstDate,
   }) {
-    //Date for HIVS&D to be completed
     return [
       FormSection(
           name: 'DOMAIN HEALTH',
@@ -243,7 +242,7 @@ class OvcServicesChildCasePlanGap {
                   InputField(
                       id: 'ztDAwmkSwKf',
                       name: 'Provide Oral Health Hygiene Messaging',
-                      translatedName: 'Tšebeletso a HTS ',
+                      translatedName: 'Tšebeletso ea Oral Health Hygiene Messaging ',
                       valueType: 'TRUE_ONLY',
                       isReadOnly: true,
                       inputColor: const Color(0xFF4D9E49),
@@ -277,14 +276,15 @@ class OvcServicesChildCasePlanGap {
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'dTFLFtUUeEK',
+                      id: 'dr1Oa2hfJHK',
                       name: 'Refere for Vitamin A',
                       translatedName: 'Tšebeletso a SAIDS',
+                      isReadOnly: true,
                       valueType: 'TRUE_ONLY',
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
                   InputField(
-                      id: 'jlu7TDN7khJ',
+                      id: 'TsSSQtbGBBE',
                       allowFuturePeriod: true,
                       name: 'Vitamin A date for completion',
                       translatedName: 'Letsatsi la SAIDS le tla phetheloa',
@@ -294,7 +294,7 @@ class OvcServicesChildCasePlanGap {
                       labelColor: const Color(0xFF737373)),
                   InputField(
                       id: 'x4yAqv4z2Xv',
-                      name: 'Deworming medication, Vitamin A and Immunization',
+                      name: 'Deworming medication service',
                       translatedName: 'Tšebeletso a IMMUNIZATION',
                       valueType: 'TRUE_ONLY',
                       isReadOnly: true,
@@ -303,12 +303,32 @@ class OvcServicesChildCasePlanGap {
                   InputField(
                       id: 'eTDE6zroxBC',
                       allowFuturePeriod: true,
-                      name: 'Deworming medication,Vitamin A and Immunization Projected date for completion',
+                      name: 'Deworming medication Projected date for completion',
                       translatedName: 'Letsatsi la IMMUNIZATION le tla phetheloa',
                       valueType: 'DATE',
                       firstDate: firstDate,
                       inputColor: const Color(0xFF4D9E49),
                       labelColor: const Color(0xFF737373)),
+
+                  InputField(
+                      id: 'QrDmo9mOK41',
+                      name: 'IMMUNIZATION service',
+                      translatedName: 'Tšebeletso a IMMUNIZATION',
+                      valueType: 'TRUE_ONLY',
+                      isReadOnly: true,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+                  InputField(
+                      id: 'e9Wiv8lfKi1',
+                      allowFuturePeriod: true,
+                      name: 'IMMUNIZATION Projected date for completion',
+                      translatedName: 'Letsatsi la IMMUNIZATION le tla phetheloa',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF4D9E49),
+                      labelColor: const Color(0xFF737373)),
+
+
                   InputField(
                       id: 'uvJV4WGc5ct',
                       name: 'FOOD SUPPLIMENTS',

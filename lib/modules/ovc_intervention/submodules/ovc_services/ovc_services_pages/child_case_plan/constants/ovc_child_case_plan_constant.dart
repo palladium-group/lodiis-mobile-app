@@ -97,7 +97,24 @@ class OvcChildCasePlanConstant {
           ],
         },
 
+      ],
+      "hivstatusBased": [
+        { "status": "positive",
+          "ids": ["HKCv7lkLexo", "JzlLk2tW4xh",
+            "gff7hjjVoI6","YI1Ckbt8mRn",
+            "vqRohVpTK2G","vUMhUm3i0b0"
+
+
+
+          ] }
+      ],
+      "vlresultsBased": [
+        {"status": "High",
+        "ids":["XuZIbkwn5yi","uwuAbOBtPHf"]
+      }
+
       ]
+
     },
     "Safe": {
       "generic": [
@@ -171,7 +188,6 @@ class OvcChildCasePlanConstant {
             "GImA3HB9YK5", "fFuabYbLUjz", "QBNhlIan0LR", "IFggJCXLYPD"
       ],
       "ageBased": [
-
         {
           "minAge": 0,
           "maxAge": 9,
@@ -179,7 +195,10 @@ class OvcChildCasePlanConstant {
             //HIVS&D service
             "HzI5X2yHef6", "GyG2HcLsVka","y8ToqnbVz1o",
             "E21r5xeRgBg","LcEBYlqwCij","zhSR0uBSq3f",
-            "yQkDGd2gLw2","lL8XiDgD8ZI","HfO5NXau7f2"
+            "yQkDGd2gLw2","lL8XiDgD8ZI","HfO5NXau7f2",
+            "otd2tndsE4Z","ruZFn94Hcyw","dwhnvU5m667",
+            "eGkOJf7odKm","W6GgMkwmVuf","D8G720HroqU",
+
           ],
         },
 
@@ -190,9 +209,17 @@ class OvcChildCasePlanConstant {
             //feeding sessions service
             "BWqkxqDJJEP", "E8Bi7BwHEXM","SGLSQWgUi8R"
             "UKczyQWCB0L","jsEr16lnber","wZLjymsKsuj"
-            "U0zYyliGuQo","PXo8jxReklh","OoODkEfZ4hq"
           ],
         },
+        {
+          "minAge": 5,
+          "maxAge": 9,
+          "ids": [
+
+                "U0zYyliGuQo","PXo8jxReklh","OoODkEfZ4hq"
+          ],
+        },
+
       ]
     },
     "Safe": {

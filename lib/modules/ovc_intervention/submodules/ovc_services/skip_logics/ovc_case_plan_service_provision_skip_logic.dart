@@ -396,7 +396,7 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
           hiddenFields['u8r8p0a3JqU'] = false;
           hiddenFields['W5lbgijaXA6'] = false;
         }
-      } else if (key == 'x4yAqv4z2Xv' && value == 'true') {
+      } else if (key == 'QrDmo9mOK41' && value == 'true') {
         hiddenFields['UKczyQWCB0L'] = hideServicesByImplementingPartner(
           "UKczyQWCB0L",
           implementingPartner,
@@ -406,7 +406,37 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
           hiddenFields['jsEr16lnber'] = false;
           hiddenFields['wZLjymsKsuj'] = false;
         }
-      } else if (key == 'AM9oJCOHM7f' && value == 'true') {
+      }
+
+
+      else if (key == 'dr1Oa2hfJHK' && value == 'true') {
+        hiddenFields['Xc1YkqS7CSB'] = hideServicesByImplementingPartner(
+          "Xc1YkqS7CSB",
+          implementingPartner,
+        );
+        var inputValue = '${dataObject['Xc1YkqS7CSB']}';
+        if (inputValue == 'true') {
+          hiddenFields['yCzUCzCVCyV'] = false;
+          hiddenFields['RDInAvhI5yh'] = false;
+        }
+      }
+
+
+      else if (key == 'x4yAqv4z2Xv' && value == 'true') {
+        hiddenFields['rWMLqnMWFt8'] = hideServicesByImplementingPartner(
+          "rWMLqnMWFt8",
+          implementingPartner,
+        );
+        var inputValue = '${dataObject['rWMLqnMWFt8']}';
+        if (inputValue == 'true') {
+          hiddenFields['SNE3A4VKXhl'] = false;
+          hiddenFields['pQTfX87p7QQ'] = false;
+        }
+      }
+
+
+
+      else if (key == 'AM9oJCOHM7f' && value == 'true') {
         hiddenFields['KkqMjxjAR7g'] = hideServicesByImplementingPartner(
           "KkqMjxjAR7g",
           implementingPartner,

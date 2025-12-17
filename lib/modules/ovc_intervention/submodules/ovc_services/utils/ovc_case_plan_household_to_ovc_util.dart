@@ -13,8 +13,43 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/m
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/models/ovc_services_child_case_plan_gap.dart';
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 
+import '../../../../../core/services/organisation_unit_service.dart';
+import '../constants/ovc_service_well_being_assessment_constant.dart';
+
 class OvcCasePlanHouseholdToOvcUtil {
-  // ------------- small helpers -------------
+  // ---- small helpers --------------------------------------------------------
+
+  Future<Map<String, String?>> _latestValuesForChildAssessment(String tei) async {
+    final accessibleOrgUnits =
+    await OrganisationUnitService().getOrganisationUnitAccessedByCurrentUser();
+    final all = await TrackedEntityInstanceUtil
+        .getSavedTrackedEntityInstanceEventData(tei, accessibleOrgUnits: accessibleOrgUnits);
+
+    final stageId = OvcServiceWellBeingAssessmentConstant.programStage;
+    final stageEvents = all.where((e) => e.programStage == stageId).toList();
+    if (stageEvents.isEmpty) return {};
+
+    stageEvents.sort((a, b) {
+      final ad = DateTime.tryParse(a.eventDate ?? '');
+      final bd = DateTime.tryParse(b.eventDate ?? '');
+      if (ad != null && bd != null) return bd.compareTo(ad);
+      return (b.eventDate ?? '').compareTo(a.eventDate ?? '');
+    });
+
+    final latest = stageEvents.first;
+    final map = <String, String?>{};
+    final dvs = (latest.dataValues as List?) ?? const [];
+    for (final dv in dvs) {
+      if (dv is Map && dv['dataElement'] != null) {
+        map[dv['dataElement'] as String] = dv['value']?.toString();
+      }
+    }
+    map['eventDate'] = latest.eventDate;
+    map['eventId'] = latest.event;
+    return map;
+  }
+
+
 
   static int _asInt(dynamic v, {int fallback = 0}) {
     if (v == null) return fallback;
@@ -28,6 +63,7 @@ class OvcCasePlanHouseholdToOvcUtil {
     final a = _asInt(child.age, fallback: 0);
     return a >= 0 ? a : 0;
   }
+
 
   static String _childName(OvcHouseholdChild c) {
     final parts = <String>[];
@@ -44,13 +80,41 @@ class OvcCasePlanHouseholdToOvcUtil {
     return s == 'true' || s == '1' || s == 'yes' || s == 'y';
   }
 
-  // Build list of valid DE ids (generic + age-based)
-  static List<String> _validIdsForChildAge({
+  // Normalize HIV status to one of: Positive / Negative / Unknown
+  static String _normHiv(dynamic v) {
+    final s = (v ?? '').toString().trim().toLowerCase();
+    if (s.isEmpty) return 'Unknown';
+    const pos = {'positive', 'pos', 'positive (known)', '1', 'true', 'yes'};
+    const neg = {'negative', 'neg', '0', 'false', 'no'};
+    if (pos.contains(s)) return 'Positive';
+    if (neg.contains(s)) return 'Negative';
+    // leave original title-case for known strings
+    final t = (v ?? '').toString().trim();
+    if (t.toLowerCase() == 'unknown') return 'Unknown';
+    // unknown-ish or unexpected → treat as Unknown
+    return 'Unknown';
+  }
+
+  /// Try resolve HIV status from TEI attributes first, then latest event
+   Future<String?> _childHivStatus(TrackedEntityInstance tei) async {
+
+    final childVals = await _latestValuesForChildAssessment(tei as String);
+    print(childVals);
+    const hivDE = 'vNeOE9abQBB';
+    final hivStatus = childVals[hivDE];
+    // Common DE/attribute id used in your codebase for HIV status
+    return hivStatus;
+  }
+
+  // Build list of valid DE ids (generic + ageBased + hivstatusBased)
+  Future<List<String>> _validIdsForChild({
     required Map domainConfig,
     required int age,
-  }) {
+    required TrackedEntityInstance tei,
+  }) async {
     final valid = <String>[];
 
+    // --- generic
     final generic = (domainConfig['generic'] ?? const <String>[]);
     if (generic is List) {
       for (final it in generic) {
@@ -59,6 +123,7 @@ class OvcCasePlanHouseholdToOvcUtil {
       }
     }
 
+    // --- ageBased
     final ageBased = (domainConfig['ageBased'] ?? const <Map>[]);
     if (ageBased is List) {
       for (final dyn in ageBased) {
@@ -76,10 +141,53 @@ class OvcCasePlanHouseholdToOvcUtil {
         }
       }
     }
+
+    // --- hivstatusBased (NEW)
+    // structure:
+    // "hivstatusBased": [
+    //   {"status":"Positive","ids":[...]}
+    //   {"status":"Negative","ids":[...]}
+    //   {"status":"Unknown","ids":[...]}
+    //   {"status":"Any","ids":[...]} // optional fallback
+    // ]
+    final hivBlocks = (domainConfig['hivstatusBased'] ?? const <Map>[]);
+    if (hivBlocks is List && hivBlocks.isNotEmpty) {
+      final status = await _childHivStatus(tei); // Positive / Negative / Unknown
+      String statusLower = status!.toLowerCase();
+      List _idsFor(String target) {
+        final out = <String>[];
+        for (final blk in hivBlocks) {
+          if (blk is! Map) continue;
+          final s = (blk['status'] ?? '').toString().trim().toLowerCase();
+          if (s == target.toLowerCase()) {
+            final ids = blk['ids'];
+            if (ids is List) {
+              for (final it in ids) {
+                final v = it?.toString();
+                if (v != null && v.isNotEmpty) out.add(v);
+              }
+            }
+          }
+        }
+        return out;
+      }
+
+      // exact match (Positive/Negative/Unknown)
+      final exact = _idsFor(statusLower);
+      if (exact.isNotEmpty) valid.addAll(exact as Iterable<String>);
+
+      // fallback "Any"
+      if (exact.isEmpty) {
+        final any = _idsFor('any');
+        if (any.isNotEmpty) valid.addAll(any as Iterable<String>);
+      }
+    }
+
+    // uniqueness
     return valid.toSet().toList();
   }
 
-  // -------- existing reads (dedupe intelligence) --------
+  // ---- existing reads (dedupe intelligence) ---------------------------------
 
   /// Returns the eventId of an existing **child CP container** (case plan stage)
   /// that matches the given domain and cpLink; null if none.
@@ -159,7 +267,7 @@ class OvcCasePlanHouseholdToOvcUtil {
     return out;
   }
 
-  // -------- writers (now with dedupe) --------
+  // ---- writers (dedupe preserved) -------------------------------------------
 
   /// Ensure child has a CP container for (domainId, cpLink). **Updates** if one already exists.
   static Future<void> _ensureChildCasePlanContainer({
@@ -194,7 +302,7 @@ class OvcCasePlanHouseholdToOvcUtil {
       payload,
       eventDate,
       tei.trackedEntityInstance,
-      existingEventId, // <-- update if present, create otherwise
+      existingEventId, // update if present, create otherwise
       <String>[
         OvcCasePlanConstant.casePlanToGapLinkage,
         OvcCasePlanConstant.casePlanDomainType,
@@ -266,7 +374,8 @@ class OvcCasePlanHouseholdToOvcUtil {
     if (!hasNewToggle) {
       if (kDebugMode) {
         debugPrint(
-            '[GAP Propagation] No new gap DEs for ${tei.trackedEntityInstance} (domain="$domainId"). Skip create.');
+          '[GAP Propagation] No new gap DEs for ${tei.trackedEntityInstance} (domain="$domainId"). Skip create.',
+        );
       }
       return;
     }
@@ -288,13 +397,13 @@ class OvcCasePlanHouseholdToOvcUtil {
     );
   }
 
-  // ------------- PUBLIC API -------------
+  // ---- PUBLIC API -----------------------------------------------------------
 
   /// For each child:
-  ///  - age-filter valid DEs from caregiver selection
+  ///  - compute allowed IDs from **generic + ageBased + hivstatusBased**
   ///  - ensure a child CP container exists for (domain, cpLink) without duplicating it
   ///  - create a child GAP event only with **new** DEs (no duplicate toggles)
-  static Future<void> autoSyncHHGapsToChildren({
+  Future<void> autoSyncHHGapsToChildren({
     required List<OvcHouseholdChild> children,
     required Map<String, dynamic> hhGapObject,
     required String domainId,
@@ -315,12 +424,16 @@ class OvcCasePlanHouseholdToOvcUtil {
         if (tei == null) continue;
 
         final age = _coerceAge(child);
-        final ids = _validIdsForChildAge(domainConfig: domainCfg, age: age);
+        final ids = await _validIdsForChild(
+          domainConfig: domainCfg,
+          age: age,
+          tei: tei,
+        );
 
         if (ids.isEmpty && (domainCfg['generic'] ?? const []) is! List) {
           if (kDebugMode) {
             debugPrint(
-              '[GAP Propagation] No age-eligible HH gap fields for child ${_childName(child)} in "$domainId". Skip.',
+              '[GAP Propagation] No eligible HH gap fields for child ${_childName(child)} in "$domainId". Skip.',
             );
           }
           continue;
@@ -362,3 +475,4 @@ class OvcCasePlanHouseholdToOvcUtil {
     }
   }
 }
+

@@ -438,7 +438,6 @@ class OvcServicesChildServiceProvision {
               id: 'EtENRPlSnO0',
               name: 'WASH MESSAGING  session number',
               translatedName: 'Thupelo ea WASH MESSAGING',
-              isReadOnly: true,
               valueType: 'TEXT',
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
@@ -522,7 +521,6 @@ class OvcServicesChildServiceProvision {
                 valueType: 'TEXT',
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
-
 
 
             InputField(
@@ -622,7 +620,6 @@ class OvcServicesChildServiceProvision {
               name: 'IMMUNIZATION Service provided',
               translatedName: "Lits'ebeletso tsa IMMUNIZATION li fanoe",
               valueType: 'TRUE_ONLY',
-              isReadOnly: true,
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
             ),
@@ -631,6 +628,46 @@ class OvcServicesChildServiceProvision {
                 name: 'IMMUNIZATION Service Provision Date',
                 translatedName:
                     'Letsatsi la Kabo ea Litšebeletso tsa IMMUNIZATION',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
+
+            InputField(
+              id: 'rWMLqnMWFt8',
+              name: 'Deworming Service Provided',
+              translatedName: "Lits'ebeletso tsa Deworming li fanoe",
+              valueType: 'TRUE_ONLY',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'pQTfX87p7QQ',
+                name: 'Deworming Service Provision Date',
+                translatedName:
+                'Letsatsi la Kabo ea Litšebeletso tsa Deworming Service',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+
+            InputField(
+              id: 'Xc1YkqS7CSB',
+              name: 'VitaminA Service Provided',
+              translatedName: "Lits'ebeletso tsa VitaminA li fanoe",
+              valueType: 'TRUE_ONLY',
+
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'RDInAvhI5yh',
+                name: 'VitaminA Service Provision Date',
+                translatedName:
+                'Letsatsi la Kabo ea Litšebeletso tsa Deworming Service',
                 valueType: 'DATE',
                 firstDate: firstDate,
                 inputColor: const Color(0xFF4D9E49),
