@@ -14,10 +14,10 @@ import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/m
 import 'package:kb_mobile_app/modules/ovc_intervention/submodules/ovc_services/ovc_services_pages/child_case_plan/constants/ovc_child_case_plan_constant.dart';
 
 /// HH → Children (container + gaps propagation; NO services/monitoring)
-/// Copied behavior from the working OvcCasePlanHouseholdToOvcUtil:
 /// - ensure child CP container (update if exists)
 /// - propagate only NEW gap DEs for the SAME cpLinkage
-/// - age-filtered DEs using OvcChildCasePlanConstant.domainToAutopopuledCasePlanGaps
+/// - filter allowed DEs by age (ageBased), HIV status (hivstatusBased),
+///   and VL results (vlresultsBased) using domain config.
 class OvcCasePlanGapHouseholdToOvcUtil {
   // Prevent double writes within a single cascade
   static final Set<String> _inFlight = <String>{};
@@ -52,12 +52,180 @@ class OvcCasePlanGapHouseholdToOvcUtil {
     return s == 'true' || s == '1' || s == 'yes' || s == 'y';
   }
 
-  static List<String> _validIdsForChildAge({
+  // ---------------- HIV status helpers ----------------
+
+  static String _normHiv(dynamic v) {
+    final s = (v ?? '').toString().trim().toLowerCase();
+    if (s.isEmpty) return 'Unknown';
+    const pos = {'positive', 'pos', 'positive (known)', '1', 'true', 'yes'};
+    const neg = {'negative', 'neg', '0', 'false', 'no'};
+    if (pos.contains(s)) return 'Positive';
+    if (neg.contains(s)) return 'Negative';
+    if (s == 'unknown' || s == 'unk') return 'Unknown';
+    return 'Unknown';
+  }
+
+  /// Resolve child HIV status from TEI attributes first, then latest events.
+  static Future<String> _childHivStatus(
+      TrackedEntityInstance tei, {
+        List<String> candidateKeys = const [
+          'c5TMWtM4VVJ', // child HIV status (common)
+          'vNeOE9abQBB', // generic HIV status
+        ],
+      }) async {
+    // TEI attributes
+    try {
+      final attrs = tei.attributes ?? [];
+      for (final a in attrs) {
+        if (a is! Map) continue;
+        final id = (a['attribute'] ?? a['id'] ?? '').toString();
+        if (candidateKeys.contains(id)) {
+          return _normHiv(a['value']);
+        }
+      }
+    } catch (_) {}
+
+    // latest events
+    try {
+      final teiId = tei.trackedEntityInstance ?? '';
+      final all = await TrackedEntityInstanceUtil
+          .getSavedTrackedEntityInstanceEventData(teiId);
+      all.sort((a, b) => (b.eventDate ?? '').compareTo(a.eventDate ?? ''));
+      for (final e in all) {
+        final raw = e.dataValues;
+        if (raw is Map) {
+          for (final key in candidateKeys) {
+            if (raw.containsKey(key)) {
+              final val = raw[key];
+              if (val != null && val.toString().trim().isNotEmpty) {
+                return _normHiv(val);
+              }
+            }
+          }
+        } else if (raw is List) {
+          for (final row in raw) {
+            if (row is Map && row['dataElement'] != null) {
+              final de = row['dataElement'].toString();
+              if (candidateKeys.contains(de)) {
+                final val = row['value'];
+                if (val != null && val.toString().trim().isNotEmpty) {
+                  return _normHiv(val);
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (_) {}
+
+    return 'Unknown';
+  }
+
+  // ---------------- VL results helpers (NEW) ----------------
+
+  /// Normalize VL results into: High (>=1000), Low (<1000), Suppressed, Unknown
+  static String _normVl(dynamic v) {
+    final raw = (v ?? '').toString().trim();
+    if (raw.isEmpty) return 'Unknown';
+    final s = raw.toLowerCase();
+
+    // Common textual labels
+    if (s.contains('suppressed')) return 'Suppressed';
+    if (s.contains('high') || s.contains('>') || s.contains('above')) {
+      return 'High';
+    }
+    if (s.contains('low') || s.contains('<') || s.contains('below')) {
+      return 'Low';
+    }
+
+    // Try numeric extraction
+    final numMatch = RegExp(r'(\d{2,6})').firstMatch(s);
+    if (numMatch != null) {
+      final n = int.tryParse(numMatch.group(1)!);
+      if (n != null) {
+        if (n >= 1000) return 'High';
+        if (n >= 1 && n < 1000) return 'Low';
+        if (n == 0) return 'Suppressed';
+      }
+    }
+
+    // Known option wording from forms
+    if (s.contains('above 1,000') || s.contains('>=1000')) return 'High';
+    if (s.contains('below 1,000') || s.contains('<1000')) return 'Low';
+
+    return 'Unknown';
+  }
+
+  /// Resolve child's latest VL category from attributes (rare) then events.
+  static Future<String> _childVlCategory(
+      TrackedEntityInstance tei, {
+        List<String> vlKeys = const [
+          'aRNGDZcwWmS', // Viral load results DE commonly used
+        ],
+      }) async {
+    // TEI attributes (unlikely, but safe)
+    try {
+      final attrs = tei.attributes ?? [];
+      for (final a in attrs) {
+        if (a is! Map) continue;
+        final id = (a['attribute'] ?? a['id'] ?? '').toString();
+        if (vlKeys.contains(id)) {
+          return _normVl(a['value']);
+        }
+      }
+    } catch (_) {}
+
+    // latest events
+    try {
+      final teiId = tei.trackedEntityInstance ?? '';
+      final all = await TrackedEntityInstanceUtil
+          .getSavedTrackedEntityInstanceEventData(teiId);
+      all.sort((a, b) => (b.eventDate ?? '').compareTo(a.eventDate ?? ''));
+      for (final e in all) {
+        final raw = e.dataValues;
+        if (raw is Map) {
+          for (final key in vlKeys) {
+            if (raw.containsKey(key)) {
+              final val = raw[key];
+              if (val != null && val.toString().trim().isNotEmpty) {
+                return _normVl(val);
+              }
+            }
+          }
+        } else if (raw is List) {
+          for (final row in raw) {
+            if (row is Map && row['dataElement'] != null) {
+              final de = row['dataElement'].toString();
+              if (vlKeys.contains(de)) {
+                final val = row['value'];
+                if (val != null && val.toString().trim().isNotEmpty) {
+                  return _normVl(val);
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (_) {}
+
+    return 'Unknown';
+  }
+
+  // ---------------- allowed IDs resolution (age + HIV + VL) ----------------
+
+  /// Collect allowed DE ids from:
+  ///   - "generic"
+  ///   - "ageBased": [{minAge, maxAge, ids: []}]
+  ///   - "hivstatusBased": [{status: Positive|Negative|Unknown|Any, ids: []}]
+  ///   - "vlresultsBased": [{status: High|Low|Suppressed|Unknown|Any, ids: []}]
+  static Future<List<String>> _validIdsForChildAgeHivVl({
     required Map domainConfig,
     required int age,
-  }) {
+    required TrackedEntityInstance tei,
+  }) async {
     final valid = <String>[];
 
+    // generic
     final generic = (domainConfig['generic'] ?? const <String>[]);
     if (generic is List) {
       for (final it in generic) {
@@ -66,6 +234,7 @@ class OvcCasePlanGapHouseholdToOvcUtil {
       }
     }
 
+    // ageBased
     final ageBased = (domainConfig['ageBased'] ?? const <Map>[]);
     if (ageBased is List) {
       for (final dyn in ageBased) {
@@ -83,27 +252,93 @@ class OvcCasePlanGapHouseholdToOvcUtil {
         }
       }
     }
+
+    // hivstatusBased
+    final hivStatusKeys = (domainConfig['hivStatusKeys'] is List)
+        ? List<String>.from(domainConfig['hivStatusKeys'])
+        : const <String>['c5TMWtM4VVJ', 'vNeOE9abQBB'];
+    final hivBlocks = (domainConfig['hivstatusBased'] ?? const <Map>[]);
+    if (hivBlocks is List && hivBlocks.isNotEmpty) {
+      final status = (await _childHivStatus(tei, candidateKeys: hivStatusKeys))
+          .toLowerCase();
+      List<String> pick(String wanted) {
+        final out = <String>[];
+        for (final blk in hivBlocks) {
+          if (blk is! Map) continue;
+          final s = (blk['status'] ?? '').toString().trim().toLowerCase();
+          if (s == wanted) {
+            final ids = blk['ids'];
+            if (ids is List) {
+              for (final it in ids) {
+                final v = it?.toString();
+                if (v != null && v.isNotEmpty) out.add(v);
+              }
+            }
+          }
+        }
+        return out;
+      }
+
+      final exact = pick(status);
+      if (exact.isNotEmpty) {
+        valid.addAll(exact);
+      } else {
+        valid.addAll(pick('any'));
+      }
+    }
+
+    // vlresultsBased (NEW)
+    final vlKeys = (domainConfig['vlResultKeys'] is List)
+        ? List<String>.from(domainConfig['vlResultKeys'])
+        : const <String>['aRNGDZcwWmS'];
+    final vlBlocks = (domainConfig['vlresultsBased'] ?? const <Map>[]);
+    if (vlBlocks is List && vlBlocks.isNotEmpty) {
+      final vlCat = (await _childVlCategory(tei, vlKeys: vlKeys)).toLowerCase();
+
+      List<String> pick(String wanted) {
+        final out = <String>[];
+        for (final blk in vlBlocks) {
+          if (blk is! Map) continue;
+          final s = (blk['status'] ?? '').toString().trim().toLowerCase();
+          if (s == wanted) {
+            final ids = blk['ids'];
+            if (ids is List) {
+              for (final it in ids) {
+                final v = it?.toString();
+                if (v != null && v.isNotEmpty) out.add(v);
+              }
+            }
+          }
+        }
+        return out;
+      }
+
+      final exact = pick(vlCat); // 'high' | 'low' | 'suppressed' | 'unknown'
+      if (exact.isNotEmpty) {
+        valid.addAll(exact);
+      } else {
+        valid.addAll(pick('any'));
+      }
+    }
+
     return valid.toSet().toList();
   }
 
   // ---------------- existing reads (dedupe intelligence) ----------------
 
-  /// Returns the eventId of an existing **child CP container** (case plan stage)
-  /// that matches the given domain and cpLink; null if none.
   static Future<String?> _findExistingChildCpEventId({
     required String teiId,
     required String domainId,
     required String cpLink,
   }) async {
-    final all =
-    await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(
-      teiId,
-    );
+    final all = await TrackedEntityInstanceUtil
+        .getSavedTrackedEntityInstanceEventData(teiId);
     final stageId = OvcChildCasePlanConstant.casePlanProgramStage;
     String? found;
 
     for (final e in all) {
       if (e.programStage != stageId) continue;
+
       // materialize dataValues into a map
       final dvMap = <String, dynamic>{};
       final raw = e.dataValues;
@@ -116,6 +351,7 @@ class OvcCasePlanGapHouseholdToOvcUtil {
           }
         }
       }
+
       final link =
       (dvMap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString();
       final dom =
@@ -128,20 +364,18 @@ class OvcCasePlanGapHouseholdToOvcUtil {
     return (found != null && found!.trim().isNotEmpty) ? found : null;
   }
 
-  /// Collect all TRUE DE IDs from the child GAP stage for the given cpLink.
   static Future<Set<String>> _existingTrueGapIdsForLinkage({
     required String teiId,
     required String cpLink,
   }) async {
     final out = <String>{};
-    final all =
-    await TrackedEntityInstanceUtil.getSavedTrackedEntityInstanceEventData(
-      teiId,
-    );
+    final all = await TrackedEntityInstanceUtil
+        .getSavedTrackedEntityInstanceEventData(teiId);
     final stageId = OvcChildCasePlanConstant.casePlanGapProgramStage;
 
     for (final e in all) {
       if (e.programStage != stageId) continue;
+
       // build map
       final dvMap = <String, dynamic>{};
       final raw = e.dataValues;
@@ -154,6 +388,7 @@ class OvcCasePlanGapHouseholdToOvcUtil {
           }
         }
       }
+
       // require same cpLink
       final link =
       (dvMap[OvcCasePlanConstant.casePlanToGapLinkage] ?? '').toString();
@@ -175,7 +410,6 @@ class OvcCasePlanGapHouseholdToOvcUtil {
 
   // ---------------- writers (container + gaps) ----------------
 
-  /// Ensure child has a CP container for (domainId, cpLink). **Updates** if one already exists.
   static Future<void> _ensureChildCasePlanContainer({
     required String domainId,
     required String cpLink,
@@ -208,7 +442,7 @@ class OvcCasePlanGapHouseholdToOvcUtil {
       payload,
       eventDate,
       tei.trackedEntityInstance,
-      existingEventId, // <-- update if present, create otherwise
+      existingEventId, // update if present, create otherwise
       <String>[
         OvcCasePlanConstant.casePlanToGapLinkage,
         OvcCasePlanConstant.casePlanDomainType,
@@ -216,7 +450,6 @@ class OvcCasePlanGapHouseholdToOvcUtil {
     );
   }
 
-  /// Create a child GAP event filtered to valid DEs and **not already TRUE**.
   static Future<void> _createChildGapEvent({
     required String domainId,
     required Map<String, dynamic> hhGapObject,
@@ -231,7 +464,6 @@ class OvcCasePlanGapHouseholdToOvcUtil {
         .where((s) => (s.id ?? '') == domainId)
         .toList();
 
-    // IDs already present for this linkage
     final already = await _existingTrueGapIdsForLinkage(
       teiId: tei.trackedEntityInstance ?? '',
       cpLink: cpLink,
@@ -251,7 +483,6 @@ class OvcCasePlanGapHouseholdToOvcUtil {
       final ks = k.toString();
       if (!allowed.contains(ks)) return;
 
-      // linkage and eventDate are always kept
       if (ks == OvcCasePlanConstant.casePlanToGapLinkage ||
           ks == OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage ||
           ks == OvcCasePlanConstant.casePlanGapToMonitoringLinkage ||
@@ -260,17 +491,14 @@ class OvcCasePlanGapHouseholdToOvcUtil {
         return;
       }
 
-      // only add NEW true-ish toggles that are not already in child's GAPs
       if (_isTrueLike(v) && !already.contains(ks)) {
         toSave[ks] = true; // normalize
       }
     });
 
-    // force link + date
     toSave[OvcCasePlanConstant.casePlanToGapLinkage] = cpLink;
     toSave['eventDate'] = eventDate;
 
-    // If there are no NEW DEs besides meta (link/date), skip creating noise
     final hasNewToggle = toSave.keys.any((k) =>
     k != OvcCasePlanConstant.casePlanToGapLinkage &&
         k != OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage &&
@@ -294,7 +522,7 @@ class OvcCasePlanGapHouseholdToOvcUtil {
       toSave,
       eventDate,
       tei.trackedEntityInstance,
-      null, // always a new gap event if there is something new to add
+      null,
       <String>[
         OvcCasePlanConstant.casePlanToGapLinkage,
         OvcCasePlanConstant.casePlanGapToServiceProvisionLinkage,
@@ -303,13 +531,10 @@ class OvcCasePlanGapHouseholdToOvcUtil {
     );
   }
 
-  // ---------------- PUBLIC API (HH form calls only this) ----------------
+  // ---------------- PUBLIC API ----------------
 
-  /// For each domain in HH dataObject:
-  ///  - ensure a child CP container for (domain, cpLink) (update if exists)
-  ///  - for each HH gap in that domain, add only NEW true DEs to the child (age-filtered)
   static Future<void> autoSyncOvcsCasPlanGaps({
-    required String currentCasePlanDate, // kept for parity (not used)
+    required String currentCasePlanDate, // not used; kept for parity
     required List<OvcHouseholdChild> childrens,
     required Map dataObject,            // HH CP object (domainId -> {..., gaps: [...]})
     required String orgUnit,
@@ -337,7 +562,6 @@ class OvcCasePlanGapHouseholdToOvcUtil {
               : AppUtil.getUid();
         }
 
-        // HH gaps list
         final gaps = (domainMap['gaps'] as List?) ?? const [];
 
         for (final child in childrens) {
@@ -359,16 +583,18 @@ class OvcCasePlanGapHouseholdToOvcUtil {
               tei: tei,
             );
 
-            // 2) propagate each HH gap (respecting age-based allowed ids)
-            final Map domainCfg = OvcChildCasePlanConstant
-                .domainToAutopopuledCasePlanGaps[domainId] ??
-                const <String, dynamic>{};
+            // 2) allowed ids (AGE + HIV STATUS + VL CATEGORY + GENERIC)
+            final Map domainCfg =
+                OvcChildCasePlanConstant.domainToAutopopuledCasePlanGaps[domainId] ??
+                    const <String, dynamic>{};
             final age = _coerceAge(child);
-            final allowedIds = _validIdsForChildAge(
+            final allowedIds = await _validIdsForChildAgeHivVl(
               domainConfig: domainCfg,
               age: age,
+              tei: tei,
             );
 
+            // 3) propagate each HH gap (respecting allowed ids)
             for (final g in gaps) {
               final gap = Map<String, dynamic>.from(g as Map);
               await _createChildGapEvent(
@@ -384,7 +610,8 @@ class OvcCasePlanGapHouseholdToOvcUtil {
 
             if (kDebugMode) {
               debugPrint(
-                '[GAP Propagation] Processed child ${_childName(child)} (domain="$domainId").',
+                '[GAP Propagation] Processed child ${_childName(child)} '
+                    '(domain="$domainId", allowedIds=${allowedIds.length}).',
               );
             }
           } catch (e, st) {
