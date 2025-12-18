@@ -28,6 +28,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../models/ovc_hie_monitoring.dart';
 import '../constants/ovc_hei_monitoring_constant.dart';
+import '../skip_logics/ovc_hei_monitoring_skip_logics.dart';
 
 class OvcHeiMonitoringForm extends StatefulWidget {
   const OvcHeiMonitoringForm({Key? key}) : super(key: key);
@@ -104,7 +105,7 @@ class _OvcHeiMonitoringFormState extends State<OvcHeiMonitoringForm> {
           () async {
         Map dataObject =
             Provider.of<ServiceFormState>(context, listen: false).formState;
-        await OvcChildSchoolMonitoringSkipLogic.evaluateSkipLogics(
+        await OvcHeiMonitoringSkipLogic.evaluateSkipLogics(
           context,
           formSections!,
           dataObject,
