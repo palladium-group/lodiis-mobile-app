@@ -60,13 +60,6 @@ class OvcChildCasePlanConstant {
           "ids": [
             //HIVS&D
             "cx4xBY4jZXM", "SIEeRmPm0Q0",
-            //
-            "gff7hjjVoI6", "YI1Ckbt8mRn",
-            //ART literacy
-            "vqRohVpTK2G", "vUMhUm3i0b0",
-            //
-            "XuZIbkwn5yi","uwuAbOBtPHf"
-
           ],
         },
         {
@@ -76,16 +69,6 @@ class OvcChildCasePlanConstant {
             //Oral Health
             "ztDAwmkSwKf", "bK18Ebt1cRa",
 
-          ],
-        },
-        {
-          "minAge": 0,
-          "maxAge": 6,
-          "ids": [
-            //Deworming medication, Vitamin A and Immunization
-            "x4yAqv4z2Xv", "eTDE6zroxBC",
-            //feeding sessions
-            "zkbTGkrT6bH","G4kPVSr7I8U",
           ],
         },
         {
@@ -102,7 +85,9 @@ class OvcChildCasePlanConstant {
         { "status": "positive",
           "ids": ["HKCv7lkLexo", "JzlLk2tW4xh",
             "gff7hjjVoI6","YI1Ckbt8mRn",
-            "vqRohVpTK2G","vUMhUm3i0b0"
+            "vqRohVpTK2G","vUMhUm3i0b0",
+            "HKCv7lkLexo","JzlLk2tW4xh"
+
 
 
 
@@ -198,6 +183,7 @@ class OvcChildCasePlanConstant {
             "yQkDGd2gLw2","lL8XiDgD8ZI","HfO5NXau7f2",
             "otd2tndsE4Z","ruZFn94Hcyw","dwhnvU5m667",
             "eGkOJf7odKm","W6GgMkwmVuf","D8G720HroqU",
+            "otd2tndsE4Z","ruZFn94Hcyw","dwhnvU5m667"
 
           ],
         },
