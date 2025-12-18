@@ -508,6 +508,7 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
         if (childHiv == 'Positive') {
           dataObject[artLiteracyGapDE] = true;
           dataObject[comArtAdherenceGapDE] = true;
+          dataObject[hivAdherenceGapDE] = true;
             if (childVLresults == 'High (above 1,000 copies/ml)') {
               dataObject[enhancedAdherenceCouncilingGapDE] = true;
 

@@ -46,14 +46,7 @@ class OvcHeiMonitoring {
               showCountryLevelTree: true,
               labelColor: const Color(0xFF1A3518),
             ),
-            InputField(
-                id: 'cTk9mxZZ2b6',
-                name: 'Do you have current VL results for biological mother?',
-                translatedName: 'Do you have current VL results for biological mother?',
-                valueType: 'BOOLEAN',
-                inputColor: const Color(0xFF4A9F46),
-                labelColor: const Color(0xFF1A3518)
-            ),
+
             InputField(
                 id: 'sV0jiFD5JQm',
                 name: 'Current VL results of Biological Mother',
@@ -114,6 +107,62 @@ class OvcHeiMonitoring {
                       name: 'NVP only',
                       translatedName: 'NVP only'),
                 ]),
+
+            InputField(
+                id: 'YO4SQLWsD9M',
+                name: 'EID Test at referral',
+                translatedName: 'Boemo ba hau ba HIV ke bofe?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'birth test',
+                      name: 'birth test',
+                      translatedName: 'birth test'),
+                  InputFieldOption(
+                      code: '6 weeks',
+                      name: '6 weeks',
+                      translatedName: '6 weeks'),
+                  InputFieldOption(
+                      code: '10 weeks',
+                      name: '10 weeks',
+                      translatedName: '10 weeks'),
+                  InputFieldOption(
+                      code: '9 months',
+                      name: '9 months',
+                      translatedName: '9 months'),
+                  InputFieldOption(
+                      code: '18 months',
+                      name: '18 months',
+                      translatedName: '18 months'),
+                ]),
+
+            InputField(
+                id: 'BNWLmvSXCb2',
+                name: 'EID Test Results',
+                translatedName: 'Boemo ba hau ba HIV ke bofe?',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4B9F46),
+                labelColor: const Color(0xFF1A3518),
+                options: [
+                  InputFieldOption(
+                      code: 'Positive',
+                      name: 'Positive',
+                      translatedName: 'Positive'),
+                  InputFieldOption(
+                      code: 'Negative',
+                      name: 'Negative',
+                      translatedName: 'Negative'),
+                ]),
+            InputField(
+                id: 'aAEAbcD1mpC',
+                name: 'Birth Test Done?',
+                translatedName: 'Birth Test Done?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4A9F46),
+                labelColor: const Color(0xFF1A3518)
+            ),
             InputField(
                 id: 'zhTX6aih7w0',
                 name: 'Appointments',
@@ -142,23 +191,6 @@ class OvcHeiMonitoring {
                       code: '18 months',
                       name: '18 months',
                       translatedName: '18 months'),
-                ]),
-            InputField(
-                id: 'BNWLmvSXCb2',
-                name: 'EID Test Results',
-                translatedName: 'Boemo ba hau ba HIV ke bofe?',
-                valueType: 'TEXT',
-                inputColor: const Color(0xFF4B9F46),
-                labelColor: const Color(0xFF1A3518),
-                options: [
-                  InputFieldOption(
-                      code: 'Positive',
-                      name: 'Positive',
-                      translatedName: 'Positive'),
-                  InputFieldOption(
-                      code: 'Negative',
-                      name: 'Negative',
-                      translatedName: 'Negative'),
                 ]),
 
             InputField(

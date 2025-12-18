@@ -102,6 +102,31 @@ class OvcServicesChildServiceProvision {
                 inputColor: const Color(0xFF4D9E49),
                 labelColor: const Color(0xFF737373)),
             InputField(
+              id: 'eGkOJf7odKm',
+              name: 'Enhanced adherence counseling service provided',
+              translatedName: "Lits'ebeletso tsa EAC li fanoe",
+              valueType: 'TRUE_ONLY',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+                id: 'W6GgMkwmVuf',
+                name: 'EAC Service Provision Date',
+                translatedName:
+                'Letsatsi la Kabo ea Litšebeletso tsa EAC',
+                valueType: 'DATE',
+                firstDate: firstDate,
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+            InputField(
+                id: 'D8G720HroqU',
+                name: 'Enhanced Adherance counseling Description',
+                translatedName: 'Tlhaloso ea Enhanced Adherance counseling',
+                valueType: 'TEXT',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373)),
+
+            InputField(
                 id: 'dwhnvU5m667',
                 name: 'HIV Prevention,Care and Treatment Messaging Comment',
                 translatedName: 'Tlhaloso ea HIVS&D',
