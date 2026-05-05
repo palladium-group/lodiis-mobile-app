@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
 import 'package:kb_mobile_app/core/services/organisation_unit_service.dart';
@@ -12,12 +13,14 @@ class CurrentUserState with ChangeNotifier {
   String? _implementingPartner;
   List<String?>? _currentUserCountryLevelReferences;
   bool? _canCurrentUserDoDataEntry;
+
   bool? _canManageDreams;
   bool? _canManageEducation;
   bool? _canManagePpPrev;
   bool? _canManageOGAC;
   bool? _canManageOvc;
   bool? _canManageNoneAgyw;
+
   bool? _canManageReferral;
   bool? _canManageCLOReferral;
   bool? _canManageHtsShortForm;
@@ -39,23 +42,31 @@ class CurrentUserState with ChangeNotifier {
   bool? _canManageHIVPreventionEducation;
   bool? _canManageViolencePreventionEducation;
 
-  // selectors
+  // ✅ NEW: MGYSD
+  bool? _canManageMgysd;
 
+  // selectors
   String get implementingPartner => _implementingPartner ?? '';
   CurrentUser? get currentUser => _currentUser;
+
   bool get canCurrentUserDoDataEntry =>
       _canCurrentUserDoDataEntry == null ? true : _canCurrentUserDoDataEntry!;
+
   bool get isKbFacilitySocialWorker =>
       implementingPartner == UserAccountReference.kbFacilitySocialWorker;
+
   String get currentUserLocations => _currentUserLocations ?? '';
+
   List<String?> get currentUserCountryLevelReferences =>
       _currentUserCountryLevelReferences ?? [];
+
   bool get canManageDreams => _canManageDreams ?? false;
   bool get canManageEducation => _canManageEducation ?? false;
   bool get canManagePpPrev => _canManagePpPrev ?? false;
   bool get canManageOGAC => _canManageOGAC ?? false;
   bool get canManageOvc => _canManageOvc ?? false;
   bool get canManageNoneAgyw => _canManageNoneAgyw ?? false;
+
   bool get canManageReferral => _canManageReferral ?? false;
   bool get canManageCLOReferral => _canManageCLOReferral ?? false;
   bool get canManageHtsShortForm => _canManageHtsShortForm ?? false;
@@ -79,10 +90,13 @@ class CurrentUserState with ChangeNotifier {
   bool get canManageViolencePreventionEducation =>
       _canManageViolencePreventionEducation ?? false;
 
+  // ✅ NEW: MGYSD
+  bool get canManageMgysd => _canManageMgysd ?? false;
+
   void updateUserAccessStatus(
-    String? implementingPartner,
-    dynamic userAccessConfigurations,
-  ) {
+      String? implementingPartner,
+      dynamic userAccessConfigurations,
+      ) {
     var userAccesses = userAccessConfigurations[implementingPartner] ?? {};
     try {
       _canManageDreams = userAccesses.containsKey('canManageDreams') &&
@@ -97,6 +111,7 @@ class CurrentUserState with ChangeNotifier {
           userAccesses['canManageOvc'] == true;
       _canManageNoneAgyw = userAccesses.containsKey('canManageNoneAgyw') &&
           userAccesses['canManageNoneAgyw'] == true;
+
       _canManageReferral = userAccesses.containsKey('canManageReferral') &&
           userAccesses['canManageReferral'] == true;
       _canManageCLOReferral =
@@ -147,6 +162,10 @@ class CurrentUserState with ChangeNotifier {
       _canManageViolencePreventionEducation =
           userAccesses.containsKey('canManageViolencePreventionEducation') &&
               userAccesses['canManageViolencePreventionEducation'] == true;
+
+      // ✅ NEW: MGYSD
+      _canManageMgysd = userAccesses.containsKey('canManageMgysd') &&
+          userAccesses['canManageMgysd'] == true;
     } catch (error) {
       //
     }
@@ -155,9 +174,9 @@ class CurrentUserState with ChangeNotifier {
 
   //reducers
   void setCurrentUser(
-    CurrentUser user,
-    dynamic userAccessConfigurations,
-  ) {
+      CurrentUser user,
+      dynamic userAccessConfigurations,
+      ) {
     _currentUser = user;
     String? implementingPartner = user.implementingPartner;
     _implementingPartner = implementingPartner;
@@ -171,7 +190,7 @@ class CurrentUserState with ChangeNotifier {
   void setCurrentUserCountryLevelReferences() async {
     int level = 1;
     List<OrganisationUnit> organisationUnits =
-        await OrganisationUnitService().getOrganisationUnitsByLevel(level);
+    await OrganisationUnitService().getOrganisationUnitsByLevel(level);
     _currentUserCountryLevelReferences = organisationUnits
         .map((OrganisationUnit organisationUnit) => organisationUnit.id)
         .toList()
@@ -187,7 +206,7 @@ class CurrentUserState with ChangeNotifier {
           .getOrganisationUnits(_currentUser!.userOrgUnitIds!);
       locations = organisationUnits
           .map((OrganisationUnit organisationUnit) =>
-              organisationUnit.name ?? '')
+      organisationUnit.name ?? '')
           .toList()
           .join(', ');
     }
@@ -198,7 +217,7 @@ class CurrentUserState with ChangeNotifier {
   Future getAndSetCurrentUserDataEntryAuthorityStatus() async {
     if (_currentUser != null) {
       bool status =
-          await UserService().getCurrentUserDataEntryAuthorityStatus();
+      await UserService().getCurrentUserDataEntryAuthorityStatus();
       bool canCurrentUserDoDataEntry = status &&
           !UserAccountReference.superUserIpNames
               .contains(_currentUser?.implementingPartner);
