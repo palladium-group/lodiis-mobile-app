@@ -17,10 +17,12 @@ class InterventionSelectionCard extends StatelessWidget {
     required this.numberPpPrev,
     required this.numberEducationLbse,
     required this.numberEducationBursary,
+    required this.numberOfMgysdCases,
   }) : super(key: key);
 
   final InterventionCard? interventionProgram;
   final String? interventionProgramId;
+
   final int numberOfNoneAgywDreamsBeneficiaries;
   final int numberOfAgywDreamsBeneficiaries;
   final int numberOfHouseholds;
@@ -30,17 +32,24 @@ class InterventionSelectionCard extends StatelessWidget {
   final int numberEducationBursary;
   final int numberEducationLbse;
 
-  RichText getCardBeneficiaryLabelAndCount({
+  // ✅ MGYSD
+  final int numberOfMgysdCases;
+
+  Widget getCardBeneficiaryLabelAndCount({
     required String label,
     required String count,
   }) {
+    if (label.trim().isEmpty && count.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return RichText(
       text: TextSpan(
         text: '$label ',
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
-          color: interventionProgram!.countLabelColor,
+          color: interventionProgram?.countLabelColor,
         ),
         children: [
           TextSpan(
@@ -48,9 +57,9 @@ class InterventionSelectionCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: interventionProgram!.countColor,
+              color: interventionProgram?.countColor,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -60,10 +69,11 @@ class InterventionSelectionCard extends StatelessWidget {
     required String interventionId,
     required bool isSubtitle,
   }) {
-    String beneficiaryCardCount = isSubtitle ? '' : '';
+    String beneficiaryCardCount = '';
+
     if (interventionId == 'ovc') {
       beneficiaryCardCount =
-          isSubtitle ? numberOfOvcs.toString() : numberOfHouseholds.toString();
+      isSubtitle ? numberOfOvcs.toString() : numberOfHouseholds.toString();
     } else if (interventionId == 'dreams') {
       beneficiaryCardCount = isSubtitle
           ? numberOfNoneAgywDreamsBeneficiaries.toString()
@@ -73,71 +83,94 @@ class InterventionSelectionCard extends StatelessWidget {
           ? numberEducationBursary.toString()
           : numberEducationLbse.toString();
     } else if (interventionId == 'ogac') {
-      beneficiaryCardCount =
-          isSubtitle ? beneficiaryCardCount : numberOfOgac.toString();
+      beneficiaryCardCount = isSubtitle ? '' : numberOfOgac.toString();
     } else if (interventionId == 'pp_prev') {
-      beneficiaryCardCount =
-          isSubtitle ? beneficiaryCardCount : numberPpPrev.toString();
+      beneficiaryCardCount = isSubtitle ? '' : numberPpPrev.toString();
+    } else if (interventionId == 'mgysd') {
+      beneficiaryCardCount = isSubtitle ? '' : numberOfMgysdCases.toString();
     }
+
     return beneficiaryCardCount;
   }
 
   String getBeneficiaryCardLabel({
     required String interventionId,
-    required bool isSubtitle, required BuildContext context,
+    required bool isSubtitle,
+    required BuildContext context,
   }) {
+    final String currentLanguage =
+        Provider.of<LanguageTranslationState>(context, listen: false)
+            .currentLanguage;
 
-  String currentLanguage = Provider.of <LanguageTranslationState>(context, listen: false).currentLanguage;  
-    String beneficiaryCardLabel = isSubtitle ? '' : currentLanguage=='lesotho'?'Palo ea bajalefa':'# of Beneficiaries:';
+    String beneficiaryCardLabel = isSubtitle
+        ? ''
+        : (currentLanguage == 'lesotho'
+        ? 'Palo ea bajalefa:'
+        : '# of Beneficiaries:');
+
     if (interventionId == 'ovc') {
-      beneficiaryCardLabel = isSubtitle ? currentLanguage=='lesotho'?'Palo ea OVCs':'# of OVCs:' : currentLanguage=='lesotho'?'Palo ea malapa':'# of Households:';
+      beneficiaryCardLabel = isSubtitle
+          ? (currentLanguage == 'lesotho' ? 'Palo ea OVCs:' : '# of OVCs:')
+          : (currentLanguage == 'lesotho'
+          ? 'Palo ea malapa:'
+          : '# of Households:');
     } else if (interventionId == 'dreams') {
-      beneficiaryCardLabel = isSubtitle ? currentLanguage=='lesotho'?'Palo ea none AGYWS':'# of none-AGWYs:' : currentLanguage=='lesotho'?'Palo ea AGYWS':'# of AGYWS:';
+      beneficiaryCardLabel = isSubtitle
+          ? (currentLanguage == 'lesotho'
+          ? 'Palo ea none AGYWs:'
+          : '# of none-AGYWs:')
+          : (currentLanguage == 'lesotho'
+          ? 'Palo ea AGYWs:'
+          : '# of AGYWs:');
     } else if (interventionId == 'education') {
-      beneficiaryCardLabel = isSubtitle ? currentLanguage=='lesotho'?'Palo ea Bursary':'# of BURSARY:' : currentLanguage=='lesotho'?'Palo ea LBSE':'# of LBSE:';
+      beneficiaryCardLabel = isSubtitle
+          ? (currentLanguage == 'lesotho'
+          ? 'Palo ea Bursary:'
+          : '# of BURSARY:')
+          : (currentLanguage == 'lesotho' ? 'Palo ea LBSE:' : '# of LBSE:');
+    } else if (interventionId == 'mgysd') {
+      beneficiaryCardLabel = isSubtitle
+          ? ''
+          : (currentLanguage == 'lesotho'
+          ? 'Palo ea linyeoe:'
+          : '# of Cases:');
     }
+
     return beneficiaryCardLabel;
   }
 
   @override
   Widget build(BuildContext context) {
+    final current = interventionProgram;
+    if (current == null) return const SizedBox.shrink();
+
     return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 10.0,
-        horizontal: 30.0,
-      ),
+      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
       decoration: const BoxDecoration(
         color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.all(
-          Radius.circular(32),
-        ),
+        borderRadius: BorderRadius.all(Radius.circular(32)),
       ),
       child: Column(
         children: [
           SizedBox(
             height: 120.0,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 22.0,
-                  ),
+                  margin: const EdgeInsets.symmetric(horizontal: 22.0),
                   decoration: BoxDecoration(
-                    color: interventionProgram!.svgBackgroundColor,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(20.0),
-                    ),
+                    color: current.svgBackgroundColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                   ),
                   width: 65.0,
                   height: 65.0,
                   child: Container(
                     margin: const EdgeInsets.all(15.0),
                     child: SvgPicture.asset(
-                      interventionProgram!.svgIcon!,
+                      current.svgIcon ?? '',
                       colorFilter: ColorFilter.mode(
-                        interventionProgram!.primaryColor!,
+                        current.primaryColor ?? Colors.blueGrey,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -148,41 +181,40 @@ class InterventionSelectionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      interventionProgram!.name!,
+                      current.name ?? '',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w500,
-                        color: interventionProgram!.nameColor,
+                        color: current.nameColor,
                       ),
                     ),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         getCardBeneficiaryLabelAndCount(
                           label: getBeneficiaryCardLabel(
-                            interventionId: interventionProgram!.id!,
+                            interventionId: current.id ?? '',
                             isSubtitle: false,
-                            context: context
+                            context: context,
                           ),
                           count: getBeneficiaryCardCount(
-                            interventionId: interventionProgram!.id!,
+                            interventionId: current.id ?? '',
                             isSubtitle: false,
                           ),
                         ),
                         getCardBeneficiaryLabelAndCount(
                           label: getBeneficiaryCardLabel(
-                            interventionId: interventionProgram!.id!,
+                            interventionId: current.id ?? '',
                             isSubtitle: true,
-                             context: context
+                            context: context,
                           ),
                           count: getBeneficiaryCardCount(
-                            interventionId: interventionProgram!.id!,
+                            interventionId: current.id ?? '',
                             isSubtitle: true,
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ],
@@ -192,8 +224,8 @@ class InterventionSelectionCard extends StatelessWidget {
             height: 35.0,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: interventionProgramId == interventionProgram!.id
-                  ? interventionProgram!.secondaryColor
+              color: interventionProgramId == current.id
+                  ? current.secondaryColor
                   : const Color(0xFFFFFFFF),
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(32.0),
@@ -201,22 +233,22 @@ class InterventionSelectionCard extends StatelessWidget {
               ),
             ),
             child: Visibility(
-              visible: interventionProgramId == interventionProgram!.id,
-              child: Container(
-                padding: const EdgeInsets.only(
-                  top: 10.0,
-                  bottom: 10.0,
+              visible: interventionProgramId == current.id,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: SvgPicture.asset(
+                  'assets/icons/tick-icon.svg',
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
-                child: SvgPicture.asset('assets/icons/tick-icon.svg',
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    )),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
+

@@ -1,3 +1,4 @@
+
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kb_mobile_app/core/constants/beneficiary_without_enrollment_criteria.dart';
@@ -42,7 +43,7 @@ class EventOfflineProvider extends OfflineDbProvider {
     try {
       var dbClient = await db;
       List<List<dynamic>> chunkedEvents =
-          AppUtil.chunkItems(items: events, size: 100);
+      AppUtil.chunkItems(items: events, size: 100);
       for (List<dynamic> eventsGroup in chunkedEvents) {
         var eventBatch = dbClient!.batch();
         for (dynamic event in eventsGroup) {
@@ -78,9 +79,9 @@ class EventOfflineProvider extends OfflineDbProvider {
   }
 
   Future<List<Events>> getTrackedEntityInstanceEvents(
-    List<String?> trackedEntityInstanceIds, {
-    List<String>? accessibleOrgUnits,
-  }) async {
+      List<String?> trackedEntityInstanceIds, {
+        List<String>? accessibleOrgUnits,
+      }) async {
     List<Events> events = [];
     try {
       var dbClient = await db;
@@ -144,10 +145,10 @@ class EventOfflineProvider extends OfflineDbProvider {
       );
       if (maps.isNotEmpty) {
         references.addAll(maps.map((Map map) =>
-            map[trackedEntityInstance] != null &&
-                    map[trackedEntityInstance] != ''
-                ? map[trackedEntityInstance]
-                : map[event]));
+        map[trackedEntityInstance] != null &&
+            map[trackedEntityInstance] != ''
+            ? map[trackedEntityInstance]
+            : map[event]));
       }
     } catch (e) {
       //
@@ -155,16 +156,26 @@ class EventOfflineProvider extends OfflineDbProvider {
     return references.toSet().toList();
   }
 
-  ///
-  /// eventsMetadata :  is a map with 'searchedDataValues' as a map of key value pairs and  'data' as a List of map of event database data
-  ///
+
+  Future<List<Map>> getEventsByProgramId(String programId) async {
+    final dbClient = await db;
+    final List<Map> maps = await dbClient!.query(
+      table,
+      where: '$program = ?',
+      whereArgs: [programId],
+      orderBy: '$eventDate DESC',
+    );
+    return maps;
+  }
+
+
   List<Map> _sanitizeSearchedEvents(Map<String, dynamic> eventsMetadata) {
     var maps = eventsMetadata['data'] ?? [] as List<Map>;
     var searchedAttributes = eventsMetadata['searchedDataValues'] ?? {};
     var groupedEnrollments = groupBy(maps, (Map data) => data[event]);
     return groupedEnrollments.values
         .where((List<Map> dataGroup) =>
-            dataGroup.length == searchedAttributes.values.length)
+    dataGroup.length == searchedAttributes.values.length)
         .map((List<Map> dataGroup) => dataGroup.first)
         .toList();
   }
@@ -172,23 +183,23 @@ class EventOfflineProvider extends OfflineDbProvider {
   Map _getSanitizedSearchDataValues(Map searchDataValues) {
     Map sanitizedSearchDataValues = {};
     final List<BeneficiaryWithoutEnrollmentCriteriaConstant> constants =
-        BeneficiaryWithoutEnrollmentCriteriaConstant
-            .getDreamsWithoutEnrollmentCriteriaConstants();
+    BeneficiaryWithoutEnrollmentCriteriaConstant
+        .getDreamsWithoutEnrollmentCriteriaConstants();
     for (BeneficiaryWithoutEnrollmentCriteriaConstant constant in constants) {
       if (searchDataValues.containsKey(constant.attribute)) {
         sanitizedSearchDataValues[constant.dataElement] =
-            searchDataValues[constant.attribute];
+        searchDataValues[constant.attribute];
       }
     }
     return sanitizedSearchDataValues;
   }
 
   Future<List<NoneParticipationBeneficiary>>
-      _getEventsProgramBySearchedDataElements(
-          {String programId = '',
-          String programStageId = '',
-          Map searchedDataValues = const {},
-          int? page}) async {
+  _getEventsProgramBySearchedDataElements(
+      {String programId = '',
+        String programStageId = '',
+        Map searchedDataValues = const {},
+        int? page}) async {
     searchedDataValues = _getSanitizedSearchDataValues(searchedDataValues);
     List<NoneParticipationBeneficiary> eventsProgramBeneficiaries = [];
     String dataValuesTable = 'event_data_value';
@@ -225,7 +236,7 @@ class EventOfflineProvider extends OfflineDbProvider {
           'data': maps
         };
         List<Map> sanitizedMaps =
-            await compute(_sanitizeSearchedEvents, eventsMetadata);
+        await compute(_sanitizeSearchedEvents, eventsMetadata);
         for (Map map in sanitizedMaps) {
           List dataValues = await EventOfflineDataValueProvider()
               .getEventDataValuesByEventId(map['id']);
@@ -279,7 +290,7 @@ class EventOfflineProvider extends OfflineDbProvider {
           orderBy: '$eventDate DESC',
           limit: page != null ? PaginationConstants.paginationLimit : null,
           offset:
-              page != null ? page * PaginationConstants.paginationLimit : null);
+          page != null ? page * PaginationConstants.paginationLimit : null);
       if (maps.isNotEmpty) {
         for (Map map in maps) {
           List dataValues = await EventOfflineDataValueProvider()
@@ -321,7 +332,7 @@ class EventOfflineProvider extends OfflineDbProvider {
           syncStatus,
         ],
         where:
-            '$eventDate = ? AND $programStage = ? AND $trackedEntityInstance = ?',
+        '$eventDate = ? AND $programStage = ? AND $trackedEntityInstance = ?',
         whereArgs: [
           date,
           programStageId,
@@ -351,7 +362,6 @@ class EventOfflineProvider extends OfflineDbProvider {
       var dbClient = await db;
       offlineEventsCount = Sqflite.firstIntValue(await dbClient!.rawQuery(
           'SELECT COUNT(*) FROM $table WHERE $program = ? AND $programStage = ?',
-          // ignore: unnecessary_string_interpolations
           ['$programId', '$programStageId']));
     } catch (e) {
       //
@@ -360,15 +370,15 @@ class EventOfflineProvider extends OfflineDbProvider {
   }
 
   Future<List<Events>> getTrackedEntityInstanceEventsByStatus(
-    String eventSyncStatus, {
-    List<String> eventList = const [],
-    int? page,
-  }) async {
+      String eventSyncStatus, {
+        List<String> eventList = const [],
+        int? page,
+      }) async {
     List<Events> events = [];
     try {
       var dbClient = await db;
       List<List<String?>> chunkedEventList =
-          AppUtil.chunkItems(items: eventList, size: 50).cast<List<String?>>();
+      AppUtil.chunkItems(items: eventList, size: 50).cast<List<String?>>();
       if (chunkedEventList.isEmpty) {
         List<Map> maps = await dbClient!.query(table,
             columns: [
@@ -402,7 +412,7 @@ class EventOfflineProvider extends OfflineDbProvider {
       } else {
         for (List<String?> eventListGroup in chunkedEventList) {
           String questionMarks =
-              eventListGroup.map((e) => '?').toList().join(',');
+          eventListGroup.map((e) => '?').toList().join(',');
           List<Map> maps = await dbClient!.query(
             table,
             columns: [
@@ -428,7 +438,7 @@ class EventOfflineProvider extends OfflineDbProvider {
               List dataValues = await EventOfflineDataValueProvider()
                   .getEventDataValuesByEventId(map['id']);
               Events eventData =
-                  Events.fromOffline(map as Map<String, dynamic>);
+              Events.fromOffline(map as Map<String, dynamic>);
               eventData.dataValues = dataValues;
               events.add(eventData);
             }
@@ -442,13 +452,13 @@ class EventOfflineProvider extends OfflineDbProvider {
   }
 
   Future<List<String>> getTrackedEntityInstanceIdsByIds(
-    List<String?> eventIds,
-  ) async {
+      List<String?> eventIds,
+      ) async {
     List<String> teiIds = [];
     try {
       var dbClient = await db;
       List<List<String?>> chunkedEventIds =
-          AppUtil.chunkItems(items: eventIds, size: 50).cast<List<String?>>();
+      AppUtil.chunkItems(items: eventIds, size: 50).cast<List<String?>>();
       for (List<String?> eventIdsGroup in chunkedEventIds) {
         String questionMarks = eventIdsGroup.map((e) => '?').toList().join(',');
         List<Map> maps = await dbClient!.query(

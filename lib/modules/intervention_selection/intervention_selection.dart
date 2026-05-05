@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/dreams_intervention_list_state/dreams_re_assessment_list_state.dart';
@@ -19,6 +20,9 @@ import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/modules/intervention_selection/components/intervention_selection_container.dart';
 
+// ✅ NEW: MGYSD list state
+import 'package:kb_mobile_app/app_state/mgysd_case_management_list_state/mgysd_case_management_list_state.dart';
+
 class InterventionSelection extends StatefulWidget {
   const InterventionSelection({Key? key}) : super(key: key);
 
@@ -29,8 +33,7 @@ class InterventionSelection extends StatefulWidget {
 }
 
 class _InterventionSelectionState extends State<InterventionSelection> {
-  List<InterventionCard> interventionPrograms =
-      InterventionCard.getInterventions();
+  List<InterventionCard> interventionPrograms = InterventionCard.getInterventions();
 
   Color? primaryColor = CustomColor.defaultPrimaryColor;
 
@@ -51,14 +54,17 @@ class _InterventionSelectionState extends State<InterventionSelection> {
     try {
       await UserService().setCurrentUserMetadataSyncStatus("false");
       await ReservedAttributeValueService().generateReservedAttributeValues();
+
       Provider.of<OvcInterventionListState>(context, listen: false)
           .refreshOvcNumber();
       Provider.of<DreamsInterventionListState>(context, listen: false)
           .refreshBeneficiariesNumber();
       Provider.of<DreamsRaAssessmentListState>(context, listen: false)
           .refreshBeneficiariesNumber();
+
       Provider.of<ReferralNotificationState>(context, listen: false)
           .reloadReferralNotifications();
+
       Provider.of<DreamsRaAssessmentListState>(context, listen: false)
           .refreshBeneficiariesNumber();
       Provider.of<OgacInterventionListState>(context, listen: false)
@@ -69,6 +75,11 @@ class _InterventionSelectionState extends State<InterventionSelection> {
           .refreshEducationLbseNumber();
       Provider.of<EducationBursaryInterventionState>(context, listen: false)
           .refreshEducationBursaryNumber();
+
+      // ✅ NEW: refresh MGYSD cases count
+      Provider.of<MgysdCaseManagementListState>(context, listen: false)
+          .refreshMgysdCasesNumber();
+
       Provider.of<CurrentUserState>(context, listen: false)
           .setCurrentUserLocation();
     } catch (error) {
@@ -92,97 +103,124 @@ class _InterventionSelectionState extends State<InterventionSelection> {
                 int numberOfHouseholds =
                     ovcInterventionListState.numberOfHouseholds;
                 int numberOfOvcs = ovcInterventionListState.numberOfOvcs;
+
                 return Consumer<CurrentUserState>(
-                    builder: (context, currentUserState, child) {
-                  bool hasAccessToDataEntry =
-                      currentUserState.canCurrentUserDoDataEntry;
-                  return !hasAccessToDataEntry
-                      ? Container(
-                          margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.12,
-                          ),
-                          child: const AccessToDataEntryWarning(),
-                        )
-                      : Consumer<DreamsInterventionListState>(
+                  builder: (context, currentUserState, child) {
+                    bool hasAccessToDataEntry =
+                        currentUserState.canCurrentUserDoDataEntry;
+
+                    return !hasAccessToDataEntry
+                        ? Container(
+                      margin: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.12,
+                      ),
+                      child: const AccessToDataEntryWarning(),
+                    )
+                        : Consumer<DreamsInterventionListState>(
+                      builder:
+                          (context, dreamsInterventionListState, child) {
+                        bool isDreamsListLoading =
+                            dreamsInterventionListState.isLoading;
+                        int numberOfAgywDreamsBeneficiaries =
+                            dreamsInterventionListState
+                                .numberOfAgywDreamsBeneficiaries;
+                        int numberOfNoneAgywDreamsBeneficiaries =
+                            dreamsInterventionListState
+                                .numberOfNoneAgywDreamsBeneficiaries;
+
+                        return Consumer<OgacInterventionListState>(
                           builder:
-                              (context, dreamsInterventionListState, child) {
-                            bool isDreamsListLoading =
-                                dreamsInterventionListState.isLoading;
-                            int numberOfAgywDreamsBeneficiaries =
-                                dreamsInterventionListState
-                                    .numberOfAgywDreamsBeneficiaries;
-                            int numberOfNoneAgywDreamsBeneficiaries =
-                                dreamsInterventionListState
-                                    .numberOfNoneAgywDreamsBeneficiaries;
-                            return Consumer<OgacInterventionListState>(
-                              builder:
-                                  (context, ogacInterventionListState, child) {
-                                int numberOfOgac =
-                                    ogacInterventionListState.numberOfOgac;
-                                bool isOgacListLoading =
-                                    ogacInterventionListState.isLoading;
-                                return Consumer<EducationLbseInterventionState>(
-                                    builder: (context,
-                                        educationLbseInterventionState, child) {
-                                  int numberEducationLbse =
-                                      educationLbseInterventionState
-                                          .numberOfEducationLbse;
-                                  bool isEducationLbseListLoading =
-                                      educationLbseInterventionState.isLoading;
-                                  return Consumer<
-                                          EducationBursaryInterventionState>(
-                                      builder: (context,
-                                          educationBursaryInterventionState,
-                                          child) {
+                              (context, ogacInterventionListState, child) {
+                            int numberOfOgac =
+                                ogacInterventionListState.numberOfOgac;
+                            bool isOgacListLoading =
+                                ogacInterventionListState.isLoading;
+
+                            return Consumer<EducationLbseInterventionState>(
+                              builder: (context,
+                                  educationLbseInterventionState, child) {
+                                int numberEducationLbse =
+                                    educationLbseInterventionState
+                                        .numberOfEducationLbse;
+                                bool isEducationLbseListLoading =
+                                    educationLbseInterventionState.isLoading;
+
+                                return Consumer<EducationBursaryInterventionState>(
+                                  builder: (context,
+                                      educationBursaryInterventionState,
+                                      child) {
                                     bool isEducationBursaryListLoading =
                                         educationBursaryInterventionState
                                             .isLoading;
                                     int numberEducationBursary =
                                         educationBursaryInterventionState
                                             .numberOfEducationBursary;
+
                                     return Consumer<PpPrevInterventionState>(
-                                        builder: (context,
-                                            ppPrevInterventionState, child) {
-                                      int numberPpPrev = ppPrevInterventionState
-                                          .numberOfPpPrev;
-                                      bool isPpPrevListLoading =
-                                          ppPrevInterventionState.isLoading;
-                                      return Container(
-                                        child: isDreamsListLoading ||
-                                                isEducationBursaryListLoading ||
-                                                isEducationLbseListLoading ||
-                                                isPpPrevListLoading ||
-                                                isOvcListLoading ||
-                                                isOgacListLoading
-                                            ? const CircularProcessLoader()
-                                            : InterventionSelectionContainer(
+                                      builder: (context,
+                                          ppPrevInterventionState, child) {
+                                        int numberPpPrev =
+                                            ppPrevInterventionState.numberOfPpPrev;
+                                        bool isPpPrevListLoading =
+                                            ppPrevInterventionState.isLoading;
+
+                                        // ✅ NEW: MGYSD consumer
+                                        return Consumer<MgysdCaseManagementListState>(
+                                          builder: (context,
+                                              mgysdCaseManagementListState,
+                                              child) {
+                                            bool isMgysdLoading =
+                                                mgysdCaseManagementListState.isLoading;
+                                            int numberOfMgysdCases =
+                                                mgysdCaseManagementListState.numberOfMgysdCases;
+
+                                            return Container(
+                                              child: isDreamsListLoading ||
+                                                  isEducationBursaryListLoading ||
+                                                  isEducationLbseListLoading ||
+                                                  isPpPrevListLoading ||
+                                                  isOvcListLoading ||
+                                                  isOgacListLoading ||
+                                                  isMgysdLoading
+                                                  ? const CircularProcessLoader()
+                                                  : InterventionSelectionContainer(
                                                 interventionPrograms:
-                                                    interventionPrograms,
+                                                interventionPrograms,
                                                 onInterventionSelection:
-                                                    onInterventionSelection,
+                                                onInterventionSelection,
                                                 numberOfHouseholds:
-                                                    numberOfHouseholds,
+                                                numberOfHouseholds,
                                                 numberOfAgywDreamsBeneficiaries:
-                                                    numberOfAgywDreamsBeneficiaries,
+                                                numberOfAgywDreamsBeneficiaries,
                                                 numberOfNoneAgywDreamsBeneficiaries:
-                                                    numberOfNoneAgywDreamsBeneficiaries,
+                                                numberOfNoneAgywDreamsBeneficiaries,
                                                 numberOfOvcs: numberOfOvcs,
                                                 numberOfOgac: numberOfOgac,
                                                 numberPpPrev: numberPpPrev,
                                                 numberEducationLbse:
-                                                    numberEducationLbse,
+                                                numberEducationLbse,
                                                 numberEducationBursary:
-                                                    numberEducationBursary,
+                                                numberEducationBursary,
+
+                                                // ✅ NEW: pass MGYSD count
+                                                numberOfMgysdCases:
+                                                numberOfMgysdCases,
                                               ),
-                                      );
-                                    });
-                                  });
-                                });
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
                               },
                             );
                           },
                         );
-                });
+                      },
+                    );
+                  },
+                );
               },
             ),
           ],
@@ -191,3 +229,4 @@ class _InterventionSelectionState extends State<InterventionSelection> {
     );
   }
 }
+

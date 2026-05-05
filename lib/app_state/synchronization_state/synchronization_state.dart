@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -32,75 +33,90 @@ import 'package:provider/provider.dart';
 
 class SynchronizationState with ChangeNotifier {
   final BuildContext? context;
+
   final String lastDataDownloadDatePreferenceKey = "lastSyncDatePreferenceKey";
   final String lastDataUploadDatePreferenceKey =
       "lastDataUploadDatePreferenceKey";
+
   final int dataUploadBatchSize = 50;
 
   SynchronizationState({this.context});
 
-// initial state
   bool _isDataUploadingActive = false;
   bool _isDataDownloadingActive = false;
   bool? _hasUnsyncedData;
   bool? _isDataAvailableForDownload;
   bool _isUnsyncedCheckingActive = true;
   bool? _isCheckingForAvailableDataFromServer;
+
   bool _dataUploadStopped = true;
   bool _dataDownloadStopped = true;
+
   int? _beneficiaryCount;
   int? _beneficiaryServiceCount;
+
   final int _conflictLCount = 0;
+
   String? _statusMessageForAvailableDataFromServer;
   String _currentSyncAction = '';
+
   double _notificationProgress = 0.0;
   double profileDataDownloadProgress = 0.0;
   double eventsDataDownloadProgress = 0.0;
   double overallDownloadProgress = 0.0;
+
   double profileDataUploadProgress = 0.0;
   double eventsDataUploadProgress = 0.0;
   double overallUploadProgress = 0.0;
+
   List<String>? _dataDownloadProcess;
   List<String>? _dataUploadProcess;
+
   List<Map<String, dynamic>>? _eventsWithConflicts;
   List<Map<String, dynamic>>? _trackedEntityInstancesWithConflicts;
+
   List<TrackedEntityInstance>? _trackedEntityInstance;
   List<Events>? _eventFromServer;
+
   List<dynamic>? _serverTrackedEntityInstance;
   Map<String, List>? _trackedInstance;
   Map<String, List>? _events;
   Map<String, List>? _relationships;
+
   Map? _synchronizationTrackingInfo;
+
   late SynchronizationService _synchronizationService;
 
-// selectors
+  // selectors
   Map get synchronizationTrackingInfo => _synchronizationTrackingInfo ?? {};
 
   bool get isDataUploadingActive => _isDataUploadingActive;
+
+  bool get isDataDownloadingActive => _isDataDownloadingActive;
 
   double get notificationProgress => _notificationProgress;
 
   double get overallSyncProgress =>
       _currentSyncAction == SynchronizationActionsConstants.downloadAndUpload
           ? (overallUploadProgress +
-                  overallDownloadProgress +
-                  notificationProgress) /
-              3
+          overallDownloadProgress +
+          notificationProgress) /
+          3
           : ((overallUploadProgress + overallDownloadProgress) +
-                  notificationProgress) /
-              2;
+          notificationProgress) /
+          2;
 
   double get eventsSyncProgress => _isDataUploadingActive
       ? eventsDataUploadProgress
       : _isDataDownloadingActive
-          ? eventsDataDownloadProgress
-          : 0.0;
+      ? eventsDataDownloadProgress
+      : 0.0;
 
   double get profileSyncProgress => _isDataUploadingActive
       ? profileDataUploadProgress
       : _isDataDownloadingActive
-          ? profileDataDownloadProgress
-          : 0.0;
+      ? profileDataDownloadProgress
+      : 0.0;
 
   bool get isCheckingForAvailableDataFromServer =>
       _isCheckingForAvailableDataFromServer ?? false;
@@ -115,8 +131,6 @@ class SynchronizationState with ChangeNotifier {
   bool get isDataAvailableForDownload => _isDataAvailableForDownload ?? false;
 
   bool get isUnsyncedCheckingActive => _isUnsyncedCheckingActive;
-
-  bool get isDataDownloadingActive => _isDataDownloadingActive;
 
   int get beneficiaryCount => _beneficiaryCount ?? 0;
 
@@ -148,7 +162,7 @@ class SynchronizationState with ChangeNotifier {
   List<Map<String, dynamic>> get trackedEntityInstancesWithConflicts =>
       _trackedEntityInstancesWithConflicts ?? [];
 
-// reducers
+  // reducers
   void updateDataUploadStatus(bool status) {
     _isDataUploadingActive = status;
     notifyListeners();
@@ -174,68 +188,111 @@ class SynchronizationState with ChangeNotifier {
     notifyListeners();
   }
 
-  checkingForAvailableBeneficiaryData(
-    BuildContext context,
-  ) async {
+  double _clamp01(double v) => v.clamp(0.0, 1.0);
+
+  double _withinProgress(int index, int total) {
+    if (total <= 0) return 1.0;
+    return _clamp01((index + 1) / total);
+  }
+
+  Future<void> _logError(String where, Object e) async {
+    final log = AppLogs(
+      type: AppLogsConstants.errorLogType,
+      message: '$where: ${e.toString()}',
+    );
+    await AppLogsOfflineProvider().addLogs(log);
+  }
+
+  // ----------------------------
+  // main methods
+  // ----------------------------
+  checkingForAvailableBeneficiaryData(BuildContext context) async {
     String currentLanguage =
         Provider.of<LanguageTranslationState>(context, listen: false)
             .currentLanguage;
     updateStatusForAvailableDataFromServer(status: true);
     setStatusMessageForAvailableDataFromServer(
         'Checking for available beneficiary data from server...');
-    CurrentUser? currentUser = await (UserService().getCurrentUser());
-    String? lastSyncDate = await PreferenceProvider.getPreferenceValue(
-        lastDataDownloadDatePreferenceKey);
-    lastSyncDate =
-        lastSyncDate ?? AppUtil.formattedDateTimeIntoString(DateTime(2020));
-    _synchronizationService = SynchronizationService(currentUser!.username,
-        currentUser.password, currentUser.programs, currentUser.userOrgUnitIds);
+
     try {
       CurrentUser? currentUser = await (UserService().getCurrentUser());
+      if (currentUser == null) {
+        setStatusMessageForAvailableDataFromServer('');
+        updateStatusForAvailableDataFromServer(status: false);
+        return;
+      }
+
+      String? lastSyncDate = await PreferenceProvider.getPreferenceValue(
+          lastDataDownloadDatePreferenceKey);
+      lastSyncDate =
+          lastSyncDate ?? AppUtil.formattedDateTimeIntoString(DateTime(2020));
+
       _synchronizationService = SynchronizationService(
-          currentUser!.username,
-          currentUser.password,
-          currentUser.programs,
-          currentUser.userOrgUnitIds);
+        currentUser.username,
+        currentUser.password,
+        currentUser.programs,
+        currentUser.userOrgUnitIds,
+      );
+
       int onlineEnrollmentsCount = await _synchronizationService
           .getOnlineEnrollmentsCount(currentUser, lastSyncDate);
       int onlineEventsCount = await _synchronizationService
           .getOnlineEventsCount(currentUser, lastSyncDate);
+
       _isDataAvailableForDownload =
           onlineEnrollmentsCount > 0 || onlineEventsCount > 0;
       notifyListeners();
+
       setStatusMessageForAvailableDataFromServer(_isDataAvailableForDownload!
           ? currentLanguage == 'lesotho'
-              ? "Lintlha tse ncha tsa mojalefa lia fumaneha"
-              : 'New beneficiary data are available, try to sync!'
+          ? "Lintlha tse ncha tsa mojalefa lia fumaneha"
+          : 'New beneficiary data are available, try to sync!'
           : '');
     } catch (e) {
-      AppLogs log =
-          AppLogs(type: AppLogsConstants.errorLogType, message: e.toString());
-      await AppLogsOfflineProvider().addLogs(log);
+      await _logError('checkingForAvailableBeneficiaryData', e);
       setStatusMessageForAvailableDataFromServer('');
     }
+
     updateStatusForAvailableDataFromServer(status: false);
   }
 
   Future<void> startCheckingStatusOfUnsyncedData() async {
     CurrentUser? user = await (UserService().getCurrentUser());
+    if (user == null) {
+      _beneficiaryCount = 0;
+      _beneficiaryServiceCount = 0;
+      _hasUnsyncedData = false;
+      updateUnsyncedDataCheckingStatus(false);
+      return;
+    }
+
     _synchronizationService = SynchronizationService(
-        user!.username, user.password, user.programs, user.userOrgUnitIds);
+      user.username,
+      user.password,
+      user.programs,
+      user.userOrgUnitIds,
+    );
+
     int unsyncedTeiCount = await _synchronizationService.getUnsyncedTeiCount();
     int unsyncedEventsCount =
-        await _synchronizationService.getUnsyncedEventsCount();
+    await _synchronizationService.getUnsyncedEventsCount();
+
     _beneficiaryServiceCount = unsyncedEventsCount;
     _beneficiaryCount = unsyncedTeiCount;
     _hasUnsyncedData = unsyncedEventsCount > 0 || unsyncedTeiCount > 0;
+
     updateUnsyncedDataCheckingStatus(false);
   }
 
   void setSynchronizationTrackingInformation(Map dataObjet) {
+    _synchronizationTrackingInfo ??= {};
+
     if (dataObjet.keys.isEmpty) {
       _synchronizationTrackingInfo = {};
       notifyListeners();
+      return;
     }
+
     for (dynamic key in dataObjet.keys.toList()) {
       _synchronizationTrackingInfo![key] = dataObjet[key];
     }
@@ -247,38 +304,51 @@ class SynchronizationState with ChangeNotifier {
     _isDataUploadingActive = false;
     _dataUploadStopped = true;
     _dataDownloadStopped = true;
+
     profileDataDownloadProgress = 0.0;
     eventsDataDownloadProgress = 0.0;
     overallDownloadProgress = 0.0;
+
     profileDataUploadProgress = 0.0;
     eventsDataUploadProgress = 0.0;
     overallUploadProgress = 0.0;
+
     _notificationProgress = 0.0;
     _currentSyncAction = '';
     notifyListeners();
+
     await refreshBeneficiaryCounts();
+    await startCheckingStatusOfUnsyncedData(); // ✅ refresh numbers too
+    notifyListeners();
   }
 
   Future startSyncActivity({String? syncAction}) async {
     Map syncTrackingObject = {};
     setSynchronizationTrackingInformation(syncTrackingObject);
+
     profileDataDownloadProgress = 0.0;
     eventsDataDownloadProgress = 0.0;
     overallDownloadProgress = 0.0;
+
     profileDataUploadProgress = 0.0;
     eventsDataUploadProgress = 0.0;
     overallUploadProgress = 0.0;
+
     _notificationProgress = 0.0;
-    _currentSyncAction = syncAction!;
+
+    _currentSyncAction = syncAction ?? '';
     notifyListeners();
+
     syncTrackingObject[DeviceTrackingConstant.syncStartTime] =
         AppUtil.getDataAndTimeFormatFromDateTime(DateTime.now());
     syncTrackingObject[DeviceTrackingConstant.unSyncedEnrollment] =
         _beneficiaryCount;
     syncTrackingObject[DeviceTrackingConstant.unSyncedServices] =
         _beneficiaryServiceCount;
+
     setSynchronizationTrackingInformation(syncTrackingObject);
-    switch (syncAction) {
+
+    switch (_currentSyncAction) {
       case SynchronizationActionsConstants.download:
         await startDataDownloadActivity();
         break;
@@ -294,104 +364,156 @@ class SynchronizationState with ChangeNotifier {
       default:
         break;
     }
+
     await syncReferralNotifications();
+
+    // ✅ CRITICAL FIX: always refresh unsynced values after sync finishes
+    await startCheckingStatusOfUnsyncedData();
+    notifyListeners();
+
     int unSyncedEnrollment =
         syncTrackingObject[DeviceTrackingConstant.unSyncedEnrollment] ?? 0;
     int unSyncedServices =
         syncTrackingObject[DeviceTrackingConstant.unSyncedServices] ?? 0;
+
     syncTrackingObject[DeviceTrackingConstant.syncEndTime] =
         AppUtil.getDataAndTimeFormatFromDateTime(DateTime.now());
+
     syncTrackingObject[DeviceTrackingConstant.syncedEnrollment] =
-        unSyncedEnrollment > _beneficiaryCount!
-            ? unSyncedEnrollment - _beneficiaryCount!
-            : unSyncedEnrollment;
+    unSyncedEnrollment > (_beneficiaryCount ?? 0)
+        ? unSyncedEnrollment - (_beneficiaryCount ?? 0)
+        : unSyncedEnrollment;
+
     syncTrackingObject[DeviceTrackingConstant.syncedServices] =
-        unSyncedServices > _beneficiaryServiceCount!
-            ? unSyncedServices - _beneficiaryServiceCount!
-            : unSyncedServices;
+    unSyncedServices > (_beneficiaryServiceCount ?? 0)
+        ? unSyncedServices - (_beneficiaryServiceCount ?? 0)
+        : unSyncedServices;
+
     syncTrackingObject[DeviceTrackingConstant.unSyncedEnrollment] =
         _beneficiaryCount;
     syncTrackingObject[DeviceTrackingConstant.unSyncedServices] =
         _beneficiaryServiceCount;
+
     _dataDownloadProcess = [];
     _dataUploadProcess = [];
+
     updateDataDownloadStatus(false);
     updateDataUploadStatus(false);
+
     _currentSyncAction = '';
     setSynchronizationTrackingInformation(syncTrackingObject);
     notifyListeners();
-    DeviceTrackingService().syncDeviceTrackingInfoOnSynchronization(
-      dataObject: _synchronizationTrackingInfo!,
-    );
+
+    try {
+      DeviceTrackingService().syncDeviceTrackingInfoOnSynchronization(
+        dataObject: _synchronizationTrackingInfo ?? {},
+      );
+    } catch (_) {
+      // ignore
+    }
   }
 
   Future startDataDownloadActivity() async {
     profileDataDownloadProgress = 0.0;
     eventsDataDownloadProgress = 0.0;
     overallDownloadProgress = 0.0;
+
     _dataDownloadStopped = false;
     updateDataDownloadStatus(true);
+
     int count = 0;
     int totalCount = 0;
-    int total = 0;
+
     try {
       String? lastSyncDate = await PreferenceProvider.getPreferenceValue(
           lastDataDownloadDatePreferenceKey);
       lastSyncDate =
           lastSyncDate ?? AppUtil.formattedDateTimeIntoString(DateTime(2020));
+
       CurrentUser? currentUser = await (UserService().getCurrentUser());
+      if (currentUser == null) {
+        updateDataDownloadStatus(false);
+        AppUtil.showToastMessage(message: 'No active user session');
+        return;
+      }
+
+      _synchronizationService = SynchronizationService(
+        currentUser.username,
+        currentUser.password,
+        currentUser.programs,
+        currentUser.userOrgUnitIds,
+      );
+
       var implementingPartnerConfig = await ImplementingPartnerConfigService()
           .getImplementingPartnerConfigFromTheServer(
-              currentUser!.username, currentUser.password);
+          currentUser.username, currentUser.password);
+
       List currentUserPrograms =
-          implementingPartnerConfig[currentUser.implementingPartner];
-      total = _synchronizationService.orgUnitIds!.length *
-          currentUserPrograms.length;
+          implementingPartnerConfig[currentUser.implementingPartner] ?? [];
+
+      final int orgUnitLen = _synchronizationService.orgUnitIds?.length ?? 0;
+      final int programLen = (_synchronizationService.programs ?? [])
+          .where((p) => currentUserPrograms.contains(p))
+          .length;
+
+      final int total = orgUnitLen * programLen;
+      if (total == 0) {
+        updateDataDownloadStatus(false);
+        AppUtil.showToastMessage(
+            message: 'No programs/org units configured for download');
+        return;
+      }
+
+      // TEIs
+      count = 0;
       for (String? orgUnitId in _synchronizationService.orgUnitIds ?? []) {
-        for (String? program in _synchronizationService.programs!
+        for (String? program in (_synchronizationService.programs ?? [])
             .where((program) => currentUserPrograms.contains(program))) {
-          if (_dataDownloadStopped) {
-            return;
-          }
+          if (_dataDownloadStopped) return;
+
           await _synchronizationService.getAndSaveTrackedInstanceFromServer(
               program, orgUnitId, lastSyncDate);
+
           count++;
           totalCount++;
-          profileDataDownloadProgress = count / total;
-          overallDownloadProgress = totalCount / (total * 2);
+
+          profileDataDownloadProgress = _clamp01(count / total);
+          overallDownloadProgress = _clamp01(totalCount / (total * 2));
           notifyListeners();
         }
       }
 
+      // Events
       count = 0;
       for (String? orgUnitId in _synchronizationService.orgUnitIds ?? []) {
-        for (String? program in _synchronizationService.programs!
+        for (String? program in (_synchronizationService.programs ?? [])
             .where((program) => currentUserPrograms.contains(program))) {
-          if (_dataDownloadStopped) {
-            return;
-          }
+          if (_dataDownloadStopped) return;
+
           await _synchronizationService.getAndSaveEventsFromServer(
               program, orgUnitId, lastSyncDate);
+
           count++;
           totalCount++;
-          eventsDataDownloadProgress = count / total;
-          overallDownloadProgress = totalCount / (total * 2);
+
+          eventsDataDownloadProgress = _clamp01(count / total);
+          overallDownloadProgress = _clamp01(totalCount / (total * 2));
           notifyListeners();
         }
       }
+
       await refreshBeneficiaryCounts();
+
       AppUtil.showToastMessage(
           message: 'Data has been successfully downloaded');
       setStatusMessageForAvailableDataFromServer('');
+
       lastSyncDate = AppUtil.formattedDateTimeIntoString(DateTime.now());
       await PreferenceProvider.setPreferenceValue(
           lastDataDownloadDatePreferenceKey, lastSyncDate);
     } catch (e) {
       _dataDownloadProcess = [];
-      AppLogs log = AppLogs(
-          type: AppLogsConstants.errorLogType,
-          message: 'startDataDownloadActivity: ${e.toString()}');
-      await AppLogsOfflineProvider().addLogs(log);
+      await _logError('startDataDownloadActivity', e);
       updateDataDownloadStatus(false);
       AppUtil.showToastMessage(message: 'Error downloading data');
     }
@@ -400,143 +522,138 @@ class SynchronizationState with ChangeNotifier {
   Future<bool> uploadProfileData({
     required CurrentUser currentUser,
   }) async {
-    double profileCount = 0;
-    int profileTotalCount = 3;
-    bool conflictsOnUploadProfileData = false;
+    bool conflicts = false;
 
+    const int phases = 3;
+    int phaseDone = 0;
+
+    void updateOverall() {
+      overallUploadProgress =
+          (profileDataUploadProgress + eventsDataUploadProgress) / 2;
+      notifyListeners();
+    }
+
+    // TEIs
     var teiCount =
-        await _synchronizationService.getOfflineTrackedEntityInstanceCount();
+    await _synchronizationService.getOfflineTrackedEntityInstanceCount();
     if (teiCount > 0) {
       int totalPages =
-          (teiCount / PaginationConstants.dataUploadPaginationLimit).ceil();
-      for (int page = 0; page <= totalPages; page++) {
-        if (_dataUploadStopped) {
-          return conflictsOnUploadProfileData;
-        }
-        var teiChunk =
-            await _synchronizationService.getTeisFromOfflineDb(page: page);
-        bool conflictOnImport =
-            await _synchronizationService.uploadTeisToTheServer(teiChunk);
-        conflictsOnUploadProfileData =
-            conflictsOnUploadProfileData || conflictOnImport;
-        profileCount = profileCount + (page / totalPages);
-        profileDataUploadProgress = profileCount / profileTotalCount;
-        overallUploadProgress =
-            (profileDataUploadProgress + eventsDataUploadProgress) / 2;
-        notifyListeners();
-      }
-    } else {
-      ++profileCount;
-      profileDataUploadProgress = profileCount / profileTotalCount;
-      overallUploadProgress =
-          (profileDataUploadProgress + eventsDataUploadProgress) / 2;
-      notifyListeners();
-    }
+      (teiCount / PaginationConstants.dataUploadPaginationLimit).ceil();
+      for (int page = 0; page < totalPages; page++) {
+        if (_dataUploadStopped) return conflicts;
 
+        var teiChunk =
+        await _synchronizationService.getTeisFromOfflineDb(page: page);
+
+        bool conflictOnImport =
+        await _synchronizationService.uploadTeisToTheServer(teiChunk);
+
+        conflicts = conflicts || conflictOnImport;
+
+        final within = _withinProgress(page, totalPages);
+        profileDataUploadProgress =
+            _clamp01((phaseDone + within) / phases.toDouble());
+        updateOverall();
+      }
+    }
+    phaseDone++;
+    profileDataUploadProgress = _clamp01(phaseDone / phases.toDouble());
+    updateOverall();
+
+    // Enrollments
     var enrollmentCount =
-        await _synchronizationService.getOfflineEnrollmentCount(currentUser);
+    await _synchronizationService.getOfflineEnrollmentCount(currentUser);
     if (enrollmentCount > 0) {
       int totalPages =
-          (enrollmentCount / PaginationConstants.dataUploadPaginationLimit)
-              .ceil();
-      for (int page = 0; page <= totalPages; page++) {
-        if (_dataUploadStopped) {
-          return conflictsOnUploadProfileData;
-        }
+      (enrollmentCount / PaginationConstants.dataUploadPaginationLimit)
+          .ceil();
+      for (int page = 0; page < totalPages; page++) {
+        if (_dataUploadStopped) return conflicts;
+
         var enrollmentChunk = await _synchronizationService
             .getTeiEnrollmentFromOfflineDb(page: page);
+
         bool conflictOnImport = await _synchronizationService
             .uploadEnrollmentsToTheServer(enrollmentChunk);
-        conflictsOnUploadProfileData =
-            conflictsOnUploadProfileData || conflictOnImport;
 
-        profileCount = profileCount + (page / totalPages);
-        profileDataUploadProgress = profileCount / profileTotalCount;
-        overallUploadProgress =
-            (profileDataUploadProgress + eventsDataUploadProgress) / 2;
-        notifyListeners();
+        conflicts = conflicts || conflictOnImport;
+
+        final within = _withinProgress(page, totalPages);
+        profileDataUploadProgress =
+            _clamp01((phaseDone + within) / phases.toDouble());
+        updateOverall();
       }
-    } else {
-      ++profileCount;
-      profileDataUploadProgress = profileCount / profileTotalCount;
-      overallUploadProgress =
-          (profileDataUploadProgress + eventsDataUploadProgress) / 2;
-      notifyListeners();
     }
+    phaseDone++;
+    profileDataUploadProgress = _clamp01(phaseDone / phases.toDouble());
+    updateOverall();
 
-    var teiRelationshipCount =
-        await _synchronizationService.getOfflineRelationshipCount();
-    if (teiRelationshipCount > 0) {
+    // Relationships
+    var relCount = await _synchronizationService.getOfflineRelationshipCount();
+    if (relCount > 0) {
       int totalPages =
-          (teiRelationshipCount / PaginationConstants.dataUploadPaginationLimit)
-              .ceil();
-      for (int page = 0; page <= totalPages; page++) {
-        if (_dataUploadStopped) {
-          return conflictsOnUploadProfileData;
-        }
-        var teiRelationshipChunk = await _synchronizationService
-            .getTeiRelationShipFromOfflineDb(page: page);
-        bool conflictOnImport = await _synchronizationService
-            .uploadTeiRelationToTheServer(teiRelationshipChunk);
-        conflictsOnUploadProfileData =
-            conflictsOnUploadProfileData || conflictOnImport;
+      (relCount / PaginationConstants.dataUploadPaginationLimit).ceil();
+      for (int page = 0; page < totalPages; page++) {
+        if (_dataUploadStopped) return conflicts;
 
-        profileCount = profileCount + (page / totalPages);
-        profileDataUploadProgress = profileCount / profileTotalCount;
-        overallUploadProgress =
-            (profileDataUploadProgress + eventsDataUploadProgress) / 2;
-        notifyListeners();
+        var relChunk = await _synchronizationService
+            .getTeiRelationShipFromOfflineDb(page: page);
+
+        bool conflictOnImport = await _synchronizationService
+            .uploadTeiRelationToTheServer(relChunk);
+
+        conflicts = conflicts || conflictOnImport;
+
+        final within = _withinProgress(page, totalPages);
+        profileDataUploadProgress =
+            _clamp01((phaseDone + within) / phases.toDouble());
+        updateOverall();
       }
-    } else {
-      ++profileCount;
-      profileDataUploadProgress = profileCount / profileTotalCount;
-      overallUploadProgress =
-          (profileDataUploadProgress + eventsDataUploadProgress) / 2;
-      notifyListeners();
     }
-    return conflictsOnUploadProfileData;
+    phaseDone++;
+    profileDataUploadProgress = _clamp01(phaseDone / phases.toDouble());
+    updateOverall();
+
+    return conflicts;
   }
 
   Future<bool> uploadServiceData({
     required CurrentUser currentUser,
   }) async {
-    double eventsCount = 0;
-    int eventsTotalCount = 1;
-
-    bool conflictsOnUploadServiceData = false;
+    bool conflicts = false;
 
     var offlineEventCount =
-        await _synchronizationService.getUnsyncedEventsCount();
+    await _synchronizationService.getUnsyncedEventsCount();
+
     if (offlineEventCount > 0) {
       int totalPages =
-          (offlineEventCount / PaginationConstants.dataUploadPaginationLimit)
-              .ceil();
-      for (int page = 0; page <= totalPages; page++) {
-        if (_dataUploadStopped) {
-          return conflictsOnUploadServiceData;
-        }
+      (offlineEventCount / PaginationConstants.dataUploadPaginationLimit)
+          .ceil();
+
+      for (int page = 0; page < totalPages; page++) {
+        if (_dataUploadStopped) return conflicts;
+
         var teiEventChunk =
-            await _synchronizationService.getTeiEventsFromOfflineDb(page: page);
+        await _synchronizationService.getTeiEventsFromOfflineDb(page: page);
+
         bool conflictOnImport = await _synchronizationService
             .uploadTeiEventsToTheServer(teiEventChunk);
-        conflictsOnUploadServiceData =
-            conflictsOnUploadServiceData || conflictOnImport;
 
-        eventsCount = eventsCount + (page / totalPages);
-        eventsDataUploadProgress = eventsCount / eventsTotalCount;
+        conflicts = conflicts || conflictOnImport;
+
+        eventsDataUploadProgress = _withinProgress(page, totalPages);
         overallUploadProgress =
             (profileDataUploadProgress + eventsDataUploadProgress) / 2;
         notifyListeners();
       }
     } else {
-      ++eventsCount;
-      eventsDataUploadProgress = eventsCount / eventsTotalCount;
+      eventsDataUploadProgress = 1.0;
       overallUploadProgress =
           (profileDataUploadProgress + eventsDataUploadProgress) / 2;
       notifyListeners();
     }
 
-    return conflictsOnUploadServiceData;
+    return conflicts;
   }
 
   Future startDataUploadActivity() async {
@@ -544,18 +661,28 @@ class SynchronizationState with ChangeNotifier {
     profileDataUploadProgress = 0.0;
     eventsDataUploadProgress = 0.0;
     overallUploadProgress = 0.0;
+
     _dataUploadStopped = false;
     updateDataUploadStatus(true);
+
     try {
       bool conflictOnTeisImport = false;
       bool conflictOnEventsImport = false;
+
       CurrentUser? currentUser = await UserService().getCurrentUser();
       if (currentUser != null) {
-        conflictOnTeisImport =
-            await uploadProfileData(currentUser: currentUser);
+        _synchronizationService = SynchronizationService(
+          currentUser.username,
+          currentUser.password,
+          currentUser.programs,
+          currentUser.userOrgUnitIds,
+        );
+
+        conflictOnTeisImport = await uploadProfileData(currentUser: currentUser);
         conflictOnEventsImport =
-            await uploadServiceData(currentUser: currentUser);
+        await uploadServiceData(currentUser: currentUser);
       }
+
       if (conflictOnTeisImport && conflictOnEventsImport) {
         AppUtil.showToastMessage(message: 'Error uploading data');
       } else if (conflictOnTeisImport) {
@@ -564,23 +691,29 @@ class SynchronizationState with ChangeNotifier {
         AppUtil.showToastMessage(message: 'Error uploading some Services');
       }
     } catch (e) {
-      AppLogs log = AppLogs(
-          type: AppLogsConstants.errorLogType,
-          message: 'startDataUploadActivity: ${e.toString()}');
-      await AppLogsOfflineProvider().addLogs(log);
+      await _logError('startDataUploadActivity', e);
       AppUtil.showToastMessage(message: 'Error uploading data');
     }
+
     notifyListeners();
+
     await startCheckingStatusOfUnsyncedData();
     notifyListeners();
-    await Provider.of<ReferralNotificationState>(context!, listen: false)
-        .reloadReferralNotifications();
+
+    if (context != null) {
+      await Provider.of<ReferralNotificationState>(context!, listen: false)
+          .reloadReferralNotifications();
+    }
+
     String lastDataUploadDate =
-        AppUtil.formattedDateTimeIntoString(DateTime.now());
+    AppUtil.formattedDateTimeIntoString(DateTime.now());
     await PreferenceProvider.setPreferenceValue(
         lastDataUploadDatePreferenceKey, lastDataUploadDate);
-    Provider.of<SynchronizationStatusState>(context!, listen: false)
-        .resetSyncStatusReferences();
+
+    if (context != null) {
+      Provider.of<SynchronizationStatusState>(context!, listen: false)
+          .resetSyncStatusReferences();
+    }
   }
 
   Future syncReferralNotifications() async {
@@ -592,44 +725,46 @@ class SynchronizationState with ChangeNotifier {
     int count = 0;
     try {
       List<ReferralNotification> onlineReferralNotifications =
-          await ReferralNotificationService()
-              .discoveringReferralNotificationFromServer();
+      await ReferralNotificationService()
+          .discoveringReferralNotificationFromServer();
       ++count;
-      _notificationProgress = count / totalCount;
+      _notificationProgress = _clamp01(count / totalCount);
       notifyListeners();
 
       List<ReferralNotification> offlineReferralNotifications =
-          await ReferralNotificationService()
-              .getReferralNotificationFromOffline();
+      await ReferralNotificationService()
+          .getReferralNotificationFromOffline();
       ++count;
-      _notificationProgress = count / totalCount;
+      _notificationProgress = _clamp01(count / totalCount);
       notifyListeners();
 
       List<ReferralNotification> referralNotifications =
-          ReferralNotificationService().getMergedReferralNotifications(
-              onlineReferralNotifications, offlineReferralNotifications);
+      ReferralNotificationService().getMergedReferralNotifications(
+          onlineReferralNotifications, offlineReferralNotifications);
       ++count;
-      _notificationProgress = count / totalCount;
+      _notificationProgress = _clamp01(count / totalCount);
       notifyListeners();
 
       await ReferralNotificationService()
           .savingReferralNotificationToOfflineDb(referralNotifications);
       ++count;
-      _notificationProgress = count / totalCount;
+      _notificationProgress = _clamp01(count / totalCount);
       notifyListeners();
 
       await ReferralNotificationService()
           .updateReferralNotificationToServer(referralNotifications);
       ++count;
-      _notificationProgress = count / totalCount;
+      _notificationProgress = _clamp01(count / totalCount);
       notifyListeners();
-    } catch (error) {
+    } catch (_) {
       //
     }
   }
 
   Future refreshBeneficiaryCounts() async {
     try {
+      if (context == null) return;
+
       await Provider.of<ReferralNotificationState>(context!, listen: false)
           .reloadReferralNotifications();
       List<String> teiWithIncomingReferral =
@@ -637,7 +772,8 @@ class SynchronizationState with ChangeNotifier {
               .beneficiariesWithIncomingReferrals;
       Provider.of<DreamsInterventionListState>(context!, listen: false)
           .setTeiWithIncomingReferral(
-              teiWithIncomingReferral: teiWithIncomingReferral);
+          teiWithIncomingReferral: teiWithIncomingReferral);
+
       await Provider.of<OvcInterventionListState>(context!, listen: false)
           .refreshOvcNumber();
       await Provider.of<DreamsInterventionListState>(context!, listen: false)
@@ -648,14 +784,16 @@ class SynchronizationState with ChangeNotifier {
           .refreshEducationLbseNumber();
       await Provider.of<PpPrevInterventionState>(context!, listen: false)
           .refreshPpPrevNumber();
+
       Provider.of<ReferralNotificationState>(context!, listen: false)
           .reloadReferralNotifications();
       Provider.of<DreamsRaAssessmentListState>(context!, listen: false)
           .refreshBeneficiariesNumber();
+
       await Provider.of<EducationBursaryInterventionState>(context!,
-              listen: false)
+          listen: false)
           .refreshEducationBursaryNumber();
-    } catch (e) {
+    } catch (_) {
       //
     }
   }
