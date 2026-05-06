@@ -1,3 +1,4 @@
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -24,7 +25,6 @@ class MgysdNewCasePage extends StatefulWidget {
   }) : super(key: key);
 
   final Color color;
-
   final String? reportedEventId;
   final String? prefillClientFirstName;
   final String? prefillClientLastName;
@@ -43,139 +43,75 @@ class _Opt {
   const _Opt(this.code, this.label);
 }
 
-class _FamilyMemberDraft {
-  final String localId;
-
-  String relationshipCode;
-
-  final TextEditingController firstName = TextEditingController();
-  final TextEditingController lastName = TextEditingController();
-  final TextEditingController dob = TextEditingController();
-  final TextEditingController phone = TextEditingController();
-
-  String sexCode;
-  bool livesInHousehold;
-
-  DateTime? selectedDob;
-
-  _FamilyMemberDraft({
-    required this.localId,
-    this.relationshipCode = '',
-    this.sexCode = '',
-    this.livesInHousehold = true,
-  });
-
-  void dispose() {
-    firstName.dispose();
-    lastName.dispose();
-    dob.dispose();
-    phone.dispose();
-  }
-
-  bool get hasAnyData =>
-      firstName.text.trim().isNotEmpty ||
-          lastName.text.trim().isNotEmpty ||
-          dob.text.trim().isNotEmpty ||
-          phone.text.trim().isNotEmpty ||
-          relationshipCode.trim().isNotEmpty ||
-          sexCode.trim().isNotEmpty;
-
-  String get displayName {
-    final fn = firstName.text.trim();
-    final ln = lastName.text.trim();
-    final full = ('$fn $ln').trim();
-    return full.isEmpty ? '(No name)' : full;
-  }
-
-  String get memberRole {
-    switch (relationshipCode) {
-      case 'CLIENT_HAS_MOTHER':
-        return 'MOTHER';
-      case 'CLIENT_HAS_FATHER':
-        return 'FATHER';
-      case 'CLIENT_HAS_CAREGIVER':
-        return 'CAREGIVER';
-      case 'CLIENT_HAS_GUARDIAN':
-        return 'GUARDIAN';
-      case 'CLIENT_HAS_SIBLING':
-        return 'SIBLING';
-      case 'CLIENT_HAS_SPOUSE':
-        return 'SPOUSE';
-      case 'CLIENT_HAS_CHILD':
-        return 'CHILD';
-      case 'CLIENT_HAS_OTHER_RELATIVE':
-        return 'OTHER_RELATIVE';
-      default:
-        return 'HOUSEHOLD_MEMBER';
-    }
-  }
-}
-
 class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _caseIdController = TextEditingController();
-  final TextEditingController _clientNameController = TextEditingController();
-  final TextEditingController _clientSurnameController = TextEditingController();
-  final TextEditingController _clientDobController = TextEditingController();
-  final TextEditingController _contactController = TextEditingController();
-  final TextEditingController _caseTypeController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
+  final TextEditingController _fileNumberController = TextEditingController();
+  final TextEditingController _districtController = TextEditingController();
+  final TextEditingController _communityCouncilController =
+  TextEditingController();
+  final TextEditingController _villageController = TextEditingController();
+  final TextEditingController _physicalAddressController =
+  TextEditingController();
 
-  final TextEditingController _householdCodeController =
+  final TextEditingController _identityNumberController =
   TextEditingController();
-  final TextEditingController _householdNameController =
+  final TextEditingController _clientFirstNameController =
   TextEditingController();
-  final TextEditingController _householdDistrictController =
+  final TextEditingController _clientSurnameController =
   TextEditingController();
-  final TextEditingController _householdVillageController =
+  final TextEditingController _clientDobController = TextEditingController();
+  final TextEditingController _clientAgeController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _alternativePhoneController =
   TextEditingController();
-  final TextEditingController _householdAddressController =
+  final TextEditingController _homeLanguageOtherController =
   TextEditingController();
 
   DateTime? _selectedDob;
   bool _saving = false;
 
-  // ----------------------------
-  // DHIS2 placeholders
-  // ----------------------------
-  static const String mgysdTrackerProgramId = 'MGYSD_TRACKER_PROGRAM';
+  String _clientCategory = '';
+  String _isDisabled = '';
+  String _sex = '';
+  String _nationality = '';
+  String _homeLanguage = '';
 
+  static const String mgysdTrackerProgramId = 'MGYSD_TRACKER_PROGRAM';
   static const String mgysdHouseholdTeiTypeId = 'MGYSD_HOUSEHOLD_TEI_TYPE';
   static const String mgysdPersonTeiTypeId = 'MGYSD_PERSON_TEI_TYPE';
 
-  // Person attributes (shared by client + household members)
-  static const String attFirstName = 'ATTR_FIRSTNAME';
-  static const String attLastName = 'ATTR_LASTNAME';
-  static const String attDob = 'ATTR_DOB';
-  static const String attPhone = 'ATTR_PHONE';
-  static const String attSex = 'ATTR_SEX';
-
-// ✅ aliases for household members
-  static const String attPersonFirstName = attFirstName;
-  static const String attPersonLastName = attLastName;
-  static const String attPersonDob = attDob;
-  static const String attPersonPhone = attPhone;
-
-  // Household attributes
-  static const String attHouseholdCode = 'ATTR_HOUSEHOLD_CODE';
-  static const String attHouseholdName = 'ATTR_HOUSEHOLD_NAME';
+  static const String attHouseholdFileNumber = 'ATTR_HOUSEHOLD_FILE_NUMBER';
   static const String attHouseholdDistrict = 'ATTR_HOUSEHOLD_DISTRICT';
+  static const String attHouseholdCommunityCouncil =
+      'ATTR_HOUSEHOLD_COMMUNITY_COUNCIL';
   static const String attHouseholdVillage = 'ATTR_HOUSEHOLD_VILLAGE';
   static const String attHouseholdAddress = 'ATTR_HOUSEHOLD_ADDRESS';
 
-  // Relationship types
+  static const String attFirstName = 'ATTR_FIRSTNAME';
+  static const String attLastName = 'ATTR_LASTNAME';
+  static const String attDob = 'ATTR_DOB';
+  static const String attAge = 'ATTR_AGE';
+  static const String attPhone = 'ATTR_PHONE';
+  static const String attAlternativePhone = 'ATTR_ALTERNATIVE_PHONE';
+  static const String attSex = 'ATTR_SEX';
+  static const String attClientCategory = 'ATTR_CLIENT_CATEGORY';
+  static const String attIsDisabled = 'ATTR_IS_DISABLED';
+  static const String attIdentityNumber = 'ATTR_IDENTITY_NUMBER';
+  static const String attNationality = 'ATTR_NATIONALITY';
+  static const String attHomeLanguage = 'ATTR_HOME_LANGUAGE';
+  static const String attHomeLanguageOther = 'ATTR_HOME_LANGUAGE_OTHER';
+
   static const String relHouseholdHasMember = 'HOUSEHOLD_HAS_MEMBER';
 
-  static const List<_Opt> relationshipOptions = [
-    _Opt('CLIENT_HAS_MOTHER', 'Mother'),
-    _Opt('CLIENT_HAS_FATHER', 'Father'),
-    _Opt('CLIENT_HAS_CAREGIVER', 'Caregiver'),
-    _Opt('CLIENT_HAS_GUARDIAN', 'Guardian'),
-    _Opt('CLIENT_HAS_SIBLING', 'Sibling'),
-    _Opt('CLIENT_HAS_SPOUSE', 'Spouse'),
-    _Opt('CLIENT_HAS_CHILD', 'Child'),
-    _Opt('CLIENT_HAS_OTHER_RELATIVE', 'Other relative'),
+  static const List<_Opt> clientCategoryOptions = [
+    _Opt('CHILD', 'Child'),
+    _Opt('ADULT_ELDERLY_PERSON', 'Adult / Elderly Person'),
+  ];
+
+  static const List<_Opt> yesNoOptions = [
+    _Opt('YES', 'Yes'),
+    _Opt('NO', 'No'),
   ];
 
   static const List<_Opt> sexOptions = [
@@ -183,52 +119,48 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     _Opt('FEMALE', 'Female'),
   ];
 
-  final List<_FamilyMemberDraft> _family = [];
+  static const List<_Opt> nationalityOptions = [
+    _Opt('MOSOTHO', 'Mosotho'),
+    _Opt('SOUTH_AFRICAN', 'South African'),
+    _Opt('ZIMBABWEAN', 'Zimbabwean'),
+    _Opt('OTHER', 'Other'),
+  ];
+
+  static const List<_Opt> homeLanguageOptions = [
+    _Opt('SESOTHO', 'Sesotho'),
+    _Opt('ENGLISH', 'English'),
+    _Opt('XHOSA', 'Xhoza'),
+    _Opt('OTHER', 'Other'),
+  ];
 
   @override
   void initState() {
     super.initState();
 
-    _clientNameController.text = (widget.prefillClientFirstName ?? '').trim();
+    _clientFirstNameController.text =
+        (widget.prefillClientFirstName ?? '').trim();
     _clientSurnameController.text = (widget.prefillClientLastName ?? '').trim();
-    _contactController.text = (widget.prefillClientPhone ?? '').trim();
-    _caseTypeController.text = (widget.prefillCaseType ?? '').trim();
+    _phoneController.text = (widget.prefillClientPhone ?? '').trim();
 
-    final incident = (widget.prefillIncidentDate ?? '').trim();
-    if (incident.isNotEmpty) {
-      _notesController.text = 'Incident date: $incident\n';
-    }
-
-    _caseIdController.text = 'MGYSD-${DateTime.now().millisecondsSinceEpoch}';
-    _householdCodeController.text =
-    'HH-${DateTime.now().millisecondsSinceEpoch}';
-    _householdNameController.text =
-    '${_clientNameController.text} ${_clientSurnameController.text}'
-        .trim()
-        .isEmpty
-        ? ''
-        : '${_clientNameController.text} ${_clientSurnameController.text} Household';
+    _fileNumberController.text = 'MGYSD-${DateTime.now().millisecondsSinceEpoch}';
   }
 
   @override
   void dispose() {
-    _caseIdController.dispose();
-    _clientNameController.dispose();
+    _fileNumberController.dispose();
+    _districtController.dispose();
+    _communityCouncilController.dispose();
+    _villageController.dispose();
+    _physicalAddressController.dispose();
+
+    _identityNumberController.dispose();
+    _clientFirstNameController.dispose();
     _clientSurnameController.dispose();
     _clientDobController.dispose();
-    _contactController.dispose();
-    _caseTypeController.dispose();
-    _notesController.dispose();
-
-    _householdCodeController.dispose();
-    _householdNameController.dispose();
-    _householdDistrictController.dispose();
-    _householdVillageController.dispose();
-    _householdAddressController.dispose();
-
-    for (final f in _family) {
-      f.dispose();
-    }
+    _clientAgeController.dispose();
+    _phoneController.dispose();
+    _alternativePhoneController.dispose();
+    _homeLanguageOtherController.dispose();
 
     super.dispose();
   }
@@ -244,36 +176,38 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     return '${DateTime.now().millisecondsSinceEpoch}-${r.nextInt(999999)}';
   }
 
+  String _formatDate(DateTime d) {
+    final y = d.year.toString().padLeft(4, '0');
+    final m = d.month.toString().padLeft(2, '0');
+    final day = d.day.toString().padLeft(2, '0');
+    return '$y-$m-$day';
+  }
+
+  int _calculateAge(DateTime dob) {
+    final today = DateTime.now();
+    int age = today.year - dob.year;
+    final hadBirthday = today.month > dob.month ||
+        (today.month == dob.month && today.day >= dob.day);
+    if (!hadBirthday) age--;
+    return age < 0 ? 0 : age;
+  }
+
   Future<void> _pickDobForClient() async {
     final now = DateTime.now();
     final initial = _selectedDob ?? DateTime(now.year - 15, 1, 1);
+
     final picked = await showDatePicker(
       context: context,
       firstDate: DateTime(1900, 1, 1),
       lastDate: now,
       initialDate: initial,
     );
+
     if (picked != null) {
       setState(() {
         _selectedDob = picked;
-        _clientDobController.text = AppUtil.formattedDateTimeIntoString(picked);
-      });
-    }
-  }
-
-  Future<void> _pickDobForFamily(_FamilyMemberDraft m) async {
-    final now = DateTime.now();
-    final initial = m.selectedDob ?? DateTime(now.year - 20, 1, 1);
-    final picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime(1900, 1, 1),
-      lastDate: now,
-      initialDate: initial,
-    );
-    if (picked != null) {
-      setState(() {
-        m.selectedDob = picked;
-        m.dob.text = AppUtil.formattedDateTimeIntoString(picked);
+        _clientDobController.text = _formatDate(picked);
+        _clientAgeController.text = _calculateAge(picked).toString();
       });
     }
   }
@@ -366,6 +300,7 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     required String searchableValue,
   }) async {
     final nowIso = DateTime.now().toIso8601String();
+
     await db.insert(
       'enrollment',
       {
@@ -391,6 +326,7 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     required String enrollmentId,
   }) async {
     final nowIso = DateTime.now().toIso8601String();
+
     await db.insert(
       'mgysd_report_intake_link',
       {
@@ -404,43 +340,20 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     );
   }
 
-  bool _validateFamilyMembers() {
-    for (final m in _family) {
-      if (!m.hasAnyData) continue;
-
-      if (m.relationshipCode.trim().isEmpty) {
-        AppUtil.showToastMessage(
-          message: 'Please select relationship for a family member.',
-        );
-        return false;
-      }
-
-      if (m.firstName.text.trim().isEmpty || m.lastName.text.trim().isEmpty) {
-        AppUtil.showToastMessage(
-          message: 'Please enter first & last name for a family member.',
-        );
-        return false;
-      }
-    }
-    return true;
-  }
-
   Future<void> _saveCase() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
-    if (!_validateFamilyMembers()) return;
 
     setState(() => _saving = true);
 
     try {
       final db = await _db();
-      final orgUnit = '';
 
       final householdTeiId = 'TEI_${_newId()}';
       final householdEnrollmentId = 'ENR_${_newId()}';
       final clientTeiId = 'TEI_${_newId()}';
+      final orgUnit = '';
 
-      // 1. Save household TEI
       await _saveTeiOffline(
         db: db,
         teiId: householdTeiId,
@@ -451,38 +364,41 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
       await _saveAttrOffline(
         db: db,
         teiId: householdTeiId,
-        attribute: attHouseholdCode,
-        value: _householdCodeController.text,
-      );
-      await _saveAttrOffline(
-        db: db,
-        teiId: householdTeiId,
-        attribute: attHouseholdName,
-        value: _householdNameController.text,
+        attribute: attHouseholdFileNumber,
+        value: _fileNumberController.text,
       );
       await _saveAttrOffline(
         db: db,
         teiId: householdTeiId,
         attribute: attHouseholdDistrict,
-        value: _householdDistrictController.text,
+        value: _districtController.text,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: householdTeiId,
+        attribute: attHouseholdCommunityCouncil,
+        value: _communityCouncilController.text,
       );
       await _saveAttrOffline(
         db: db,
         teiId: householdTeiId,
         attribute: attHouseholdVillage,
-        value: _householdVillageController.text,
+        value: _villageController.text,
       );
       await _saveAttrOffline(
         db: db,
         teiId: householdTeiId,
         attribute: attHouseholdAddress,
-        value: _householdAddressController.text,
+        value: _physicalAddressController.text,
       );
 
-      // 2. Enroll household in MGYSD case management
-      final searchableValue = (widget.reportedEventId ?? '').trim().isNotEmpty
-          ? 'reportEvent:${widget.reportedEventId}'
-          : '';
+      final searchableValue = [
+        _fileNumberController.text.trim(),
+        _clientFirstNameController.text.trim(),
+        _clientSurnameController.text.trim(),
+        _identityNumberController.text.trim(),
+        widget.reportedEventId == null ? '' : 'reportEvent:${widget.reportedEventId}',
+      ].where((e) => e.isNotEmpty).join(' | ');
 
       await _saveEnrollmentOffline(
         db: db,
@@ -492,7 +408,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         searchableValue: searchableValue,
       );
 
-      // 3. Link report -> household case
       final reportEventId = (widget.reportedEventId ?? '').trim();
       if (reportEventId.isNotEmpty) {
         await _saveLinkToReportEvent(
@@ -503,7 +418,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         );
       }
 
-      // 4. Save client as person TEI
       await _saveTeiOffline(
         db: db,
         teiId: clientTeiId,
@@ -514,8 +428,26 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
       await _saveAttrOffline(
         db: db,
         teiId: clientTeiId,
+        attribute: attClientCategory,
+        value: _clientCategory,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
+        attribute: attIsDisabled,
+        value: _isDisabled,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
+        attribute: attIdentityNumber,
+        value: _identityNumberController.text,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
         attribute: attFirstName,
-        value: _clientNameController.text,
+        value: _clientFirstNameController.text,
       );
       await _saveAttrOffline(
         db: db,
@@ -532,11 +464,46 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
       await _saveAttrOffline(
         db: db,
         teiId: clientTeiId,
+        attribute: attAge,
+        value: _clientAgeController.text,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
+        attribute: attSex,
+        value: _sex,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
+        attribute: attNationality,
+        value: _nationality,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
+        attribute: attHomeLanguage,
+        value: _homeLanguage,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
+        attribute: attHomeLanguageOther,
+        value: _homeLanguageOtherController.text,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
         attribute: attPhone,
-        value: _contactController.text,
+        value: _phoneController.text,
+      );
+      await _saveAttrOffline(
+        db: db,
+        teiId: clientTeiId,
+        attribute: attAlternativePhone,
+        value: _alternativePhoneController.text,
       );
 
-      // 5. Save client as household member
       await _saveHouseholdMemberOffline(
         db: db,
         householdTei: householdTeiId,
@@ -552,72 +519,10 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         toTei: clientTeiId,
       );
 
-      // 6. Save family members
-      for (final m in _family) {
-        if (!m.hasAnyData) continue;
-
-        final personTeiId = 'TEI_${_newId()}';
-
-        await _saveTeiOffline(
-          db: db,
-          teiId: personTeiId,
-          teiTypeId: mgysdPersonTeiTypeId,
-          orgUnit: orgUnit,
-        );
-
-        await _saveAttrOffline(
-          db: db,
-          teiId: personTeiId,
-          attribute: attPersonFirstName,
-          value: m.firstName.text,
-        );
-        await _saveAttrOffline(
-          db: db,
-          teiId: personTeiId,
-          attribute: attPersonLastName,
-          value: m.lastName.text,
-        );
-        await _saveAttrOffline(
-          db: db,
-          teiId: personTeiId,
-          attribute: attPersonDob,
-          value: m.dob.text,
-        );
-        await _saveAttrOffline(
-          db: db,
-          teiId: personTeiId,
-          attribute: attPersonPhone,
-          value: m.phone.text,
-        );
-        await _saveAttrOffline(
-          db: db,
-          teiId: personTeiId,
-          attribute: attSex,
-          value: m.sexCode,
-        );
-
-        await _saveHouseholdMemberOffline(
-          db: db,
-          householdTei: householdTeiId,
-          memberTei: personTeiId,
-          memberRole: m.memberRole,
-          isPrimaryClient: false,
-        );
-
-        if (m.livesInHousehold) {
-          await _saveRelationshipOffline(
-            db: db,
-            relationshipTypeCode: relHouseholdHasMember,
-            fromTei: householdTeiId,
-            toTei: personTeiId,
-          );
-        }
-      }
-
       AppUtil.showToastMessage(
         message: widget.reportedEventId == null
-            ? 'Household case and members saved offline.'
-            : 'Household case and members saved + linked to report.',
+            ? 'Household case saved offline.'
+            : 'Household case saved and linked to report.',
       );
 
       if (mounted) Navigator.pop(context);
@@ -628,34 +533,17 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     }
   }
 
-  void _addFamilyMember() {
-    setState(() {
-      _family.add(_FamilyMemberDraft(localId: _newId()));
-    });
-  }
-
-  void _removeFamilyMember(String localId) {
-    setState(() {
-      final idx = _family.indexWhere((x) => x.localId == localId);
-      if (idx >= 0) {
-        _family[idx].dispose();
-        _family.removeAt(idx);
-      }
-    });
-  }
-
   Widget _titleRow({
     required Color color,
     required String title,
     required String subtitle,
     required IconData icon,
-    Widget? trailing,
   }) {
     return Row(
       children: [
         Container(
-          width: 40,
-          height: 40,
+          width: 42,
+          height: 42,
           decoration: BoxDecoration(
             color: color.withOpacity(0.12),
             borderRadius: BorderRadius.circular(14),
@@ -669,7 +557,8 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                style:
+                const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 2),
               Text(
@@ -679,133 +568,52 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
             ],
           ),
         ),
-        if (trailing != null) trailing,
       ],
     );
   }
 
-  Widget _familyMemberCard({
-    required _FamilyMemberDraft m,
-    required Color primary,
+  Widget _dropdown({
+    required String label,
+    required String value,
+    required List<_Opt> options,
+    required void Function(String?) onChanged,
+    bool requiredField = false,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blueGrey.withOpacity(0.12)),
-        color: Colors.white,
+    final safeValue = options.any((o) => o.code == value) ? value : null;
+
+    return DropdownButtonFormField<String>(
+      value: safeValue,
+      isExpanded: true,
+      items: options
+          .map(
+            (o) => DropdownMenuItem<String>(
+          value: o.code,
+          child: Text(o.label, overflow: TextOverflow.ellipsis),
+        ),
+      )
+          .toList(),
+      onChanged: onChanged,
+      validator: (v) {
+        if (!requiredField) return null;
+        if ((v ?? '').trim().isEmpty) return 'Required';
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+        contentPadding:
+        const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  m.displayName,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              IconButton(
-                onPressed: () => _removeFamilyMember(m.localId),
-                icon: const Icon(Icons.delete_outline),
-                color: Colors.redAccent,
-                tooltip: 'Remove',
-              )
-            ],
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            value: m.relationshipCode.isEmpty ? null : m.relationshipCode,
-            items: relationshipOptions
-                .map(
-                  (o) => DropdownMenuItem<String>(
-                value: o.code,
-                child: Text(o.label, overflow: TextOverflow.ellipsis),
-              ),
-            )
-                .toList(),
-            onChanged: (v) => setState(() => m.relationshipCode = (v ?? '')),
-            decoration: InputDecoration(
-              labelText: 'Relationship to client',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: _Input(
-                  controller: m.firstName,
-                  label: 'First name',
-                  hint: 'e.g. Mary',
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _Input(
-                  controller: m.lastName,
-                  label: 'Last name',
-                  hint: 'e.g. Maieane',
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => _pickDobForFamily(m),
-                  child: AbsorbPointer(
-                    child: _Input(
-                      controller: m.dob,
-                      label: 'Date of Birth',
-                      hint: 'Pick date',
-                      suffixIcon: const Icon(Icons.date_range),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  value: m.sexCode.isEmpty ? null : m.sexCode,
-                  items: sexOptions
-                      .map(
-                        (o) => DropdownMenuItem<String>(
-                      value: o.code,
-                      child: Text(o.label),
-                    ),
-                  )
-                      .toList(),
-                  onChanged: (v) => setState(() => m.sexCode = (v ?? '')),
-                  decoration: InputDecoration(
-                    labelText: 'Sex',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          _Input(
-            controller: m.phone,
-            label: 'Phone (optional)',
-            hint: 'e.g. 5xxxxxxx',
-          ),
-          const SizedBox(height: 10),
-          SwitchListTile(
-            value: m.livesInHousehold,
-            onChanged: (v) => setState(() => m.livesInHousehold = v),
-            activeColor: primary,
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Lives in this household'),
-          ),
-        ],
-      ),
+    );
+  }
+
+  Widget _row2(Widget a, Widget b) {
+    return Row(
+      children: [
+        Expanded(child: a),
+        const SizedBox(width: 10),
+        Expanded(child: b),
+      ],
     );
   }
 
@@ -821,7 +629,9 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(65.0),
         child: SubPageAppBar(
-          label: widget.reportedEventId == null ? 'New Household Case' : 'Enroll Household Case',
+          label: widget.reportedEventId == null
+              ? 'Register / Intake Case'
+              : 'Enroll Household Case',
           activeInterventionProgram: activeInterventionProgram,
           disableSelectionOfActiveIntervention: false,
         ),
@@ -829,7 +639,8 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
       body: SubPageBody(
         body: SingleChildScrollView(
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            margin:
+            const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -852,9 +663,7 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                         ),
                       ),
                     ),
-
                   const SizedBox(height: 12),
-
                   MaterialCard(
                     body: Container(
                       padding: const EdgeInsets.all(12.0),
@@ -863,170 +672,64 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                         children: [
                           _titleRow(
                             color: primary,
-                            title: 'Case Details',
-                            subtitle: 'Household case information',
-                            icon: Icons.folder_open,
+                            title: 'Household Location',
+                            subtitle: 'Capture the household location and file reference.',
+                            icon: Icons.home_work_outlined,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                           _Input(
-                            controller: _caseIdController,
-                            label: 'Case ID (placeholder)',
+                            controller: _fileNumberController,
+                            label: 'File Number',
                             hint: 'e.g. MGYSD-0001',
                             validator: (v) {
                               if (v == null || v.trim().isEmpty) {
-                                return 'Case ID is required';
+                                return 'File number is required';
                               }
                               return null;
                             },
                           ),
                           const SizedBox(height: 10),
                           _Input(
-                            controller: _caseTypeController,
-                            label: 'Case Type (placeholder)',
-                            hint: 'e.g. Child Protection / GBV / Social Assistance',
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Case type is required';
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  MaterialCard(
-                    body: Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _titleRow(
-                            color: primary,
-                            title: 'Primary Client',
-                            subtitle: 'Main beneficiary in this household case',
-                            icon: Icons.person_outline,
-                          ),
-                          const SizedBox(height: 10),
-                          _Input(
-                            controller: _clientNameController,
-                            label: 'Client Name',
-                            hint: 'First name',
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Client name is required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          _Input(
-                            controller: _clientSurnameController,
-                            label: 'Client Surname',
-                            hint: 'Surname',
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Client surname is required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          GestureDetector(
-                            onTap: _pickDobForClient,
-                            child: AbsorbPointer(
-                              child: _Input(
-                                controller: _clientDobController,
-                                label: 'Date of Birth',
-                                hint: 'Pick date',
-                                validator: (v) {
-                                  if (v == null || v.trim().isEmpty) {
-                                    return 'Date of birth is required';
-                                  }
-                                  return null;
-                                },
-                                suffixIcon: const Icon(Icons.date_range),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          _Input(
-                            controller: _contactController,
-                            label: 'Contact Number',
-                            hint: 'e.g. 5xxxxxxx',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  MaterialCard(
-                    body: Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _titleRow(
-                            color: primary,
-                            title: 'Household Details',
-                            subtitle: 'Household registry information',
-                            icon: Icons.home_outlined,
-                          ),
-                          const SizedBox(height: 10),
-                          _Input(
-                            controller: _householdCodeController,
-                            label: 'Household Code',
-                            hint: 'e.g. HH-0001',
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Household code is required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          _Input(
-                            controller: _householdNameController,
-                            label: 'Household Name',
-                            hint: 'e.g. Mokoena Household',
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Household name is required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          _Input(
-                            controller: _householdDistrictController,
+                            controller: _districtController,
                             label: 'District',
                             hint: 'e.g. Maseru',
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty) {
+                                return 'District is required';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 10),
                           _Input(
-                            controller: _householdVillageController,
+                            controller: _communityCouncilController,
+                            label: 'Community Council',
+                            hint: 'e.g. Lithabaneng',
+                          ),
+                          const SizedBox(height: 10),
+                          _Input(
+                            controller: _villageController,
                             label: 'Village',
-                            hint: 'e.g. Ha Ts\'osane',
+                            hint: 'e.g. Ha Thetsane',
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty) {
+                                return 'Village is required';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 10),
                           _Input(
-                            controller: _householdAddressController,
-                            label: 'Address / Description',
-                            hint: 'Short household address...',
-                            maxLines: 2,
+                            controller: _physicalAddressController,
+                            label: 'Physical Address',
+                            hint: 'Describe the household physical address',
+                            maxLines: 3,
                           ),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 12),
-
                   MaterialCard(
                     body: Container(
                       padding: const EdgeInsets.all(12.0),
@@ -1035,78 +738,161 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                         children: [
                           _titleRow(
                             color: primary,
-                            title: 'Household Members',
-                            subtitle: 'Add mother, father, siblings, caregiver, etc.',
-                            icon: Icons.group_outlined,
-                            trailing: TextButton.icon(
-                              onPressed: _addFamilyMember,
-                              icon: Icon(Icons.add, color: primary),
-                              label: Text(
-                                'Add',
-                                style: TextStyle(
-                                  color: primary,
-                                  fontWeight: FontWeight.w800,
+                            title: 'Demographics and Reporting Information',
+                            subtitle: 'Capture the main client information for this case.',
+                            icon: Icons.person_outline,
+                          ),
+                          const SizedBox(height: 12),
+                          _dropdown(
+                            label: 'Client category',
+                            value: _clientCategory,
+                            options: clientCategoryOptions,
+                            requiredField: true,
+                            onChanged: (v) {
+                              setState(() => _clientCategory = v ?? '');
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          _dropdown(
+                            label: 'Is the client disabled?',
+                            value: _isDisabled,
+                            options: yesNoOptions,
+                            requiredField: true,
+                            onChanged: (v) {
+                              setState(() => _isDisabled = v ?? '');
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          _Input(
+                            controller: _identityNumberController,
+                            label: 'Identity Number',
+                            hint: 'National ID / document number',
+                          ),
+                          const SizedBox(height: 10),
+                          _row2(
+                            _Input(
+                              controller: _clientFirstNameController,
+                              label: 'First name',
+                              hint: 'Client first name',
+                              validator: (v) {
+                                if (v == null || v.trim().isEmpty) {
+                                  return 'First name is required';
+                                }
+                                return null;
+                              },
+                            ),
+                            _Input(
+                              controller: _clientSurnameController,
+                              label: 'Surname',
+                              hint: 'Client surname',
+                              validator: (v) {
+                                if (v == null || v.trim().isEmpty) {
+                                  return 'Surname is required';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          _row2(
+                            GestureDetector(
+                              onTap: _pickDobForClient,
+                              child: AbsorbPointer(
+                                child: _Input(
+                                  controller: _clientDobController,
+                                  label: 'Date of Birth',
+                                  hint: 'Pick date',
+                                  suffixIcon: const Icon(Icons.date_range),
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty) {
+                                      return 'Date of birth is required';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          if (_family.isEmpty)
-                            const Text(
-                              'No household members added yet.',
-                              style: TextStyle(color: Colors.blueGrey),
-                            )
-                          else
-                            Column(
-                              children: _family
-                                  .map(
-                                    (m) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: _familyMemberCard(
-                                    m: m,
-                                    primary: primary,
-                                  ),
-                                ),
-                              )
-                                  .toList(),
+                            _Input(
+                              controller: _clientAgeController,
+                              label: 'Age',
+                              hint: 'Auto-calculated',
+                              readOnly: true,
                             ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  MaterialCard(
-                    body: Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _titleRow(
-                            color: primary,
-                            title: 'Notes',
-                            subtitle: 'Optional household case notes',
-                            icon: Icons.notes_outlined,
                           ),
                           const SizedBox(height: 10),
-                          _Input(
-                            controller: _notesController,
-                            label: 'Notes (placeholder)',
-                            hint: 'Short notes...',
-                            maxLines: 4,
+                          _dropdown(
+                            label: 'Sex',
+                            value: _sex,
+                            options: sexOptions,
+                            requiredField: true,
+                            onChanged: (v) {
+                              setState(() => _sex = v ?? '');
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          _dropdown(
+                            label: 'Nationality',
+                            value: _nationality,
+                            options: nationalityOptions,
+                            requiredField: true,
+                            onChanged: (v) {
+                              setState(() => _nationality = v ?? '');
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          _dropdown(
+                            label: 'Home Language',
+                            value: _homeLanguage,
+                            options: homeLanguageOptions,
+                            requiredField: true,
+                            onChanged: (v) {
+                              setState(() {
+                                _homeLanguage = v ?? '';
+                                if (_homeLanguage != 'OTHER') {
+                                  _homeLanguageOtherController.text = '';
+                                }
+                              });
+                            },
+                          ),
+                          if (_homeLanguage == 'OTHER') ...[
+                            const SizedBox(height: 10),
+                            _Input(
+                              controller: _homeLanguageOtherController,
+                              label: 'Specify other language',
+                              hint: 'Enter language',
+                              validator: (v) {
+                                if (_homeLanguage == 'OTHER' &&
+                                    (v == null || v.trim().isEmpty)) {
+                                  return 'Please specify language';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                          const SizedBox(height: 10),
+                          _row2(
+                            _Input(
+                              controller: _phoneController,
+                              label: 'Phone Number',
+                              hint: 'e.g. 5xxxxxxx',
+                              keyboardType: TextInputType.phone,
+                            ),
+                            _Input(
+                              controller: _alternativePhoneController,
+                              label: 'Alternative Phone Number',
+                              hint: 'e.g. 5xxxxxxx',
+                              keyboardType: TextInputType.phone,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
                   EntryFormSaveButton(
                     marginLeft: 20.0,
                     marginRight: 20.0,
-                    label: _saving ? 'Saving...' : 'Save Household Case',
+                    label: _saving ? 'Saving...' : 'Save Intake',
                     svgIconPath: 'assets/icons/save-icon.svg',
                     svgIconHeight: 16.0,
                     svgIconWidth: 16.0,
@@ -1134,6 +920,8 @@ class _Input extends StatelessWidget {
     this.validator,
     this.suffixIcon,
     this.maxLines = 1,
+    this.readOnly = false,
+    this.keyboardType,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -1142,6 +930,8 @@ class _Input extends StatelessWidget {
   final String? Function(String?)? validator;
   final Widget? suffixIcon;
   final int maxLines;
+  final bool readOnly;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -1149,10 +939,14 @@ class _Input extends StatelessWidget {
       controller: controller,
       validator: validator,
       maxLines: maxLines,
+      readOnly: readOnly,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: readOnly ? const Color(0xFFF3F5F7) : Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
         ),
