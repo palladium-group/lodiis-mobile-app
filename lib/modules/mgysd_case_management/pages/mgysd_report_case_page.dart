@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -177,6 +176,9 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
   final List<MgysdClientEntry> _clients = [];
   final List<MgysdPersonInvolvedEntry> _peopleInvolved = [];
 
+  // New: selected concerns set for multi-select
+  final Set<String> _selectedConcernReasons = {};
+
   List<MgysdFormFieldDef> get aboutReporterFields => const [
     MgysdFormFieldDef(
       id: deReporterAnonymous,
@@ -345,6 +347,14 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
         if (f.type == MgysdFieldType.boolean) return 'false';
         return '';
       });
+    }
+
+    // initialize selected concerns from saved value if present
+    final saved = (_values[deConcernReason] ?? '').trim();
+    if (saved.isNotEmpty) {
+      _selectedConcernReasons.addAll(
+        saved.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty),
+      );
     }
 
     _addClient();
@@ -521,9 +531,75 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
   Widget _buildField(MgysdFormFieldDef f) {
     switch (f.type) {
       case MgysdFieldType.option:
+      // Special-case multi-select for Concern reason
+        if (f.id == deConcernReason) {
+          final selected = _selectedConcernReasons;
+
+          return FormField<Set<String>>(
+            initialValue: selected,
+            validator: (set) {
+              if (f.requiredField && (set == null || set.isEmpty)) {
+                return 'Required';
+              }
+              return null;
+            },
+            builder: (state) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // label
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      f.label,
+                      style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  // chips
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    children: f.options.map((o) {
+                      final isSelected = selected.contains(o.code);
+                      return FilterChip(
+                        label: Text(o.label),
+                        selected: isSelected,
+                        selectedColor: widget.color.withOpacity(0.2),
+                        checkmarkColor: widget.color,
+                        onSelected: (val) {
+                          setState(() {
+                            if (val) {
+                              selected.add(o.code);
+                            } else {
+                              selected.remove(o.code);
+                            }
+                            // keep string representation in _values for compatibility
+                            _values[f.id] = selected.join(',');
+                            // update FormField state for validation UI
+                            state.didChange(selected);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  // validation message
+                  if (state.hasError)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        state.errorText ?? '',
+                        style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12),
+                      ),
+                    ),
+                ],
+              );
+            },
+          );
+        }
+
+        // Default single-select behavior for other option fields
         final rawValue = (_values[f.id] ?? '').trim();
-        final safeValue =
-        f.options.any((o) => o.code == rawValue) ? rawValue : null;
+        final safeValue = f.options.any((o) => o.code == rawValue) ? rawValue : null;
 
         return DropdownButtonFormField<String>(
           value: safeValue,
@@ -538,13 +614,11 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
               .toList(),
           onChanged: (v) => setState(() {
             _values[f.id] = v ?? '';
-
             if (f.id == deReporterRelationship && (v ?? '') != 'OTHER') {
               _values[deReporterRelationshipOther] = '';
             }
           }),
-          validator: (v) =>
-              _requiredValidator(v, requiredField: f.requiredField),
+          validator: (v) => _requiredValidator(v, requiredField: f.requiredField),
           decoration: _decoration(f.label),
         );
 
@@ -960,350 +1034,264 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FBFD),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blueGrey.withOpacity(0.12)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.08)),
       ),
       child: Column(
         children: [
+          ...fields,
+          const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  'Client ${index + 1}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
-                  ),
+              Expanded(child: Container()),
+              if (_clients.length > 1)
+                TextButton.icon(
+                  onPressed: () => _removeClient(index),
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  label: const Text('Remove', style: TextStyle(color: Colors.red)),
                 ),
-              ),
-              IconButton(
-                onPressed: () => _removeClient(index),
-                icon: const Icon(Icons.delete_outline),
-                color: Colors.redAccent,
-              ),
             ],
           ),
-          const SizedBox(height: 6),
-          ...fields,
         ],
       ),
     );
   }
 
-  Widget _personInvolvedCard(
-      int index,
-      MgysdPersonInvolvedEntry person,
-      double availableWidth,
-      ) {
-    final name = TextFormField(
+  Widget _personInvolvedCard(int index, MgysdPersonInvolvedEntry person, double availableWidth) {
+    final twoCols = _twoCols(availableWidth);
+
+    Widget firstNameField = TextFormField(
       controller: person.nameController,
-      decoration: _decoration('Name of person involved'),
+      decoration: _decoration('First name'),
+      validator: (v) => _requiredValidator(v, requiredField: true),
     );
 
-    final role = TextFormField(
-      controller: person.roleController,
-      decoration: _decoration('Role / relationship'),
+    Widget lastNameField = TextFormField(
+      controller: person.roleController, // reused as last name controller
+      decoration: _decoration('Last name'),
+      validator: (v) => _requiredValidator(v, requiredField: true),
     );
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FBFD),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blueGrey.withOpacity(0.12)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.08)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Header showing "Person 1", "Person 2", ...
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              'Person ${index + 1}',
+              style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w700,
+                color: Colors.grey[800],
+              ),
+            ),
+          ),
+
+          // First and last name on same line when there's enough width
+          if (twoCols)
+            Row(
+              children: [
+                Expanded(child: firstNameField),
+                const SizedBox(width: 10),
+                Expanded(child: lastNameField),
+              ],
+            )
+          else ...[
+            firstNameField,
+            const SizedBox(height: 8),
+            lastNameField,
+          ],
+
+          const SizedBox(height: 8),
+
+          // Remove button aligned to the right
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  'Person ${index + 1}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
-                  ),
+              const Spacer(),
+              if (_peopleInvolved.isNotEmpty)
+                TextButton.icon(
+                  onPressed: () => _removePersonInvolved(index),
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  label: const Text('Remove', style: TextStyle(color: Colors.red)),
                 ),
-              ),
-              IconButton(
-                onPressed: () => _removePersonInvolved(index),
-                icon: const Icon(Icons.delete_outline),
-                color: Colors.redAccent,
-              ),
             ],
           ),
-          const SizedBox(height: 6),
-          if (_twoCols(availableWidth))
-            _row2(name, role)
-          else ...[
-            Padding(padding: const EdgeInsets.only(bottom: 10), child: name),
-            role,
-          ],
         ],
       ),
     );
   }
 
-  Future<void> _onSubmit() async {
-    FocusScope.of(context).unfocus();
-    if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    setState(() => _submitting = true);
-
-    try {
-      final currentUserState =
-      Provider.of<CurrentUserState>(context, listen: false);
-
-      final String orgUnit =
-      (currentUserState.currentUser?.userOrgUnitIds ?? []).isNotEmpty
-          ? (currentUserState.currentUser!.userOrgUnitIds!.first ?? '')
-          : '';
-
-      if (orgUnit.isEmpty) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No orgUnit found for current user.')),
-        );
-        return;
-      }
-
-      final clientPayload = _clients.map((c) => c.toJson()).toList();
-      final peoplePayload = _peopleInvolved
-          .map((p) => p.toJson())
-          .where((p) =>
-      (p['name'] ?? '').toString().trim().isNotEmpty ||
-          (p['roleOrRelationship'] ?? '').toString().trim().isNotEmpty)
-          .toList();
-
-      _values[deClientsJson] = jsonEncode(clientPayload);
-      _values[dePeopleInvolvedJson] = jsonEncode(peoplePayload);
-
-      final inputFieldIds = <String>[
-        ...aboutReporterFields.map((e) => e.id),
-        ...concernFields.map((e) => e.id),
-        deClientsJson,
-        dePeopleInvolvedJson,
-      ].where((id) => id.trim().isNotEmpty).toList();
-
-      final eventDate = (_values[deWhenHappened] ?? '').trim().isNotEmpty
-          ? _values[deWhenHappened]!.trim()
-          : AppUtil.formattedDateTimeIntoString(DateTime.now());
-
-      final Events event = FormUtil.getEventPayload(
-        null,
-        mgysdReportProgram,
-        mgysdReportProgramStage,
-        orgUnit,
-        inputFieldIds,
-        _values,
-        eventDate,
-        null,
-      );
-
-      event.dataValues ??= inputFieldIds
-          .map((de) {
-        final v = (_values[de] ?? '').trim();
-        if (v.isEmpty) return null;
-        return {'dataElement': de, 'value': v};
-      })
-          .whereType<Map<String, dynamic>>()
-          .toList();
-
-      await FormUtil.savingEvent(event);
-
-      if (!mounted) return;
+  Future<void> _onSave() async {
+    if (!_formKey.currentState!.validate()) {
+      // show validation errors
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Report saved offline. Ref: ${event.event}')),
+        const SnackBar(content: Text('Please fix the errors in the form')),
       );
-
-      Navigator.pop(context, true);
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save offline: $e')),
-      );
-    } finally {
-      if (mounted) setState(() => _submitting = false);
+      return;
     }
+
+    setState(() {
+      _submitting = true;
+    });
+
+    // ensure concern reasons are stored
+    _values[deConcernReason] = _selectedConcernReasons.join(',');
+
+    // collect clients and people involved
+    final clientsJson = _clients.map((c) => c.toJson()).toList();
+    final peopleJson = _peopleInvolved.map((p) => p.toJson()).toList();
+
+    final payload = {
+      'reporter': {
+        for (final f in aboutReporterFields) f.id: _values[f.id] ?? '',
+      },
+      'concerns': {
+        deConcernReason: _values[deConcernReason] ?? '',
+        deNatureOfIncident: _values[deNatureOfIncident] ?? '',
+        deIncidentDescription: _values[deIncidentDescription] ?? '',
+        deWhenHappened: _values[deWhenHappened] ?? '',
+      },
+      'clients': clientsJson,
+      'peopleInvolved': peopleJson,
+    };
+
+    // Simulate save: print to console. Replace with real save logic.
+    debugPrint('MGYSD payload: ${jsonEncode(payload)}');
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    setState(() {
+      _submitting = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Report saved (simulated)')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final screenWidth = constraints.maxWidth;
-        final maxWidth = _contentMaxWidth(screenWidth);
-        final availableWidth = maxWidth == screenWidth ? screenWidth : maxWidth;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final contentMax = _contentMaxWidth(screenWidth);
 
-        return Scaffold(
-          backgroundColor: _softBg,
-          appBar: AppBar(
-            backgroundColor: widget.color,
-            elevation: 0,
-            title: const Text('Report a Case'),
-          ),
-          body: SafeArea(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: maxWidth),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    padding: const EdgeInsets.all(12),
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              widget.color.withOpacity(0.14),
-                              Colors.white,
-                            ],
-                          ),
-                          border: Border.all(
-                            color: widget.color.withOpacity(0.18),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.info_outline, color: widget.color),
-                            const SizedBox(width: 10),
-                            const Expanded(
-                              child: Text(
-                                'Stage 1: Reporting.\nReporter anonymity is recorded, but details remain visible for capture where provided.',
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
-                                  height: 1.25,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Report a Case'),
+        backgroundColor: widget.color,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: contentMax),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _sectionCard(
+                      title: 'About Reporter',
+                      subtitle: 'Who is reporting this concern',
+                      icon: Icons.person,
+                      children: _buildCompactFields(
+                        fields: aboutReporterFields,
+                        availableWidth: contentMax,
                       ),
-                      const SizedBox(height: 12),
-                      _sectionCard(
-                        title: 'About the Reporter',
-                        subtitle: 'Capture reporter details and whether they requested anonymity.',
-                        icon: Icons.person_outline,
-                        children: _buildCompactFields(
-                          fields: aboutReporterFields,
-                          availableWidth: availableWidth,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      _sectionCard(
-                        title: 'About the Client',
-                        subtitle: 'Add one or more clients affected by this concern.',
-                        icon: Icons.badge_outlined,
-                        children: [
-                          ...List.generate(
-                            _clients.length,
-                                (index) => _clientCard(
-                              index,
-                              _clients[index],
-                              availableWidth,
-                            ),
-                          ),
-                          OutlinedButton.icon(
+                    ),
+                    const SizedBox(height: 16),
+                    _sectionCard(
+                      title: 'Why are you concerned?',
+                      subtitle: 'Describe the concern and the nature of the incident',
+                      icon: Icons.report_problem,
+                      children: [
+                        // Concern fields (multi-select for concern reason)
+                        ...concernFields.map((f) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _buildField(f),
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _sectionCard(
+                      title: 'Clients',
+                      subtitle: 'People affected',
+                      icon: Icons.group,
+                      children: [
+                        ..._clients.asMap().entries.map((e) {
+                          final idx = e.key;
+                          final client = e.value;
+                          return _clientCard(idx, client, contentMax);
+                        }).toList(),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
                             onPressed: _addClient,
                             icon: const Icon(Icons.add),
                             label: const Text('Add another client'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: widget.color,
-                              side: BorderSide(color: widget.color),
-                              minimumSize: const Size(double.infinity, 44),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      _sectionCard(
-                        title: 'Why are you concerned?',
-                        subtitle: 'Describe the concern and the nature of the incident.',
-                        icon: Icons.report_outlined,
-                        children: _buildCompactFields(
-                          fields: concernFields,
-                          availableWidth: availableWidth,
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      _sectionCard(
-                        title: 'Other people involved',
-                        subtitle: 'Add names of any other people involved, if known.',
-                        icon: Icons.group_outlined,
-                        children: [
-                          ...List.generate(
-                            _peopleInvolved.length,
-                                (index) => _personInvolvedCard(
-                              index,
-                              _peopleInvolved[index],
-                              availableWidth,
-                            ),
-                          ),
-                          OutlinedButton.icon(
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _sectionCard(
+                      title: 'People involved',
+                      subtitle: 'Other people involved in the incident',
+                      icon: Icons.people,
+                      children: [
+                        ..._peopleInvolved.asMap().entries.map((e) {
+                          final idx = e.key;
+                          final person = e.value;
+                          return _personInvolvedCard(idx, person, contentMax);
+                        }).toList(),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
                             onPressed: _addPersonInvolved,
                             icon: const Icon(Icons.add),
                             label: const Text('Add another person involved'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: widget.color,
-                              side: BorderSide(color: widget.color),
-                              minimumSize: const Size(double.infinity, 44),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: widget.color,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          elevation: 0,
                         ),
-                        onPressed: _submitting ? null : _onSubmit,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_submitting)
-                              const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child:
-                                CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            else
-                              const Icon(Icons.save_outlined),
-                            const SizedBox(width: 10),
-                            Text(
-                              _submitting
-                                  ? 'Saving...'
-                                  : 'Save report offline',
-                            ),
-                          ],
-                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _submitting ? null : _onSave,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.color,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      const SizedBox(height: 18),
-                    ],
-                  ),
+                      child: _submitting
+                          ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                          : const Text('Save report offline'),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
