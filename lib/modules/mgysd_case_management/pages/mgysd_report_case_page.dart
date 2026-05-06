@@ -1,3 +1,6 @@
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
 import 'package:kb_mobile_app/core/utils/app_util.dart';
@@ -5,20 +8,6 @@ import 'package:kb_mobile_app/core/utils/form_util.dart';
 import 'package:kb_mobile_app/models/events.dart';
 import 'package:provider/provider.dart';
 
-/// MGYSD Stage 1: Reporting (Event Program) — SAVES OFFLINE
-///
-/// ✅ Saves to offline_db (events + event_data_values) using FormUtil.savingEvent()
-/// ✅ Uses dropdown option CODES (DHIS2 OptionSet-safe)
-/// ✅ Compact phone layout (2 columns where possible)
-///
-/// You said you will replace IDs manually:
-/// - program UID
-/// - programStage UID
-/// - dataElement UIDs
-/// - option codes/labels
-///
-/// Put this file e.g.
-/// lib/modules/mgysd_case_management/pages/mgysd_record_case_page.dart
 class MgysdRecordCasePage extends StatefulWidget {
   const MgysdRecordCasePage({
     Key? key,
@@ -34,23 +23,25 @@ class MgysdRecordCasePage extends StatefulWidget {
 enum MgysdFieldType {
   option,
   boolean,
-  trueOnly,
   date,
   integer,
-  number,
   phone,
   textShort,
+  textLong,
 }
 
 class MgysdOption {
   final String code;
   final String label;
 
-  const MgysdOption({required this.code, required this.label});
+  const MgysdOption({
+    required this.code,
+    required this.label,
+  });
 }
 
 class MgysdFormFieldDef {
-  final String id; // dataElement UID placeholder
+  final String id;
   final String label;
   final MgysdFieldType type;
   final bool requiredField;
@@ -67,63 +58,200 @@ class MgysdFormFieldDef {
   });
 }
 
+class MgysdClientEntry {
+  final String localId;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController ageController;
+  final TextEditingController estimatedDobController;
+  final TextEditingController phoneController;
+  final TextEditingController districtController;
+  final TextEditingController contactOtherController;
+
+  String sex;
+  String contactMethod;
+
+  MgysdClientEntry({
+    required this.localId,
+    String firstName = '',
+    String lastName = '',
+    String age = '',
+    String estimatedDob = '',
+    String phone = '',
+    String district = '',
+    String contactOther = '',
+    this.sex = '',
+    this.contactMethod = '',
+  })  : firstNameController = TextEditingController(text: firstName),
+        lastNameController = TextEditingController(text: lastName),
+        ageController = TextEditingController(text: age),
+        estimatedDobController = TextEditingController(text: estimatedDob),
+        phoneController = TextEditingController(text: phone),
+        districtController = TextEditingController(text: district),
+        contactOtherController = TextEditingController(text: contactOther);
+
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    ageController.dispose();
+    estimatedDobController.dispose();
+    phoneController.dispose();
+    districtController.dispose();
+    contactOtherController.dispose();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName': firstNameController.text.trim(),
+      'lastName': lastNameController.text.trim(),
+      'age': ageController.text.trim(),
+      'estimatedDateOfBirth': estimatedDobController.text.trim(),
+      'sex': sex,
+      'phone': phoneController.text.trim(),
+      'district': districtController.text.trim(),
+      'howToContactClient': contactMethod,
+      'contactOtherSpecify': contactOtherController.text.trim(),
+    };
+  }
+}
+
+class MgysdPersonInvolvedEntry {
+  final String localId;
+  final TextEditingController nameController;
+  final TextEditingController roleController;
+
+  MgysdPersonInvolvedEntry({
+    required this.localId,
+    String name = '',
+    String role = '',
+  })  : nameController = TextEditingController(text: name),
+        roleController = TextEditingController(text: role);
+
+  void dispose() {
+    nameController.dispose();
+    roleController.dispose();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': nameController.text.trim(),
+      'roleOrRelationship': roleController.text.trim(),
+    };
+  }
+}
+
 class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _values = {};
   bool _submitting = false;
 
-  // ✅ Replace these with real DHIS2 IDs when ready
   static const String mgysdReportProgram = 'MGYSD_REPORT_EVENT_PROGRAM_UID';
   static const String mgysdReportProgramStage = 'MGYSD_REPORT_STAGE_UID';
 
-  // --- placeholders you already use ---
+  static const String deReporterFirstName = 'RWEFHH4pm27';
+  static const String deReporterLastName = 'dwSkq33g4Uu';
+  static const String deReporterVillage = 'NCb5dNKnqOG';
+  static const String deChiefFirstName = 'Zjah90FdrwV';
+  static const String deChiefLastName = 'vmVxUbkVmXN';
+  static const String deReporterPhone = 'hKEJvGcXWND';
+  static const String deReporterAltPhone = 'pgklc5q0r9A';
   static const String deReporterRelationship = 'vXKcqU7V0xQ';
   static const String deReporterRelationshipOther = 'wIAHzLOccWk';
   static const String deReporterAnonymous = 'DE_REP_ANONYMOUS';
+
+  static const String deReporterPhysicalAddress =
+      'DE_REPORTER_PHYSICAL_ADDRESS';
+  static const String deReporterDob = 'DE_REPORTER_DOB';
+  static const String deReporterAge = 'DE_REPORTER_AGE';
+  static const String deReporterSex = 'DE_REPORTER_SEX';
+  static const String deReporterOccupation = 'DE_REPORTER_OCCUPATION';
+
+  static const String deClientsJson = 'DE_CLIENTS_JSON';
+  static const String dePeopleInvolvedJson = 'DE_PEOPLE_INVOLVED_JSON';
+
+  static const String deConcernReason = 'UJIrqEgPMn1';
+  static const String deIncidentDescription = 'DE_INCIDENT_DESCRIPTION';
+  static const String deNatureOfIncident = 'DE_NATURE_OF_INCIDENT';
   static const String deWhenHappened = 'DE_WHEN_HAPPENED';
 
-  // -----------------------
-  // FIELD DEFINITIONS
-  // -----------------------
-  List<MgysdFormFieldDef> get aboutYouFields => const [
+  final List<MgysdClientEntry> _clients = [];
+  final List<MgysdPersonInvolvedEntry> _peopleInvolved = [];
+
+  List<MgysdFormFieldDef> get aboutReporterFields => const [
     MgysdFormFieldDef(
-      id: 'RWEFHH4pm27',
+      id: deReporterAnonymous,
+      label: 'Reporter wants to remain anonymous',
+      type: MgysdFieldType.boolean,
+      requiredField: true,
+    ),
+    MgysdFormFieldDef(
+      id: deReporterFirstName,
       label: 'Reporter First name',
       type: MgysdFieldType.textShort,
-      maxLen: 20,
+      maxLen: 40,
     ),
     MgysdFormFieldDef(
-      id: 'dwSkq33g4Uu',
+      id: deReporterLastName,
       label: 'Reporter Last name',
       type: MgysdFieldType.textShort,
-      maxLen: 20,
+      maxLen: 40,
     ),
     MgysdFormFieldDef(
-      id: 'NCb5dNKnqOG',
+      id: deReporterDob,
+      label: 'Date of Birth',
+      type: MgysdFieldType.date,
+    ),
+    MgysdFormFieldDef(
+      id: deReporterAge,
+      label: 'Age',
+      type: MgysdFieldType.integer,
+    ),
+    MgysdFormFieldDef(
+      id: deReporterSex,
+      label: 'Sex',
+      type: MgysdFieldType.option,
+      options: [
+        MgysdOption(code: 'MALE', label: 'Male'),
+        MgysdOption(code: 'FEMALE', label: 'Female'),
+      ],
+    ),
+    MgysdFormFieldDef(
+      id: deReporterOccupation,
+      label: 'Occupation',
+      type: MgysdFieldType.textShort,
+      maxLen: 80,
+    ),
+    MgysdFormFieldDef(
+      id: deReporterVillage,
       label: 'Reporter Village',
       type: MgysdFieldType.textShort,
-      maxLen: 20,
+      maxLen: 80,
     ),
     MgysdFormFieldDef(
-      id: 'Zjah90FdrwV',
+      id: deReporterPhysicalAddress,
+      label: 'Physical Address',
+      type: MgysdFieldType.textLong,
+    ),
+    MgysdFormFieldDef(
+      id: deChiefFirstName,
       label: 'Chief First name',
       type: MgysdFieldType.textShort,
-      maxLen: 20,
+      maxLen: 40,
     ),
     MgysdFormFieldDef(
-      id: 'vmVxUbkVmXN',
+      id: deChiefLastName,
       label: 'Chief Last name',
       type: MgysdFieldType.textShort,
-      maxLen: 20,
+      maxLen: 40,
     ),
     MgysdFormFieldDef(
-      id: 'hKEJvGcXWND',
+      id: deReporterPhone,
       label: 'Reporter phone',
       type: MgysdFieldType.phone,
       requiredField: true,
     ),
     MgysdFormFieldDef(
-      id: 'pgklc5q0r9A',
+      id: deReporterAltPhone,
       label: 'Alternate phone',
       type: MgysdFieldType.phone,
     ),
@@ -145,69 +273,13 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
       id: deReporterRelationshipOther,
       label: 'Relationship (other)',
       type: MgysdFieldType.textShort,
-      maxLen: 20,
-    ),
-    MgysdFormFieldDef(
-      id: deReporterAnonymous,
-      label: 'Reporter wants to remain anonymous',
-      type: MgysdFieldType.boolean,
-      requiredField: true,
-    ),
-  ];
-
-  List<MgysdFormFieldDef> get aboutClientFields => const [
-    MgysdFormFieldDef(
-      id: 'wOIx1Tism5p',
-      label: 'Client First name',
-      type: MgysdFieldType.textShort,
-      maxLen: 20,
-      requiredField: true,
-    ),
-    MgysdFormFieldDef(
-      id: 'mclj3oLRpiv',
-      label: 'Client Last name',
-      type: MgysdFieldType.textShort,
-      maxLen: 20,
-      requiredField: true,
-    ),
-    MgysdFormFieldDef(
-      id: 'kwL1QEdrChg',
-      label: 'Client Sex',
-      type: MgysdFieldType.option,
-      requiredField: true,
-      options: [
-        MgysdOption(code: 'MALE', label: 'Male'),
-        MgysdOption(code: 'FEMALE', label: 'Female'),
-      ],
-    ),
-    MgysdFormFieldDef(
-      id: 'DE_CLIENT_LOCATION',
-      label: 'Client District',
-      type: MgysdFieldType.option,
-      requiredField: true,
-      options: [
-        MgysdOption(code: 'MASERU', label: 'Maseru'),
-        MgysdOption(code: 'LERIBE', label: 'Leribe'),
-        MgysdOption(code: 'BEREA', label: 'Berea'),
-        MgysdOption(code: 'MAFETENG', label: 'Mafeteng'),
-        MgysdOption(code: 'MOHALES_HOEK', label: 'Mohale’s Hoek'),
-        MgysdOption(code: 'QUTHING', label: 'Quthing'),
-        MgysdOption(code: 'QACHAS_NEK', label: 'Qacha’s Nek'),
-        MgysdOption(code: 'THABA_TSEKA', label: 'Thaba-Tseka'),
-        MgysdOption(code: 'BUTHABUTHE', label: 'Butha-Buthe'),
-        MgysdOption(code: 'MOKHOTLONG', label: 'Mokhotlong'),
-      ],
-    ),
-    MgysdFormFieldDef(
-      id: 'hxxH8RmZrV2',
-      label: 'Client phone',
-      type: MgysdFieldType.phone,
+      maxLen: 80,
     ),
   ];
 
   List<MgysdFormFieldDef> get concernFields => const [
     MgysdFormFieldDef(
-      id: 'UJIrqEgPMn1',
+      id: deConcernReason,
       label: 'Concern reason',
       type: MgysdFieldType.option,
       requiredField: true,
@@ -228,74 +300,77 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
       ],
     ),
     MgysdFormFieldDef(
-      id: 'DE_CASE_TYPE',
-      label: 'Type of concern',
+      id: deNatureOfIncident,
+      label: 'Nature of incident',
       type: MgysdFieldType.option,
       requiredField: true,
       options: [
-        MgysdOption(code: 'CHILD_PROTECTION', label: 'Child protection'),
-        MgysdOption(code: 'GBV', label: 'Gender-based violence'),
-        MgysdOption(code: 'NEGLECT', label: 'Neglect'),
-        MgysdOption(code: 'ABUSE_PHYSICAL', label: 'Physical abuse'),
-        MgysdOption(code: 'ABUSE_SEXUAL', label: 'Sexual abuse'),
-        MgysdOption(code: 'TRAFFICKING', label: 'Trafficking'),
-        MgysdOption(code: 'OTHER', label: 'Other'),
+        MgysdOption(code: 'SINGLE_INCIDENT', label: 'Single incident'),
+        MgysdOption(code: 'ONGOING_PATTERN', label: 'Ongoing pattern'),
+        MgysdOption(code: 'RECENT_ESCALATION', label: 'Recent escalation'),
+        MgysdOption(code: 'HISTORICAL_CONCERN', label: 'Historical concern'),
+        MgysdOption(code: 'UNKNOWN', label: 'Unknown'),
       ],
     ),
     MgysdFormFieldDef(
-      id: 'DE_URGENT_RISK',
-      label: 'Immediate danger / urgent risk',
-      type: MgysdFieldType.boolean,
+      id: deIncidentDescription,
+      label: 'Describe the incident that has made you concerned',
+      type: MgysdFieldType.textLong,
       requiredField: true,
     ),
     MgysdFormFieldDef(
       id: deWhenHappened,
       label: 'Date incident happened',
       type: MgysdFieldType.date,
-      requiredField: false,
     ),
   ];
 
-  // -----------------------
-  // DEFAULTS + VISIBILITY
-  // -----------------------
+  static const List<MgysdOption> _sexOptions = [
+    MgysdOption(code: 'MALE', label: 'Male'),
+    MgysdOption(code: 'FEMALE', label: 'Female'),
+  ];
+
+  static const List<MgysdOption> _contactMethodOptions = [
+    MgysdOption(code: 'SCHOOL', label: 'School'),
+    MgysdOption(code: 'HOME', label: 'Home'),
+    MgysdOption(code: 'OTHER', label: 'Other'),
+  ];
+
   @override
   void initState() {
     super.initState();
-    for (final f in [...aboutYouFields, ...aboutClientFields, ...concernFields]) {
+
+    for (final f in [...aboutReporterFields, ...concernFields]) {
       _values.putIfAbsent(f.id, () {
         if (f.type == MgysdFieldType.boolean) return 'false';
         return '';
       });
     }
+
+    _addClient();
+    _addPersonInvolved();
   }
 
-  bool get _isAnonymous => (_values[deReporterAnonymous] ?? 'false') == 'true';
+  @override
+  void dispose() {
+    for (final client in _clients) {
+      client.dispose();
+    }
+    for (final person in _peopleInvolved) {
+      person.dispose();
+    }
+    super.dispose();
+  }
+
   bool get _relationshipIsOther =>
       (_values[deReporterRelationship] ?? '') == 'OTHER';
 
-  List<MgysdFormFieldDef> get _visibleAboutYouFields {
-    if (!_isAnonymous) return aboutYouFields;
-    return aboutYouFields.where((f) {
-      return f.id == deReporterRelationship ||
-          f.id == deReporterRelationshipOther ||
-          f.id == deReporterAnonymous;
-    }).toList();
-  }
-
-  bool _shouldShowRelationshipOther(MgysdFormFieldDef f) {
-    if (f.id != deReporterRelationshipOther) return true;
-    return _relationshipIsOther;
-  }
-
-  // -----------------------
-  // LOOK & FEEL (LOD IIS STYLE)
-  // -----------------------
   Color get _softBg => const Color(0xFFF6F7FB);
 
-  InputDecoration _decoration(String label, {IconData? icon}) {
+  InputDecoration _decoration(String label, {IconData? icon, String? hint}) {
     return InputDecoration(
       labelText: label,
+      hintText: hint,
       floatingLabelBehavior: FloatingLabelBehavior.auto,
       isDense: true,
       prefixIcon: icon != null ? Icon(icon, size: 20) : null,
@@ -313,16 +388,13 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
   }
 
   double _contentMaxWidth(double screenWidth) {
-    if (screenWidth >= 1100) return 880;
-    if (screenWidth >= 800) return 720;
+    if (screenWidth >= 1100) return 900;
+    if (screenWidth >= 800) return 740;
     return screenWidth;
   }
 
-  bool _phoneTwoCols(double width) => width >= 380;
+  bool _twoCols(double width) => width >= 420;
 
-  // -----------------------
-  // VALIDATORS
-  // -----------------------
   String? _requiredValidator(String? v, {required bool requiredField}) {
     if (!requiredField) return null;
     if ((v ?? '').trim().isEmpty) return 'Required';
@@ -338,58 +410,135 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     return null;
   }
 
-  // -----------------------
-  // DATE PICKER
-  // -----------------------
+  int? _calculateAge(DateTime dob) {
+    final today = DateTime.now();
+    int age = today.year - dob.year;
+    final hadBirthdayThisYear =
+        today.month > dob.month || (today.month == dob.month && today.day >= dob.day);
+    if (!hadBirthdayThisYear) age--;
+    return age < 0 ? null : age;
+  }
+
+  String _estimateDobFromAge(String ageText) {
+    final age = int.tryParse(ageText.trim());
+    if (age == null || age < 0 || age > 130) return '';
+    final now = DateTime.now();
+    final estimated = DateTime(now.year - age, 7, 1);
+    return _formatDate(estimated);
+  }
+
+  String _formatDate(DateTime date) {
+    final y = date.year.toString().padLeft(4, '0');
+    final m = date.month.toString().padLeft(2, '0');
+    final d = date.day.toString().padLeft(2, '0');
+    return '$y-$m-$d';
+  }
+
+  DateTime? _parseDate(String value) {
+    final parts = value.trim().split('-');
+    if (parts.length != 3) return null;
+    final y = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    final d = int.tryParse(parts[2]);
+    if (y == null || m == null || d == null) return null;
+    return DateTime(y, m, d);
+  }
+
   Future<void> _pickDate(String fieldId) async {
     FocusScope.of(context).unfocus();
 
     DateTime initial = DateTime.now();
     final existing = (_values[fieldId] ?? '').trim();
-    final parts = existing.split('-');
-    if (parts.length == 3) {
-      final y = int.tryParse(parts[0]);
-      final m = int.tryParse(parts[1]);
-      final d = int.tryParse(parts[2]);
-      if (y != null && m != null && d != null) initial = DateTime(y, m, d);
-    }
+    final parsed = _parseDate(existing);
+    if (parsed != null) initial = parsed;
 
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
-      firstDate: DateTime(2000, 1, 1),
+      firstDate: DateTime(1900, 1, 1),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       helpText: 'Select date',
     );
 
     if (picked == null) return;
 
-    final y = picked.year.toString().padLeft(4, '0');
-    final m = picked.month.toString().padLeft(2, '0');
-    final d = picked.day.toString().padLeft(2, '0');
+    setState(() {
+      _values[fieldId] = _formatDate(picked);
 
-    setState(() => _values[fieldId] = '$y-$m-$d');
+      if (fieldId == deReporterDob) {
+        final age = _calculateAge(picked);
+        _values[deReporterAge] = age?.toString() ?? '';
+      }
+    });
   }
 
-  // -----------------------
-  // FIELD BUILDER
-  // -----------------------
+  void _addClient() {
+    setState(() {
+      _clients.add(
+        MgysdClientEntry(
+          localId: DateTime.now().microsecondsSinceEpoch.toString(),
+        ),
+      );
+    });
+  }
+
+  void _removeClient(int index) {
+    if (_clients.length == 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('At least one client is required.')),
+      );
+      return;
+    }
+
+    setState(() {
+      final removed = _clients.removeAt(index);
+      removed.dispose();
+    });
+  }
+
+  void _addPersonInvolved() {
+    setState(() {
+      _peopleInvolved.add(
+        MgysdPersonInvolvedEntry(
+          localId: DateTime.now().microsecondsSinceEpoch.toString(),
+        ),
+      );
+    });
+  }
+
+  void _removePersonInvolved(int index) {
+    setState(() {
+      final removed = _peopleInvolved.removeAt(index);
+      removed.dispose();
+    });
+  }
+
+  bool _shouldShowRelationshipOther(MgysdFormFieldDef f) {
+    if (f.id != deReporterRelationshipOther) return true;
+    return _relationshipIsOther;
+  }
+
   Widget _buildField(MgysdFormFieldDef f) {
     switch (f.type) {
       case MgysdFieldType.option:
+        final rawValue = (_values[f.id] ?? '').trim();
+        final safeValue =
+        f.options.any((o) => o.code == rawValue) ? rawValue : null;
+
         return DropdownButtonFormField<String>(
-          value: (_values[f.id] ?? '').isEmpty ? null : _values[f.id],
+          value: safeValue,
           isExpanded: true,
           items: f.options
-              .map((o) => DropdownMenuItem<String>(
-            value: o.code, // ✅ store option CODE
-            child: Text(o.label, overflow: TextOverflow.ellipsis),
-          ))
+              .map(
+                (o) => DropdownMenuItem<String>(
+              value: o.code,
+              child: Text(o.label, overflow: TextOverflow.ellipsis),
+            ),
+          )
               .toList(),
           onChanged: (v) => setState(() {
             _values[f.id] = v ?? '';
 
-            // clear relationship-other when not OTHER
             if (f.id == deReporterRelationship && (v ?? '') != 'OTHER') {
               _values[deReporterRelationshipOther] = '';
             }
@@ -401,6 +550,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
 
       case MgysdFieldType.boolean:
         final current = (_values[f.id] ?? 'false') == 'true';
+
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
@@ -427,16 +577,6 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                 activeColor: widget.color,
                 onChanged: (val) => setState(() {
                   _values[f.id] = val ? 'true' : 'false';
-
-                  // anonymous => clear personal fields
-                  if (f.id == deReporterAnonymous && val == true) {
-                    for (final ff in aboutYouFields) {
-                      final keep = ff.id == deReporterAnonymous ||
-                          ff.id == deReporterRelationship ||
-                          ff.id == deReporterRelationshipOther;
-                      if (!keep) _values[ff.id] = '';
-                    }
-                  }
                 }),
               ),
             ],
@@ -445,14 +585,19 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
 
       case MgysdFieldType.date:
         final value = (_values[f.id] ?? '').trim();
+
         return InkWell(
           borderRadius: BorderRadius.circular(14),
           onTap: () => _pickDate(f.id),
           child: IgnorePointer(
             child: TextFormField(
+              key: ValueKey('${f.id}_$value'),
               initialValue: value,
-              decoration: _decoration(f.label, icon: Icons.calendar_month)
-                  .copyWith(hintText: 'yyyy-mm-dd'),
+              decoration: _decoration(
+                f.label,
+                icon: Icons.calendar_month,
+                hint: 'yyyy-mm-dd',
+              ),
               validator: (v) =>
                   _requiredValidator(v, requiredField: f.requiredField),
             ),
@@ -468,24 +613,41 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
           validator: (v) => _phoneValidator(v, requiredField: f.requiredField),
         );
 
-      case MgysdFieldType.textShort:
+      case MgysdFieldType.integer:
         return TextFormField(
+          key: ValueKey('${f.id}_${_values[f.id] ?? ''}'),
           initialValue: (_values[f.id] ?? '').trim(),
           decoration: _decoration(f.label),
-          maxLength: f.maxLen,
-          buildCounter: (context,
-              {required currentLength, required isFocused, maxLength}) {
-            return null; // remove counter line
-          },
+          keyboardType: TextInputType.number,
+          readOnly: f.id == deReporterAge,
           onChanged: (v) => _values[f.id] = v.trim(),
           validator: (v) =>
               _requiredValidator(v, requiredField: f.requiredField),
         );
 
-      default:
+      case MgysdFieldType.textLong:
         return TextFormField(
           initialValue: (_values[f.id] ?? '').trim(),
           decoration: _decoration(f.label),
+          maxLines: 4,
+          onChanged: (v) => _values[f.id] = v.trim(),
+          validator: (v) =>
+              _requiredValidator(v, requiredField: f.requiredField),
+        );
+
+      case MgysdFieldType.textShort:
+        return TextFormField(
+          initialValue: (_values[f.id] ?? '').trim(),
+          decoration: _decoration(f.label),
+          maxLength: f.maxLen,
+          buildCounter: (
+              context, {
+                required currentLength,
+                required isFocused,
+                maxLength,
+              }) {
+            return null;
+          },
           onChanged: (v) => _values[f.id] = v.trim(),
           validator: (v) =>
               _requiredValidator(v, requiredField: f.requiredField),
@@ -493,24 +655,21 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     }
   }
 
-  // -----------------------
-  // COMPACT ROW BUILDERS
-  // -----------------------
-  Widget _row2(MgysdFormFieldDef a, MgysdFormFieldDef b) {
+  Widget _row2(Widget a, Widget b) {
     return Row(
       children: [
-        Expanded(child: _buildField(a)),
+        Expanded(child: a),
         const SizedBox(width: 10),
-        Expanded(child: _buildField(b)),
+        Expanded(child: b),
       ],
     );
   }
 
-  List<Widget> _buildCompactSection({
+  List<Widget> _buildCompactFields({
     required List<MgysdFormFieldDef> fields,
     required double availableWidth,
   }) {
-    final bool twoCols = _phoneTwoCols(availableWidth);
+    final twoCols = _twoCols(availableWidth);
     final visible = fields.where(_shouldShowRelationshipOther).toList();
 
     MgysdFormFieldDef? byId(String id) {
@@ -520,46 +679,50 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
       return null;
     }
 
-    final List<Widget> widgets = [];
-    final Set<String> used = {};
+    final widgets = <Widget>[];
+    final used = <String>{};
 
     void addField(MgysdFormFieldDef f) {
       used.add(f.id);
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: _buildField(f),
-      ));
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _buildField(f),
+        ),
+      );
     }
 
     void addRow(MgysdFormFieldDef f1, MgysdFormFieldDef f2) {
       used.add(f1.id);
       used.add(f2.id);
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: _row2(f1, f2),
-      ));
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _row2(_buildField(f1), _buildField(f2)),
+        ),
+      );
     }
 
     if (twoCols) {
-      final rfn = byId('RWEFHH4pm27');
-      final rln = byId('dwSkq33g4Uu');
+      final rfn = byId(deReporterFirstName);
+      final rln = byId(deReporterLastName);
       if (rfn != null && rln != null) addRow(rfn, rln);
 
-      final cfn = byId('Zjah90FdrwV');
-      final cln = byId('vmVxUbkVmXN');
-      if (cfn != null && cln != null) addRow(cfn, cln);
+      final dob = byId(deReporterDob);
+      final age = byId(deReporterAge);
+      if (dob != null && age != null) addRow(dob, age);
 
-      final p1 = byId('hKEJvGcXWND');
-      final p2 = byId('pgklc5q0r9A');
+      final sex = byId(deReporterSex);
+      final occupation = byId(deReporterOccupation);
+      if (sex != null && occupation != null) addRow(sex, occupation);
+
+      final p1 = byId(deReporterPhone);
+      final p2 = byId(deReporterAltPhone);
       if (p1 != null && p2 != null) addRow(p1, p2);
 
-      final c1 = byId('wOIx1Tism5p');
-      final c2 = byId('mclj3oLRpiv');
-      if (c1 != null && c2 != null) addRow(c1, c2);
-
-      final sex = byId('kwL1QEdrChg');
-      final dist = byId('DE_CLIENT_LOCATION');
-      if (sex != null && dist != null) addRow(sex, dist);
+      final cfn = byId(deChiefFirstName);
+      final cln = byId(deChiefLastName);
+      if (cfn != null && cln != null) addRow(cfn, cln);
     }
 
     for (final f in visible) {
@@ -573,8 +736,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     required String title,
     required String subtitle,
     required IconData icon,
-    required List<MgysdFormFieldDef> fields,
-    required double availableWidth,
+    required List<Widget> children,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -586,7 +748,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
             blurRadius: 14,
             offset: const Offset(0, 8),
             color: Colors.black.withOpacity(0.05),
-          )
+          ),
         ],
       ),
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
@@ -630,23 +792,269 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
             ],
           ),
           const SizedBox(height: 12),
-          ..._buildCompactSection(fields: fields, availableWidth: availableWidth),
+          ...children,
         ],
       ),
     );
   }
 
-  // -----------------------
-  // OFFLINE SAVE
-  // -----------------------
+  Widget _dropdownFromOptions({
+    required String label,
+    required String value,
+    required List<MgysdOption> options,
+    required void Function(String?) onChanged,
+    bool requiredField = false,
+  }) {
+    final safeValue = options.any((o) => o.code == value) ? value : null;
+
+    return DropdownButtonFormField<String>(
+      value: safeValue,
+      isExpanded: true,
+      decoration: _decoration(label),
+      items: options
+          .map(
+            (o) => DropdownMenuItem<String>(
+          value: o.code,
+          child: Text(o.label, overflow: TextOverflow.ellipsis),
+        ),
+      )
+          .toList(),
+      onChanged: onChanged,
+      validator: (v) => _requiredValidator(v, requiredField: requiredField),
+    );
+  }
+
+  Widget _clientCard(int index, MgysdClientEntry client, double availableWidth) {
+    final twoCols = _twoCols(availableWidth);
+
+    Widget firstName = TextFormField(
+      controller: client.firstNameController,
+      decoration: _decoration('Client First name'),
+      validator: (v) => _requiredValidator(v, requiredField: true),
+    );
+
+    Widget lastName = TextFormField(
+      controller: client.lastNameController,
+      decoration: _decoration('Client Last name'),
+      validator: (v) => _requiredValidator(v, requiredField: true),
+    );
+
+    Widget age = TextFormField(
+      controller: client.ageController,
+      decoration: _decoration('Age'),
+      keyboardType: TextInputType.number,
+      validator: (v) => _requiredValidator(v, requiredField: true),
+      onChanged: (v) {
+        final estimatedDob = _estimateDobFromAge(v);
+        setState(() {
+          client.estimatedDobController.text = estimatedDob;
+        });
+      },
+    );
+
+    Widget estimatedDob = TextFormField(
+      controller: client.estimatedDobController,
+      readOnly: true,
+      decoration: _decoration(
+        'Estimated date of birth',
+        icon: Icons.calendar_month,
+        hint: 'Calculated from age',
+      ),
+    );
+
+    Widget sex = _dropdownFromOptions(
+      label: 'Client Sex',
+      value: client.sex,
+      options: _sexOptions,
+      requiredField: true,
+      onChanged: (v) => setState(() {
+        client.sex = v ?? '';
+      }),
+    );
+
+    Widget district = TextFormField(
+      controller: client.districtController,
+      decoration: _decoration('Client District'),
+      validator: (v) => _requiredValidator(v, requiredField: true),
+    );
+
+    Widget phone = TextFormField(
+      controller: client.phoneController,
+      decoration: _decoration('Client phone', icon: Icons.phone),
+      keyboardType: TextInputType.phone,
+      validator: (v) => _phoneValidator(v, requiredField: false),
+    );
+
+    Widget contactMethod = _dropdownFromOptions(
+      label: 'How to contact client',
+      value: client.contactMethod,
+      options: _contactMethodOptions,
+      requiredField: true,
+      onChanged: (v) => setState(() {
+        client.contactMethod = v ?? '';
+        if (client.contactMethod != 'OTHER') {
+          client.contactOtherController.text = '';
+        }
+      }),
+    );
+
+    Widget contactOther = TextFormField(
+      controller: client.contactOtherController,
+      decoration: _decoration('Specify other contact method'),
+      validator: (v) {
+        if (client.contactMethod == 'OTHER' && (v ?? '').trim().isEmpty) {
+          return 'Required';
+        }
+        return null;
+      },
+    );
+
+    final fields = <Widget>[
+      if (twoCols)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _row2(firstName, lastName),
+        )
+      else ...[
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: firstName),
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: lastName),
+      ],
+      if (twoCols)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _row2(age, estimatedDob),
+        )
+      else ...[
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: age),
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: estimatedDob),
+      ],
+      if (twoCols)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _row2(sex, district),
+        )
+      else ...[
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: sex),
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: district),
+      ],
+      if (twoCols)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _row2(phone, contactMethod),
+        )
+      else ...[
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: phone),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: contactMethod,
+        ),
+      ],
+      if (client.contactMethod == 'OTHER')
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: contactOther,
+        ),
+    ];
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FBFD),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.12)),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Client ${index + 1}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => _removeClient(index),
+                icon: const Icon(Icons.delete_outline),
+                color: Colors.redAccent,
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          ...fields,
+        ],
+      ),
+    );
+  }
+
+  Widget _personInvolvedCard(
+      int index,
+      MgysdPersonInvolvedEntry person,
+      double availableWidth,
+      ) {
+    final name = TextFormField(
+      controller: person.nameController,
+      decoration: _decoration('Name of person involved'),
+    );
+
+    final role = TextFormField(
+      controller: person.roleController,
+      decoration: _decoration('Role / relationship'),
+    );
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FBFD),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.12)),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Person ${index + 1}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => _removePersonInvolved(index),
+                icon: const Icon(Icons.delete_outline),
+                color: Colors.redAccent,
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          if (_twoCols(availableWidth))
+            _row2(name, role)
+          else ...[
+            Padding(padding: const EdgeInsets.only(bottom: 10), child: name),
+            role,
+          ],
+        ],
+      ),
+    );
+  }
 
   Future<void> _onSubmit() async {
     FocusScope.of(context).unfocus();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() => _submitting = true);
+
     try {
-      final currentUserState = Provider.of<CurrentUserState>(context, listen: false);
+      final currentUserState =
+      Provider.of<CurrentUserState>(context, listen: false);
 
       final String orgUnit =
       (currentUserState.currentUser?.userOrgUnitIds ?? []).isNotEmpty
@@ -661,29 +1069,39 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
         return;
       }
 
+      final clientPayload = _clients.map((c) => c.toJson()).toList();
+      final peoplePayload = _peopleInvolved
+          .map((p) => p.toJson())
+          .where((p) =>
+      (p['name'] ?? '').toString().trim().isNotEmpty ||
+          (p['roleOrRelationship'] ?? '').toString().trim().isNotEmpty)
+          .toList();
+
+      _values[deClientsJson] = jsonEncode(clientPayload);
+      _values[dePeopleInvolvedJson] = jsonEncode(peoplePayload);
+
       final inputFieldIds = <String>[
-        ...aboutYouFields.map((e) => e.id),
-        ...aboutClientFields.map((e) => e.id),
+        ...aboutReporterFields.map((e) => e.id),
         ...concernFields.map((e) => e.id),
+        deClientsJson,
+        dePeopleInvolvedJson,
       ].where((id) => id.trim().isNotEmpty).toList();
 
       final eventDate = (_values[deWhenHappened] ?? '').trim().isNotEmpty
           ? _values[deWhenHappened]!.trim()
           : AppUtil.formattedDateTimeIntoString(DateTime.now());
 
-      // Build event payload (should include dataValues in most LODIIS patterns)
       final Events event = FormUtil.getEventPayload(
-        null, // generate uid
+        null,
         mgysdReportProgram,
         mgysdReportProgramStage,
         orgUnit,
         inputFieldIds,
         _values,
         eventDate,
-        null, // TEI null for event-program
+        null,
       );
 
-      // ✅ Safety: if your getEventPayload doesn't attach dataValues, attach them here
       event.dataValues ??= inputFieldIds
           .map((de) {
         final v = (_values[de] ?? '').trim();
@@ -693,7 +1111,6 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
           .whereType<Map<String, dynamic>>()
           .toList();
 
-      // ✅ Save offline (your actual signature)
       await FormUtil.savingEvent(event);
 
       if (!mounted) return;
@@ -712,10 +1129,6 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     }
   }
 
-
-  // -----------------------
-  // BUILD
-  // -----------------------
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -762,7 +1175,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                             const SizedBox(width: 10),
                             const Expanded(
                               child: Text(
-                                'Stage 1: Reporting (Event).\nSaved offline first, then sync to DHIS2 later.\n(Uses option codes for optionSets)',
+                                'Stage 1: Reporting.\nReporter anonymity is recorded, but details remain visible for capture where provided.',
                                 style: TextStyle(
                                   color: Colors.blueGrey,
                                   height: 1.25,
@@ -775,26 +1188,80 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                       const SizedBox(height: 12),
                       _sectionCard(
                         title: 'About the Reporter',
-                        subtitle: 'Who is reporting this case?',
+                        subtitle: 'Capture reporter details and whether they requested anonymity.',
                         icon: Icons.person_outline,
-                        fields: _visibleAboutYouFields,
-                        availableWidth: availableWidth,
+                        children: _buildCompactFields(
+                          fields: aboutReporterFields,
+                          availableWidth: availableWidth,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       _sectionCard(
                         title: 'About the Client',
-                        subtitle: 'Who is the case about?',
+                        subtitle: 'Add one or more clients affected by this concern.',
                         icon: Icons.badge_outlined,
-                        fields: aboutClientFields,
-                        availableWidth: availableWidth,
+                        children: [
+                          ...List.generate(
+                            _clients.length,
+                                (index) => _clientCard(
+                              index,
+                              _clients[index],
+                              availableWidth,
+                            ),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: _addClient,
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add another client'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: widget.color,
+                              side: BorderSide(color: widget.color),
+                              minimumSize: const Size(double.infinity, 44),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 12),
                       _sectionCard(
                         title: 'Why are you concerned?',
-                        subtitle: 'Select the concern details',
+                        subtitle: 'Describe the concern and the nature of the incident.',
                         icon: Icons.report_outlined,
-                        fields: concernFields,
-                        availableWidth: availableWidth,
+                        children: _buildCompactFields(
+                          fields: concernFields,
+                          availableWidth: availableWidth,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _sectionCard(
+                        title: 'Other people involved',
+                        subtitle: 'Add names of any other people involved, if known.',
+                        icon: Icons.group_outlined,
+                        children: [
+                          ...List.generate(
+                            _peopleInvolved.length,
+                                (index) => _personInvolvedCard(
+                              index,
+                              _peopleInvolved[index],
+                              availableWidth,
+                            ),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: _addPersonInvolved,
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add another person involved'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: widget.color,
+                              side: BorderSide(color: widget.color),
+                              minimumSize: const Size(double.infinity, 44),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 14),
                       ElevatedButton(
@@ -814,12 +1281,17 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                               const SizedBox(
                                 width: 18,
                                 height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child:
+                                CircularProgressIndicator(strokeWidth: 2),
                               )
                             else
                               const Icon(Icons.save_outlined),
                             const SizedBox(width: 10),
-                            Text(_submitting ? 'Saving...' : 'Save report offline'),
+                            Text(
+                              _submitting
+                                  ? 'Saving...'
+                                  : 'Save report offline',
+                            ),
                           ],
                         ),
                       ),
