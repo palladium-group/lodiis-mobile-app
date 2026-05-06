@@ -6,6 +6,7 @@ import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_case_lis
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_case_management_home.dart';
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_records_page.dart';
 import 'package:provider/provider.dart';
+import 'package:kb_mobile_app/core/utils/app_bar_util.dart';
 
 class MgysdCaseManagement extends StatefulWidget {
   const MgysdCaseManagement({Key? key}) : super(key: key);
@@ -52,6 +53,19 @@ class _MgysdCaseManagementState extends State<MgysdCaseManagement> {
             ),
           ),
           iconTheme: const IconThemeData(color: Colors.white),
+
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.more_vert),
+              onPressed: () {
+                AppBarUtil.onOpenMoreMenu(
+                  context,
+                  current,
+                  true,
+                );
+              },
+            ),
+          ],
 
           // ✅ Styled TabBar
           bottom: TabBar(

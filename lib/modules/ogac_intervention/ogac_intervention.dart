@@ -18,6 +18,7 @@ import 'package:kb_mobile_app/models/form_auto_save.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/modules/ogac_intervention/pages/ogac_enrollment_form.dart';
 import 'package:kb_mobile_app/modules/ogac_intervention/pages/ogac_intervention_home.dart';
+import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:provider/provider.dart';
 

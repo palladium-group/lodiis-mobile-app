@@ -2,6 +2,7 @@ import 'dart:io' show Platform, exit;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
+import 'package:new_version_plus/model/version_status.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:kb_mobile_app/core/components/app_update_redirect/app_update_action_buttons.dart';

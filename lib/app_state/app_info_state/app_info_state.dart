@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/core/services/app_info_service.dart';
+import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 
 import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
