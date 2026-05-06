@@ -19,6 +19,7 @@ import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/modules/pp_prev_intervention/constants/pp_prev_routes_constant.dart';
 import 'package:kb_mobile_app/modules/pp_prev_intervention/pages/pp_prev_intervention_enrollment_form.dart';
 import 'package:kb_mobile_app/modules/pp_prev_intervention/pages/pp_prev_intervention_home.dart';
+import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:provider/provider.dart';
 
