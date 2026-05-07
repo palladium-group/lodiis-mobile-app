@@ -168,16 +168,18 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
   static const String deClientsJson = 'DE_CLIENTS_JSON';
   static const String dePeopleInvolvedJson = 'DE_PEOPLE_INVOLVED_JSON';
 
+  // Concern-related data elements
   static const String deConcernReason = 'UJIrqEgPMn1';
+  static const String deConcernReasonOther = 'UJIrqEgPMn1_OTHER';
   static const String deIncidentDescription = 'DE_INCIDENT_DESCRIPTION';
-  static const String deNatureOfIncident = 'DE_NATURE_OF_INCIDENT';
   static const String deWhenHappened = 'DE_WHEN_HAPPENED';
+  static const String deIncidentLocation = 'DE_INCIDENT_LOCATION';
 
   final List<MgysdClientEntry> _clients = [];
   final List<MgysdPersonInvolvedEntry> _peopleInvolved = [];
 
-  // New: selected concerns set for multi-select
   final Set<String> _selectedConcernReasons = {};
+  final TextEditingController _concernOtherController = TextEditingController();
 
   List<MgysdFormFieldDef> get aboutReporterFields => const [
     MgysdFormFieldDef(
@@ -279,7 +281,23 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     ),
   ];
 
+  // Updated concernFields order:
+  // 1) Date incident happened (deWhenHappened)
+  // 2) Location (deIncidentLocation)
+  // 3) Concern reason (multi-select)
+  // 4) Incident description
   List<MgysdFormFieldDef> get concernFields => const [
+    MgysdFormFieldDef(
+      id: deWhenHappened,
+      label: 'Date incident happened',
+      type: MgysdFieldType.date,
+    ),
+    MgysdFormFieldDef(
+      id: deIncidentLocation,
+      label: 'Location of incident',
+      type: MgysdFieldType.textShort,
+      maxLen: 120,
+    ),
     MgysdFormFieldDef(
       id: deConcernReason,
       label: 'Concern reason',
@@ -299,19 +317,11 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
         MgysdOption(code: 'FINANCIAL', label: 'Financial exploitation'),
         MgysdOption(code: 'SPECIAL_NEEDS', label: 'Special needs'),
         MgysdOption(code: 'GRIEVANCE', label: 'Grievance'),
-      ],
-    ),
-    MgysdFormFieldDef(
-      id: deNatureOfIncident,
-      label: 'Nature of incident',
-      type: MgysdFieldType.option,
-      requiredField: true,
-      options: [
-        MgysdOption(code: 'SINGLE_INCIDENT', label: 'Single incident'),
-        MgysdOption(code: 'ONGOING_PATTERN', label: 'Ongoing pattern'),
-        MgysdOption(code: 'RECENT_ESCALATION', label: 'Recent escalation'),
-        MgysdOption(code: 'HISTORICAL_CONCERN', label: 'Historical concern'),
-        MgysdOption(code: 'UNKNOWN', label: 'Unknown'),
+        MgysdOption(code: 'MENTAL_HEALTH', label: 'Mental Health'),
+        MgysdOption(code: 'HEALTH', label: 'Health'),
+        MgysdOption(code: 'SUBSTANCE', label: 'Substance abuse'),
+        MgysdOption(code: 'SAFETY_SECURITY', label: 'Safety and Security'),
+        MgysdOption(code: 'OTHER', label: 'Other'),
       ],
     ),
     MgysdFormFieldDef(
@@ -319,11 +329,6 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
       label: 'Describe the incident that has made you concerned',
       type: MgysdFieldType.textLong,
       requiredField: true,
-    ),
-    MgysdFormFieldDef(
-      id: deWhenHappened,
-      label: 'Date incident happened',
-      type: MgysdFieldType.date,
     ),
   ];
 
@@ -357,6 +362,12 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
       );
     }
 
+    // initialize other description if present
+    final otherSaved = (_values[deConcernReasonOther] ?? '').trim();
+    if (otherSaved.isNotEmpty) {
+      _concernOtherController.text = otherSaved;
+    }
+
     _addClient();
     _addPersonInvolved();
   }
@@ -369,6 +380,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     for (final person in _peopleInvolved) {
       person.dispose();
     }
+    _concernOtherController.dispose();
     super.dispose();
   }
 
@@ -535,10 +547,24 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
         if (f.id == deConcernReason) {
           final selected = _selectedConcernReasons;
 
+          // split options into two roughly equal lists, keeping OTHER last
+          final options = f.options;
+          final otherOption =
+          options.isNotEmpty && options.last.code == 'OTHER' ? options.last : null;
+          final coreOptions = otherOption != null ? options.sublist(0, options.length - 1) : options;
+          final mid = (coreOptions.length / 2).ceil();
+          final left = coreOptions.sublist(0, mid);
+          final right = coreOptions.sublist(mid);
+          if (otherOption != null) right.add(otherOption); // ensure OTHER is last in right column
+
           return FormField<Set<String>>(
             initialValue: selected,
             validator: (set) {
+              // avoid calling contains on null
               if (f.requiredField && (set == null || set.isEmpty)) {
+                return 'Required';
+              }
+              if (set != null && set.contains('OTHER') && _concernOtherController.text.trim().isEmpty) {
                 return 'Required';
               }
               return null;
@@ -555,33 +581,162 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                       style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
                     ),
                   ),
-                  // chips
-                  Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
-                    children: f.options.map((o) {
-                      final isSelected = selected.contains(o.code);
-                      return FilterChip(
-                        label: Text(o.label),
-                        selected: isSelected,
-                        selectedColor: widget.color.withOpacity(0.2),
-                        checkmarkColor: widget.color,
-                        onSelected: (val) {
-                          setState(() {
-                            if (val) {
-                              selected.add(o.code);
-                            } else {
-                              selected.remove(o.code);
-                            }
-                            // keep string representation in _values for compatibility
-                            _values[f.id] = selected.join(',');
-                            // update FormField state for validation UI
-                            state.didChange(selected);
-                          });
-                        },
+                  // two-column layout
+                  LayoutBuilder(builder: (context, constraints) {
+                    final twoCols = constraints.maxWidth >= 420;
+                    if (twoCols) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: left.map((o) {
+                                final isSelected = selected.contains(o.code);
+                                return CheckboxListTile(
+                                  value: isSelected,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      if (val == true) {
+                                        selected.add(o.code);
+                                      } else {
+                                        selected.remove(o.code);
+                                      }
+                                      _values[f.id] = selected.join(',');
+                                      state.didChange(selected);
+                                    });
+                                  },
+                                  title: Text(o.label),
+                                  controlAffinity: ListTileControlAffinity.leading,
+                                  dense: true,
+                                  activeColor: widget.color,
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              children: right.map((o) {
+                                final isSelected = selected.contains(o.code);
+                                final isOther = o.code == 'OTHER';
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CheckboxListTile(
+                                      value: isSelected,
+                                      onChanged: (val) {
+                                        setState(() {
+                                          if (val == true) {
+                                            selected.add(o.code);
+                                          } else {
+                                            selected.remove(o.code);
+                                            if (isOther) {
+                                              _concernOtherController.text = '';
+                                              _values[deConcernReasonOther] = '';
+                                            }
+                                          }
+                                          _values[f.id] = selected.join(',');
+                                          state.didChange(selected);
+                                        });
+                                      },
+                                      title: Text(o.label),
+                                      controlAffinity: ListTileControlAffinity.leading,
+                                      dense: true,
+                                      activeColor: widget.color,
+                                    ),
+                                    if (isOther && isSelected)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                                        child: TextFormField(
+                                          controller: _concernOtherController,
+                                          decoration: InputDecoration(
+                                            labelText: 'Please describe',
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            filled: true,
+                                            fillColor: const Color(0xFFF9FBFD),
+                                          ),
+                                          onChanged: (v) {
+                                            _values[deConcernReasonOther] = v.trim();
+                                          },
+                                          validator: (v) {
+                                            if (f.requiredField && selected.contains('OTHER')) {
+                                              if ((v ?? '').trim().isEmpty) return 'Required';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       );
-                    }).toList(),
-                  ),
+                    } else {
+                      // single column for narrow screens: left then right stacked
+                      final all = [...left, ...right];
+                      return Column(
+                        children: all.map((o) {
+                          final isSelected = selected.contains(o.code);
+                          final isOther = o.code == 'OTHER';
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CheckboxListTile(
+                                value: isSelected,
+                                onChanged: (val) {
+                                  setState(() {
+                                    if (val == true) {
+                                      selected.add(o.code);
+                                    } else {
+                                      selected.remove(o.code);
+                                      if (isOther) {
+                                        _concernOtherController.text = '';
+                                        _values[deConcernReasonOther] = '';
+                                      }
+                                    }
+                                    _values[f.id] = selected.join(',');
+                                    state.didChange(selected);
+                                  });
+                                },
+                                title: Text(o.label),
+                                controlAffinity: ListTileControlAffinity.leading,
+                                dense: true,
+                                activeColor: widget.color,
+                              ),
+                              if (isOther && isSelected)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                                  child: TextFormField(
+                                    controller: _concernOtherController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Please describe',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF9FBFD),
+                                    ),
+                                    onChanged: (v) {
+                                      _values[deConcernReasonOther] = v.trim();
+                                    },
+                                    validator: (v) {
+                                      if (f.requiredField && selected.contains('OTHER')) {
+                                        if ((v ?? '').trim().isEmpty) return 'Required';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                            ],
+                          );
+                        }).toList(),
+                      );
+                    }
+                  }),
                   // validation message
                   if (state.hasError)
                     Padding(
@@ -1068,8 +1223,8 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     );
 
     Widget lastNameField = TextFormField(
-      controller: person.roleController, // reused as last name controller
-      decoration: _decoration('Last name'),
+      controller: person.roleController,
+      decoration: _decoration('Role / Relationship'),
       validator: (v) => _requiredValidator(v, requiredField: true),
     );
 
@@ -1084,7 +1239,6 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header showing "Person 1", "Person 2", ...
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
@@ -1096,8 +1250,6 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
               ),
             ),
           ),
-
-          // First and last name on same line when there's enough width
           if (twoCols)
             Row(
               children: [
@@ -1111,10 +1263,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
             const SizedBox(height: 8),
             lastNameField,
           ],
-
           const SizedBox(height: 8),
-
-          // Remove button aligned to the right
           Row(
             children: [
               const Spacer(),
@@ -1131,42 +1280,45 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     );
   }
 
-
   Future<void> _onSave() async {
     if (!_formKey.currentState!.validate()) {
-      // show validation errors
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fix the errors in the form')),
       );
       return;
     }
 
-    setState(() {
-      _submitting = true;
-    });
+    setState(() => _submitting = true);
 
     // ensure concern reasons are stored
     _values[deConcernReason] = _selectedConcernReasons.join(',');
+    _values[deConcernReasonOther] = _concernOtherController.text.trim();
 
     // collect clients and people involved
     final clientsJson = _clients.map((c) => c.toJson()).toList();
     final peopleJson = _peopleInvolved.map((p) => p.toJson()).toList();
 
-    final payload = {
-      'reporter': {
-        for (final f in aboutReporterFields) f.id: _values[f.id] ?? '',
-      },
-      'concerns': {
-        deConcernReason: _values[deConcernReason] ?? '',
-        deNatureOfIncident: _values[deNatureOfIncident] ?? '',
-        deIncidentDescription: _values[deIncidentDescription] ?? '',
-        deWhenHappened: _values[deWhenHappened] ?? '',
-      },
-      'clients': clientsJson,
-      'peopleInvolved': peopleJson,
+    // reporter map
+    final reporterMap = <String, String>{};
+    for (final f in aboutReporterFields) {
+      reporterMap[f.id] = _values[f.id] ?? '';
+    }
+
+    final concernsMap = <String, String>{
+      deWhenHappened: _values[deWhenHappened] ?? '',
+      deIncidentLocation: _values[deIncidentLocation] ?? '',
+      deConcernReason: _values[deConcernReason] ?? '',
+      deConcernReasonOther: _values[deConcernReasonOther] ?? '',
+      deIncidentDescription: _values[deIncidentDescription] ?? '',
     };
 
-    // Simulate save: print to console. Replace with real save logic.
+    final payload = {
+      'reporter': reporterMap,
+      'concerns': concernsMap,
+      'peopleInvolved': peopleJson, // moved people involved before clients in UI
+      'clients': clientsJson,
+    };
+
     debugPrint('MGYSD payload: ${jsonEncode(payload)}');
 
     await Future.delayed(const Duration(milliseconds: 500));
@@ -1213,16 +1365,39 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                     const SizedBox(height: 16),
                     _sectionCard(
                       title: 'Why are you concerned?',
-                      subtitle: 'Describe the concern and the nature of the incident',
+                      subtitle: 'Date, location and reasons for concern',
                       icon: Icons.report_problem,
                       children: [
-                        // Concern fields (multi-select for concern reason)
+                        // Concern fields in the new order: date, location, reasons, description
                         ...concernFields.map((f) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: _buildField(f),
                           );
                         }).toList(),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // People involved section moved before Clients
+                    _sectionCard(
+                      title: 'People involved',
+                      subtitle: 'Other people involved in the incident',
+                      icon: Icons.people,
+                      children: [
+                        ..._peopleInvolved.asMap().entries.map((e) {
+                          final idx = e.key;
+                          final person = e.value;
+                          return _personInvolvedCard(idx, person, contentMax);
+                        }).toList(),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            onPressed: _addPersonInvolved,
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add another person involved'),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -1243,28 +1418,6 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                             onPressed: _addClient,
                             icon: const Icon(Icons.add),
                             label: const Text('Add another client'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _sectionCard(
-                      title: 'People involved',
-                      subtitle: 'Other people involved in the incident',
-                      icon: Icons.people,
-                      children: [
-                        ..._peopleInvolved.asMap().entries.map((e) {
-                          final idx = e.key;
-                          final person = e.value;
-                          return _personInvolvedCard(idx, person, contentMax);
-                        }).toList(),
-                        const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton.icon(
-                            onPressed: _addPersonInvolved,
-                            icon: const Icon(Icons.add),
-                            label: const Text('Add another person involved'),
                           ),
                         ),
                       ],
