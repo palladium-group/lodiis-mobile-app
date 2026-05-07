@@ -31,6 +31,9 @@ import 'package:kb_mobile_app/modules/synchronization/constants/synchronization_
 import 'package:kb_mobile_app/modules/synchronization/synchronization.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_state/mgysd_case_management_list_state/mgysd_case_management_list_state.dart';
+import '../../modules/mgysd_case_management/mgysd_case_management.dart';
+
 class AppBarUtil {
   static void onOpenMoreMenu(
     BuildContext context,
@@ -173,7 +176,12 @@ class AppBarUtil {
     } else if (id == 'pp_prev') {
       await Provider.of<PpPrevInterventionState>(context, listen: false)
           .refreshPpPrevList();
-    } else if (id == 'education') {
+    }
+    else if (id == 'mgysd') {
+      await Provider.of<MgysdCaseManagementListState>(context, listen: false)
+          .refreshMgysdCasesNumber();
+    }
+    else if (id == 'education') {
       await Provider.of<EducationLbseInterventionState>(context, listen: false)
           .refreshEducationLbseList();
       await Provider.of<EducationBursaryInterventionState>(context,
@@ -198,7 +206,10 @@ class AppBarUtil {
                         ? const PpPrevIntervention()
                         : id == 'education'
                             ? const EducationIntervention()
-                            : const DreamsIntervention();
+                            : id == 'mgysd'
+                              ? const MgysdCaseManagement()
+                              : const DreamsIntervention();
+
           },
         ),
       );
