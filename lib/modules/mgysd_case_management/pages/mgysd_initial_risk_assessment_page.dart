@@ -40,6 +40,32 @@ class _MgysdInitialRiskAssessmentPageState
   final TextEditingController _additionalNotesController =
   TextEditingController();
 
+  final TextEditingController _familyBackgroundNotesController =
+  TextEditingController();
+  final TextEditingController _caregiverWellbeingNotesController =
+  TextEditingController();
+  final TextEditingController _extendedFamilyNotesController =
+  TextEditingController();
+  final TextEditingController _clientRelationshipsNotesController =
+  TextEditingController();
+  final TextEditingController _livingCircumstancesNotesController =
+  TextEditingController();
+  final TextEditingController _housingNotesController = TextEditingController();
+  final TextEditingController _physicalHealthNotesController =
+  TextEditingController();
+  final TextEditingController _nutritionNotesController =
+  TextEditingController();
+  final TextEditingController _emotionalHealthNotesController =
+  TextEditingController();
+  final TextEditingController _personalHealthNotesController =
+  TextEditingController();
+  final TextEditingController _supervisionNotesController =
+  TextEditingController();
+  final TextEditingController _educationNotesController =
+  TextEditingController();
+
+
+
   bool _loading = true;
   bool _saving = false;
   String _savedStatus = 'NOT_STARTED';
@@ -121,63 +147,63 @@ class _MgysdInitialRiskAssessmentPageState
   ];
 
   static const List<String> _caregiverWellbeingOptions = [
-    'In good health / stable',
+    'In good health/stable',
     'Concerns but receiving support',
-    'Fragile / inconsistent',
+    'Fragile/inconsistent',
     'Significant issues',
   ];
 
   static const List<String> _relationshipOptions = [
-    'Stable / Good',
+    'Stable/Good',
     'Inconsistent',
-    'Non-existent / Poor',
+    'Non-existent/Poor',
   ];
 
   static const List<String> _livingCircumstancesOptions = [
-    'Stable / Good',
-    'Safe / Okay',
+    'Stable/Good',
+    'Safe/Okay',
     'Inconsistent',
-    'Unstable / Unsafe',
+    'Unstable/Unsafe',
   ];
 
   static const List<String> _housingOptions = [
-    'Stable / Good',
-    'Safe / Sufficient',
+    'Stable/Good',
+    'Safe/Sufficient',
     'Inconsistent',
     'Not habitable',
   ];
 
   static const List<String> _physicalHealthOptions = [
-    'In good health / stable',
-    'Concerns but receiving support',
-    'Fragile / inconsistent',
+    'In good health/stable',
+    'Health/Wellbeing concerns but receiving support',
+    'Fragile/inconsistent',
     'Significant issues',
   ];
 
   static const List<String> _nutritionOptions = [
-    'Stable / Good',
+    'Stable/Good',
     'Inconsistent',
     'Poor',
   ];
 
   static const List<String> _emotionalHealthOptions = [
-    'In good health / stable',
-    'Concerns but receiving support',
-    'Fragile / inconsistent',
-    'Significant issues / poor',
+    'In good health/stable',
+    'Mental or wellbeing concerns but receiving support',
+    'Fragile/inconsistent',
+    'Significant issues/poor',
   ];
 
   static const List<String> _supervisionOptions = [
-    'Well supervised / supported',
+    'Well supervised/supported',
     'Basic support but often left alone',
-    'Significant issues / unsafe supervision',
+    'Significant issues/unsafe supervision',
   ];
 
   static const List<String> _educationOptions = [
-    'Stable / Good',
+    'Stable/Good',
     'Reasonable but inconsistent',
     'Ongoing concerns',
-    'Significant issues / dropout',
+    'Significant issues/dropout',
   ];
 
   @override
@@ -194,6 +220,20 @@ class _MgysdInitialRiskAssessmentPageState
     _riskReasonController.dispose();
     _immediateReferralsController.dispose();
     _additionalNotesController.dispose();
+
+    _familyBackgroundNotesController.dispose();
+    _caregiverWellbeingNotesController.dispose();
+    _extendedFamilyNotesController.dispose();
+    _clientRelationshipsNotesController.dispose();
+    _livingCircumstancesNotesController.dispose();
+    _housingNotesController.dispose();
+    _physicalHealthNotesController.dispose();
+    _nutritionNotesController.dispose();
+    _emotionalHealthNotesController.dispose();
+    _personalHealthNotesController.dispose();
+    _supervisionNotesController.dispose();
+    _educationNotesController.dispose();
+
     super.dispose();
   }
 
@@ -262,16 +302,27 @@ class _MgysdInitialRiskAssessmentPageState
       'emergencyActionsTaken': _emergencyActionsTaken,
       'servicesAccessed': _servicesAccessed,
       'familyBackground': _familyBackground,
+      'familyBackgroundNotes': _familyBackgroundNotesController.text.trim(),
       'caregiverWellbeing': _caregiverWellbeing,
+      'caregiverWellbeingNotes': _caregiverWellbeingNotesController.text.trim(),
       'extendedFamilyRelationships': _extendedFamilyRelationships,
+      'extendedFamilyNotes': _extendedFamilyNotesController.text.trim(),
       'clientRelationships': _clientRelationships,
+      'clientRelationshipsNotes': _clientRelationshipsNotesController.text.trim(),
       'livingCircumstances': _livingCircumstances,
+      'livingCircumstancesNotes': _livingCircumstancesNotesController.text.trim(),
       'housing': _housing,
+      'housingNotes': _housingNotesController.text.trim(),
       'physicalHealth': _physicalHealth,
+      'physicalHealthNotes': _physicalHealthNotesController.text.trim(),
       'nutrition': _nutrition,
+      'nutritionNotes': _nutritionNotesController.text.trim(),
       'emotionalHealth': _emotionalHealth,
+      'emotionalHealthNotes': _emotionalHealthNotesController.text.trim(),
       'supervision': _supervision,
+      'supervisionNotes': _supervisionNotesController.text.trim(),
       'education': _education,
+      'educationNotes': _educationNotesController.text.trim(),
       'riskLevel': _riskLevel,
       'riskReason': _riskReasonController.text.trim(),
       'immediateReferrals': _immediateReferralsController.text.trim(),
@@ -334,56 +385,75 @@ class _MgysdInitialRiskAssessmentPageState
           payload['familyBackground'],
           _familyBackgroundOptions,
         );
+        _familyBackgroundNotesController.text =
+            (payload['familyBackgroundNotes'] ?? '').toString();
 
         _caregiverWellbeing = _normalizeDropdownValue(
           payload['caregiverWellbeing'],
           _caregiverWellbeingOptions,
         );
+        _caregiverWellbeingNotesController.text =
+            (payload['caregiverWellbeingNotes'] ?? '').toString();
 
         _extendedFamilyRelationships = _normalizeDropdownValue(
           payload['extendedFamilyRelationships'],
           _relationshipOptions,
         );
+        _extendedFamilyNotesController.text =
+            (payload['extendedFamilyNotes'] ?? '').toString();
 
         _clientRelationships = _normalizeDropdownValue(
           payload['clientRelationships'],
           _relationshipOptions,
         );
+        _clientRelationshipsNotesController.text =
+            (payload['clientRelationshipsNotes'] ?? '').toString();
 
         _livingCircumstances = _normalizeDropdownValue(
           payload['livingCircumstances'],
           _livingCircumstancesOptions,
         );
+        _livingCircumstancesNotesController.text =
+            (payload['livingCircumstancesNotes'] ?? '').toString();
 
-        _housing = _normalizeDropdownValue(
-          payload['housing'],
-          _housingOptions,
-        );
+        _housing = _normalizeDropdownValue(payload['housing'], _housingOptions);
+        _housingNotesController.text =
+            (payload['housingNotes'] ?? '').toString();
 
         _physicalHealth = _normalizeDropdownValue(
           payload['physicalHealth'],
           _physicalHealthOptions,
         );
+        _physicalHealthNotesController.text =
+            (payload['physicalHealthNotes'] ?? '').toString();
 
         _nutrition = _normalizeDropdownValue(
           payload['nutrition'],
           _nutritionOptions,
         );
+        _nutritionNotesController.text =
+            (payload['nutritionNotes'] ?? '').toString();
 
         _emotionalHealth = _normalizeDropdownValue(
           payload['emotionalHealth'],
           _emotionalHealthOptions,
         );
+        _emotionalHealthNotesController.text =
+            (payload['emotionalHealthNotes'] ?? '').toString();
 
         _supervision = _normalizeDropdownValue(
           payload['supervision'],
           _supervisionOptions,
         );
+        _supervisionNotesController.text =
+            (payload['supervisionNotes'] ?? '').toString();
 
         _education = _normalizeDropdownValue(
           payload['education'],
           _educationOptions,
         );
+        _educationNotesController.text =
+            (payload['educationNotes'] ?? '').toString();
 
         _riskLevel = (payload['riskLevel'] ?? '').toString().trim();
         _riskReasonController.text = (payload['riskReason'] ?? '').toString();
@@ -618,6 +688,56 @@ class _MgysdInitialRiskAssessmentPageState
     );
   }
 
+  Widget _rapidRiskItem({
+    required String title,
+    required String? value,
+    required List<String> options,
+    required void Function(String?) onChanged,
+    required TextEditingController notesController,
+    bool requiredField = true,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FBFD),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.14)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            requiredField ? '$title *' : title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _dropdownField(
+            label: 'Initial rapid strengths and risks assessed',
+            value: value,
+            items: options,
+            onChanged: onChanged,
+            validator: requiredField
+                ? (selected) => selected == null || selected.trim().isEmpty
+                ? 'Please select an option'
+                : null
+                : null,
+          ),
+          _textField(
+            notesController,
+            'Notes / supporting evidence',
+            maxLines: 3,
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
   Widget _binaryChoice({
     required String label,
     required bool? value,
@@ -802,37 +922,8 @@ class _MgysdInitialRiskAssessmentPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle(
-                    'Assessment context',
-                    'Capture when the assessment was done, by whom, and how the concern was raised.',
-                  ),
-                  const SizedBox(height: 12),
-                  _textField(
-                    _assessmentDateController,
-                    'Assessment date',
-                    readOnly: true,
-                    onTap: () => _pickDate(_assessmentDateController),
-                    validator: (value) =>
-                    (value == null || value.trim().isEmpty)
-                        ? 'Assessment date is required'
-                        : null,
-                  ),
-                  _textField(
-                    _socialWorkerController,
-                    'Social worker',
-                    validator: (value) =>
-                    (value == null || value.trim().isEmpty)
-                        ? 'Social worker is required'
-                        : null,
-                  ),
-                  _dropdownField(
-                    label: 'Source of report / concern',
-                    value: _reportSource,
-                    items: _reportSourceOptions,
-                    onChanged: (value) {
-                      setState(() {
-                        _reportSource = value;
-                      });
-                    },
+                    'Initial rapid risk assessment',
+                    'Where emergency action is urgently required to safeguard a child/person with disability and elderly person/client life or safety, this information can be identified after taking action. It is important to note as much information as possible to inform the risk assessment and decision.',
                   ),
                 ],
               ),
@@ -842,187 +933,170 @@ class _MgysdInitialRiskAssessmentPageState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(
-                    'Emergency actions already taken',
-                    'Capture urgent actions and immediate support already provided.',
+                  // _buildSectionTitle(
+                  //   'Part 4: Initial rapid risk assessment',
+                  //   'Where emergency action is urgently required to safeguard a child / person with disability / elderly person / client life or safety, this information can be identified after taking action. It is important to note as much information as possible to inform the risk assessment and decision. See guidance notes for detail on these questions.',
+                  // ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Family profile and impact on client',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
                   ),
                   const SizedBox(height: 12),
-                  _binaryChoice(
-                    label: 'Has any emergency action already been taken?',
-                    value: _hasActionTaken,
-                    onChanged: (value) {
-                      setState(() {
-                        _hasActionTaken = value;
-                        if (value == true) {
-                          _noActionReason = null;
-                        } else if (value == false) {
-                          _emergencyActionsTaken.clear();
-                          _servicesAccessed.clear();
-                        }
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  if (_hasActionTaken == true) ...[
-                    _multiSelectSection(
-                      title: 'What action was taken?',
-                      options: _emergencyActionOptions,
-                      selectedValues: _emergencyActionsTaken,
-                    ),
-                    _multiSelectSection(
-                      title: 'Services accessed',
-                      options: _servicesAccessedOptions,
-                      selectedValues: _servicesAccessed,
-                    ),
-                  ],
-                  if (_hasActionTaken == false)
-                    _dropdownField(
-                      label: 'Why was no action taken yet?',
-                      value: _noActionReason,
-                      items: _noActionReasonOptions,
-                      onChanged: (value) {
-                        setState(() {
-                          _noActionReason = value;
-                        });
-                      },
-                    ),
-                ],
-              ),
-            ),
-
-            _surface(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSectionTitle(
-                    'Family and household context',
-                    'Use guided options for the main household risk areas.',
-                  ),
-                  const SizedBox(height: 12),
-                  _dropdownField(
-                    label: 'Family background and composition',
+                  _rapidRiskItem(
+                    title: 'Family background and composition',
                     value: _familyBackground,
-                    items: _familyBackgroundOptions,
+                    options: _familyBackgroundOptions,
                     onChanged: (value) {
                       setState(() {
                         _familyBackground = value;
                       });
                     },
+                    notesController: _familyBackgroundNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Parent / caregiver / guardian health and wellbeing',
+                  _rapidRiskItem(
+                    title:
+                    'Parent/caregiver/guardian/ personal assistant health & wellbeing',
                     value: _caregiverWellbeing,
-                    items: _caregiverWellbeingOptions,
+                    options: _caregiverWellbeingOptions,
                     onChanged: (value) {
                       setState(() {
                         _caregiverWellbeing = value;
                       });
                     },
+                    notesController: _caregiverWellbeingNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Extended family relationships',
+                  _rapidRiskItem(
+                    title: 'Extended family relationships',
                     value: _extendedFamilyRelationships,
-                    items: _relationshipOptions,
+                    options: _relationshipOptions,
                     onChanged: (value) {
                       setState(() {
                         _extendedFamilyRelationships = value;
                       });
                     },
+                    notesController: _extendedFamilyNotesController,
                   ),
-                  _dropdownField(
-                    label:
-                    'Client relationships with parents / siblings / household members',
+                  _rapidRiskItem(
+                    title:
+                    'Client relationships with household members',
                     value: _clientRelationships,
-                    items: _relationshipOptions,
+                    options: _relationshipOptions,
                     onChanged: (value) {
                       setState(() {
                         _clientRelationships = value;
                       });
                     },
+                    notesController: _clientRelationshipsNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Present living circumstances',
+                  _rapidRiskItem(
+                    title: 'Present living circumstances',
                     value: _livingCircumstances,
-                    items: _livingCircumstancesOptions,
+                    options: _livingCircumstancesOptions,
                     onChanged: (value) {
                       setState(() {
                         _livingCircumstances = value;
                       });
                     },
+                    notesController: _livingCircumstancesNotesController,
                   ),
-                ],
-              ),
-            ),
 
-            _surface(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSectionTitle(
-                    'Immediate client risk picture',
-                    'Capture structured ratings for the client’s current condition.',
+                  const Text(
+                    'Physical Environment',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
                   ),
                   const SizedBox(height: 12),
-                  _dropdownField(
-                    label: 'Housing / physical environment',
+
+
+                  _rapidRiskItem(
+                    title: 'Housing (type, size, ownership, water & sanitation and physical accessibility)',
                     value: _housing,
-                    items: _housingOptions,
+                    options: _housingOptions,
                     onChanged: (value) {
                       setState(() {
                         _housing = value;
                       });
                     },
+                    notesController: _housingNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Client physical health',
+
+                  const Text(
+                    "Client's physical and social circumstances",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  _rapidRiskItem(
+                    title:
+                    "Client's Physical health",
                     value: _physicalHealth,
-                    items: _physicalHealthOptions,
+                    options: _physicalHealthOptions,
                     onChanged: (value) {
                       setState(() {
                         _physicalHealth = value;
                       });
                     },
+                    notesController: _physicalHealthNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Client nutritional state',
+
+                  _rapidRiskItem(
+                    title: "Client's nutritional state",
                     value: _nutrition,
-                    items: _nutritionOptions,
+                    options: _nutritionOptions,
                     onChanged: (value) {
                       setState(() {
                         _nutrition = value;
                       });
                     },
+                    notesController: _nutritionNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Client emotional health',
+                  _rapidRiskItem(
+                    title: "Client's emotional health",
                     value: _emotionalHealth,
-                    items: _emotionalHealthOptions,
+                    options: _emotionalHealthOptions,
                     onChanged: (value) {
                       setState(() {
                         _emotionalHealth = value;
                       });
                     },
+                    notesController: _emotionalHealthNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Supervision and support of client',
+
+                  _rapidRiskItem(
+                    title: 'Supervision and support',
                     value: _supervision,
-                    items: _supervisionOptions,
+                    options: _supervisionOptions,
                     onChanged: (value) {
                       setState(() {
                         _supervision = value;
                       });
                     },
+                    notesController: _supervisionNotesController,
                   ),
-                  _dropdownField(
-                    label: 'Education / learning / attendance',
+
+                  _rapidRiskItem(
+                    title:
+                    'Education (abilities / problems, achievement)',
                     value: _education,
-                    items: _educationOptions,
+                    options: _educationOptions,
                     onChanged: (value) {
                       setState(() {
                         _education = value;
                       });
                     },
+                    notesController: _educationNotesController,
                   ),
+
+
                 ],
               ),
             ),
@@ -1052,11 +1126,11 @@ class _MgysdInitialRiskAssessmentPageState
                     'Immediate referrals made',
                     maxLines: 3,
                   ),
-                  _multiSelectSection(
-                    title: 'Immediate next steps',
-                    options: _nextStepOptions,
-                    selectedValues: _nextSteps,
-                  ),
+                  // _multiSelectSection(
+                  //   title: 'Immediate next steps',
+                  //   options: _nextStepOptions,
+                  //   selectedValues: _nextSteps,
+                  // ),
                   _textField(
                     _additionalNotesController,
                     'Additional notes',
@@ -1065,6 +1139,52 @@ class _MgysdInitialRiskAssessmentPageState
                 ],
               ),
             ),
+
+            // _surface(
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       _buildSectionTitle(
+            //         'Decision on level of risk and next steps',
+            //         'Identify the level of risk based on the information collected and record the reason for the decision.',
+            //       ),
+            //       const SizedBox(height: 12),
+            //       _riskLevelField(),
+            //       const SizedBox(height: 10),
+            //       const Text(
+            //         'No/low risk: Monitor the situation through local contact and refer where necessary.\n'
+            //             'Medium/high risk: Further investigation required. Client is in a safe space while further investigation is done.\n'
+            //             'High risk: Further intervention and support required while client is in a safe space.',
+            //         style: TextStyle(
+            //           color: Colors.blueGrey,
+            //           fontSize: 12.5,
+            //           height: 1.35,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 12),
+            //       _textField(
+            //         _riskReasonController,
+            //         'Briefly explain your observations and reason for selecting option',
+            //         maxLines: 4,
+            //         validator: (value) =>
+            //         (value == null || value.trim().isEmpty)
+            //             ? 'Please explain the selected risk level'
+            //             : null,
+            //       ),
+            //       _textField(
+            //         _immediateReferralsController,
+            //         'Note any referrals made / further action required using the referral form',
+            //         maxLines: 3,
+            //       ),
+            //       _textField(
+            //         _additionalNotesController,
+            //         'Additional notes',
+            //         maxLines: 3,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+
 
             Row(
               children: [
