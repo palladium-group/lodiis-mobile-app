@@ -1116,6 +1116,16 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                   }
                 },
               ),
+
+              Divider(height: 1, color: Colors.blueGrey.withOpacity(0.12)),
+              _actionTile(
+                icon: Icons.volunteer_activism_outlined,
+                title: 'Service Provision',
+                subtitle: 'Capture services provided to the client.',
+                status: data.serviceProvisionStatus,
+                onTap: () => _openServiceProvision(data),
+              ),
+
               Divider(height: 1, color: Colors.blueGrey.withValues(alpha: 0.12)),
               _actionTile(
                 icon: Icons.handshake_outlined,
