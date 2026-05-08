@@ -573,5 +573,5 @@ class _MgysdReferralPageState extends State<MgysdReferralPage> {
       ),
     );
   }
-  
+
 }
