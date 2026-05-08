@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/mgysd_case_management_list_state/mgysd_case_management_list_state.dart';
 import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
@@ -23,23 +24,25 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
 
   List<MgysdCase> _cases = [];
   List<MgysdCase> _filtered = [];
-
   bool _loading = true;
 
-  static const String mgysdTrackerProgramId = 'MGYSD_TRACKER_PROGRAM';
+  static const String mgysdCaseManagementProgramId =
+      'MGYSD_CASE_MANAGEMENT_PROGRAM';
 
-  // Shared person attrs
   static const String attFirstName = 'ATTR_FIRSTNAME';
   static const String attLastName = 'ATTR_LASTNAME';
   static const String attPhone = 'ATTR_PHONE';
+  static const String attClientCategory = 'ATTR_CLIENT_CATEGORY';
+  static const String attSex = 'ATTR_SEX';
+  static const String attAge = 'ATTR_AGE';
 
-  // Legacy fallback attrs
+  static const String attHouseholdFileNumber = 'ATTR_HOUSEHOLD_FILE_NUMBER';
+  static const String attHouseholdDistrict = 'ATTR_HOUSEHOLD_DISTRICT';
+  static const String attHouseholdVillage = 'ATTR_HOUSEHOLD_VILLAGE';
+
   static const String legacyAttPersonFirstName = 'ATTR_P_FIRSTNAME';
   static const String legacyAttPersonLastName = 'ATTR_P_LASTNAME';
   static const String legacyAttPersonPhone = 'ATTR_P_PHONE';
-
-  // Household attrs
-  static const String attHouseholdDistrict = 'ATTR_HOUSEHOLD_DISTRICT';
 
   @override
   void initState() {
@@ -60,9 +63,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
 
   Future<Database> _db() async {
     final dbClient = await OfflineDbProvider().db;
-    if (dbClient == null) {
-      throw Exception('Offline DB not initialized');
-    }
+    if (dbClient == null) throw Exception('Offline DB not initialized');
     return dbClient;
   }
 
@@ -78,13 +79,12 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
     );
 
     final Map<String, String> map = {};
-    for (final r in rows) {
-      final att = (r['attribute'] ?? '').toString();
-      final val = (r['value'] ?? '').toString();
-      if (att.isNotEmpty) {
-        map[att] = val;
-      }
+    for (final row in rows) {
+      final att = (row['attribute'] ?? '').toString();
+      final val = (row['value'] ?? '').toString();
+      if (att.isNotEmpty) map[att] = val;
     }
+
     return map;
   }
 
@@ -100,43 +100,41 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
     return attrs[attPhone] ?? attrs[legacyAttPersonPhone] ?? '';
   }
 
-  Future<String?> _getPrimaryClientTei(Database db, String householdTei) async {
+  Future<String?> _getHouseholdForClient(Database db, String clientTei) async {
     final rows = await db.query(
       'mgysd_household_member',
-      columns: ['memberTei', 'memberRole', 'isPrimaryClient'],
-      where: 'householdTei = ?',
-      whereArgs: [householdTei],
+      columns: ['householdTei', 'memberTei', 'memberRole', 'isPrimaryClient'],
+      where: 'memberTei = ?',
+      whereArgs: [clientTei],
+      limit: 1,
     );
 
     if (rows.isEmpty) return null;
 
-    for (final row in rows) {
-      final isPrimary =
-          (row['isPrimaryClient'] ?? '').toString().toLowerCase() == 'true';
-      final role = (row['memberRole'] ?? '').toString().toUpperCase();
-      final memberTei = (row['memberTei'] ?? '').toString().trim();
+    final householdTei = (rows.first['householdTei'] ?? '').toString().trim();
+    return householdTei.isEmpty ? null : householdTei;
+  }
 
-      if (memberTei.isEmpty) continue;
-      if (isPrimary || role == 'CLIENT') {
-        return memberTei;
-      }
+  String _prettyClientCategory(String value) {
+    switch (value.toUpperCase()) {
+      case 'CHILD':
+        return 'Child';
+      case 'ADULT_ELDERLY_PERSON':
+        return 'Adult / Elderly';
+      default:
+        return value;
     }
-
-    final memberTei = (rows.first['memberTei'] ?? '').toString().trim();
-    return memberTei.isEmpty ? null : memberTei;
   }
 
   Future<void> _loadEnrolledCases() async {
-    setState(() {
-      _loading = true;
-    });
+    setState(() => _loading = true);
 
     final db = await _db();
 
     final enrollmentRows = await db.query(
       'enrollment',
       where: 'program = ?',
-      whereArgs: [mgysdTrackerProgramId],
+      whereArgs: [mgysdCaseManagementProgramId],
       orderBy: 'enrollmentDate DESC',
     );
 
@@ -144,37 +142,43 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
 
     for (final row in enrollmentRows) {
       final enrollmentId = (row['enrollment'] ?? '').toString().trim();
-      final householdTei =
-      (row['trackedEntityInstance'] ?? '').toString().trim();
+      final clientTei = (row['trackedEntityInstance'] ?? '').toString().trim();
       final status = (row['status'] ?? 'ACTIVE').toString().trim();
       final enrollmentDate = (row['enrollmentDate'] ?? '').toString().trim();
 
-      if (enrollmentId.isEmpty || householdTei.isEmpty) continue;
+      if (enrollmentId.isEmpty || clientTei.isEmpty) continue;
 
-      final householdAttrs = await _loadTeiAttributes(db, householdTei);
-      final district = (householdAttrs[attHouseholdDistrict] ?? '').trim();
+      final clientAttrs = await _loadTeiAttributes(db, clientTei);
 
-      final primaryClientTei = await _getPrimaryClientTei(db, householdTei);
+      final firstName = _readFirstName(clientAttrs).trim();
+      final lastName = _readLastName(clientAttrs).trim();
+      final phone = _readPhone(clientAttrs).trim();
+      final category =
+      _prettyClientCategory((clientAttrs[attClientCategory] ?? '').trim());
+      final sex = (clientAttrs[attSex] ?? '').trim();
+      final age = (clientAttrs[attAge] ?? '').trim();
 
-      String fullName = '(No primary client)';
-      String phone = '';
+      String fullName = ('$firstName $lastName').trim();
+      if (fullName.isEmpty) fullName = '(No client name)';
 
-      if (primaryClientTei != null && primaryClientTei.isNotEmpty) {
-        final personAttrs = await _loadTeiAttributes(db, primaryClientTei);
-        final firstName = _readFirstName(personAttrs).trim();
-        final lastName = _readLastName(personAttrs).trim();
-        phone = _readPhone(personAttrs).trim();
+      final householdTei = await _getHouseholdForClient(db, clientTei);
+      String district = '';
+      String village = '';
+      String fileNumber = '';
 
-        final name = ('$firstName $lastName').trim();
-        if (name.isNotEmpty) {
-          fullName = name;
-        }
+      if (householdTei != null && householdTei.isNotEmpty) {
+        final householdAttrs = await _loadTeiAttributes(db, householdTei);
+        district = (householdAttrs[attHouseholdDistrict] ?? '').trim();
+        village = (householdAttrs[attHouseholdVillage] ?? '').trim();
+        fileNumber = (householdAttrs[attHouseholdFileNumber] ?? '').trim();
       }
+
+      final displayCaseNo = fileNumber.isNotEmpty ? fileNumber : enrollmentId;
 
       list.add(
         MgysdCase(
           id: enrollmentId,
-          caseNo: enrollmentId,
+          caseNo: displayCaseNo,
           fullName: fullName,
           district: district,
           status: status,
@@ -202,6 +206,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
 
   void _filter(String q) {
     final query = q.trim().toLowerCase();
+
     setState(() {
       _filtered = query.isEmpty
           ? _cases
@@ -209,7 +214,8 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
         return c.caseNo.toLowerCase().contains(query) ||
             c.fullName.toLowerCase().contains(query) ||
             c.district.toLowerCase().contains(query) ||
-            c.status.toLowerCase().contains(query);
+            c.status.toLowerCase().contains(query) ||
+            (c.phone ?? '').toLowerCase().contains(query);
       }).toList();
     });
   }
@@ -229,7 +235,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
   void _onAddCase() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Use "Report Case" or "Enroll Household Case" workflow'),
+        content: Text('Use "Report Case" or "Enroll Client Case" workflow'),
       ),
     );
   }
@@ -255,9 +261,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
       decoration: BoxDecoration(
         color: widget.color.withOpacity(0.10),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: widget.color.withOpacity(0.20),
-        ),
+        border: Border.all(color: widget.color.withOpacity(0.20)),
       ),
       child: Text(
         label,
@@ -266,6 +270,31 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
           fontSize: 12,
           fontWeight: FontWeight.w700,
         ),
+      ),
+    );
+  }
+
+  Widget _infoChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.blueGrey.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: Colors.blueGrey),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.blueGrey,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -289,10 +318,8 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
             icon: const Icon(Icons.close),
           )
               : null,
-          hintText: 'Search household cases',
-          hintStyle: const TextStyle(
-            color: Colors.blueGrey,
-          ),
+          hintText: 'Search client cases',
+          hintStyle: const TextStyle(color: Colors.blueGrey),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 14,
@@ -328,10 +355,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
           CircleAvatar(
             radius: 22,
             backgroundColor: widget.color.withOpacity(0.14),
-            child: Icon(
-              Icons.home_work_outlined,
-              color: widget.color,
-            ),
+            child: Icon(Icons.folder_shared_outlined, color: widget.color),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -339,7 +363,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Household Cases',
+                  'Client Case Management',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
@@ -375,7 +399,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
         SizedBox(height: 16),
         Center(
           child: Text(
-            'Loading cases...',
+            'Loading client cases...',
             style: TextStyle(color: Colors.blueGrey),
           ),
         ),
@@ -401,7 +425,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
         const SizedBox(height: 16),
         const Center(
           child: Text(
-            'No household cases found',
+            'No client cases found',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -411,7 +435,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
         const SizedBox(height: 8),
         const Center(
           child: Text(
-            'Pull down to refresh or use the case reporting and enrollment workflow.',
+            'Pull down to refresh or create a new client case intake.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.blueGrey,
@@ -442,7 +466,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
                   radius: 24,
                   backgroundColor: widget.color.withOpacity(0.12),
                   child: Icon(
-                    Icons.home_work_outlined,
+                    Icons.person_outline,
                     color: widget.color,
                   ),
                 ),
@@ -460,7 +484,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        item.caseNo,
+                        'File / Case: ${item.caseNo}',
                         style: const TextStyle(
                           fontSize: 12.5,
                           color: Colors.blueGrey,
@@ -476,45 +500,22 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
                             _infoChip(Icons.place_outlined, item.district),
                           if ((item.phone ?? '').trim().isNotEmpty)
                             _infoChip(Icons.phone_outlined, item.phone!.trim()),
+                          if (item.enrollmentDate!.trim().isNotEmpty)
+                            _infoChip(
+                              Icons.event_outlined,
+                              item.enrollmentDate!.trim(),
+                            ),
                         ],
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Icon(
-                  Icons.chevron_right,
-                  color: Colors.blueGrey,
-                ),
+                const Icon(Icons.chevron_right, color: Colors.blueGrey),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _infoChip(IconData icon, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.blueGrey.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: Colors.blueGrey),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.blueGrey,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -544,8 +545,7 @@ class _MgysdCaseListPageState extends State<MgysdCaseListPage> {
                 padding: const EdgeInsets.only(bottom: 90, top: 4),
                 itemCount: _filtered.length,
                 itemBuilder: (_, index) {
-                  final item = _filtered[index];
-                  return _buildCaseCard(item);
+                  return _buildCaseCard(_filtered[index]);
                 },
               ),
             ),
