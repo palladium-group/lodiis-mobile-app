@@ -22,6 +22,8 @@ class OfflineDbProvider {
     "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, monitoringDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
     "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
 
+    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, serviceDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
+
     "CREATE TABLE IF NOT EXISTS current_user (id TEXT PRIMARY KEY, name TEXT, username TEXT, password TEXT , implementingPartner TEXT ,isLogin INTEGER, subImplementingPartner TEXT, phoneNumber TEXT, email TEXT, userRoles TEXT, userGroups TEXT, hasPreviousSuccessLogin TEXT)",
     "CREATE TABLE IF NOT EXISTS current_user_ou (id TEXT PRIMARY KEY, userId TEXT)",
     "CREATE TABLE IF NOT EXISTS current_user_program (id TEXT PRIMARY KEY, userId TEXT)",
@@ -61,6 +63,8 @@ class OfflineDbProvider {
     "CREATE TABLE IF NOT EXISTS mgysd_referral (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, referralDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
     "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, monitoringDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
     "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, serviceDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
   ];
 
   Future<Database?> get db async {
