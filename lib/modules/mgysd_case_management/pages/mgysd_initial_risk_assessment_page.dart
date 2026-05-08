@@ -922,7 +922,7 @@ class _MgysdInitialRiskAssessmentPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle(
-                    'Initial rapid risk assessment',
+                    'Part 4: Initial rapid risk assessment',
                     'Where emergency action is urgently required to safeguard a child/person with disability and elderly person/client life or safety, this information can be identified after taking action. It is important to note as much information as possible to inform the risk assessment and decision.',
                   ),
                 ],
@@ -1106,7 +1106,7 @@ class _MgysdInitialRiskAssessmentPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle(
-                    'Risk decision and next steps',
+                    'Part 5: Risk decision and next steps',
                     'Classify the level of risk and record why.',
                   ),
                   const SizedBox(height: 12),
