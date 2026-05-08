@@ -6,6 +6,7 @@ import 'package:kb_mobile_app/modules/mgysd_case_management/models/mgysd_case.da
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_care_plan_page.dart';
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_initial_risk_assessment_page.dart';
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_social_investigation_page.dart';
+import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_service_provision_page.dart';
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_referral_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -85,6 +86,7 @@ class _CaseDetailData {
   final String carePlanStatus;
   final String monitoringStatus;
   final String referralStatus;
+  final String serviceProvisionStatus;
 
   const _CaseDetailData({
     required this.household,
@@ -95,6 +97,7 @@ class _CaseDetailData {
     required this.carePlanStatus,
     required this.monitoringStatus,
     required this.referralStatus,
+    required this.serviceProvisionStatus,
   });
 }
 
@@ -474,6 +477,12 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       widget.mgysdCase.id,
     );
 
+    final serviceProvisionStatus = await _readFormStatus(
+      db,
+      'mgysd_service_provision',
+      widget.mgysdCase.id,
+    );
+
     if (householdTei == null) {
       return _CaseDetailData(
         household: null,
@@ -484,6 +493,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
         carePlanStatus: carePlanStatus,
         monitoringStatus: monitoringStatus,
         referralStatus: referralStatus,
+        serviceProvisionStatus: serviceProvisionStatus,
       );
     }
 
@@ -508,6 +518,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       carePlanStatus: carePlanStatus,
       monitoringStatus: monitoringStatus,
       referralStatus: referralStatus,
+      serviceProvisionStatus: serviceProvisionStatus,
     );
   }
 
@@ -587,6 +598,22 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       context,
       MaterialPageRoute(
         builder: (_) => MgysdCarePlanPage(
+          color: widget.color,
+          mgysdCase: widget.mgysdCase,
+          householdTei: data.household?.tei,
+          householdName: data.household?.name,
+          clientName: data.primaryClient?.fullName,
+        ),
+      ),
+    );
+    await _refreshAll();
+  }
+
+  Future<void> _openServiceProvision(_CaseDetailData data) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MgysdServiceProvisionPage(
           color: widget.color,
           mgysdCase: widget.mgysdCase,
           householdTei: data.household?.tei,
@@ -1133,6 +1160,9 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                   }
                 },
               ),
+
+
+
             ],
           ),
         ),
@@ -1269,6 +1299,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                   initialRiskStatus: 'NOT_STARTED',
                   socialInvestigationStatus: 'NOT_STARTED',
                   carePlanStatus: 'NOT_STARTED',
+                  serviceProvisionStatus: 'NOT_STARTED',
                   monitoringStatus: 'NOT_STARTED',
                   referralStatus: 'NOT_STARTED',
                 );
