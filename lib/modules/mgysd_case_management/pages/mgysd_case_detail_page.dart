@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
@@ -7,6 +8,7 @@ import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_initial_
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_social_investigation_page.dart';
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_service_provision_page.dart';
 import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_referral_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MgysdCaseDetailPage extends StatefulWidget {
@@ -216,7 +218,10 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
     return attrs[attDob] ?? attrs[legacyAttPersonDob] ?? '';
   }
 
-  Future<_HouseholdInfo?> _loadHousehold(Database db, String householdTei) async {
+  Future<_HouseholdInfo?> _loadHousehold(
+      Database db,
+      String householdTei,
+      ) async {
     final attrs = await _getAttributes(db, householdTei);
 
     return _HouseholdInfo(
@@ -274,22 +279,166 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
     return members;
   }
 
+  String _normalizeFormStatus(String status) {
+    final raw = status.trim().toUpperCase();
+
+    if (raw.isEmpty) return 'NOT_STARTED';
+
+    if (raw == 'COMPLETED' || raw == 'COMPLETE' || raw == 'DONE') {
+      return 'COMPLETED';
+    }
+
+    // Draft must display as In progress.
+    if (raw == 'DRAFT' ||
+        raw == 'IN_PROGRESS' ||
+        raw == 'IN PROGRESS' ||
+        raw == 'IN-PROGRESS' ||
+        raw == 'ACTIVE' ||
+        raw == 'STARTED') {
+      return 'IN_PROGRESS';
+    }
+
+    if (raw == 'NOT_STARTED' || raw == 'NOT STARTED' || raw == 'PENDING') {
+      return 'NOT_STARTED';
+    }
+
+    if (raw.contains('COMPLETE')) {
+      return 'COMPLETED';
+    }
+
+    return raw;
+  }
+
+  Future<String> _readCarePlanStatusFallback(String caseId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // Draft must win over older completed data.
+      final draftCarePlan = prefs.getString('careplan_draft_$caseId');
+
+      if (draftCarePlan != null && draftCarePlan.trim().isNotEmpty) {
+        return 'IN_PROGRESS';
+      }
+
+      final directStatus = prefs.getString('careplan_status_$caseId') ??
+          prefs.getString('care_plan_status_$caseId');
+
+      if (directStatus != null && directStatus.trim().isNotEmpty) {
+        final normalized = _normalizeFormStatus(directStatus);
+
+        if (normalized != 'NOT_STARTED') {
+          return normalized;
+        }
+      }
+
+      final progressJson = prefs.getString('case_progress_$caseId');
+
+      if (progressJson != null && progressJson.trim().isNotEmpty) {
+        try {
+          final decoded = jsonDecode(progressJson);
+
+          if (decoded is Map) {
+            final progressStatus = (decoded['carePlanStatus'] ??
+                decoded['care_plan_status'] ??
+                decoded['carePlan'] ??
+                decoded['care_plan'])
+                ?.toString();
+
+            if (progressStatus != null && progressStatus.trim().isNotEmpty) {
+              final normalized = _normalizeFormStatus(progressStatus);
+
+              if (normalized != 'NOT_STARTED') {
+                return normalized;
+              }
+            }
+          }
+        } catch (_) {}
+      }
+
+      final directCompleted = prefs.getBool('careplan_completed_$caseId') ??
+          prefs.getBool('care_plan_completed_$caseId') ??
+          false;
+
+      if (directCompleted) {
+        return 'COMPLETED';
+      }
+
+      final savedCarePlan = prefs.getString('careplan_saved_$caseId');
+
+      if (savedCarePlan != null && savedCarePlan.trim().isNotEmpty) {
+        try {
+          final decoded = jsonDecode(savedCarePlan);
+
+          if (decoded is Map) {
+            final savedStatus = decoded['status']?.toString() ?? '';
+            final normalized = _normalizeFormStatus(savedStatus);
+
+            if (normalized != 'NOT_STARTED') {
+              return normalized;
+            }
+          }
+        } catch (_) {
+          return 'COMPLETED';
+        }
+      }
+
+      return 'NOT_STARTED';
+    } catch (_) {
+      return 'NOT_STARTED';
+    }
+  }
+
   Future<String> _readFormStatus(
       Database db,
       String tableName,
       String caseId,
       ) async {
     try {
-      final rows = await db.query(
-        tableName,
-        columns: ['status'],
-        where: 'id = ?',
-        whereArgs: [caseId],
-        limit: 1,
-      );
-      if (rows.isEmpty) return 'NOT_STARTED';
-      return (rows.first['status'] ?? 'NOT_STARTED').toString();
+      // For Care Plan, local draft/completed status must be checked first.
+      if (tableName == 'mgysd_care_plan') {
+        final localCarePlanStatus = await _readCarePlanStatusFallback(caseId);
+
+        if (localCarePlanStatus != 'NOT_STARTED') {
+          return localCarePlanStatus;
+        }
+      }
+
+      List<Map<String, Object?>> rows;
+
+      if (tableName == 'mgysd_care_plan') {
+        rows = await db.query(
+          tableName,
+          columns: ['status'],
+          where: 'id = ? OR caseId = ?',
+          whereArgs: [caseId, caseId],
+          limit: 1,
+        );
+      } else {
+        rows = await db.query(
+          tableName,
+          columns: ['status'],
+          where: 'id = ?',
+          whereArgs: [caseId],
+          limit: 1,
+        );
+      }
+
+      if (rows.isNotEmpty) {
+        final status = _normalizeFormStatus(
+          (rows.first['status'] ?? 'NOT_STARTED').toString(),
+        );
+
+        if (status != 'NOT_STARTED') {
+          return status;
+        }
+      }
+
+      return 'NOT_STARTED';
     } catch (_) {
+      if (tableName == 'mgysd_care_plan') {
+        return await _readCarePlanStatusFallback(caseId);
+      }
+
       return 'NOT_STARTED';
     }
   }
@@ -357,8 +506,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
             (m) => m.isPrimaryClient || m.role.toUpperCase() == 'CLIENT',
       );
     } catch (_) {
-      primaryClient =
-      householdMembers.isNotEmpty ? householdMembers.first : null;
+      primaryClient = householdMembers.isNotEmpty ? householdMembers.first : null;
     }
 
     return _CaseDetailData(
@@ -386,6 +534,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       case 'COMPLETED':
         return Colors.green;
       case 'DRAFT':
+      case 'IN_PROGRESS':
         return Colors.orange;
       default:
         return Colors.blueGrey;
@@ -397,7 +546,8 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       case 'COMPLETED':
         return 'Completed';
       case 'DRAFT':
-        return 'Draft';
+      case 'IN_PROGRESS':
+        return 'In progress';
       default:
         return 'Not started';
     }
@@ -485,11 +635,11 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
     if (text.trim().isEmpty) return const SizedBox.shrink();
 
     final bg = highlighted
-        ? widget.color.withOpacity(0.14)
-        : Colors.blueGrey.withOpacity(0.07);
+        ? widget.color.withValues(alpha: 0.14)
+        : Colors.blueGrey.withValues(alpha: 0.07);
     final border = highlighted
-        ? widget.color.withOpacity(0.22)
-        : Colors.blueGrey.withOpacity(0.10);
+        ? widget.color.withValues(alpha: 0.22)
+        : Colors.blueGrey.withValues(alpha: 0.10);
     final fg = highlighted ? widget.color : Colors.blueGrey;
 
     return Container(
@@ -545,12 +695,12 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.blueGrey.withOpacity(0.08)),
+        border: Border.all(color: Colors.blueGrey.withValues(alpha: 0.08)),
         boxShadow: [
           BoxShadow(
             blurRadius: 18,
             offset: const Offset(0, 6),
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
           ),
         ],
       ),
@@ -589,7 +739,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
     return ChoiceChip(
       label: Text(label),
       selected: selected,
-      selectedColor: widget.color.withOpacity(0.15),
+      selectedColor: widget.color.withValues(alpha: 0.15),
       labelStyle: TextStyle(
         color: selected ? widget.color : Colors.black87,
         fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
@@ -612,9 +762,9 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withOpacity(0.10)),
+          border: Border.all(color: color.withValues(alpha: 0.10)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -651,18 +801,16 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       decoration: BoxDecoration(
         color: const Color(0xFFF9FBFD),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blueGrey.withOpacity(0.10)),
+        border: Border.all(color: Colors.blueGrey.withValues(alpha: 0.10)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             radius: 21,
-            backgroundColor: widget.color.withOpacity(0.12),
+            backgroundColor: widget.color.withValues(alpha: 0.12),
             child: Icon(
-              m.isPrimaryClient
-                  ? Icons.person_pin_circle
-                  : Icons.person_outline,
+              m.isPrimaryClient ? Icons.person_pin_circle : Icons.person_outline,
               color: widget.color,
             ),
           ),
@@ -724,7 +872,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.blueGrey.withOpacity(0.05),
+        color: Colors.blueGrey.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Text(
@@ -757,7 +905,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: widget.color.withOpacity(0.12),
+                backgroundColor: widget.color.withValues(alpha: 0.12),
                 child: Icon(icon, color: widget.color, size: 20),
               ),
               const SizedBox(width: 12),
@@ -782,7 +930,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: color.withOpacity(0.10),
+                            color: color.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(100),
                           ),
                           child: Text(
@@ -833,7 +981,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
             children: [
               CircleAvatar(
                 radius: 26,
-                backgroundColor: widget.color.withOpacity(0.14),
+                backgroundColor: widget.color.withValues(alpha: 0.14),
                 child: Icon(
                   Icons.folder_shared_outlined,
                   color: widget.color,
@@ -860,7 +1008,8 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                       runSpacing: 8,
                       children: [
                         _badge(widget.mgysdCase.displayStatus, highlighted: true),
-                        if ((data.household?.district ?? widget.mgysdCase.district)
+                        if ((data.household?.district ??
+                            widget.mgysdCase.district)
                             .trim()
                             .isNotEmpty)
                           _badge(
@@ -939,12 +1088,11 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
               _actionTile(
                 icon: Icons.shield_outlined,
                 title: 'Initial Risk Assessment',
-                subtitle:
-                'Assess immediate safety concerns and urgent actions.',
+                subtitle: 'Assess immediate safety concerns and urgent actions.',
                 status: data.initialRiskStatus,
                 onTap: () => _openInitialRiskAssessment(data),
               ),
-              Divider(height: 1, color: Colors.blueGrey.withOpacity(0.12)),
+              Divider(height: 1, color: Colors.blueGrey.withValues(alpha: 0.12)),
               _actionTile(
                 icon: Icons.fact_check_outlined,
                 title: 'Social Investigation',
@@ -952,7 +1100,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                 status: data.socialInvestigationStatus,
                 onTap: () => _openSocialInvestigation(data),
               ),
-              Divider(height: 1, color: Colors.blueGrey.withOpacity(0.12)),
+              Divider(height: 1, color: Colors.blueGrey.withValues(alpha: 0.12)),
               _actionTile(
                 icon: Icons.assignment_outlined,
                 title: 'Care Plan',
@@ -968,17 +1116,7 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                   }
                 },
               ),
-
-              Divider(height: 1, color: Colors.blueGrey.withOpacity(0.12)),
-              _actionTile(
-                icon: Icons.volunteer_activism_outlined,
-                title: 'Service Provision',
-                subtitle: 'Capture services provided to the client.',
-                status: data.serviceProvisionStatus,
-                onTap: () => _openServiceProvision(data),
-              ),
-
-              Divider(height: 1, color: Colors.blueGrey.withOpacity(0.12)),
+              Divider(height: 1, color: Colors.blueGrey.withValues(alpha: 0.12)),
               _actionTile(
                 icon: Icons.handshake_outlined,
                 title: 'Referral',
@@ -1005,9 +1143,8 @@ class _MgysdCaseDetailPageState extends State<MgysdCaseDetailPage> {
                     );
                   }
                 },
-
               ),
-              Divider(height: 1, color: Colors.blueGrey.withOpacity(0.12)),
+              Divider(height: 1, color: Colors.blueGrey.withValues(alpha: 0.12)),
               _actionTile(
                 icon: Icons.monitor_heart_outlined,
                 title: 'Monitoring',

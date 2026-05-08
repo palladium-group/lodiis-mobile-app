@@ -67,8 +67,57 @@ class _DynamicTextItem {
     String value = '',
   }) : controller = TextEditingController(text: value);
 
+  void dispose() => controller.dispose();
+}
+
+class _HouseholdMemberEntry {
+  final String id;
+  final TextEditingController firstNameController;
+  final TextEditingController surnameController;
+  final TextEditingController dobController;
+  final TextEditingController ageController;
+  final TextEditingController occupationController;
+  final TextEditingController contactsController;
+  final TextEditingController disabilitySpecifyController;
+
+  String sex;
+  String relationshipToClient;
+  String hasDisability;
+
+  _HouseholdMemberEntry({
+    required this.id,
+    this.sex = '',
+    this.relationshipToClient = '',
+    this.hasDisability = '',
+  })  : firstNameController = TextEditingController(),
+        surnameController = TextEditingController(),
+        dobController = TextEditingController(),
+        ageController = TextEditingController(),
+        occupationController = TextEditingController(),
+        contactsController = TextEditingController(),
+        disabilitySpecifyController = TextEditingController();
+
+  bool get hasAnyData {
+    return firstNameController.text.trim().isNotEmpty ||
+        surnameController.text.trim().isNotEmpty ||
+        dobController.text.trim().isNotEmpty ||
+        ageController.text.trim().isNotEmpty ||
+        occupationController.text.trim().isNotEmpty ||
+        contactsController.text.trim().isNotEmpty ||
+        disabilitySpecifyController.text.trim().isNotEmpty ||
+        sex.trim().isNotEmpty ||
+        relationshipToClient.trim().isNotEmpty ||
+        hasDisability.trim().isNotEmpty;
+  }
+
   void dispose() {
-    controller.dispose();
+    firstNameController.dispose();
+    surnameController.dispose();
+    dobController.dispose();
+    ageController.dispose();
+    occupationController.dispose();
+    contactsController.dispose();
+    disabilitySpecifyController.dispose();
   }
 }
 
@@ -99,6 +148,34 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   final _nextOfKinPhysicalAddressController = TextEditingController();
   final _nextOfKinRelationshipOtherController = TextEditingController();
 
+  final _fatherFirstNameController = TextEditingController();
+  final _fatherSurnameController = TextEditingController();
+  final _fatherDobController = TextEditingController();
+  final _fatherOccupationController = TextEditingController();
+  final _fatherWhyNotLivingController = TextEditingController();
+  final _fatherPhoneController = TextEditingController();
+
+  final _motherFirstNameController = TextEditingController();
+  final _motherSurnameController = TextEditingController();
+  final _motherDobController = TextEditingController();
+  final _motherOccupationController = TextEditingController();
+  final _motherWhyNotLivingController = TextEditingController();
+  final _motherPhoneController = TextEditingController();
+
+  final _caregiverNameController = TextEditingController();
+  final _caregiverSurnameController = TextEditingController();
+  final _caregiverRelationshipController = TextEditingController();
+  final _caregiverDobController = TextEditingController();
+  final _caregiverOccupationController = TextEditingController();
+  final _caregiverPhoneController = TextEditingController();
+
+  final _personalAssistantNameController = TextEditingController();
+  final _personalAssistantSurnameController = TextEditingController();
+  final _personalAssistantRelationshipController = TextEditingController();
+  final _personalAssistantDobController = TextEditingController();
+  final _personalAssistantOccupationController = TextEditingController();
+  final _personalAssistantPhoneController = TextEditingController();
+
   final _reasonOtherController = TextEditingController();
 
   final _emergencyActionTakenController = TextEditingController();
@@ -119,14 +196,26 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   String _isAdultEmployed = '';
   String _nextOfKinRelationship = '';
 
+  String _fatherAlive = '';
+  String _fatherLivingWithChild = '';
+  String _motherAlive = '';
+  String _motherLivingWithChild = '';
+
+  String _caregiverSex = '';
+  String _personalAssistantSex = '';
+
   String _hasEmergencyActionTaken = '';
   String _emergencyNoActionReason = '';
 
   final Set<String> _selectedReasonOptions = {};
   final List<_DynamicTextItem> _contactedPhoneNumbers = [];
   final List<_DynamicTextItem> _servicesAlreadyProvided = [];
+  final List<_HouseholdMemberEntry> _otherHouseholdMembers = [];
 
-  static const String mgysdTrackerProgramId = 'MGYSD_TRACKER_PROGRAM';
+  static const String mgysdCaseManagementProgramId =
+      'MGYSD_CASE_MANAGEMENT_PROGRAM';
+  static const String mgysdFamilyMembersProgramId =
+      'MGYSD_FAMILY_MEMBERS_PROGRAM';
   static const String mgysdHouseholdTeiTypeId = 'MGYSD_HOUSEHOLD_TEI_TYPE';
   static const String mgysdPersonTeiTypeId = 'MGYSD_PERSON_TEI_TYPE';
 
@@ -150,6 +239,10 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   static const String attNationality = 'ATTR_NATIONALITY';
   static const String attHomeLanguage = 'ATTR_HOME_LANGUAGE';
   static const String attHomeLanguageOther = 'ATTR_HOME_LANGUAGE_OTHER';
+  static const String attOccupation = 'ATTR_OCCUPATION';
+  static const String attRelationshipToClient = 'ATTR_RELATIONSHIP_TO_CLIENT';
+  static const String attHasDisability = 'ATTR_HAS_DISABILITY';
+  static const String attDisabilitySpecify = 'ATTR_DISABILITY_SPECIFY';
 
   static const String attIsClientInSchool = 'ATTR_IS_CLIENT_IN_SCHOOL';
   static const String attSchoolName = 'ATTR_SCHOOL_NAME';
@@ -168,6 +261,47 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   static const String attNextOfKinRelationship = 'ATTR_NOK_RELATIONSHIP';
   static const String attNextOfKinRelationshipOther =
       'ATTR_NOK_RELATIONSHIP_OTHER';
+
+  static const String attFatherAlive = 'ATTR_FATHER_ALIVE';
+  static const String attFatherFirstName = 'ATTR_FATHER_FIRST_NAME';
+  static const String attFatherSurname = 'ATTR_FATHER_SURNAME';
+  static const String attFatherDob = 'ATTR_FATHER_DOB';
+  static const String attFatherOccupation = 'ATTR_FATHER_OCCUPATION';
+  static const String attFatherLivingWithChild =
+      'ATTR_FATHER_LIVING_WITH_CHILD';
+  static const String attFatherWhyNotLiving = 'ATTR_FATHER_WHY_NOT_LIVING';
+  static const String attFatherPhone = 'ATTR_FATHER_PHONE';
+
+  static const String attMotherAlive = 'ATTR_MOTHER_ALIVE';
+  static const String attMotherFirstName = 'ATTR_MOTHER_FIRST_NAME';
+  static const String attMotherSurname = 'ATTR_MOTHER_SURNAME';
+  static const String attMotherDob = 'ATTR_MOTHER_DOB';
+  static const String attMotherOccupation = 'ATTR_MOTHER_OCCUPATION';
+  static const String attMotherLivingWithChild =
+      'ATTR_MOTHER_LIVING_WITH_CHILD';
+  static const String attMotherWhyNotLiving = 'ATTR_MOTHER_WHY_NOT_LIVING';
+  static const String attMotherPhone = 'ATTR_MOTHER_PHONE';
+
+  static const String attCaregiverName = 'ATTR_CAREGIVER_NAME';
+  static const String attCaregiverSurname = 'ATTR_CAREGIVER_SURNAME';
+  static const String attCaregiverSex = 'ATTR_CAREGIVER_SEX';
+  static const String attCaregiverRelationship = 'ATTR_CAREGIVER_RELATIONSHIP';
+  static const String attCaregiverDob = 'ATTR_CAREGIVER_DOB';
+  static const String attCaregiverOccupation = 'ATTR_CAREGIVER_OCCUPATION';
+  static const String attCaregiverPhone = 'ATTR_CAREGIVER_PHONE';
+
+  static const String attPersonalAssistantName =
+      'ATTR_PERSONAL_ASSISTANT_NAME';
+  static const String attPersonalAssistantSurname =
+      'ATTR_PERSONAL_ASSISTANT_SURNAME';
+  static const String attPersonalAssistantSex = 'ATTR_PERSONAL_ASSISTANT_SEX';
+  static const String attPersonalAssistantRelationship =
+      'ATTR_PERSONAL_ASSISTANT_RELATIONSHIP';
+  static const String attPersonalAssistantDob = 'ATTR_PERSONAL_ASSISTANT_DOB';
+  static const String attPersonalAssistantOccupation =
+      'ATTR_PERSONAL_ASSISTANT_OCCUPATION';
+  static const String attPersonalAssistantPhone =
+      'ATTR_PERSONAL_ASSISTANT_PHONE';
 
   static const String attReasonForEnrolment = 'ATTR_REASON_FOR_ENROLMENT';
   static const String attReasonForEnrolmentOther =
@@ -198,6 +332,12 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   static const List<_Opt> yesNoOptions = [
     _Opt('YES', 'Yes'),
     _Opt('NO', 'No'),
+  ];
+
+  static const List<_Opt> yesNoUnknownOptions = [
+    _Opt('YES', 'Yes'),
+    _Opt('NO', 'No'),
+    _Opt('UNKNOWN', 'Unknown'),
   ];
 
   static const List<_Opt> sexOptions = [
@@ -358,12 +498,12 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         (widget.prefillClientFirstName ?? '').trim();
     _clientSurnameController.text = (widget.prefillClientLastName ?? '').trim();
     _phoneController.text = (widget.prefillClientPhone ?? '').trim();
-
     _fileNumberController.text =
     'MGYSD-${DateTime.now().millisecondsSinceEpoch}';
 
     _addContactedPhoneNumber();
     _addServiceProvided();
+    _addOtherHouseholdMember();
   }
 
   @override
@@ -373,7 +513,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     _communityCouncilController.dispose();
     _villageController.dispose();
     _physicalAddressController.dispose();
-
     _identityNumberController.dispose();
     _clientFirstNameController.dispose();
     _clientSurnameController.dispose();
@@ -382,18 +521,38 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     _phoneController.dispose();
     _alternativePhoneController.dispose();
     _homeLanguageOtherController.dispose();
-
     _schoolNameController.dispose();
     _employerNameController.dispose();
-
     _nextOfKinFirstNameController.dispose();
     _nextOfKinSurnameController.dispose();
     _nextOfKinPhoneController.dispose();
     _nextOfKinPhysicalAddressController.dispose();
     _nextOfKinRelationshipOtherController.dispose();
-
+    _fatherFirstNameController.dispose();
+    _fatherSurnameController.dispose();
+    _fatherDobController.dispose();
+    _fatherOccupationController.dispose();
+    _fatherWhyNotLivingController.dispose();
+    _fatherPhoneController.dispose();
+    _motherFirstNameController.dispose();
+    _motherSurnameController.dispose();
+    _motherDobController.dispose();
+    _motherOccupationController.dispose();
+    _motherWhyNotLivingController.dispose();
+    _motherPhoneController.dispose();
+    _caregiverNameController.dispose();
+    _caregiverSurnameController.dispose();
+    _caregiverRelationshipController.dispose();
+    _caregiverDobController.dispose();
+    _caregiverOccupationController.dispose();
+    _caregiverPhoneController.dispose();
+    _personalAssistantNameController.dispose();
+    _personalAssistantSurnameController.dispose();
+    _personalAssistantRelationshipController.dispose();
+    _personalAssistantDobController.dispose();
+    _personalAssistantOccupationController.dispose();
+    _personalAssistantPhoneController.dispose();
     _reasonOtherController.dispose();
-
     _emergencyActionTakenController.dispose();
     _emergencyNoActionRefusedSpecifyController.dispose();
     _emergencyNoActionOtherSpecifyController.dispose();
@@ -401,8 +560,10 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     for (final item in _contactedPhoneNumbers) {
       item.dispose();
     }
-
     for (final item in _servicesAlreadyProvided) {
+      item.dispose();
+    }
+    for (final item in _otherHouseholdMembers) {
       item.dispose();
     }
 
@@ -433,6 +594,25 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     return age < 0 ? 0 : age;
   }
 
+  Future<void> _pickDateFor(TextEditingController controller) async {
+    final now = DateTime.now();
+    final initial = DateTime.tryParse(controller.text.trim()) ??
+        DateTime(now.year - 20, 1, 1);
+
+    final picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(1900, 1, 1),
+      lastDate: now,
+      initialDate: initial,
+    );
+
+    if (picked != null) {
+      setState(() {
+        controller.text = _formatDate(picked);
+      });
+    }
+  }
+
   Future<void> _pickDobForClient() async {
     final now = DateTime.now();
     final initial = _selectedDob ?? DateTime(now.year - 15, 1, 1);
@@ -454,11 +634,68 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     }
   }
 
+  Future<void> _pickDobForHouseholdMember(_HouseholdMemberEntry member) async {
+    final now = DateTime.now();
+    final initial = DateTime.tryParse(member.dobController.text.trim()) ??
+        DateTime(now.year - 15, 1, 1);
+
+    final picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(1900, 1, 1),
+      lastDate: now,
+      initialDate: initial,
+    );
+
+    if (picked != null) {
+      setState(() {
+        member.dobController.text = _formatDate(picked);
+        member.ageController.text = _calculateAge(picked).toString();
+      });
+    }
+  }
+
   List<_Opt> _nextOfKinRelationshipOptions() {
     if (_showGuardianOption) return nextOfKinRelationshipOptions;
     return nextOfKinRelationshipOptions
         .where((option) => option.code != 'GUARDIAN')
         .toList();
+  }
+
+  List<_Opt> _relationshipOptionsForMemberSex(String memberSex) {
+    final options = <_Opt>[
+      _Opt('GRANDPARENT', 'Grandparent'),
+      _Opt('AUNT', 'Aunt'),
+      _Opt('UNCLE', 'Uncle'),
+      _Opt('COUSIN', 'Cousin'),
+      _Opt('SPOUSE', 'Spouse'),
+      _Opt('CHILD', 'Child'),
+      _Opt('OTHER_RELATIVE', 'Other relative'),
+      _Opt('NON_RELATIVE', 'Non-relative'),
+      _Opt('OTHER', 'Other'),
+    ];
+
+    if (memberSex == 'MALE') {
+      options.insertAll(0, [
+        _Opt('FATHER', 'Father'),
+        _Opt('BROTHER', 'Brother'),
+        _Opt('SON', 'Son'),
+        _Opt('GRANDFATHER', 'Grandfather'),
+      ]);
+    } else if (memberSex == 'FEMALE') {
+      options.insertAll(0, [
+        _Opt('MOTHER', 'Mother'),
+        _Opt('SISTER', 'Sister'),
+        _Opt('DAUGHTER', 'Daughter'),
+        _Opt('GRANDMOTHER', 'Grandmother'),
+      ]);
+    }
+
+    if (_isChild) {
+      options.add(_Opt('CAREGIVER', 'Caregiver'));
+      options.add(_Opt('GUARDIAN', 'Guardian'));
+    }
+
+    return options;
   }
 
   bool _isVisibleReasonGroup(_ReasonGroup group) {
@@ -470,16 +707,13 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     if (childOnlySingleReasonCodes.contains(reason.code) && !_isChild) {
       return false;
     }
-
     if (reason.code == 'TEENAGE_PREGNANCY_YOUNG_MOTHERS') {
       return _isChild && _sex == 'FEMALE';
     }
-
     if (reason.code == 'SOCIAL_ASSISTANCE_EDUCATIONAL_AID') {
       final age = _clientAge;
       return _isChild && age != null && age < 18;
     }
-
     return true;
   }
 
@@ -489,32 +723,25 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
 
   Set<String> _allVisibleReasonCodes() {
     final codes = <String>{};
-
     for (final group in _visibleGroupedReasons()) {
       for (final option in group.options) {
         codes.add(option.code);
       }
     }
-
     for (final reason in singleReasons.where(_isVisibleSingleReason)) {
       codes.add(reason.code);
     }
-
     return codes;
   }
 
   void _removeHiddenReasonOptions() {
     final visibleCodes = _allVisibleReasonCodes();
     _selectedReasonOptions.removeWhere((code) => !visibleCodes.contains(code));
-
-    if (!_reasonOtherSelected) {
-      _reasonOtherController.clear();
-    }
+    if (!_reasonOtherSelected) _reasonOtherController.clear();
   }
 
   List<Map<String, String>> _selectedReasonPayload() {
     final payload = <Map<String, String>>[];
-
     for (final group in groupedReasons) {
       for (final option in group.options) {
         if (_selectedReasonOptions.contains(option.code)) {
@@ -528,7 +755,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         }
       }
     }
-
     for (final reason in singleReasons) {
       if (_selectedReasonOptions.contains(reason.code)) {
         payload.add({
@@ -540,7 +766,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         });
       }
     }
-
     return payload;
   }
 
@@ -552,16 +777,13 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   }
 
   void _addContactedPhoneNumber() {
-    setState(() {
-      _contactedPhoneNumbers.add(_DynamicTextItem(id: _newId()));
-    });
+    setState(() => _contactedPhoneNumbers.add(_DynamicTextItem(id: _newId())));
   }
 
   void _removeContactedPhoneNumber(int index) {
     setState(() {
       final item = _contactedPhoneNumbers.removeAt(index);
       item.dispose();
-
       if (_contactedPhoneNumbers.isEmpty) {
         _contactedPhoneNumbers.add(_DynamicTextItem(id: _newId()));
       }
@@ -569,20 +791,82 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   }
 
   void _addServiceProvided() {
-    setState(() {
-      _servicesAlreadyProvided.add(_DynamicTextItem(id: _newId()));
-    });
+    setState(() => _servicesAlreadyProvided.add(_DynamicTextItem(id: _newId())));
   }
 
   void _removeServiceProvided(int index) {
     setState(() {
       final item = _servicesAlreadyProvided.removeAt(index);
       item.dispose();
-
       if (_servicesAlreadyProvided.isEmpty) {
         _servicesAlreadyProvided.add(_DynamicTextItem(id: _newId()));
       }
     });
+  }
+
+  void _addOtherHouseholdMember() {
+    setState(() {
+      _otherHouseholdMembers.add(
+        _HouseholdMemberEntry(id: _newId()),
+      );
+    });
+  }
+
+  void _removeOtherHouseholdMember(int index) {
+    setState(() {
+      final item = _otherHouseholdMembers.removeAt(index);
+      item.dispose();
+      if (_otherHouseholdMembers.isEmpty) {
+        _otherHouseholdMembers.add(_HouseholdMemberEntry(id: _newId()));
+      }
+    });
+  }
+
+  bool _controllerHasData(TextEditingController controller) {
+    return controller.text.trim().isNotEmpty;
+  }
+
+  bool _fatherHasData() {
+    return _fatherAlive.trim().isNotEmpty ||
+        _controllerHasData(_fatherFirstNameController) ||
+        _controllerHasData(_fatherSurnameController) ||
+        _controllerHasData(_fatherDobController) ||
+        _controllerHasData(_fatherOccupationController) ||
+        _fatherLivingWithChild.trim().isNotEmpty ||
+        _controllerHasData(_fatherWhyNotLivingController) ||
+        _controllerHasData(_fatherPhoneController);
+  }
+
+  bool _motherHasData() {
+    return _motherAlive.trim().isNotEmpty ||
+        _controllerHasData(_motherFirstNameController) ||
+        _controllerHasData(_motherSurnameController) ||
+        _controllerHasData(_motherDobController) ||
+        _controllerHasData(_motherOccupationController) ||
+        _motherLivingWithChild.trim().isNotEmpty ||
+        _controllerHasData(_motherWhyNotLivingController) ||
+        _controllerHasData(_motherPhoneController);
+  }
+
+  bool _caregiverHasData() {
+    return _controllerHasData(_caregiverNameController) ||
+        _controllerHasData(_caregiverSurnameController) ||
+        _caregiverSex.trim().isNotEmpty ||
+        _controllerHasData(_caregiverRelationshipController) ||
+        _controllerHasData(_caregiverDobController) ||
+        _controllerHasData(_caregiverOccupationController) ||
+        _controllerHasData(_caregiverPhoneController);
+  }
+
+  bool _personalAssistantHasData() {
+    return _isDisabledYes &&
+        (_controllerHasData(_personalAssistantNameController) ||
+            _controllerHasData(_personalAssistantSurnameController) ||
+            _personalAssistantSex.trim().isNotEmpty ||
+            _controllerHasData(_personalAssistantRelationshipController) ||
+            _controllerHasData(_personalAssistantDobController) ||
+            _controllerHasData(_personalAssistantOccupationController) ||
+            _controllerHasData(_personalAssistantPhoneController));
   }
 
   Future<void> _saveTeiOffline({
@@ -612,7 +896,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
   }) async {
     final v = value.trim();
     if (v.isEmpty) return;
-
     await db.insert(
       'tracked_entity_instance_attribute',
       {
@@ -623,6 +906,21 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<void> _saveAttrsOffline({
+    required Database db,
+    required String teiId,
+    required Map<String, String> attrs,
+  }) async {
+    for (final entry in attrs.entries) {
+      await _saveAttrOffline(
+        db: db,
+        teiId: teiId,
+        attribute: entry.key,
+        value: entry.value,
+      );
+    }
   }
 
   Future<void> _saveRelationshipOffline({
@@ -669,11 +967,11 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     required Database db,
     required String enrollmentId,
     required String teiId,
+    required String programId,
     required String orgUnit,
     required String searchableValue,
   }) async {
     final nowIso = DateTime.now().toIso8601String();
-
     await db.insert(
       'enrollment',
       {
@@ -681,7 +979,7 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         'enrollment': enrollmentId,
         'enrollmentDate': nowIso.substring(0, 10),
         'incidentDate': nowIso.substring(0, 10),
-        'program': mgysdTrackerProgramId,
+        'program': programId,
         'orgUnit': orgUnit,
         'trackedEntityInstance': teiId,
         'status': 'ACTIVE',
@@ -711,6 +1009,59 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     );
   }
 
+  Future<String> _savePersonAsFamilyMember({
+    required Database db,
+    required String householdTeiId,
+    required String orgUnit,
+    required String memberRole,
+    required Map<String, String> attrs,
+  }) async {
+    final memberTeiId = 'TEI_${_newId()}';
+    final memberEnrollmentId = 'ENR_${_newId()}';
+
+    await _saveTeiOffline(
+      db: db,
+      teiId: memberTeiId,
+      teiTypeId: mgysdPersonTeiTypeId,
+      orgUnit: orgUnit,
+    );
+
+    await _saveAttrsOffline(db: db, teiId: memberTeiId, attrs: attrs);
+
+    final searchableValue = [
+      attrs[attFirstName] ?? attrs[attCaregiverName] ?? '',
+      attrs[attLastName] ?? attrs[attCaregiverSurname] ?? '',
+      attrs[attPhone] ?? attrs[attCaregiverPhone] ?? '',
+      memberRole,
+    ].where((e) => e.trim().isNotEmpty).join(' | ');
+
+    await _saveEnrollmentOffline(
+      db: db,
+      enrollmentId: memberEnrollmentId,
+      teiId: memberTeiId,
+      programId: mgysdFamilyMembersProgramId,
+      orgUnit: orgUnit,
+      searchableValue: searchableValue,
+    );
+
+    await _saveRelationshipOffline(
+      db: db,
+      relationshipTypeCode: relHouseholdHasMember,
+      fromTei: householdTeiId,
+      toTei: memberTeiId,
+    );
+
+    await _saveHouseholdMemberOffline(
+      db: db,
+      householdTei: householdTeiId,
+      memberTei: memberTeiId,
+      memberRole: memberRole,
+      isPrimaryClient: false,
+    );
+
+    return memberTeiId;
+  }
+
   Future<void> _saveCase() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
@@ -735,8 +1086,8 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
       final db = await _db();
 
       final householdTeiId = 'TEI_${_newId()}';
-      final householdEnrollmentId = 'ENR_${_newId()}';
       final clientTeiId = 'TEI_${_newId()}';
+      final clientEnrollmentId = 'ENR_${_newId()}';
       final orgUnit = '';
 
       await _saveTeiOffline(
@@ -746,50 +1097,17 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         orgUnit: orgUnit,
       );
 
-      final householdAttrs = <String, String>{
-        attHouseholdFileNumber: _fileNumberController.text,
-        attHouseholdDistrict: _districtController.text,
-        attHouseholdCommunityCouncil: _communityCouncilController.text,
-        attHouseholdVillage: _villageController.text,
-        attHouseholdAddress: _physicalAddressController.text,
-      };
-
-      for (final entry in householdAttrs.entries) {
-        await _saveAttrOffline(
-          db: db,
-          teiId: householdTeiId,
-          attribute: entry.key,
-          value: entry.value,
-        );
-      }
-
-      final searchableValue = [
-        _fileNumberController.text.trim(),
-        _clientFirstNameController.text.trim(),
-        _clientSurnameController.text.trim(),
-        _identityNumberController.text.trim(),
-        widget.reportedEventId == null
-            ? ''
-            : 'reportEvent:${widget.reportedEventId}',
-      ].where((e) => e.isNotEmpty).join(' | ');
-
-      await _saveEnrollmentOffline(
+      await _saveAttrsOffline(
         db: db,
-        enrollmentId: householdEnrollmentId,
         teiId: householdTeiId,
-        orgUnit: orgUnit,
-        searchableValue: searchableValue,
+        attrs: {
+          attHouseholdFileNumber: _fileNumberController.text,
+          attHouseholdDistrict: _districtController.text,
+          attHouseholdCommunityCouncil: _communityCouncilController.text,
+          attHouseholdVillage: _villageController.text,
+          attHouseholdAddress: _physicalAddressController.text,
+        },
       );
-
-      final reportEventId = (widget.reportedEventId ?? '').trim();
-      if (reportEventId.isNotEmpty) {
-        await _saveLinkToReportEvent(
-          db: db,
-          reportEventId: reportEventId,
-          teiId: householdTeiId,
-          enrollmentId: householdEnrollmentId,
-        );
-      }
 
       await _saveTeiOffline(
         db: db,
@@ -798,7 +1116,7 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         orgUnit: orgUnit,
       );
 
-      final attrs = <String, String>{
+      final clientAttrs = <String, String>{
         attClientCategory: _clientCategory,
         attIsDisabled: _isDisabled,
         attIdentityNumber: _identityNumberController.text,
@@ -825,6 +1143,38 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         attNextOfKinRelationship: _nextOfKinRelationship,
         attNextOfKinRelationshipOther:
         _nextOfKinRelationshipOtherController.text,
+        attFatherAlive: _fatherAlive,
+        attFatherFirstName: _fatherFirstNameController.text,
+        attFatherSurname: _fatherSurnameController.text,
+        attFatherDob: _fatherDobController.text,
+        attFatherOccupation: _fatherOccupationController.text,
+        attFatherLivingWithChild: _fatherLivingWithChild,
+        attFatherWhyNotLiving: _fatherWhyNotLivingController.text,
+        attFatherPhone: _fatherPhoneController.text,
+        attMotherAlive: _motherAlive,
+        attMotherFirstName: _motherFirstNameController.text,
+        attMotherSurname: _motherSurnameController.text,
+        attMotherDob: _motherDobController.text,
+        attMotherOccupation: _motherOccupationController.text,
+        attMotherLivingWithChild: _motherLivingWithChild,
+        attMotherWhyNotLiving: _motherWhyNotLivingController.text,
+        attMotherPhone: _motherPhoneController.text,
+        attCaregiverName: _caregiverNameController.text,
+        attCaregiverSurname: _caregiverSurnameController.text,
+        attCaregiverSex: _caregiverSex,
+        attCaregiverRelationship: _caregiverRelationshipController.text,
+        attCaregiverDob: _caregiverDobController.text,
+        attCaregiverOccupation: _caregiverOccupationController.text,
+        attCaregiverPhone: _caregiverPhoneController.text,
+        attPersonalAssistantName: _personalAssistantNameController.text,
+        attPersonalAssistantSurname: _personalAssistantSurnameController.text,
+        attPersonalAssistantSex: _personalAssistantSex,
+        attPersonalAssistantRelationship:
+        _personalAssistantRelationshipController.text,
+        attPersonalAssistantDob: _personalAssistantDobController.text,
+        attPersonalAssistantOccupation:
+        _personalAssistantOccupationController.text,
+        attPersonalAssistantPhone: _personalAssistantPhoneController.text,
         attReasonForEnrolment: jsonEncode(_selectedReasonPayload()),
         attReasonForEnrolmentOther: _reasonOtherController.text,
         attHasEmergencyActionTaken: _hasEmergencyActionTaken,
@@ -841,21 +1191,25 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         jsonEncode(_dynamicValues(_servicesAlreadyProvided)),
       };
 
-      for (final entry in attrs.entries) {
-        await _saveAttrOffline(
-          db: db,
-          teiId: clientTeiId,
-          attribute: entry.key,
-          value: entry.value,
-        );
-      }
+      await _saveAttrsOffline(db: db, teiId: clientTeiId, attrs: clientAttrs);
 
-      await _saveHouseholdMemberOffline(
+      final searchableValue = [
+        _fileNumberController.text.trim(),
+        _clientFirstNameController.text.trim(),
+        _clientSurnameController.text.trim(),
+        _identityNumberController.text.trim(),
+        widget.reportedEventId == null
+            ? ''
+            : 'reportEvent:${widget.reportedEventId}',
+      ].where((e) => e.isNotEmpty).join(' | ');
+
+      await _saveEnrollmentOffline(
         db: db,
-        householdTei: householdTeiId,
-        memberTei: clientTeiId,
-        memberRole: 'CLIENT',
-        isPrimaryClient: true,
+        enrollmentId: clientEnrollmentId,
+        teiId: clientTeiId,
+        programId: mgysdCaseManagementProgramId,
+        orgUnit: orgUnit,
+        searchableValue: searchableValue,
       );
 
       await _saveRelationshipOffline(
@@ -865,10 +1219,130 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         toTei: clientTeiId,
       );
 
+      await _saveHouseholdMemberOffline(
+        db: db,
+        householdTei: householdTeiId,
+        memberTei: clientTeiId,
+        memberRole: 'CLIENT',
+        isPrimaryClient: true,
+      );
+
+      final reportEventId = (widget.reportedEventId ?? '').trim();
+      if (reportEventId.isNotEmpty) {
+        await _saveLinkToReportEvent(
+          db: db,
+          reportEventId: reportEventId,
+          teiId: clientTeiId,
+          enrollmentId: clientEnrollmentId,
+        );
+      }
+
+      if (_fatherHasData()) {
+        await _savePersonAsFamilyMember(
+          db: db,
+          householdTeiId: householdTeiId,
+          orgUnit: orgUnit,
+          memberRole: 'FATHER',
+          attrs: {
+            attFirstName: _fatherFirstNameController.text,
+            attLastName: _fatherSurnameController.text,
+            attDob: _fatherDobController.text,
+            attOccupation: _fatherOccupationController.text,
+            attPhone: _fatherPhoneController.text,
+            attSex: 'MALE',
+            attRelationshipToClient: 'FATHER',
+            attFatherAlive: _fatherAlive,
+            attFatherLivingWithChild: _fatherLivingWithChild,
+            attFatherWhyNotLiving: _fatherWhyNotLivingController.text,
+          },
+        );
+      }
+
+      if (_motherHasData()) {
+        await _savePersonAsFamilyMember(
+          db: db,
+          householdTeiId: householdTeiId,
+          orgUnit: orgUnit,
+          memberRole: 'MOTHER',
+          attrs: {
+            attFirstName: _motherFirstNameController.text,
+            attLastName: _motherSurnameController.text,
+            attDob: _motherDobController.text,
+            attOccupation: _motherOccupationController.text,
+            attPhone: _motherPhoneController.text,
+            attSex: 'FEMALE',
+            attRelationshipToClient: 'MOTHER',
+            attMotherAlive: _motherAlive,
+            attMotherLivingWithChild: _motherLivingWithChild,
+            attMotherWhyNotLiving: _motherWhyNotLivingController.text,
+          },
+        );
+      }
+
+      if (_caregiverHasData()) {
+        await _savePersonAsFamilyMember(
+          db: db,
+          householdTeiId: householdTeiId,
+          orgUnit: orgUnit,
+          memberRole: 'CAREGIVER',
+          attrs: {
+            attFirstName: _caregiverNameController.text,
+            attLastName: _caregiverSurnameController.text,
+            attSex: _caregiverSex,
+            attRelationshipToClient: _caregiverRelationshipController.text,
+            attDob: _caregiverDobController.text,
+            attOccupation: _caregiverOccupationController.text,
+            attPhone: _caregiverPhoneController.text,
+          },
+        );
+      }
+
+      if (_personalAssistantHasData()) {
+        await _savePersonAsFamilyMember(
+          db: db,
+          householdTeiId: householdTeiId,
+          orgUnit: orgUnit,
+          memberRole: 'PERSONAL_ASSISTANT',
+          attrs: {
+            attFirstName: _personalAssistantNameController.text,
+            attLastName: _personalAssistantSurnameController.text,
+            attSex: _personalAssistantSex,
+            attRelationshipToClient:
+            _personalAssistantRelationshipController.text,
+            attDob: _personalAssistantDobController.text,
+            attOccupation: _personalAssistantOccupationController.text,
+            attPhone: _personalAssistantPhoneController.text,
+          },
+        );
+      }
+
+      for (final member in _otherHouseholdMembers.where((m) => m.hasAnyData)) {
+        await _savePersonAsFamilyMember(
+          db: db,
+          householdTeiId: householdTeiId,
+          orgUnit: orgUnit,
+          memberRole: member.relationshipToClient.isEmpty
+              ? 'HOUSEHOLD_MEMBER'
+              : member.relationshipToClient,
+          attrs: {
+            attFirstName: member.firstNameController.text,
+            attLastName: member.surnameController.text,
+            attDob: member.dobController.text,
+            attAge: member.ageController.text,
+            attSex: member.sex,
+            attRelationshipToClient: member.relationshipToClient,
+            attOccupation: member.occupationController.text,
+            attPhone: member.contactsController.text,
+            attHasDisability: member.hasDisability,
+            attDisabilitySpecify: member.disabilitySpecifyController.text,
+          },
+        );
+      }
+
       AppUtil.showToastMessage(
         message: widget.reportedEventId == null
-            ? 'Household case saved offline.'
-            : 'Household case saved and linked to report.',
+            ? 'Client case saved offline.'
+            : 'Client case saved and linked to report.',
       );
 
       if (mounted) Navigator.pop(context);
@@ -960,6 +1434,24 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     );
   }
 
+  Widget _dateInput({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+  }) {
+    return GestureDetector(
+      onTap: () => _pickDateFor(controller),
+      child: AbsorbPointer(
+        child: _Input(
+          controller: controller,
+          label: label,
+          hint: hint,
+          suffixIcon: const Icon(Icons.date_range),
+        ),
+      ),
+    );
+  }
+
   Widget _reasonGroupCard(_ReasonGroup group) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -988,7 +1480,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
 
   Widget _reasonChoiceChip(_Opt option) {
     final selected = _selectedReasonOptions.contains(option.code);
-
     return FilterChip(
       selected: selected,
       label: Text(option.label),
@@ -1095,7 +1586,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         const SizedBox(height: 8),
         ...List.generate(items.length, (index) {
           final item = items[index];
-
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Row(
@@ -1155,11 +1645,9 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
               onChanged: (v) {
                 setState(() {
                   _hasEmergencyActionTaken = v ?? '';
-
                   if (_hasEmergencyActionTaken != 'YES') {
                     _emergencyActionTakenController.clear();
                   }
-
                   if (_hasEmergencyActionTaken != 'NO') {
                     _emergencyNoActionReason = '';
                     _emergencyNoActionRefusedSpecifyController.clear();
@@ -1178,11 +1666,9 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                 onChanged: (v) {
                   setState(() {
                     _emergencyNoActionReason = v ?? '';
-
                     if (_emergencyNoActionReason != 'REFUSED') {
                       _emergencyNoActionRefusedSpecifyController.clear();
                     }
-
                     if (_emergencyNoActionReason != 'OTHER') {
                       _emergencyNoActionOtherSpecifyController.clear();
                     }
@@ -1196,13 +1682,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                   label: 'Specify refusal reason',
                   hint: 'Explain why action was refused',
                   maxLines: 3,
-                  validator: (v) {
-                    if (_emergencyNoActionReason == 'REFUSED' &&
-                        (v == null || v.trim().isEmpty)) {
-                      return 'Please specify refusal reason';
-                    }
-                    return null;
-                  },
                 ),
               ],
               if (_emergencyNoActionReason == 'OTHER') ...[
@@ -1212,13 +1691,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                   label: 'Specify other reason',
                   hint: 'Explain other reason',
                   maxLines: 3,
-                  validator: (v) {
-                    if (_emergencyNoActionReason == 'OTHER' &&
-                        (v == null || v.trim().isEmpty)) {
-                      return 'Please specify other reason';
-                    }
-                    return null;
-                  },
                 ),
               ],
             ],
@@ -1229,13 +1701,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                 label: 'Explain what action was taken',
                 hint: 'Describe emergency action already taken',
                 maxLines: 4,
-                validator: (v) {
-                  if (_hasEmergencyActionTaken == 'YES' &&
-                      (v == null || v.trim().isEmpty)) {
-                    return 'Please explain what action was taken';
-                  }
-                  return null;
-                },
               ),
             ],
             const SizedBox(height: 14),
@@ -1264,6 +1729,506 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
     );
   }
 
+  Widget _parentSection({
+    required String title,
+    required String aliveValue,
+    required void Function(String value) onAliveChanged,
+    required TextEditingController firstNameController,
+    required TextEditingController surnameController,
+    required TextEditingController dobController,
+    required TextEditingController occupationController,
+    required String livingWithChildValue,
+    required void Function(String value) onLivingWithChildChanged,
+    required TextEditingController whyNotLivingController,
+    required TextEditingController phoneController,
+  }) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FBFD),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.14)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style:
+              const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 10),
+          _dropdown(
+            label: 'Is $title alive?',
+            value: aliveValue,
+            options: yesNoUnknownOptions,
+            requiredField: true,
+            onChanged: (v) => onAliveChanged(v ?? ''),
+          ),
+          if (aliveValue == 'YES') ...[
+            const SizedBox(height: 10),
+            _row2(
+              _Input(
+                controller: firstNameController,
+                label: '$title First Name',
+                hint: 'Enter first name',
+              ),
+              _Input(
+                controller: surnameController,
+                label: '$title Surname',
+                hint: 'Enter surname',
+              ),
+            ),
+            const SizedBox(height: 10),
+            _row2(
+              _dateInput(
+                controller: dobController,
+                label: 'Date of Birth',
+                hint: 'Pick date',
+              ),
+              _Input(
+                controller: occupationController,
+                label: 'Occupation',
+                hint: 'Enter occupation',
+              ),
+            ),
+            const SizedBox(height: 10),
+            _dropdown(
+              label: 'Is $title living with the child?',
+              value: livingWithChildValue,
+              options: yesNoUnknownOptions,
+              requiredField: true,
+              onChanged: (v) => onLivingWithChildChanged(v ?? ''),
+            ),
+            if (livingWithChildValue != 'YES' &&
+                livingWithChildValue.trim().isNotEmpty) ...[
+              const SizedBox(height: 10),
+              _Input(
+                controller: whyNotLivingController,
+                label: 'Why?',
+                hint: 'Explain why not living with the child',
+                maxLines: 3,
+              ),
+              const SizedBox(height: 10),
+              _Input(
+                controller: phoneController,
+                label: 'Phone Number',
+                hint: 'e.g. 5xxxxxxx',
+                keyboardType: TextInputType.phone,
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _caregiverSection() {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FBFD),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.14)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Caregiver',
+              style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 10),
+          _row2(
+            _Input(
+              controller: _caregiverNameController,
+              label: 'Name',
+              hint: 'Caregiver name',
+            ),
+            _Input(
+              controller: _caregiverSurnameController,
+              label: 'Surname',
+              hint: 'Caregiver surname',
+            ),
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            _dropdown(
+              label: 'Sex',
+              value: _caregiverSex,
+              options: sexOptions,
+              onChanged: (v) => setState(() => _caregiverSex = v ?? ''),
+            ),
+            _Input(
+              controller: _caregiverRelationshipController,
+              label: 'Relationship with client',
+              hint: 'e.g. Aunt, Grandmother',
+            ),
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            _dateInput(
+              controller: _caregiverDobController,
+              label: 'Date of Birth',
+              hint: 'Pick date',
+            ),
+            _Input(
+              controller: _caregiverOccupationController,
+              label: 'Occupation',
+              hint: 'Enter occupation',
+            ),
+          ),
+          const SizedBox(height: 10),
+          _Input(
+            controller: _caregiverPhoneController,
+            label: 'Phone Number',
+            hint: 'e.g. 5xxxxxxx',
+            keyboardType: TextInputType.phone,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _personalAssistantSection() {
+    if (!_isDisabledYes) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FBFD),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.14)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Personal Assistant',
+              style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 10),
+          _row2(
+            _Input(
+              controller: _personalAssistantNameController,
+              label: 'Name',
+              hint: 'Personal assistant name',
+            ),
+            _Input(
+              controller: _personalAssistantSurnameController,
+              label: 'Surname',
+              hint: 'Personal assistant surname',
+            ),
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            _dropdown(
+              label: 'Sex',
+              value: _personalAssistantSex,
+              options: sexOptions,
+              onChanged: (v) {
+                setState(() => _personalAssistantSex = v ?? '');
+              },
+            ),
+            _Input(
+              controller: _personalAssistantRelationshipController,
+              label: 'Relationship with client',
+              hint: 'Enter relationship',
+            ),
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            _dateInput(
+              controller: _personalAssistantDobController,
+              label: 'Date of Birth',
+              hint: 'Pick date',
+            ),
+            _Input(
+              controller: _personalAssistantOccupationController,
+              label: 'Occupation',
+              hint: 'Enter occupation',
+            ),
+          ),
+          const SizedBox(height: 10),
+          _Input(
+            controller: _personalAssistantPhoneController,
+            label: 'Phone Number',
+            hint: 'e.g. 5xxxxxxx',
+            keyboardType: TextInputType.phone,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFamilyInformationSection(Color primary) {
+    return MaterialCard(
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _titleRow(
+              color: primary,
+              title: 'Family Information',
+              subtitle:
+              'Capture parents, caregiver, and personal assistant details where applicable.',
+              icon: Icons.family_restroom_outlined,
+            ),
+            const SizedBox(height: 12),
+            _parentSection(
+              title: 'Father',
+              aliveValue: _fatherAlive,
+              onAliveChanged: (value) {
+                setState(() {
+                  _fatherAlive = value;
+                  if (_fatherAlive != 'YES') {
+                    _fatherFirstNameController.clear();
+                    _fatherSurnameController.clear();
+                    _fatherDobController.clear();
+                    _fatherOccupationController.clear();
+                    _fatherLivingWithChild = '';
+                    _fatherWhyNotLivingController.clear();
+                    _fatherPhoneController.clear();
+                  }
+                });
+              },
+              firstNameController: _fatherFirstNameController,
+              surnameController: _fatherSurnameController,
+              dobController: _fatherDobController,
+              occupationController: _fatherOccupationController,
+              livingWithChildValue: _fatherLivingWithChild,
+              onLivingWithChildChanged: (value) {
+                setState(() {
+                  _fatherLivingWithChild = value;
+                  if (_fatherLivingWithChild == 'YES') {
+                    _fatherWhyNotLivingController.clear();
+                    _fatherPhoneController.clear();
+                  }
+                });
+              },
+              whyNotLivingController: _fatherWhyNotLivingController,
+              phoneController: _fatherPhoneController,
+            ),
+            _parentSection(
+              title: 'Mother',
+              aliveValue: _motherAlive,
+              onAliveChanged: (value) {
+                setState(() {
+                  _motherAlive = value;
+                  if (_motherAlive != 'YES') {
+                    _motherFirstNameController.clear();
+                    _motherSurnameController.clear();
+                    _motherDobController.clear();
+                    _motherOccupationController.clear();
+                    _motherLivingWithChild = '';
+                    _motherWhyNotLivingController.clear();
+                    _motherPhoneController.clear();
+                  }
+                });
+              },
+              firstNameController: _motherFirstNameController,
+              surnameController: _motherSurnameController,
+              dobController: _motherDobController,
+              occupationController: _motherOccupationController,
+              livingWithChildValue: _motherLivingWithChild,
+              onLivingWithChildChanged: (value) {
+                setState(() {
+                  _motherLivingWithChild = value;
+                  if (_motherLivingWithChild == 'YES') {
+                    _motherWhyNotLivingController.clear();
+                    _motherPhoneController.clear();
+                  }
+                });
+              },
+              whyNotLivingController: _motherWhyNotLivingController,
+              phoneController: _motherPhoneController,
+            ),
+            _caregiverSection(),
+            _personalAssistantSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _householdMemberCard(int index, _HouseholdMemberEntry member) {
+    final relationshipOptions = _relationshipOptionsForMemberSex(member.sex);
+    final safeRelationship = relationshipOptions
+        .any((option) => option.code == member.relationshipToClient)
+        ? member.relationshipToClient
+        : '';
+
+    if (safeRelationship != member.relationshipToClient) {
+      member.relationshipToClient = '';
+    }
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FBFD),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.14)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Household Member ${index + 1}',
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => _removeOtherHouseholdMember(index),
+                icon: const Icon(Icons.delete_outline),
+                color: Colors.redAccent,
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            _Input(
+              controller: member.firstNameController,
+              label: 'First name',
+              hint: 'Enter first name',
+            ),
+            _Input(
+              controller: member.surnameController,
+              label: 'Surname',
+              hint: 'Enter surname',
+            ),
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            GestureDetector(
+              onTap: () => _pickDobForHouseholdMember(member),
+              child: AbsorbPointer(
+                child: _Input(
+                  controller: member.dobController,
+                  label: 'Date of Birth',
+                  hint: 'Pick date',
+                  suffixIcon: const Icon(Icons.date_range),
+                ),
+              ),
+            ),
+            _Input(
+              controller: member.ageController,
+              label: 'Age',
+              hint: 'Auto-calculated',
+              readOnly: true,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            _dropdown(
+              label: 'Sex',
+              value: member.sex,
+              options: sexOptions,
+              onChanged: (v) {
+                setState(() {
+                  member.sex = v ?? '';
+                  member.relationshipToClient = '';
+                });
+              },
+            ),
+            _dropdown(
+              label: 'Relationship to client',
+              value: safeRelationship,
+              options: relationshipOptions,
+              onChanged: (v) {
+                setState(() {
+                  member.relationshipToClient = v ?? '';
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          _row2(
+            _Input(
+              controller: member.occupationController,
+              label: 'Occupation',
+              hint: 'Enter occupation',
+            ),
+            _Input(
+              controller: member.contactsController,
+              label: 'Contacts',
+              hint: 'Phone / contact details',
+              keyboardType: TextInputType.phone,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _dropdown(
+            label: 'Any Disability?',
+            value: member.hasDisability,
+            options: yesNoOptions,
+            onChanged: (v) {
+              setState(() {
+                member.hasDisability = v ?? '';
+                if (member.hasDisability != 'YES') {
+                  member.disabilitySpecifyController.clear();
+                }
+              });
+            },
+          ),
+          if (member.hasDisability == 'YES') ...[
+            const SizedBox(height: 10),
+            _Input(
+              controller: member.disabilitySpecifyController,
+              label: 'Specify disability',
+              hint: 'Describe disability',
+              maxLines: 3,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOtherHouseholdMembersSection(Color primary) {
+    return MaterialCard(
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _titleRow(
+              color: primary,
+              title: 'Other Household Members',
+              subtitle:
+              'Capture other household members as separate TEIs linked to this household.',
+              icon: Icons.groups_outlined,
+            ),
+            const SizedBox(height: 12),
+            ...List.generate(
+              _otherHouseholdMembers.length,
+                  (index) => _householdMemberCard(
+                index,
+                _otherHouseholdMembers[index],
+              ),
+            ),
+            OutlinedButton.icon(
+              onPressed: _addOtherHouseholdMember,
+              icon: const Icon(Icons.add),
+              label: const Text('Add household member'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: widget.color,
+                side: BorderSide(color: widget.color),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final activeInterventionProgram =
@@ -1277,7 +2242,7 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
         child: SubPageAppBar(
           label: widget.reportedEventId == null
               ? 'Register / Intake Case'
-              : 'Enroll Household Case',
+              : 'Enroll Client Case',
           activeInterventionProgram: activeInterventionProgram,
           disableSelectionOfActiveIntervention: false,
         ),
@@ -1397,9 +2362,7 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                                   _isAdultEmployed = '';
                                   _employerNameController.clear();
                                 }
-                                if (_isAdultOrElderly) {
-                                  _grade = '';
-                                }
+                                if (_isAdultOrElderly) _grade = '';
                                 _removeHiddenReasonOptions();
                               });
                             },
@@ -1416,6 +2379,17 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                                 if (!_showGuardianOption &&
                                     _nextOfKinRelationship == 'GUARDIAN') {
                                   _nextOfKinRelationship = '';
+                                }
+                                if (!_isDisabledYes) {
+                                  _personalAssistantNameController.clear();
+                                  _personalAssistantSurnameController.clear();
+                                  _personalAssistantSex = '';
+                                  _personalAssistantRelationshipController
+                                      .clear();
+                                  _personalAssistantDobController.clear();
+                                  _personalAssistantOccupationController
+                                      .clear();
+                                  _personalAssistantPhoneController.clear();
                                 }
                               });
                             },
@@ -1490,9 +2464,8 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                             value: _nationality,
                             options: nationalityOptions,
                             requiredField: true,
-                            onChanged: (v) {
-                              setState(() => _nationality = v ?? '');
-                            },
+                            onChanged: (v) =>
+                                setState(() => _nationality = v ?? ''),
                           ),
                           const SizedBox(height: 10),
                           _dropdown(
@@ -1515,11 +2488,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                               controller: _homeLanguageOtherController,
                               label: 'Specify other language',
                               hint: 'Enter language',
-                              validator: (v) =>
-                              (_homeLanguage == 'OTHER' &&
-                                  (v == null || v.trim().isEmpty))
-                                  ? 'Please specify language'
-                                  : null,
                             ),
                           ],
                           const SizedBox(height: 10),
@@ -1578,11 +2546,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                               controller: _schoolNameController,
                               label: 'Name of School',
                               hint: 'Enter school name',
-                              validator: (v) =>
-                              (_isClientInSchool == 'YES' &&
-                                  (v == null || v.trim().isEmpty))
-                                  ? 'School name is required'
-                                  : null,
                             ),
                             if (!_isAdultOrElderly) ...[
                               const SizedBox(height: 10),
@@ -1591,9 +2554,8 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                                 value: _grade,
                                 options: gradeOptions,
                                 requiredField: true,
-                                onChanged: (v) {
-                                  setState(() => _grade = v ?? '');
-                                },
+                                onChanged: (v) =>
+                                    setState(() => _grade = v ?? ''),
                               ),
                             ],
                             const SizedBox(height: 10),
@@ -1602,10 +2564,8 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                               value: _schoolAttendanceStatus,
                               options: inSchoolAttendanceOptions,
                               requiredField: true,
-                              onChanged: (v) {
-                                setState(
-                                        () => _schoolAttendanceStatus = v ?? '');
-                              },
+                              onChanged: (v) => setState(
+                                      () => _schoolAttendanceStatus = v ?? ''),
                             ),
                           ],
                           if (_isClientInSchool == 'NO') ...[
@@ -1615,10 +2575,8 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                               value: _schoolAttendanceStatus,
                               options: notInSchoolAttendanceOptions,
                               requiredField: true,
-                              onChanged: (v) {
-                                setState(
-                                        () => _schoolAttendanceStatus = v ?? '');
-                              },
+                              onChanged: (v) => setState(
+                                      () => _schoolAttendanceStatus = v ?? ''),
                             ),
                           ],
                         ],
@@ -1661,11 +2619,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                                 controller: _employerNameController,
                                 label: 'Name of Employer',
                                 hint: 'Enter employer name',
-                                validator: (v) =>
-                                (_isAdultEmployed == 'YES' &&
-                                    (v == null || v.trim().isEmpty))
-                                    ? 'Employer name is required'
-                                    : null,
                               ),
                             ],
                           ],
@@ -1693,19 +2646,11 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                               controller: _nextOfKinFirstNameController,
                               label: 'First name',
                               hint: 'Next of kin first name',
-                              validator: (v) =>
-                              (v == null || v.trim().isEmpty)
-                                  ? 'First name is required'
-                                  : null,
                             ),
                             _Input(
                               controller: _nextOfKinSurnameController,
                               label: 'Surname',
                               hint: 'Next of kin surname',
-                              validator: (v) =>
-                              (v == null || v.trim().isEmpty)
-                                  ? 'Surname is required'
-                                  : null,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -1714,10 +2659,6 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                             label: 'Phone Number',
                             hint: 'e.g. 5xxxxxxx',
                             keyboardType: TextInputType.phone,
-                            validator: (v) =>
-                            (v == null || v.trim().isEmpty)
-                                ? 'Phone number is required'
-                                : null,
                           ),
                           const SizedBox(height: 10),
                           _Input(
@@ -1748,17 +2689,16 @@ class _MgysdNewCasePageState extends State<MgysdNewCasePage> {
                               _nextOfKinRelationshipOtherController,
                               label: 'Specify other relationship',
                               hint: 'Enter relationship',
-                              validator: (v) =>
-                              (_nextOfKinRelationshipIsOther &&
-                                  (v == null || v.trim().isEmpty))
-                                  ? 'Please specify relationship'
-                                  : null,
                             ),
                           ],
                         ],
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  _buildFamilyInformationSection(primary),
+                  const SizedBox(height: 12),
+                  _buildOtherHouseholdMembersSection(primary),
                   const SizedBox(height: 12),
                   _buildReasonSection(primary),
                   const SizedBox(height: 12),
