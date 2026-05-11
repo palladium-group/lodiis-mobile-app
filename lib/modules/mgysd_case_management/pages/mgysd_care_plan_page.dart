@@ -225,7 +225,9 @@ class _MgysdCarePlanPageState extends State<MgysdCarePlanPage> {
       return 'In progress';
     }
 
-    if (raw.contains('not started') || raw == 'not_started' || raw == 'pending') {
+    if (raw.contains('not started') ||
+        raw == 'not_started' ||
+        raw == 'pending') {
       return 'Not started';
     }
 
@@ -280,41 +282,23 @@ class _MgysdCarePlanPageState extends State<MgysdCarePlanPage> {
       if (carePlanCandidate != null) {
         derived = carePlanCandidate.toString();
       }
-
-      if (derived == null) {
-        dynamic rawStatusCandidate;
-
-        if (caseObj is Map) {
-          rawStatusCandidate = caseObj['status'] ?? caseObj['caseStatus'];
-        } else {
-          try {
-            rawStatusCandidate = caseObj.status;
-          } catch (_) {}
-
-          if (rawStatusCandidate == null) {
-            try {
-              rawStatusCandidate = caseObj.caseStatus;
-            } catch (_) {}
-          }
-        }
-
-        if (rawStatusCandidate != null) {
-          derived = rawStatusCandidate.toString();
-        }
-      }
     } catch (_) {}
 
-    if (derived != null) {
-      final mapped = _normalizeLocalStatus(derived);
+    // Do not use the general case status here.
+    // If Care Plan has no status yet, leave it as null so the page shows "Not started".
+    if (derived == null || derived.trim().isEmpty) {
+      return;
+    }
 
-      if ((_localStatus ?? '').toLowerCase() != mapped.toLowerCase()) {
-        if (mounted) {
-          setState(() {
-            _localStatus = mapped;
-          });
-        } else {
+    final mapped = _normalizeLocalStatus(derived);
+
+    if ((_localStatus ?? '').toLowerCase() != mapped.toLowerCase()) {
+      if (mounted) {
+        setState(() {
           _localStatus = mapped;
-        }
+        });
+      } else {
+        _localStatus = mapped;
       }
     }
   }
@@ -526,6 +510,14 @@ class _MgysdCarePlanPageState extends State<MgysdCarePlanPage> {
     progress['care_plan_status'] = 'in_progress';
 
     await prefs.setString(progressKey, jsonEncode(progress));
+
+    if (mounted && _localStatus != 'In progress') {
+      setState(() {
+        _localStatus = 'In progress';
+      });
+    } else {
+      _localStatus = 'In progress';
+    }
   }
 
   Future<void> _persistSavedComplete(Map<String, dynamic> payload) async {
@@ -714,6 +706,93 @@ class _MgysdCarePlanPageState extends State<MgysdCarePlanPage> {
               },
               onEditingComplete: () {
                 _persistDraft(fieldName);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatPickedDate(DateTime date) {
+    final y = date.year.toString().padLeft(4, '0');
+    final m = date.month.toString().padLeft(2, '0');
+    final d = date.day.toString().padLeft(2, '0');
+    return '$y-$m-$d';
+  }
+
+  DateTime _initialDateFromController(TextEditingController controller) {
+    try {
+      final value = controller.text.trim();
+      if (value.isNotEmpty) {
+        return DateTime.parse(value);
+      }
+    } catch (_) {}
+
+    return DateTime.now();
+  }
+
+  Future<void> _pickDate(
+      TextEditingController controller,
+      String fieldName,
+      ) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _initialDateFromController(controller),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate == null) return;
+
+    controller.text = _formatPickedDate(pickedDate);
+    await _persistDraft(fieldName);
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Widget _dateField(
+      String label,
+      TextEditingController controller, {
+        required String fieldName,
+        required FocusNode focusNode,
+        bool requiredField = true,
+      }) {
+    return Padding(
+      key: _fieldKeys[fieldName],
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 13, color: Colors.black87)),
+          const SizedBox(height: 6),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+            child: TextFormField(
+              focusNode: focusNode,
+              controller: controller,
+              readOnly: true,
+              onTap: () => _pickDate(controller, fieldName),
+              decoration: const InputDecoration(
+                isDense: true,
+                border: InputBorder.none,
+                hintText: 'Select date',
+                hintStyle: TextStyle(color: Colors.black45),
+                suffixIcon: Icon(Icons.calendar_today_outlined, size: 18),
+              ),
+              style: const TextStyle(fontSize: 14),
+              validator: (v) {
+                if (requiredField && (v == null || v.trim().isEmpty)) {
+                  return 'Please select $label';
+                }
+                return null;
               },
             ),
           ),
@@ -1061,12 +1140,11 @@ class _MgysdCarePlanPageState extends State<MgysdCarePlanPage> {
                     focusNode: _planPersonSignatureFocus,
                     maxLines: 1,
                   ),
-                  _goalField(
+                  _dateField(
                     'Date',
                     _planPersonDate,
                     fieldName: 'planPersonDate',
                     focusNode: _planPersonDateFocus,
-                    maxLines: 1,
                   ),
 
                   _sectionHeading('Details of anyone who disagrees with the plan and why'),
@@ -1086,12 +1164,11 @@ class _MgysdCarePlanPageState extends State<MgysdCarePlanPage> {
                     maxLines: 1,
                     requiredField: false,
                   ),
-                  _goalField(
+                  _dateField(
                     'Date',
                     _disagreeDate,
                     fieldName: 'disagreeDate',
                     focusNode: _disagreeDateFocus,
-                    maxLines: 1,
                     requiredField: false,
                   ),
                   _goalField(
