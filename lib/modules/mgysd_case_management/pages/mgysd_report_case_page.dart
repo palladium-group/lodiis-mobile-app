@@ -181,13 +181,8 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
   final Set<String> _selectedConcernReasons = {};
   final TextEditingController _concernOtherController = TextEditingController();
 
+  // Note: removed the anonymous boolean from aboutReporterFields so it can be rendered later
   List<MgysdFormFieldDef> get aboutReporterFields => const [
-    MgysdFormFieldDef(
-      id: deReporterAnonymous,
-      label: 'Reporter wants to remain anonymous',
-      type: MgysdFieldType.boolean,
-      requiredField: true,
-    ),
     MgysdFormFieldDef(
       id: deReporterFirstName,
       label: 'Reporter First name',
@@ -353,6 +348,9 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
         return '';
       });
     }
+
+    // ensure the anonymous flag is initialized even though it's not in aboutReporterFields
+    _values.putIfAbsent(deReporterAnonymous, () => 'false');
 
     // initialize selected concerns from saved value if present
     final saved = (_values[deConcernReason] ?? '').trim();
@@ -1213,18 +1211,21 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     );
   }
 
+  // Updated labels per your earlier request:
+  // - Where it was "Role / Relationship" it is now "Last Name"
+  // - The People involved section subtitle is updated in build() below
   Widget _personInvolvedCard(int index, MgysdPersonInvolvedEntry person, double availableWidth) {
     final twoCols = _twoCols(availableWidth);
 
     Widget firstNameField = TextFormField(
       controller: person.nameController,
-      decoration: _decoration('First name'),
+      decoration: _decoration('First Name'),
       validator: (v) => _requiredValidator(v, requiredField: true),
     );
 
     Widget lastNameField = TextFormField(
       controller: person.roleController,
-      decoration: _decoration('Role / Relationship'),
+      decoration: _decoration('Last Name'),
       validator: (v) => _requiredValidator(v, requiredField: true),
     );
 
@@ -1280,6 +1281,45 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     );
   }
 
+  // New widget: anonymous toggle rendered after People involved and before Save
+  Widget _anonymousToggleCard() {
+    final current = (_values[deReporterAnonymous] ?? 'false') == 'true';
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: Colors.white,
+        border: Border.all(color: Colors.blueGrey.withOpacity(0.08)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Reporter wants to remain anonymous',
+              style: const TextStyle(fontSize: 14.0),
+            ),
+          ),
+          Text(
+            current ? 'Yes' : 'No',
+            style: TextStyle(
+              fontSize: 13.5,
+              fontWeight: FontWeight.w700,
+              color: widget.color,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Switch(
+            value: current,
+            activeColor: widget.color,
+            onChanged: (val) => setState(() {
+              _values[deReporterAnonymous] = val ? 'true' : 'false';
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _onSave() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1303,6 +1343,8 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     for (final f in aboutReporterFields) {
       reporterMap[f.id] = _values[f.id] ?? '';
     }
+    // include anonymous flag in reporter map as well
+    reporterMap[deReporterAnonymous] = _values[deReporterAnonymous] ?? '';
 
     final concernsMap = <String, String>{
       deWhenHappened: _values[deWhenHappened] ?? '',
@@ -1315,8 +1357,8 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     final payload = {
       'reporter': reporterMap,
       'concerns': concernsMap,
-      'peopleInvolved': peopleJson, // moved people involved before clients in UI
       'clients': clientsJson,
+      'peopleInvolved': peopleJson,
     };
 
     debugPrint('MGYSD payload: ${jsonEncode(payload)}');
@@ -1363,44 +1405,8 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    _sectionCard(
-                      title: 'Why are you concerned?',
-                      subtitle: 'Date, location and reasons for concern',
-                      icon: Icons.report_problem,
-                      children: [
-                        // Concern fields in the new order: date, location, reasons, description
-                        ...concernFields.map((f) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: _buildField(f),
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // People involved section moved before Clients
-                    _sectionCard(
-                      title: 'People involved',
-                      subtitle: 'Other people involved in the incident',
-                      icon: Icons.people,
-                      children: [
-                        ..._peopleInvolved.asMap().entries.map((e) {
-                          final idx = e.key;
-                          final person = e.value;
-                          return _personInvolvedCard(idx, person, contentMax);
-                        }).toList(),
-                        const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton.icon(
-                            onPressed: _addPersonInvolved,
-                            icon: const Icon(Icons.add),
-                            label: const Text('Add another person involved'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
+
+                    // Clients moved up
                     _sectionCard(
                       title: 'Clients',
                       subtitle: 'People affected',
@@ -1422,7 +1428,51 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+
+                    _sectionCard(
+                      title: 'Why are you concerned?',
+                      subtitle: 'Date, location and reasons for concern',
+                      icon: Icons.report_problem,
+                      children: [
+                        // Concern fields (date, location, reasons, description)
+                        ...concernFields.map((f) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _buildField(f),
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    _sectionCard(
+                      title: 'People involved',
+                      subtitle: 'Names of any other people e.g. witnesses, family members etc',
+                      icon: Icons.people,
+                      children: [
+                        ..._peopleInvolved.asMap().entries.map((e) {
+                          final idx = e.key;
+                          final person = e.value;
+                          return _personInvolvedCard(idx, person, contentMax);
+                        }).toList(),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            onPressed: _addPersonInvolved,
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add another person involved'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Moved: anonymous toggle now appears after People involved and before Save
+                    _anonymousToggleCard(),
                     const SizedBox(height: 20),
+
                     ElevatedButton(
                       onPressed: _submitting ? null : _onSave,
                       style: ElevatedButton.styleFrom(
