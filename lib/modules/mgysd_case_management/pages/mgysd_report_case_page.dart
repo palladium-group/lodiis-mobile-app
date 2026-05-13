@@ -281,11 +281,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
     ),
   ];
 
-  // Updated concernFields order:
-  // 1) Date incident happened (deWhenHappened)
-  // 2) Location (deIncidentLocation)
-  // 3) Concern reason (multi-select)
-  // 4) Incident description
+
   List<MgysdFormFieldDef> get concernFields => const [
     MgysdFormFieldDef(
       id: deWhenHappened,
@@ -1368,7 +1364,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                       subtitle: 'Date, location and reasons for concern',
                       icon: Icons.report_problem,
                       children: [
-                        // Concern fields in the new order: date, location, reasons, description
+
                         ...concernFields.map((f) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
@@ -1378,7 +1374,7 @@ class _MgysdRecordCasePageState extends State<MgysdRecordCasePage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    // People involved section moved before Clients
+
                     _sectionCard(
                       title: 'People involved',
                       subtitle: 'Other people involved in the incident',
