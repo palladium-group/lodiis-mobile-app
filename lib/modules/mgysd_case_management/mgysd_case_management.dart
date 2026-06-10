@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
-import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_case_list_page.dart';
-import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_case_management_home.dart';
-import 'package:kb_mobile_app/modules/mgysd_case_management/pages/mgysd_records_page.dart';
+import 'package:kb_mobile_app/modules/mgysd_case_management/case_shell/pages/mgysd_case_list_page.dart';
+import 'package:kb_mobile_app/modules/mgysd_case_management/case_shell/pages/mgysd_case_management_home.dart';
+import 'package:kb_mobile_app/modules/mgysd_case_management/case_shell/pages/mgysd_records_page.dart';
 import 'package:provider/provider.dart';
 import 'package:kb_mobile_app/core/utils/app_bar_util.dart';
 

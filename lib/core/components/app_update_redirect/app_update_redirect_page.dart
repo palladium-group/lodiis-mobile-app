@@ -9,7 +9,6 @@ import 'package:kb_mobile_app/core/components/app_update_redirect/app_update_act
 import 'package:kb_mobile_app/core/components/app_update_redirect/app_update_warning_message.dart';
 
 import 'package:kb_mobile_app/app_state/app_info_state/app_info_state.dart';
-import 'package:new_version_plus/new_version_plus.dart';
 import 'package:provider/provider.dart';
 
 class AppUpdateRedirectPage extends StatelessWidget {

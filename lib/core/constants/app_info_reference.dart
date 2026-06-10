@@ -1,6 +1,6 @@
 class AppInfoReference {
-  static const String baseUrl = 'lodiis.org';
-  static const String subBaseUrl = '';
+  static const String baseUrl = 'lodiis.dataforimplementation.org';
+  static const String subBaseUrl = 'lodiis';
   static const String androidId = 'org.hisptanzania.kb_mobile_app';
   static const String currentAppName = 'LODIIS';
   static const String currentAppVersion = '2.3.9';

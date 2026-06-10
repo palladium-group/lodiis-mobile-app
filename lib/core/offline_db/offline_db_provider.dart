@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:kb_mobile_app/core/constants/beneficiary_identification.dart';
@@ -9,20 +8,28 @@ class OfflineDbProvider {
   final String databaseName = "lodiis";
   Database? _db;
 
-  // Script for initialization of tables
   final List<String> initialQuery = [
     "CREATE TABLE IF NOT EXISTS mgysd_report_intake_link (id TEXT PRIMARY KEY, reportEvent TEXT, tei TEXT, enrollment TEXT, createdAt TEXT)",
 
-    // MGYSD helper + workflow tables
     "CREATE TABLE IF NOT EXISTS mgysd_household_member (id TEXT PRIMARY KEY, householdTei TEXT, memberTei TEXT, memberRole TEXT, isPrimaryClient TEXT, syncStatus TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_initial_risk_assessment (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, assessmentDate TEXT, riskLevel TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_social_investigation (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, investigationDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_care_plan (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, planDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_referral (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, referralDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, monitoringDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
 
-    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, serviceDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
+    "CREATE TABLE IF NOT EXISTS mgysd_initial_risk_assessment (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, assessmentDate TEXT, riskLevel TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_social_investigation (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, investigationDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'social_investigation', syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_care_plan (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', planDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'care_plan', syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_care_plan_goal (id TEXT PRIMARY KEY, carePlanId TEXT, socialInvestigationId TEXT DEFAULT '', caseId TEXT, householdTei TEXT, goalCategory TEXT, targetType TEXT, targetTei TEXT, targetName TEXT, goalDescription TEXT, term TEXT DEFAULT '', subjectId TEXT DEFAULT '', subjectTei TEXT DEFAULT '', subjectName TEXT DEFAULT '', subjectRole TEXT DEFAULT '', goal TEXT DEFAULT '', goalStatus TEXT DEFAULT 'open', createdAt TEXT, updatedAt TEXT, syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_referral (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, referralDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', carePlanId TEXT DEFAULT '', monitoringReason TEXT DEFAULT '', monitoringDate TEXT, status TEXT, payloadJson TEXT, reassessmentPayloadJson TEXT DEFAULT '', updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'monitoring', syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_monitoring_goal (id TEXT PRIMARY KEY, monitoringId TEXT, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', carePlanId TEXT DEFAULT '', memberTei TEXT, goalId TEXT, serviceProvisionId TEXT DEFAULT '', progressStatus TEXT, progressNotes TEXT, challenges TEXT, recommendation TEXT, nextFollowupDate TEXT, createdAt TEXT, updatedAt TEXT, syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', carePlanId TEXT DEFAULT '', memberTei TEXT, goalId TEXT, serviceDate TEXT, serviceProvided TEXT, outcome TEXT, goalStatus TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'service_provision', syncStatus TEXT DEFAULT 'not-synced')",
 
     "CREATE TABLE IF NOT EXISTS current_user (id TEXT PRIMARY KEY, name TEXT, username TEXT, password TEXT , implementingPartner TEXT ,isLogin INTEGER, subImplementingPartner TEXT, phoneNumber TEXT, email TEXT, userRoles TEXT, userGroups TEXT, hasPreviousSuccessLogin TEXT)",
     "CREATE TABLE IF NOT EXISTS current_user_ou (id TEXT PRIMARY KEY, userId TEXT)",
@@ -48,23 +55,88 @@ class OfflineDbProvider {
   ];
 
   final List<String> migrationQuery = [
-    // Migration to add an extra field to checking Reassessment for the enrollments
     "ALTER TABLE enrollment ADD shouldReAssess TEXT DEFAULT ''",
 
-    // Migrations to resolve the miss-added household categorization attribute for Caregiver/Household program
     "UPDATE tracked_entity_instance_attribute SET value = '' WHERE attribute = '${BeneficiaryIdentification.householdCategorization}' AND value = '{}'",
     "DELETE FROM tracked_entity_instance_attribute WHERE attribute = 'enrollmentDate'",
 
-    // MGYSD helper + workflow tables
+    "CREATE TABLE IF NOT EXISTS mgysd_report_intake_link (id TEXT PRIMARY KEY, reportEvent TEXT, tei TEXT, enrollment TEXT, createdAt TEXT)",
     "CREATE TABLE IF NOT EXISTS mgysd_household_member (id TEXT PRIMARY KEY, householdTei TEXT, memberTei TEXT, memberRole TEXT, isPrimaryClient TEXT, syncStatus TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_initial_risk_assessment (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, assessmentDate TEXT, riskLevel TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_social_investigation (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, investigationDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_care_plan (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, planDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_referral (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, referralDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, monitoringDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
 
-    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, serviceDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
+    "CREATE TABLE IF NOT EXISTS mgysd_initial_risk_assessment (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, assessmentDate TEXT, riskLevel TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
+    "CREATE TABLE IF NOT EXISTS mgysd_social_investigation (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, investigationDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'social_investigation', syncStatus TEXT DEFAULT 'not-synced')",
+    "CREATE TABLE IF NOT EXISTS mgysd_care_plan (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', planDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'care_plan', syncStatus TEXT DEFAULT 'not-synced')",
+    "CREATE TABLE IF NOT EXISTS mgysd_referral (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, referralDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
+    "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', carePlanId TEXT DEFAULT '', monitoringReason TEXT DEFAULT '', monitoringDate TEXT, status TEXT, payloadJson TEXT, reassessmentPayloadJson TEXT DEFAULT '', updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'monitoring', syncStatus TEXT DEFAULT 'not-synced')",
+    "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
+    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', carePlanId TEXT DEFAULT '', memberTei TEXT DEFAULT '', goalId TEXT DEFAULT '', serviceDate TEXT, serviceProvided TEXT DEFAULT '', outcome TEXT DEFAULT '', goalStatus TEXT DEFAULT '', status TEXT, payloadJson TEXT, updatedAt TEXT, parentCaseId TEXT DEFAULT '', rootCaseId TEXT DEFAULT '', stageKey TEXT DEFAULT 'service_provision', syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_care_plan_goal (id TEXT PRIMARY KEY, carePlanId TEXT, socialInvestigationId TEXT DEFAULT '', caseId TEXT, householdTei TEXT, goalCategory TEXT, targetType TEXT, targetTei TEXT, targetName TEXT, goalDescription TEXT, term TEXT DEFAULT '', subjectId TEXT DEFAULT '', subjectTei TEXT DEFAULT '', subjectName TEXT DEFAULT '', subjectRole TEXT DEFAULT '', goal TEXT DEFAULT '', goalStatus TEXT DEFAULT 'open', createdAt TEXT, updatedAt TEXT, syncStatus TEXT DEFAULT 'not-synced')",
+
+    "CREATE TABLE IF NOT EXISTS mgysd_monitoring_goal (id TEXT PRIMARY KEY, monitoringId TEXT, caseId TEXT, householdTei TEXT, socialInvestigationId TEXT DEFAULT '', carePlanId TEXT DEFAULT '', memberTei TEXT, goalId TEXT, serviceProvisionId TEXT DEFAULT '', progressStatus TEXT, progressNotes TEXT, challenges TEXT, recommendation TEXT, nextFollowupDate TEXT, createdAt TEXT, updatedAt TEXT, syncStatus TEXT DEFAULT 'not-synced')",
+
+    "ALTER TABLE mgysd_initial_risk_assessment ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+    "ALTER TABLE mgysd_social_investigation ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+    "ALTER TABLE mgysd_care_plan ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+    "ALTER TABLE mgysd_referral ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+    "ALTER TABLE mgysd_monitoring ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+    "ALTER TABLE mgysd_case_closure ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN memberTei TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN goalId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN serviceProvided TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN outcome TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN goalStatus TEXT DEFAULT ''",
+
+    "ALTER TABLE mgysd_care_plan ADD COLUMN socialInvestigationId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN socialInvestigationId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN term TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN subjectId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN subjectTei TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN subjectName TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN subjectRole TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN goal TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN targetType TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN targetTei TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN targetName TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN goalDescription TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN goalCategory TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN goalStatus TEXT DEFAULT 'open'",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN updatedAt TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan_goal ADD COLUMN syncStatus TEXT DEFAULT 'not-synced'",
+
+    "ALTER TABLE mgysd_service_provision ADD COLUMN socialInvestigationId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN carePlanId TEXT DEFAULT ''",
+
+    "ALTER TABLE mgysd_monitoring ADD COLUMN socialInvestigationId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_monitoring ADD COLUMN carePlanId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_monitoring ADD COLUMN monitoringReason TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_monitoring ADD COLUMN reassessmentPayloadJson TEXT DEFAULT ''",
+
+    "ALTER TABLE mgysd_monitoring_goal ADD COLUMN socialInvestigationId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_monitoring_goal ADD COLUMN carePlanId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_monitoring_goal ADD COLUMN serviceProvisionId TEXT DEFAULT ''",
+
+
+    "ALTER TABLE mgysd_social_investigation ADD COLUMN parentCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_social_investigation ADD COLUMN rootCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_social_investigation ADD COLUMN stageKey TEXT DEFAULT ''",
+
+    "ALTER TABLE mgysd_care_plan ADD COLUMN parentCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan ADD COLUMN rootCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_care_plan ADD COLUMN stageKey TEXT DEFAULT ''",
+
+    "ALTER TABLE mgysd_referral ADD COLUMN parentCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_referral ADD COLUMN rootCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_referral ADD COLUMN stageKey TEXT DEFAULT ''",
+
+    "ALTER TABLE mgysd_monitoring ADD COLUMN parentCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_monitoring ADD COLUMN rootCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_monitoring ADD COLUMN stageKey TEXT DEFAULT ''",
+
+    "ALTER TABLE mgysd_service_provision ADD COLUMN parentCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN rootCaseId TEXT DEFAULT ''",
+    "ALTER TABLE mgysd_service_provision ADD COLUMN stageKey TEXT DEFAULT ''"
   ];
 
   Future<Database?> get db async {
@@ -75,15 +147,13 @@ class OfflineDbProvider {
     return _db;
   }
 
-  init() async {
+  Future<Database> init() async {
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, '$databaseName.db');
+
     return await openDatabase(
       path,
-
-      // bump version so new MGYSD migrations run on existing installs
-      version: migrationQuery.length + 2,
-
+      version: 105,
       onUpgrade: onUpgrade,
       onConfigure: onConfigure,
       onCreate: onCreate,
@@ -92,38 +162,40 @@ class OfflineDbProvider {
     );
   }
 
-  onOpen(Database db) {}
+  Future<void> onOpen(Database db) async {}
 
-  onDowngrade(Database db, int oldVersion, int newVersion) {}
+  Future<void> onDowngrade(Database db, int oldVersion, int newVersion) async {}
 
-  onConfigure(Database db) {}
+  Future<void> onConfigure(Database db) async {}
 
-  onCreate(Database db, int version) async {
+  Future<void> onCreate(Database db, int version) async {
     List<String> queries = [...initialQuery, ...migrationQuery];
+
     for (String query in queries) {
       try {
         await db.execute(query);
-      } catch (error) {
-        //
+      } catch (_) {
+        // ignored intentionally because some ALTER statements may fail on fresh DB
       }
     }
   }
 
-  onUpgrade(Database db, int oldVersion, int version) async {
+  Future<void> onUpgrade(Database db, int oldVersion, int version) async {
     for (String query in migrationQuery) {
       try {
         await db.execute(query);
-      } catch (e) {
-        //
+      } catch (_) {
+        // ignored intentionally because columns may already exist
       }
     }
   }
 
-  close() async {
+  Future<void> close() async {
     try {
       var dbClient = await db;
-      dbClient!.close();
-    } catch (e) {
+      await dbClient?.close();
+      _db = null;
+    } catch (_) {
       //
     }
   }

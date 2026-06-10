@@ -732,7 +732,8 @@ class SynchronizationService {
     return conflictOnImport;
   }
 
-  // ✅ FIXED VERSION (handles Caregiver correctly too)
+
+
   Future<bool> uploadTeiEventsToTheServer(
       List<Events> teiEvents, {
         bool checkEnrollments = true,
@@ -741,97 +742,94 @@ class SynchronizationService {
     String url = 'api/events';
     bool conflictOnImport = false;
 
+    bool isPlaceholder(String value) {
+      final v = value.trim();
+      return v.isEmpty ||
+          v.startsWith('DE_') ||
+          v.startsWith('MGYSD_') ||
+          v.contains('_UID');
+    }
+
     Map body = {};
+
     body['events'] = teiEvents.map((Events event) {
       var data = event.toOffline(event);
 
-      // Remove wrong "eventDate" entry that sometimes sneaks into dataValues
-      if (data['dataValues'] != null) {
-        data['dataValues']
-            .removeWhere((item) => item['dataElement'] == 'eventDate');
+      data.remove('syncStatus');
+
+      if (isPlaceholder((data['programStage'] ?? '').toString())) {
+        data.remove('programStage');
       }
 
-      // If TEI is null/blank, remove it so DHIS2 accepts event without TEI
       if (data['trackedEntityInstance'] == null ||
-          data['trackedEntityInstance'] == '') {
+          data['trackedEntityInstance'].toString().trim().isEmpty) {
         data.remove('trackedEntityInstance');
+      }
+
+      if (data['dataValues'] != null) {
+        data['dataValues'].removeWhere((item) {
+          final dataElement = (item['dataElement'] ?? '').toString();
+          final value = (item['value'] ?? '').toString();
+
+          return dataElement == 'eventDate' ||
+              isPlaceholder(dataElement) ||
+              value.trim().isEmpty ||
+              value.trim() == 'null';
+        });
       }
 
       return data;
     }).toList();
 
     try {
-      var queryParameters = {
-        "strategy": "CREATE_AND_UPDATE",
-      };
+      print('======================================');
+      print('EVENT SYNC START');
+      print('EVENT COUNT: ${teiEvents.length}');
+      print('REQUEST BODY:');
+      print(const JsonEncoder.withIndent('  ').convert(body));
+      print('======================================');
 
       var response = await httpClient.httpPost(
         url,
         json.encode(body),
-        queryParameters: queryParameters,
+        queryParameters: {
+          "strategy": "CREATE_AND_UPDATE",
+        },
       );
 
-      // Hard error (except 409)
+      print('======================================');
+      print('DHIS2 EVENT RESPONSE STATUS: ${response.statusCode}');
+      print('DHIS2 EVENT RESPONSE BODY:');
+      print(response.body);
+      print('======================================');
+
+      await AppLogsOfflineProvider().addLogs(
+        AppLogs(
+          type: AppLogsConstants.errorLogType,
+          message: 'EVENT SYNC RESPONSE ${response.statusCode}: ${response.body}',
+        ),
+      );
+
       if (response.statusCode >= 400 && response.statusCode != 409) {
-        var message = await _getHttpResponseAppLogs(response.body);
-        if (message.isNotEmpty) {
-          AppLogs log = AppLogs(
-            type: AppLogsConstants.errorLogType,
-            message: 'uploadTeiEventsToTheServer: $message',
-          );
-          await AppLogsOfflineProvider().addLogs(log);
-        }
         return true;
       }
 
-      // Parse import summaries
+      final Map<String, dynamic> responseJson = json.decode(response.body);
       final Map<String, dynamic> referenceIds =
-      await _getReferenceIds(json.decode(response.body));
+      await _getReferenceIds(responseJson);
 
       syncedIds = (referenceIds['syncedIds'] ?? []).cast<String?>();
-      conflictOnImport = (referenceIds['conflictOnImport'] == true);
+      conflictOnImport = referenceIds['conflictOnImport'] == true;
 
-      // Keep your re-upload behavior
       await reUploadBeneficiariesWithUnsyncedServices(
         referenceIds,
         checkEnrollments,
         teiEvents,
       );
 
-      // IDs that DHIS2 explicitly rejected due to enrollment/TEI issues
-      final List<String?> unsyncedDueToEnrollment =
-      (referenceIds['unsyncedDueToEnrollment'] ?? []).cast<String?>();
-      final List<String?> unsyncedDueMissingBeneficiary =
-      (referenceIds['unsyncedDueMissingBeneficiary'] ?? []).cast<String?>();
-
-      final Set<String?> definitelyUnsynced = {
-        ...unsyncedDueToEnrollment,
-        ...unsyncedDueMissingBeneficiary,
-      };
-
-      // Determine uploaded IDs in this chunk
-      final Set<String?> idsFromChunk = teiEvents
-          .map((e) => e.event)
-          .where((id) => id != null && id != '')
-          .toSet();
-
-      // Decide which local events to mark as synced:
-      // 1) Use syncedIds if provided
-      // 2) If syncedIds empty and no conflicts -> mark all uploaded (fixes Caregiver case)
-      // 3) If conflicts exist -> mark everything except those explicitly rejected
-      Set<String?> successIds = {};
-
       if (syncedIds.isNotEmpty) {
-        successIds = syncedIds.toSet();
-      } else if (!conflictOnImport) {
-        successIds = idsFromChunk;
-      } else {
-        successIds = idsFromChunk.difference(definitelyUnsynced);
-      }
-
-      if (successIds.isNotEmpty) {
         for (Events event in teiEvents) {
-          if (successIds.contains(event.event)) {
+          if (syncedIds.contains(event.event)) {
             event.syncStatus = onlineSyncStatus;
             await FormUtil.savingEvent(event);
           }
@@ -839,15 +837,23 @@ class SynchronizationService {
       }
 
       return conflictOnImport;
-    } catch (error) {
-      AppLogs log = AppLogs(
-        type: AppLogsConstants.errorLogType,
-        message: 'uploadTeiEventsToTheServer: ${error.toString()}',
+    } catch (error, stackTrace) {
+      print('EVENT SYNC EXCEPTION');
+      print(error);
+      print(stackTrace);
+
+      await AppLogsOfflineProvider().addLogs(
+        AppLogs(
+          type: AppLogsConstants.errorLogType,
+          message: 'uploadTeiEventsToTheServer EXCEPTION: $error',
+        ),
       );
-      await AppLogsOfflineProvider().addLogs(log);
+
       rethrow;
     }
   }
+
+
 
   Future<void> reUploadBeneficiariesWithUnsyncedServices(
       Map referenceIds,

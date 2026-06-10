@@ -28,7 +28,7 @@ android {
 
 
     compileSdkVersion flutter.compileSdkVersion
-    namespace 'org.hisptanzania.kb_mobile_app.testing'
+    namespace 'org.hisptanzania.kb_mobile_app'
     ndkVersion'27.0.12077973'
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "org.hisptanzania.kb_mobile_app.testing"
+        applicationId "org.hisptanzania.kb_mobile_app"
         minSdkVersion 24
         multiDexEnabled true
         targetSdkVersion flutter.targetSdkVersion
@@ -64,6 +64,8 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
         }
     }
 }

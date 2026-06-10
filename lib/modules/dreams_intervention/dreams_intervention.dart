@@ -33,7 +33,6 @@ import 'package:kb_mobile_app/modules/dreams_intervention/submodules/dreams_serv
 import 'package:kb_mobile_app/modules/dreams_intervention/submodules/none_agyw/none_agyw.dart';
 import 'package:kb_mobile_app/modules/dreams_intervention/submodules/none_agyw/pages/non_agyw_dreams_hts_consent_form.dart';
 import 'package:new_version_plus/model/version_status.dart';
-import 'package:new_version_plus/new_version_plus.dart';
 import 'package:provider/provider.dart';
 
 class DreamsIntervention extends StatefulWidget {
