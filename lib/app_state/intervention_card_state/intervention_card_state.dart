@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
 
 class InterventionCardState with ChangeNotifier {
   // initial state

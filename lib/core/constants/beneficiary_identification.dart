@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/organisation_unit.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/organisation_unit.dart';
 
 class BeneficiaryIdentification {
   static const String beneficiaryId = 'cfPJpuMGp2O';

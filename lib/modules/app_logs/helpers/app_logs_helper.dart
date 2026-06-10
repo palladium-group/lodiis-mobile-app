@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:excel/excel.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:kb_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
-import 'package:kb_mobile_app/modules/app_logs/services/app_logs_service.dart';
+import 'package:lncmis_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
+import 'package:lncmis_mobile_app/modules/app_logs/services/app_logs_service.dart';
 
 class AppLogsHelper {
   static Future<String> get _appPath async {

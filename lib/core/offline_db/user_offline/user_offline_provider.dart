@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:kb_mobile_app/core/offline_db/user_offline/user_ou_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/user_offline/user_program_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/user_offline/user_ou_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/user_offline/user_program_offline_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
 
 class UserOfflineProvider extends OfflineDbProvider {
   // columns

@@ -1,14 +1,14 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:kb_mobile_app/core/constants/beneficiary_without_enrollment_criteria.dart';
-import 'package:kb_mobile_app/core/constants/pagination.dart';
-import 'package:kb_mobile_app/core/offline_db/event_offline/event_offline_data_value_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/core/services/organisation_unit_service.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/events.dart';
-import 'package:kb_mobile_app/models/none_participation_beneficiary.dart';
+import 'package:lncmis_mobile_app/core/constants/beneficiary_without_enrollment_criteria.dart';
+import 'package:lncmis_mobile_app/core/constants/pagination.dart';
+import 'package:lncmis_mobile_app/core/offline_db/event_offline/event_offline_data_value_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/core/services/organisation_unit_service.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/events.dart';
+import 'package:lncmis_mobile_app/models/none_participation_beneficiary.dart';
 import 'package:sqflite/sqflite.dart';
 
 class EventOfflineProvider extends OfflineDbProvider {
@@ -184,7 +184,7 @@ class EventOfflineProvider extends OfflineDbProvider {
     Map sanitizedSearchDataValues = {};
     final List<BeneficiaryWithoutEnrollmentCriteriaConstant> constants =
     BeneficiaryWithoutEnrollmentCriteriaConstant
-        .getDreamsWithoutEnrollmentCriteriaConstants();
+        .getWithoutEnrollmentCriteriaConstants();
     for (BeneficiaryWithoutEnrollmentCriteriaConstant constant in constants) {
       if (searchDataValues.containsKey(constant.attribute)) {
         sanitizedSearchDataValues[constant.dataElement] =

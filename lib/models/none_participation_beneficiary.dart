@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/events.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/events.dart';
 
 class NoneParticipationBeneficiary {
   String? event;

@@ -1,4 +1,3 @@
-import 'package:kb_mobile_app/core/constants/current_user_implementing_partner.dart';
 
 class CurrentUser {
   String? id;
@@ -125,12 +124,7 @@ class CurrentUser {
       if (attributeValue['value'] != null &&
           attributeValue['attribute'] != null) {
         Map attribute = attributeValue['attribute'];
-        String attributeId = attribute["id"] ?? "";
-        if (attributeId ==
-            CurrentUserImplementingPartner.subImplementingPartnerAttribute) {
-          subImplementingPartner = CurrentUserImplementingPartner
-              .getCurrentUserSubImplementingPartner(attributeValue['value']);
-        }
+
       }
     }
     return subImplementingPartner;
@@ -144,13 +138,6 @@ class CurrentUser {
       if (attributeValue['value'] != null &&
           attributeValue['attribute'] != null) {
         Map attribute = attributeValue['attribute'];
-        String attributeId = attribute["id"] ?? "";
-        if (attributeId ==
-            CurrentUserImplementingPartner.implementPartnerAttribute) {
-          implementingPartner =
-              CurrentUserImplementingPartner.getCurrentUserImplementingPartner(
-                  attributeValue['value']);
-        }
       }
     }
     return implementingPartner;

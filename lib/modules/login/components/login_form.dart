@@ -1,26 +1,25 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
-import 'package:kb_mobile_app/app_state/device_connectivity_state/device_connectivity_state.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/app_state/login_form_state/login_form_state.dart';
-import 'package:kb_mobile_app/app_state/referral_notification_state/referral_notification_state.dart';
-import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
-import 'package:kb_mobile_app/core/components/form_field_input_icon.dart';
-import 'package:kb_mobile_app/core/constants/custom_color.dart';
-import 'package:kb_mobile_app/core/services/device_tracking_service.dart';
-import 'package:kb_mobile_app/core/services/implementing_partner_referral_config_service.dart';
-import 'package:kb_mobile_app/core/services/program_service.dart';
-import 'package:kb_mobile_app/core/services/user_access.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/modules/intervention_selection/intervention_selection.dart';
-import 'package:kb_mobile_app/modules/login/components/login_button.dart';
-import 'package:kb_mobile_app/core/components/line_separator.dart';
-import 'package:kb_mobile_app/modules/login/constants/login_page_style.dart';
+import 'package:lncmis_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:lncmis_mobile_app/app_state/device_connectivity_state/device_connectivity_state.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/app_state/login_form_state/login_form_state.dart';
+import 'package:lncmis_mobile_app/app_state/referral_notification_state/referral_notification_state.dart';
+import 'package:lncmis_mobile_app/core/components/circular_process_loader.dart';
+import 'package:lncmis_mobile_app/core/components/form_field_input_icon.dart';
+import 'package:lncmis_mobile_app/core/constants/custom_color.dart';
+import 'package:lncmis_mobile_app/core/services/device_tracking_service.dart';
+import 'package:lncmis_mobile_app/core/services/program_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_access.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/modules/intervention_selection/intervention_selection.dart';
+import 'package:lncmis_mobile_app/modules/login/components/login_button.dart';
+import 'package:lncmis_mobile_app/core/components/line_separator.dart';
+import 'package:lncmis_mobile_app/modules/login/constants/login_page_style.dart';
 import 'package:provider/provider.dart';
-import 'package:kb_mobile_app/core/services/organisation_unit_service.dart';
+import 'package:lncmis_mobile_app/core/services/organisation_unit_service.dart';
 
 class LoginForm extends StatefulWidget {
   final String? currentLanguage;
@@ -199,9 +198,7 @@ class _LoginFormState extends State<LoginForm> {
         .setCurrentUser(user, userAccessConfigurations);
     await Provider.of<ReferralNotificationState>(context, listen: false)
         .setCurrentImplementingPartner(user.implementingPartner!);
-    await ImplementingPartnerReferralConfigService()
-        .addImplementingPartnerReferralServices(user.username, user.password);
-  }
+   }
 
   void resetLoginFormState({
     bool showErrorOnInputFields = false,

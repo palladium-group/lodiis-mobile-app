@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/core/constants/custom_color.dart';
-import 'package:kb_mobile_app/core/services/device_connectivity_provider.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/modules/login/components/login_form_container.dart';
-import 'package:kb_mobile_app/modules/login/components/login_top_icon.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/core/constants/custom_color.dart';
+import 'package:lncmis_mobile_app/core/services/device_connectivity_provider.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/modules/login/components/login_form_container.dart';
+import 'package:lncmis_mobile_app/modules/login/components/login_top_icon.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {

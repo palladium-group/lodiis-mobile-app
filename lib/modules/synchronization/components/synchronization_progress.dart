@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_state.dart';
-import 'package:kb_mobile_app/core/components/line_separator.dart';
-import 'package:kb_mobile_app/core/components/material_card.dart';
-import 'package:kb_mobile_app/modules/synchronization/constants/synchronization_actions_constants.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/app_state/synchronization_state/synchronization_state.dart';
+import 'package:lncmis_mobile_app/core/components/line_separator.dart';
+import 'package:lncmis_mobile_app/core/components/material_card.dart';
+import 'package:lncmis_mobile_app/modules/synchronization/constants/synchronization_actions_constants.dart';
 import 'package:provider/provider.dart';
 
 class SynchronizationProgress extends StatefulWidget {

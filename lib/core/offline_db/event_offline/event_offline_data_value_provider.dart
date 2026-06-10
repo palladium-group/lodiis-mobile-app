@@ -1,6 +1,6 @@
-import 'package:kb_mobile_app/core/constants/user_account_reference.dart';
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/models/events.dart';
+import 'package:lncmis_mobile_app/core/constants/user_account_reference.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/models/events.dart';
 import 'package:sqflite/sqflite.dart';
 
 class EventOfflineDataValueProvider extends OfflineDbProvider {

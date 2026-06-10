@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/app_info_state/app_info_state.dart';
+import 'package:lncmis_mobile_app/app_state/app_info_state/app_info_state.dart';
 import 'package:provider/provider.dart';
 
 class ServiceFormState with ChangeNotifier {

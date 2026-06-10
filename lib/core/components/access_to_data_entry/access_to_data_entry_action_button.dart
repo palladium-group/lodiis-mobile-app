@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 import 'package:provider/provider.dart';
 
 class AccessToDataEntryActionButton extends StatelessWidget {

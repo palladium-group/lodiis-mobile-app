@@ -2,33 +2,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:kb_mobile_app/app_state/dreams_intervention_list_state/dreams_intervention_list_state.dart';
-import 'package:kb_mobile_app/app_state/dreams_intervention_list_state/dreams_re_assessment_list_state.dart';
-import 'package:kb_mobile_app/app_state/education_intervention_state/education_bursary_state.dart';
-import 'package:kb_mobile_app/app_state/education_intervention_state/education_lbse_state.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/app_state/ogac_intervention_list_state/ogac_intervention_list_state.dart';
-import 'package:kb_mobile_app/app_state/ovc_intervention_list_state/ovc_intervention_list_state.dart';
-import 'package:kb_mobile_app/app_state/pp_prev_intervention_state/pp_prev_intervention_state.dart';
-import 'package:kb_mobile_app/app_state/referral_notification_state/referral_notification_state.dart';
-import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_status_state.dart';
-import 'package:kb_mobile_app/core/constants/app_logs_constants.dart';
-import 'package:kb_mobile_app/core/constants/device_tracking_constant.dart';
-import 'package:kb_mobile_app/core/constants/pagination.dart';
-import 'package:kb_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
-import 'package:kb_mobile_app/core/services/device_tracking_service.dart';
-import 'package:kb_mobile_app/core/services/implementing_partner_config_service.dart';
-import 'package:kb_mobile_app/core/services/preference_provider.dart';
-import 'package:kb_mobile_app/core/services/referral_notification_service.dart';
-import 'package:kb_mobile_app/core/services/synchronization_service.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/app_logs.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/models/events.dart';
-import 'package:kb_mobile_app/models/referral_notification.dart';
-import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
-import 'package:kb_mobile_app/modules/synchronization/constants/synchronization_actions_constants.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/app_state/mgysd_case_management_list_state/mgysd_case_management_list_state.dart';
+import 'package:lncmis_mobile_app/app_state/referral_notification_state/referral_notification_state.dart';
+import 'package:lncmis_mobile_app/app_state/synchronization_state/synchronization_status_state.dart';
+import 'package:lncmis_mobile_app/core/constants/app_logs_constants.dart';
+import 'package:lncmis_mobile_app/core/constants/device_tracking_constant.dart';
+import 'package:lncmis_mobile_app/core/constants/pagination.dart';
+import 'package:lncmis_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/services/device_tracking_service.dart';
+import 'package:lncmis_mobile_app/core/services/preference_provider.dart';
+import 'package:lncmis_mobile_app/core/services/referral_notification_service.dart';
+import 'package:lncmis_mobile_app/core/services/synchronization_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/app_logs.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/models/events.dart';
+import 'package:lncmis_mobile_app/models/referral_notification.dart';
+import 'package:lncmis_mobile_app/models/tracked_entity_instance.dart';
+import 'package:lncmis_mobile_app/modules/synchronization/constants/synchronization_actions_constants.dart';
 import 'package:provider/provider.dart';
 
 class SynchronizationState with ChangeNotifier {
@@ -443,66 +436,7 @@ class SynchronizationState with ChangeNotifier {
         currentUser.programs,
         currentUser.userOrgUnitIds,
       );
-
-      var implementingPartnerConfig = await ImplementingPartnerConfigService()
-          .getImplementingPartnerConfigFromTheServer(
-          currentUser.username, currentUser.password);
-
-      List currentUserPrograms =
-          implementingPartnerConfig[currentUser.implementingPartner] ?? [];
-
-      final int orgUnitLen = _synchronizationService.orgUnitIds?.length ?? 0;
-      final int programLen = (_synchronizationService.programs ?? [])
-          .where((p) => currentUserPrograms.contains(p))
-          .length;
-
-      final int total = orgUnitLen * programLen;
-      if (total == 0) {
-        updateDataDownloadStatus(false);
-        AppUtil.showToastMessage(
-            message: 'No programs/org units configured for download');
-        return;
-      }
-
-      // TEIs
-      count = 0;
-      for (String? orgUnitId in _synchronizationService.orgUnitIds ?? []) {
-        for (String? program in (_synchronizationService.programs ?? [])
-            .where((program) => currentUserPrograms.contains(program))) {
-          if (_dataDownloadStopped) return;
-
-          await _synchronizationService.getAndSaveTrackedInstanceFromServer(
-              program, orgUnitId, lastSyncDate);
-
-          count++;
-          totalCount++;
-
-          profileDataDownloadProgress = _clamp01(count / total);
-          overallDownloadProgress = _clamp01(totalCount / (total * 2));
-          notifyListeners();
-        }
-      }
-
-      // Events
-      count = 0;
-      for (String? orgUnitId in _synchronizationService.orgUnitIds ?? []) {
-        for (String? program in (_synchronizationService.programs ?? [])
-            .where((program) => currentUserPrograms.contains(program))) {
-          if (_dataDownloadStopped) return;
-
-          await _synchronizationService.getAndSaveEventsFromServer(
-              program, orgUnitId, lastSyncDate);
-
-          count++;
-          totalCount++;
-
-          eventsDataDownloadProgress = _clamp01(count / total);
-          overallDownloadProgress = _clamp01(totalCount / (total * 2));
-          notifyListeners();
-        }
-      }
-
-      await refreshBeneficiaryCounts();
+      refreshBeneficiaryCounts();
 
       AppUtil.showToastMessage(
           message: 'Data has been successfully downloaded');
@@ -764,37 +698,13 @@ class SynchronizationState with ChangeNotifier {
   Future refreshBeneficiaryCounts() async {
     try {
       if (context == null) return;
-
       await Provider.of<ReferralNotificationState>(context!, listen: false)
           .reloadReferralNotifications();
-      List<String> teiWithIncomingReferral =
-          Provider.of<ReferralNotificationState>(context!, listen: false)
-              .beneficiariesWithIncomingReferrals;
-      Provider.of<DreamsInterventionListState>(context!, listen: false)
-          .setTeiWithIncomingReferral(
-          teiWithIncomingReferral: teiWithIncomingReferral);
-
-      await Provider.of<OvcInterventionListState>(context!, listen: false)
-          .refreshOvcNumber();
-      await Provider.of<DreamsInterventionListState>(context!, listen: false)
-          .refreshBeneficiariesNumber();
-      await Provider.of<OgacInterventionListState>(context!, listen: false)
-          .refreshOgacNumber();
-      await Provider.of<EducationLbseInterventionState>(context!, listen: false)
-          .refreshEducationLbseNumber();
-      await Provider.of<PpPrevInterventionState>(context!, listen: false)
-          .refreshPpPrevNumber();
-
-      Provider.of<ReferralNotificationState>(context!, listen: false)
-          .reloadReferralNotifications();
-      Provider.of<DreamsRaAssessmentListState>(context!, listen: false)
-          .refreshBeneficiariesNumber();
-
-      await Provider.of<EducationBursaryInterventionState>(context!,
-          listen: false)
-          .refreshEducationBursaryNumber();
+      await Provider.of<MgysdCaseManagementListState>(context!, listen: false)
+          .refreshMgysdCasesNumber();
     } catch (_) {
       //
     }
   }
 }
+

@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
-import 'package:kb_mobile_app/core/utils/device_info_util.dart';
+import 'package:lncmis_mobile_app/core/constants/app_info_reference.dart';
+import 'package:lncmis_mobile_app/core/utils/device_info_util.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 
 class AppInfoUtil {

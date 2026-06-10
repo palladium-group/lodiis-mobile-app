@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:kb_mobile_app/core/offline_db/program_ou_offline/program_ou_offline_provider.dart';
-import 'package:kb_mobile_app/core/services/http_service.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/core/offline_db/program_ou_offline/program_ou_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/services/http_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
 
 class ProgramService {
   Future<dynamic> discoverProgramOrganisationUnitsFromTheServer(

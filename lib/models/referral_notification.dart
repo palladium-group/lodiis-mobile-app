@@ -1,4 +1,4 @@
-import 'package:kb_mobile_app/models/referral_event_notification.dart';
+import 'package:lncmis_mobile_app/models/referral_event_notification.dart';
 
 class ReferralNotification {
   String id;

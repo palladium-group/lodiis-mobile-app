@@ -1,6 +1,6 @@
-import 'package:kb_mobile_app/core/constants/app_logs_constants.dart';
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/models/app_logs.dart';
+import 'package:lncmis_mobile_app/core/constants/app_logs_constants.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/models/app_logs.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AppLogsOfflineProvider extends OfflineDbProvider {

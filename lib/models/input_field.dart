@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/models/input_field_option.dart';
+import 'package:lncmis_mobile_app/models/input_field_option.dart';
 
 class InputField {
   String id;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kb_mobile_app/core/components/material_card.dart';
-import 'package:kb_mobile_app/models/app_language.dart';
+import 'package:lncmis_mobile_app/core/components/material_card.dart';
+import 'package:lncmis_mobile_app/models/app_language.dart';
 
 class LanguageSelectionCard extends StatelessWidget {
   const LanguageSelectionCard({

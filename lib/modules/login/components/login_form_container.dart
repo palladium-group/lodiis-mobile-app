@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/app_state/login_form_state/login_form_state.dart';
-import 'package:kb_mobile_app/modules/login/components/login_form.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/app_state/login_form_state/login_form_state.dart';
+import 'package:lncmis_mobile_app/modules/login/components/login_form.dart';
 import 'package:provider/provider.dart';
 
 class LoginFormContainer extends StatelessWidget {

@@ -1,17 +1,17 @@
 import 'dart:convert';
 
-import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
-import 'package:kb_mobile_app/core/constants/device_tracking_constant.dart';
-import 'package:kb_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
-import 'package:kb_mobile_app/core/services/http_service.dart';
-import 'package:kb_mobile_app/core/services/preference_provider.dart';
-import 'package:kb_mobile_app/core/services/tracked_entity_instance_service.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/core/utils/device_info_util.dart';
-import 'package:kb_mobile_app/models/app_logs.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/models/device_tracking_data.dart';
+import 'package:lncmis_mobile_app/core/constants/app_info_reference.dart';
+import 'package:lncmis_mobile_app/core/constants/device_tracking_constant.dart';
+import 'package:lncmis_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/services/http_service.dart';
+import 'package:lncmis_mobile_app/core/services/preference_provider.dart';
+import 'package:lncmis_mobile_app/core/services/tracked_entity_instance_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/core/utils/device_info_util.dart';
+import 'package:lncmis_mobile_app/models/app_logs.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/models/device_tracking_data.dart';
 
 class DeviceTrackingService {
   final String deviceTrackingReference = 'deviceTrackingReference';

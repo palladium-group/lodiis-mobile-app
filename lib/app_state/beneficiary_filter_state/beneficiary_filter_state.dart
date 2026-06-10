@@ -2,22 +2,16 @@ import 'package:flutter/material.dart';
 
 class BeneficiaryFilterState with ChangeNotifier {
   final Map<String, List<Map<String, dynamic>>> _filters = {
-    'dreams': [],
-    'ovc': [],
-    'ogac': [],
-    'pp_prev': [],
-    'lbse': [],
-    'bursary': [],
+    'mgysd': [],
   };
 
   Map<String, List<Map<String, dynamic>>> get filters => _filters;
 
   void addOrUpdateFilter(String program, String key, dynamic value) {
     if (_filters.containsKey(program)) {
-      List<Map<String, dynamic>> programFilters = _filters[program]!;
+      final programFilters = _filters[program]!;
       programFilters.removeWhere((filter) => filter.keys.contains(key));
       programFilters.add({key: value});
-
       _filters[program] = programFilters;
       notifyListeners();
     }
@@ -32,9 +26,10 @@ class BeneficiaryFilterState with ChangeNotifier {
             )[key] ??
             '';
       }
-    } catch (e) {
+    } catch (_) {
       return '';
     }
+    return '';
   }
 
   List<Map<String, dynamic>> getFiltersByProgram(String program) {
@@ -43,9 +38,8 @@ class BeneficiaryFilterState with ChangeNotifier {
 
   void clearFilterById(String program, String filterId) {
     if (_filters.containsKey(program)) {
-      List<Map<String, dynamic>> programFilters = _filters[program]!;
+      final programFilters = _filters[program]!;
       programFilters.removeWhere((filter) => filter.keys.contains(filterId));
-
       _filters[program] = programFilters;
       notifyListeners();
     }
@@ -57,7 +51,9 @@ class BeneficiaryFilterState with ChangeNotifier {
   }
 
   void clearFilters() {
-    _filters.clear();
+    for (final key in _filters.keys) {
+      _filters[key] = [];
+    }
     notifyListeners();
   }
 }

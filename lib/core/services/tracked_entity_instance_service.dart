@@ -1,22 +1,22 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:kb_mobile_app/core/constants/app_logs_constants.dart';
-import 'package:kb_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/enrollment_offline/enrollment_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/event_offline/event_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/tei_relationship_offline/tei_relationship_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_provider.dart';
-import 'package:kb_mobile_app/core/services/http_service.dart';
-import 'package:kb_mobile_app/core/services/synchronization_service.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
-import 'package:kb_mobile_app/models/app_logs.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/models/enrollment.dart';
-import 'package:kb_mobile_app/models/events.dart';
-import 'package:kb_mobile_app/models/tei_relationship.dart';
-import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
+import 'package:lncmis_mobile_app/core/constants/app_logs_constants.dart';
+import 'package:lncmis_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/enrollment_offline/enrollment_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/event_offline/event_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/tei_relationship_offline/tei_relationship_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/services/http_service.dart';
+import 'package:lncmis_mobile_app/core/services/synchronization_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/core/utils/tracked_entity_instance_util.dart';
+import 'package:lncmis_mobile_app/models/app_logs.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/models/enrollment.dart';
+import 'package:lncmis_mobile_app/models/events.dart';
+import 'package:lncmis_mobile_app/models/tei_relationship.dart';
+import 'package:lncmis_mobile_app/models/tracked_entity_instance.dart';
 
 class TrackedEntityInstanceService {
   List<String> _getTeiIdsFromRelationship(

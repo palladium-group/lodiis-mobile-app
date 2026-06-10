@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/models/reserved_attribute_value.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/models/reserved_attribute_value.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class ReserveAttributeValueOfflineProvider extends OfflineDbProvider {

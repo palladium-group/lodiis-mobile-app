@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kb_mobile_app/core/components/input_fields/input_checked_icon.dart';
-import 'package:kb_mobile_app/core/components/input_fields/input_search_clear_icon.dart';
-import 'package:kb_mobile_app/core/components/input_fields/input_search_icon.dart';
-import 'package:kb_mobile_app/models/input_field.dart';
+import 'package:lncmis_mobile_app/core/components/input_fields/input_checked_icon.dart';
+import 'package:lncmis_mobile_app/core/components/input_fields/input_search_clear_icon.dart';
+import 'package:lncmis_mobile_app/core/components/input_fields/input_search_icon.dart';
+import 'package:lncmis_mobile_app/models/input_field.dart';
 
 class TextInputFieldContainer extends StatefulWidget {
   const TextInputFieldContainer({

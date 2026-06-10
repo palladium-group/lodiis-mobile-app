@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/input_field.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/input_field.dart';
 
 class FormSection {
   String? id;

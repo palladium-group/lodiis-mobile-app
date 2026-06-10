@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:kb_mobile_app/core/constants/beneficiary_identification.dart';
-import 'package:kb_mobile_app/core/offline_db/reserve_attribute_value_offline/reserve_attribute_value_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_attribute_provider.dart';
-import 'package:kb_mobile_app/core/services/http_service.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/models/reserved_attribute_value.dart';
+import 'package:lncmis_mobile_app/core/constants/beneficiary_identification.dart';
+import 'package:lncmis_mobile_app/core/offline_db/reserve_attribute_value_offline/reserve_attribute_value_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_attribute_provider.dart';
+import 'package:lncmis_mobile_app/core/services/http_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/models/reserved_attribute_value.dart';
 
 class ReservedAttributeValueService {
   int maxNumberToReserve = BeneficiaryIdentification.maxNumberToReserve;

@@ -1,9 +1,9 @@
 
 import 'dart:convert';
 
-import 'package:kb_mobile_app/core/constants/default_user_access.dart';
-import 'package:kb_mobile_app/core/offline_db/user_access_offline/user_access_offline.dart';
-import 'package:kb_mobile_app/core/services/http_service.dart';
+import 'package:lncmis_mobile_app/core/constants/default_user_access.dart';
+import 'package:lncmis_mobile_app/core/offline_db/user_access_offline/user_access_offline.dart';
+import 'package:lncmis_mobile_app/core/services/http_service.dart';
 
 class UserAccess {
   final String url = "api/dataStore/kb-mobile-app/user-access";

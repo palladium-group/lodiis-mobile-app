@@ -1,4 +1,4 @@
-import 'package:kb_mobile_app/core/services/preference_provider.dart';
+import 'package:lncmis_mobile_app/core/services/preference_provider.dart';
 
 class LanguageSelectionService {
   static const String preferenceKey = 'current_language';

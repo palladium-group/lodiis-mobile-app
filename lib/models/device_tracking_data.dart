@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/constants/device_tracking_constant.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/core/constants/device_tracking_constant.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
 
 class DeviceTrackingData {
   Map deviceInfo;

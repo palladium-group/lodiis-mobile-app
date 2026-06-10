@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/constants/beneficiary_identification.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/core/constants/beneficiary_identification.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
 
 class ReservedAttributeValue {
   String? id;

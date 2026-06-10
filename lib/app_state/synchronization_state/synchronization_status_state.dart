@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:kb_mobile_app/core/offline_db/event_offline/event_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/event_offline/event_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_provider.dart';
 
 class SynchronizationStatusState with ChangeNotifier {
   List<String> _unsyncedTeiReferences = [];

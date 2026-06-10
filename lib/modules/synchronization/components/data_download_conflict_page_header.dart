@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/core/components/line_separator.dart';
+import 'package:lncmis_mobile_app/core/components/line_separator.dart';
 
 class DataDownloadConflictPageHeader extends StatelessWidget {
   const DataDownloadConflictPageHeader({Key? key}) : super(key: key);

@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:kb_mobile_app/core/constants/app_logs_constants.dart';
-import 'package:kb_mobile_app/core/services/pagination_service.dart';
-import 'package:kb_mobile_app/models/app_logs.dart';
-import 'package:kb_mobile_app/modules/app_logs/services/app_logs_service.dart';
+import 'package:lncmis_mobile_app/core/constants/app_logs_constants.dart';
+import 'package:lncmis_mobile_app/core/services/pagination_service.dart';
+import 'package:lncmis_mobile_app/models/app_logs.dart';
+import 'package:lncmis_mobile_app/modules/app_logs/services/app_logs_service.dart';
 
 class AppLogsState with ChangeNotifier {
   // initial state

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:kb_mobile_app/models/Intervention_bottom_navigation.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/models/Intervention_bottom_navigation.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
 
 class InterventionBottomNavigationState with ChangeNotifier {
   // initial state
@@ -35,7 +35,7 @@ class InterventionBottomNavigationState with ChangeNotifier {
         InterventionBottomNavigation.getInterventionNavigationButtons(
       activeInterventionProgram,
     );
-    if (['KB-Facility Based Social Worker', 'Paralegal']
+    if (['LCMIS Social Worker']
         .contains(implementingPartner)) {
       interventionBottomNavigations = interventionBottomNavigations
           .where((interventionBottomNavigation) =>

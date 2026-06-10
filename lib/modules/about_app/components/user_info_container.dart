@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
-import 'package:kb_mobile_app/core/constants/current_user_implementing_partner.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/modules/about_app/utils/about_page_util.dart';
+import 'package:lncmis_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:lncmis_mobile_app/core/constants/current_user_implementing_partner.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/modules/about_app/utils/about_page_util.dart';
 import 'package:provider/provider.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
 class UserInfoContainer extends StatelessWidget {
   const UserInfoContainer({
@@ -73,22 +73,6 @@ class UserInfoContainer extends StatelessWidget {
                             ? 'Libaka tse abetsoeng'
                             : 'Assigned locations',
                         currentUserLocations,
-                      ),
-                      AboutPageUtil.getTableRowContent(
-                        currentLanguage == 'lesotho'
-                            ? 'Balekane ka hara morero'
-                            : 'Implementing Partner',
-                        currentUser?.implementingPartner ?? "",
-                      ),
-                      AboutPageUtil.getTableRowContent(
-                        currentLanguage == 'lesotho'
-                            ? 'Sub Balekane ka hara morero'
-                            : 'Sub implementing Partner',
-                        (currentUser?.subImplementingPartner ?? "")
-                            .split(
-                                CurrentUserImplementingPartner.crsPrefixValue)
-                            .last
-                            .trim(),
                       ),
                       AboutPageUtil.getTableRowContent(
                         currentLanguage == 'lesotho'

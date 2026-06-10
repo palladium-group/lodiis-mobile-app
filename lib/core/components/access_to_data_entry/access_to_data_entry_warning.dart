@@ -1,15 +1,15 @@
 import 'dart:io' show Platform, exit;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/core/components/access_to_data_entry/access_to_data_entry_action_button.dart';
-import 'package:kb_mobile_app/core/components/access_to_data_entry/access_to_data_entry_message.dart';
-import 'package:kb_mobile_app/core/utils/app_bar_util.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/core/components/access_to_data_entry/access_to_data_entry_action_button.dart';
+import 'package:lncmis_mobile_app/core/components/access_to_data_entry/access_to_data_entry_message.dart';
+import 'package:lncmis_mobile_app/core/utils/app_bar_util.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
 import 'package:provider/provider.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
 class AccessToDataEntryWarning extends StatelessWidget {
   const AccessToDataEntryWarning({

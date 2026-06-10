@@ -1,7 +1,7 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:kb_mobile_app/core/offline_db/enrollment_offline/enrollment_offline_provider.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/core/offline_db/enrollment_offline/enrollment_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
 
 /// MGYSD Case Management module list-state
 /// - Mirrors patterns used by other intervention list-states

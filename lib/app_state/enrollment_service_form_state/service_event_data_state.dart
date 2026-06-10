@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_status_state.dart';
-import 'package:kb_mobile_app/core/services/organisation_unit_service.dart';
-import 'package:kb_mobile_app/core/utils/tracked_entity_instance_util.dart';
-import 'package:kb_mobile_app/models/events.dart';
+import 'package:lncmis_mobile_app/app_state/synchronization_state/synchronization_status_state.dart';
+import 'package:lncmis_mobile_app/core/services/organisation_unit_service.dart';
+import 'package:lncmis_mobile_app/core/utils/tracked_entity_instance_util.dart';
+import 'package:lncmis_mobile_app/models/events.dart';
 import 'package:provider/provider.dart';
 
 

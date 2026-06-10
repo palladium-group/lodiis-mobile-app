@@ -1,8 +1,8 @@
-import 'package:kb_mobile_app/core/constants/pagination.dart';
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_attribute_provider.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
+import 'package:lncmis_mobile_app/core/constants/pagination.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_attribute_provider.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/tracked_entity_instance.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TrackedEntityInstanceOfflineProvider extends OfflineDbProvider {

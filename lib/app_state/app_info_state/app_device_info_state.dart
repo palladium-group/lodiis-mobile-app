@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:kb_mobile_app/core/utils/device_info_util.dart';
+import 'package:lncmis_mobile_app/core/utils/device_info_util.dart';
 
 class AppDeviceInfoState with ChangeNotifier {
   String? _androidDeviceId;

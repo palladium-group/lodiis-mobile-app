@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
+import 'package:lncmis_mobile_app/core/constants/app_info_reference.dart';
 
 class HttpService {
   final String? username;

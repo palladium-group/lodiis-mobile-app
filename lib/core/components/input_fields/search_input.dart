@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/core/components/input_fields/text_input_field_container.dart';
-import 'package:kb_mobile_app/models/input_field.dart';
+import 'package:lncmis_mobile_app/core/components/input_fields/text_input_field_container.dart';
+import 'package:lncmis_mobile_app/models/input_field.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SearchInput extends StatelessWidget {

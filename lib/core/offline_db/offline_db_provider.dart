@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:kb_mobile_app/core/constants/beneficiary_identification.dart';
+import 'package:lncmis_mobile_app/core/constants/beneficiary_identification.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

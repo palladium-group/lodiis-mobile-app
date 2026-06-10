@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_state.dart';
-import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
-import 'package:kb_mobile_app/core/components/sup_page_body.dart';
-import 'package:kb_mobile_app/core/utils/form_util.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
-import 'package:kb_mobile_app/models/tracked_entity_instance.dart';
-import 'package:kb_mobile_app/modules/synchronization/components/data_download_conflict_page_header.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/app_state/synchronization_state/synchronization_state.dart';
+import 'package:lncmis_mobile_app/core/components/sub_page_app_bar.dart';
+import 'package:lncmis_mobile_app/core/components/sup_page_body.dart';
+import 'package:lncmis_mobile_app/core/utils/form_util.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/models/tracked_entity_instance.dart';
+import 'package:lncmis_mobile_app/modules/synchronization/components/data_download_conflict_page_header.dart';
 import 'package:provider/provider.dart';
 
 class ConflictOnDownloadPage extends StatefulWidget {

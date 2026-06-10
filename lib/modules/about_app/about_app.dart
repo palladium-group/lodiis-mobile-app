@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/app_info_state/app_info_state.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/core/components/line_separator.dart';
-import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
-import 'package:kb_mobile_app/core/components/sup_page_body.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
-import 'package:kb_mobile_app/modules/about_app/components/app_info_container.dart';
-import 'package:kb_mobile_app/modules/about_app/components/user_info_container.dart';
+import 'package:lncmis_mobile_app/app_state/app_info_state/app_info_state.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/core/components/line_separator.dart';
+import 'package:lncmis_mobile_app/core/components/sub_page_app_bar.dart';
+import 'package:lncmis_mobile_app/core/components/sup_page_body.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/modules/about_app/components/app_info_container.dart';
+import 'package:lncmis_mobile_app/modules/about_app/components/user_info_container.dart';
 import 'package:provider/provider.dart';
 
 class AboutApp extends StatefulWidget {

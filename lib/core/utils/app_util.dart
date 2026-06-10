@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:kb_mobile_app/models/app_semantic_version.dart';
-import 'package:kb_mobile_app/models/events.dart';
-import 'package:kb_mobile_app/models/form_section.dart';
-import 'package:kb_mobile_app/models/input_field.dart';
+import 'package:lncmis_mobile_app/models/app_semantic_version.dart';
+import 'package:lncmis_mobile_app/models/events.dart';
+import 'package:lncmis_mobile_app/models/form_section.dart';
+import 'package:lncmis_mobile_app/models/input_field.dart';
 
 class AppUtil {
   static FormSection getServiceProvisionEventDateSection({

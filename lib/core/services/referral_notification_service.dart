@@ -1,20 +1,20 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_state.dart';
-import 'package:kb_mobile_app/core/constants/app_logs_constants.dart';
-import 'package:kb_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/referral_notification/referral_event_notification_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/referral_notification/referral_notification_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_provider.dart';
-import 'package:kb_mobile_app/core/services/http_service.dart';
-import 'package:kb_mobile_app/core/services/organisation_unit_service.dart';
-import 'package:kb_mobile_app/core/services/tracked_entity_instance_service.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/models/app_logs.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/models/referral_event_notification.dart';
-import 'package:kb_mobile_app/models/referral_notification.dart';
+import 'package:lncmis_mobile_app/app_state/synchronization_state/synchronization_state.dart';
+import 'package:lncmis_mobile_app/core/constants/app_logs_constants.dart';
+import 'package:lncmis_mobile_app/core/offline_db/app_logs_offline/app_logs_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/referral_notification/referral_event_notification_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/referral_notification/referral_notification_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/tracked_entity_instance_offline/tracked_entity_instance_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/services/http_service.dart';
+import 'package:lncmis_mobile_app/core/services/organisation_unit_service.dart';
+import 'package:lncmis_mobile_app/core/services/tracked_entity_instance_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/models/app_logs.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/models/referral_event_notification.dart';
+import 'package:lncmis_mobile_app/models/referral_notification.dart';
 import 'package:provider/provider.dart';
 
 class ReferralNotificationService {

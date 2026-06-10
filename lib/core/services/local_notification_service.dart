@@ -1,5 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:kb_mobile_app/models/notification.dart';
+import 'package:lncmis_mobile_app/models/notification.dart';
 
 class LocalNotificationService {
   static selectNotification(payload) async {}

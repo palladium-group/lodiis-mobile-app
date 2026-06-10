@@ -1,7 +1,7 @@
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/referral_notification/referral_event_notification_offline_provider.dart';
-import 'package:kb_mobile_app/models/referral_event_notification.dart';
-import 'package:kb_mobile_app/models/referral_notification.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/referral_notification/referral_event_notification_offline_provider.dart';
+import 'package:lncmis_mobile_app/models/referral_event_notification.dart';
+import 'package:lncmis_mobile_app/models/referral_notification.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ReferralNotificationOfflineProvider extends OfflineDbProvider {

@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
 import 'package:sqflite/sqflite.dart';
 
 class UserOuOfflineProvider extends OfflineDbProvider {

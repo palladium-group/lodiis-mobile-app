@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:kb_mobile_app/core/constants/pagination.dart';
-import 'package:kb_mobile_app/core/offline_db/offline_db_provider.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/enrollment.dart';
+import 'package:lncmis_mobile_app/core/constants/pagination.dart';
+import 'package:lncmis_mobile_app/core/offline_db/offline_db_provider.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/enrollment.dart';
 import 'package:sqflite/sqflite.dart';
 
 class EnrollmentOfflineProvider extends OfflineDbProvider {

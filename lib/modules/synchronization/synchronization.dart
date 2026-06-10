@@ -1,16 +1,16 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_state.dart';
-import 'package:kb_mobile_app/core/components/circular_process_loader.dart';
-import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
-import 'package:kb_mobile_app/core/components/sup_page_body.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
-import 'package:kb_mobile_app/modules/synchronization/components/offline_data_summary.dart';
-import 'package:kb_mobile_app/modules/synchronization/components/synchronization_progress.dart';
-import 'package:kb_mobile_app/modules/synchronization/conflict_on_download_page.dart';
-import 'package:kb_mobile_app/modules/synchronization/constants/synchronization_actions_constants.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/app_state/synchronization_state/synchronization_state.dart';
+import 'package:lncmis_mobile_app/core/components/circular_process_loader.dart';
+import 'package:lncmis_mobile_app/core/components/sub_page_app_bar.dart';
+import 'package:lncmis_mobile_app/core/components/sup_page_body.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/modules/synchronization/components/offline_data_summary.dart';
+import 'package:lncmis_mobile_app/modules/synchronization/components/synchronization_progress.dart';
+import 'package:lncmis_mobile_app/modules/synchronization/conflict_on_download_page.dart';
+import 'package:lncmis_mobile_app/modules/synchronization/constants/synchronization_actions_constants.dart';
 import 'package:provider/provider.dart';
 
 class Synchronization extends StatefulWidget {

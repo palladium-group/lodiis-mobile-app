@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:kb_mobile_app/core/offline_db/organisation_unit_offline/organisation_unit_offline_provider.dart';
-import 'package:kb_mobile_app/core/offline_db/organisation_unit_offline/organisation_unit_path_offline_provider.dart';
-import 'package:kb_mobile_app/core/services/http_service.dart';
-import 'package:kb_mobile_app/core/services/user_service.dart';
-import 'package:kb_mobile_app/models/current_user.dart';
-import 'package:kb_mobile_app/models/organisation_unit.dart';
+import 'package:lncmis_mobile_app/core/offline_db/organisation_unit_offline/organisation_unit_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/offline_db/organisation_unit_offline/organisation_unit_path_offline_provider.dart';
+import 'package:lncmis_mobile_app/core/services/http_service.dart';
+import 'package:lncmis_mobile_app/core/services/user_service.dart';
+import 'package:lncmis_mobile_app/models/current_user.dart';
+import 'package:lncmis_mobile_app/models/organisation_unit.dart';
 
 class OrganisationUnitService {
   List<OrganisationUnit> organisations = [];

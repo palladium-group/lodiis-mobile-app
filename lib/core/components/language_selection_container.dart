@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
-import 'package:kb_mobile_app/core/components/language_selection_card.dart';
-import 'package:kb_mobile_app/models/app_language.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/core/components/language_selection_card.dart';
+import 'package:lncmis_mobile_app/models/app_language.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
 import 'package:provider/provider.dart';
 
 class LanguageSelectionContainer extends StatefulWidget {

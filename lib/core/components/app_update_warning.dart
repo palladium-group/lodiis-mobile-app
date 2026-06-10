@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:kb_mobile_app/app_state/app_info_state/app_info_state.dart';
-import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/app_state/app_info_state/app_info_state.dart';
+import 'package:lncmis_mobile_app/core/constants/app_info_reference.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 

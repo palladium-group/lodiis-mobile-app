@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/current_user_state/current_user_state.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/core/components/access_to_data_entry/access_to_data_entry_warning.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/app_state/current_user_state/current_user_state.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/core/components/access_to_data_entry/access_to_data_entry_warning.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
 import 'package:provider/provider.dart';
 
 class SubPageBody extends StatelessWidget {

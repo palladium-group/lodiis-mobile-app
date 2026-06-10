@@ -1,5 +1,5 @@
-import 'package:kb_mobile_app/core/constants/app_info_reference.dart';
-import 'package:kb_mobile_app/core/services/preference_provider.dart';
+import 'package:lncmis_mobile_app/core/constants/app_info_reference.dart';
+import 'package:lncmis_mobile_app/core/services/preference_provider.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 
 class AppInfoService {

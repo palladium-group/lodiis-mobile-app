@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/app_info_state/app_info_state.dart';
-import 'package:kb_mobile_app/app_state/app_logs_state/app_logs_state.dart';
-import 'package:kb_mobile_app/app_state/device_connectivity_state/device_connectivity_state.dart';
-import 'package:kb_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
-import 'package:kb_mobile_app/core/components/paginated_list_view.dart';
-import 'package:kb_mobile_app/core/components/sub_page_app_bar.dart';
-import 'package:kb_mobile_app/core/utils/app_util.dart';
-import 'package:kb_mobile_app/models/intervention_card.dart';
-import 'package:kb_mobile_app/modules/app_logs/components/app_logs_card.dart';
-import 'package:kb_mobile_app/core/components/input_fields/search_input.dart';
-import 'package:kb_mobile_app/modules/app_logs/helpers/app_logs_helper.dart';
-import 'package:kb_mobile_app/modules/app_logs/services/app_logs_service.dart';
+import 'package:lncmis_mobile_app/app_state/app_info_state/app_info_state.dart';
+import 'package:lncmis_mobile_app/app_state/app_logs_state/app_logs_state.dart';
+import 'package:lncmis_mobile_app/app_state/device_connectivity_state/device_connectivity_state.dart';
+import 'package:lncmis_mobile_app/app_state/intervention_card_state/intervention_card_state.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/core/components/paginated_list_view.dart';
+import 'package:lncmis_mobile_app/core/components/sub_page_app_bar.dart';
+import 'package:lncmis_mobile_app/core/utils/app_util.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/modules/app_logs/components/app_logs_card.dart';
+import 'package:lncmis_mobile_app/core/components/input_fields/search_input.dart';
+import 'package:lncmis_mobile_app/modules/app_logs/helpers/app_logs_helper.dart';
+import 'package:lncmis_mobile_app/modules/app_logs/services/app_logs_service.dart';
 import 'package:provider/provider.dart';
 
 class AppLogsPage extends StatefulWidget {

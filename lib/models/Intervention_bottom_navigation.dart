@@ -1,4 +1,4 @@
-import 'package:kb_mobile_app/models/intervention_card.dart';
+import 'package:lncmis_mobile_app/models/intervention_card.dart';
 
 class InterventionBottomNavigation {
   String? id;

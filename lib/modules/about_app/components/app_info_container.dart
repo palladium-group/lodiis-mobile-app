@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kb_mobile_app/app_state/app_info_state/app_info_state.dart';
-import 'package:kb_mobile_app/modules/about_app/utils/about_page_util.dart';
+import 'package:lncmis_mobile_app/app_state/app_info_state/app_info_state.dart';
+import 'package:lncmis_mobile_app/modules/about_app/utils/about_page_util.dart';
 import 'package:provider/provider.dart';
-import 'package:kb_mobile_app/app_state/language_translation_state/language_translation_state.dart';
+import 'package:lncmis_mobile_app/app_state/language_translation_state/language_translation_state.dart';
 
 class AppInfoContainer extends StatelessWidget {
   const AppInfoContainer({
