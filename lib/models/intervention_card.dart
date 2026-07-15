@@ -143,29 +143,7 @@ class InterventionCard {
         supportedTabs: [],
       ),
 
-      /// ✅ NEW MODULE: MGYSD Case Management (placeholder IDs/icons for now)
-      InterventionCard(
-        id: 'mgysd',
-        name: 'MGYSD Case Management',
-        shortName: 'MGYSD',
-        svgIcon: 'assets/icons/ovc-icon.svg', // placeholder (add file later)
-        enrollmentIcon: 'assets/icons/add-beneficiary.svg', // reuse for now
-        primaryColor: const Color(0xFF0D47A1), // Blue 900
-        secondaryColor: const Color(0xFF0D47A1).withOpacity(0.8),
-        svgIconColor: Colors.white,
-        svgIconBorderColor: Colors.white,
-        svgBackgroundColor: const Color(0xFF0D47A1).withOpacity(0.1),
-        background: const Color(0xFF0D47A1).withOpacity(0.09),
-        nameColor: const Color(0xFF0D47A1),
-        countColor: const Color(0xFF0D47A1).withOpacity(0.8),
-        countLabelColor: const Color(0xFF0D47A1).withOpacity(0.3),
-        supportedTabs: [
-          // placeholders - you can rename later to match your real design
-          "cases",
-          "referral",
-          "records",
-        ],
-      ),
+
     ];
   }
 

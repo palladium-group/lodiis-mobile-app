@@ -28,8 +28,6 @@ import 'package:kb_mobile_app/app_state/pp_prev_intervention_state/pp_prev_inter
 import 'package:kb_mobile_app/app_state/referral_notification_state/referral_notification_state.dart';
 import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_state.dart';
 import 'package:kb_mobile_app/app_state/synchronization_state/synchronization_status_state.dart';
-import 'package:kb_mobile_app/app_state/mgysd_case_management_list_state/mgysd_case_management_list_state.dart';
-
 import 'package:kb_mobile_app/core/constants/custom_color.dart';
 import 'package:kb_mobile_app/modules/splash/splash.dart';
 import 'package:provider/provider.dart';
@@ -130,9 +128,6 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (_) => DreamsRaAssessmentListState(),
           ),
-          ChangeNotifierProvider(
-            create: (_) => MgysdCaseManagementListState(),
-          )
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

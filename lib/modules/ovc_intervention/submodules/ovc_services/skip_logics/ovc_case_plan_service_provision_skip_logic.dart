@@ -13,16 +13,19 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
   Map childMapObject = {};
 
   Future evaluateSkipLogics(
-    BuildContext context,
-    List<FormSection> formSections,
-    Map dataObject,
-    OvcHouseholdChild currentHouseholdChild,
-  ) async {
+      BuildContext context,
+      List<FormSection> formSections,
+      Map dataObject,
+      OvcHouseholdChild? currentHouseholdChild,
+
+      ) async {
     hiddenFields.clear();
     hiddenSections.clear();
     CurrentUser? currentUser = Provider.of<CurrentUserState>(context, listen: false).currentUser;
-    String implementingPartner = currentUser!.implementingPartner ?? "";
-    int childAge = int.parse(currentHouseholdChild.age!);
+    String implementingPartner = currentUser?.implementingPartner ?? "";
+    final int? childAge = currentHouseholdChild == null
+        ? null
+        : int.tryParse(currentHouseholdChild.age?.toString() ?? '');
     List<String> inputFieldIds = FormUtil.getFormFieldIds(formSections);
     for (var key in dataObject.keys) {
       inputFieldIds.add('$key');
@@ -35,11 +38,12 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
 
     //TOODO add additional services
     dataObject.forEach((key, value) {
-      if(childAge < 9 ){
-        hiddenFields['HzI5X2yHef6']==true;
-        hiddenFields['FHvpd3Z5PAo']==true;
-        hiddenFields['yQkDGd2gLw2']==true;
-        hiddenFields['yQkDGd2gLw2']==true;
+      // Child-only skip logic.
+      // For household case plan, currentHouseholdChild is null, so do not run age rules.
+      if (childAge != null && childAge < 9) {
+        hiddenFields['HzI5X2yHef6'] = true;
+        hiddenFields['FHvpd3Z5PAo'] = true;
+        hiddenFields['yQkDGd2gLw2'] = true;
       }
       if (key == 'pbcXNnAuzfh' && value == 'true') {
         hiddenFields['RIpmBgYc0ZN'] = hideServicesByImplementingPartner(
@@ -575,9 +579,6 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
 
         }
       }
-
-
-
       else if (key == 'XuZIbkwn5yi' && value == 'true') {
         hiddenFields['eGkOJf7odKm'] = hideServicesByImplementingPartner(
           "eGkOJf7odKm",
@@ -749,9 +750,9 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
   /// It's implemented based on Paralegal
   ///
   bool hideServicesByImplementingPartner(
-    String service,
-    String implementingPartner,
-  ) {
+      String service,
+      String implementingPartner,
+      ) {
     if (OvcCasePlanConstant.paralegalServices.contains(service)) {
       var isCurrentUserParalegal = implementingPartner == 'Paralegal';
       return !isCurrentUserParalegal;
@@ -771,10 +772,10 @@ mixin OvcCasePlanServiceProvisionSkipLogic {
   }
 
   assignInputFieldValue(
-    BuildContext context,
-    String inputFieldId,
-    String? value,
-  ) {
+      BuildContext context,
+      String inputFieldId,
+      String? value,
+      ) {
     childMapObject[inputFieldId] = value;
   }
 }

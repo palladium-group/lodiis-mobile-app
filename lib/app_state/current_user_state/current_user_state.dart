@@ -42,8 +42,7 @@ class CurrentUserState with ChangeNotifier {
   bool? _canManageHIVPreventionEducation;
   bool? _canManageViolencePreventionEducation;
 
-  // ✅ NEW: MGYSD
-  bool? _canManageMgysd;
+
 
   // selectors
   String get implementingPartner => _implementingPartner ?? '';
@@ -89,9 +88,6 @@ class CurrentUserState with ChangeNotifier {
       _canManageHIVPreventionEducation ?? false;
   bool get canManageViolencePreventionEducation =>
       _canManageViolencePreventionEducation ?? false;
-
-  // ✅ NEW: MGYSD
-  bool get canManageMgysd => _canManageMgysd ?? false;
 
   void updateUserAccessStatus(
       String? implementingPartner,
@@ -162,10 +158,6 @@ class CurrentUserState with ChangeNotifier {
       _canManageViolencePreventionEducation =
           userAccesses.containsKey('canManageViolencePreventionEducation') &&
               userAccesses['canManageViolencePreventionEducation'] == true;
-
-      // ✅ NEW: MGYSD
-      _canManageMgysd = userAccesses.containsKey('canManageMgysd') &&
-          userAccesses['canManageMgysd'] == true;
     } catch (error) {
       //
     }

@@ -17,7 +17,6 @@ class InterventionSelectionCard extends StatelessWidget {
     required this.numberPpPrev,
     required this.numberEducationLbse,
     required this.numberEducationBursary,
-    required this.numberOfMgysdCases,
   }) : super(key: key);
 
   final InterventionCard? interventionProgram;
@@ -32,8 +31,6 @@ class InterventionSelectionCard extends StatelessWidget {
   final int numberEducationBursary;
   final int numberEducationLbse;
 
-  // ✅ MGYSD
-  final int numberOfMgysdCases;
 
   Widget getCardBeneficiaryLabelAndCount({
     required String label,
@@ -86,8 +83,6 @@ class InterventionSelectionCard extends StatelessWidget {
       beneficiaryCardCount = isSubtitle ? '' : numberOfOgac.toString();
     } else if (interventionId == 'pp_prev') {
       beneficiaryCardCount = isSubtitle ? '' : numberPpPrev.toString();
-    } else if (interventionId == 'mgysd') {
-      beneficiaryCardCount = isSubtitle ? '' : numberOfMgysdCases.toString();
     }
 
     return beneficiaryCardCount;
@@ -128,12 +123,6 @@ class InterventionSelectionCard extends StatelessWidget {
           ? 'Palo ea Bursary:'
           : '# of BURSARY:')
           : (currentLanguage == 'lesotho' ? 'Palo ea LBSE:' : '# of LBSE:');
-    } else if (interventionId == 'mgysd') {
-      beneficiaryCardLabel = isSubtitle
-          ? ''
-          : (currentLanguage == 'lesotho'
-          ? 'Palo ea linyeoe:'
-          : '# of Cases:');
     }
 
     return beneficiaryCardLabel;

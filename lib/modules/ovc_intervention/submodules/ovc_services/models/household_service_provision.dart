@@ -105,7 +105,31 @@ class HouseholdServiceProvision {
                 color: const Color(0xFF4D9E49),
                 borderColor: const Color(0xFF4D9E49),
                 inputFields: [
+                  InputField(
+                    id: 'GImA3HB9YK5',
+                    name: 'Family psychosocial support  Service provided',
+                    translatedName: "Lits'ebeletso tsa RTEEN/Parenting  li fanoe",
+                    valueType: 'TRUE_ONLY',
+                    inputColor: const Color(0xFF0F9587),
+                    labelColor: const Color(0xFF737373),
+                  ),
+                  InputField(
+                      id: 'fFuabYbLUjz',
+                      name: 'Family psychosocial support Service Provision Date',
+                      translatedName:
+                      'Letsatsi la Kabo ea Litšebeletso tsa RTEEN/Parenting',
+                      valueType: 'DATE',
+                      firstDate: firstDate,
+                      inputColor: const Color(0xFF0F9587),
+                      labelColor: const Color(0xFF737373)),
 
+                  InputField(
+                      id: 'IFggJCXLYPD',
+                      name: 'Family psychosocial support Comment',
+                      translatedName: 'Tlhaloso ea RTEEN/Parenting',
+                      valueType: 'TEXT',
+                      inputColor: const Color(0xFF0F9587),
+                      labelColor: const Color(0xFF737373)),
                   InputField(
                     id: 'FHvpd3Z5PAo',
                     name: 'Disclosure Support Service Provided',
@@ -694,31 +718,7 @@ class HouseholdServiceProvision {
               valueType: 'TEXT',
               inputColor: const Color(0xFF0F9587),
               labelColor: const Color(0xFF737373)),
-          InputField(
-            id: 'GImA3HB9YK5',
-            name: 'RTEEN/Parenting  Service provided',
-            translatedName: "Lits'ebeletso tsa RTEEN/Parenting  li fanoe",
-            valueType: 'TRUE_ONLY',
-            inputColor: const Color(0xFF0F9587),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-              id: 'fFuabYbLUjz',
-              name: 'RTEEN/Parenting Service Provision Date',
-              translatedName:
-                  'Letsatsi la Kabo ea Litšebeletso tsa RTEEN/Parenting',
-              valueType: 'DATE',
-              firstDate: firstDate,
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
 
-          InputField(
-              id: 'IFggJCXLYPD',
-              name: 'RTEEN/Parenting Comment',
-              translatedName: 'Tlhaloso ea RTEEN/Parenting',
-              valueType: 'TEXT',
-              inputColor: const Color(0xFF0F9587),
-              labelColor: const Color(0xFF737373)),
           InputField(
             id: 'gwwUOs6yt6C',
             name: 'P&FC Service provided',

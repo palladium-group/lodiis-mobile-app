@@ -17,8 +17,7 @@ class InterventionSelectionList extends StatefulWidget {
     required this.numberEducationLbse,
     required this.numberEducationBursary,
 
-    // ✅ NEW
-    required this.numberOfMgysdCases,
+
   }) : super(key: key);
 
   final List<InterventionCard> interventionPrograms;
@@ -33,8 +32,6 @@ class InterventionSelectionList extends StatefulWidget {
   final int numberEducationBursary;
   final int numberEducationLbse;
 
-  // ✅ NEW
-  final int numberOfMgysdCases;
 
   @override
   State<InterventionSelectionList> createState() =>
@@ -75,8 +72,6 @@ class _InterventionSelectionListState extends State<InterventionSelectionList> {
             numberEducationLbse: widget.numberEducationLbse,
             numberEducationBursary: widget.numberEducationBursary,
 
-            // ✅ NEW
-            numberOfMgysdCases: widget.numberOfMgysdCases,
           ),
         ),
       )

@@ -20,9 +20,6 @@ import 'package:kb_mobile_app/modules/ovc_intervention/ovc_intervention.dart';
 import 'package:kb_mobile_app/modules/pp_prev_intervention/pp_prev_intervention.dart';
 import 'package:provider/provider.dart';
 
-// ✅ NEW (placeholder page for MGYSD navigation)
-import 'package:kb_mobile_app/modules/mgysd_case_management/mgysd_case_management.dart';
-
 class InterventionSelectionContainer extends StatefulWidget {
   const InterventionSelectionContainer({
     Key? key,
@@ -37,8 +34,7 @@ class InterventionSelectionContainer extends StatefulWidget {
     required this.numberEducationLbse,
     required this.numberEducationBursary,
 
-    // ✅ NEW
-    required this.numberOfMgysdCases,
+
   }) : super(key: key);
 
   final List<InterventionCard> interventionPrograms;
@@ -51,10 +47,6 @@ class InterventionSelectionContainer extends StatefulWidget {
   final int numberPpPrev;
   final int numberEducationBursary;
   final int numberEducationLbse;
-
-  // ✅ NEW
-  final int numberOfMgysdCases;
-
   @override
   State<InterventionSelectionContainer> createState() =>
       _InterventionSelectionContainerState();
@@ -135,8 +127,6 @@ class _InterventionSelectionContainerState
               ? const PpPrevIntervention()
               : activeInterventionProgram!.id == 'education'
               ? const EducationIntervention()
-              : activeInterventionProgram!.id == 'mgysd'
-              ? const MgysdCaseManagement()
               : RoutePageNotFound(
             pageTitle:
             '${activeInterventionProgram!.name} is not found',
@@ -218,8 +208,7 @@ class _InterventionSelectionContainerState
                   numberEducationLbse: widget.numberEducationLbse,
                   numberEducationBursary: widget.numberEducationBursary,
 
-                  // ✅ NEW
-                  numberOfMgysdCases: widget.numberOfMgysdCases,
+
                 ),
                 InterventionSelectionButton(
                   isInterventionSelected: isInterventionSelected,
