@@ -627,11 +627,14 @@ class _CasePlanGapFormContainerState extends State<CasePlanGapFormContainer>
     final viralLoadResults = a[viralLoadResultsDE];
 
     final isFemale = _isTrue(child.sex == 'Female');
-if(!receivedImmunization){
+if(dataObject[immunizationDE] != null && !receivedImmunization){
   dataObject[immunizationGapDE] = true;
 }
-if(!receivedVitaminA){dataObject[vitaminAGapDE]=true;}
-if(!receivedDeworming){dataObject[dewormingGapDE]=true;}
+if(dataObject[vitaminADE] !=null && !receivedVitaminA){dataObject[vitaminAGapDE]=true;
+
+
+}
+if(dataObject[dewormingDE]!=null && !receivedDeworming){dataObject[dewormingGapDE]=true;}
     if( isFemale && a[pregnantDE] == 'Yes' && !attandingANC){
       dataObject[ancGapDE] = true;
     }

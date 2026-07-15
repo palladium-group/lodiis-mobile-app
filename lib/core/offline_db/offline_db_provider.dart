@@ -11,18 +11,6 @@ class OfflineDbProvider {
 
   // Script for initialization of tables
   final List<String> initialQuery = [
-    "CREATE TABLE IF NOT EXISTS mgysd_report_intake_link (id TEXT PRIMARY KEY, reportEvent TEXT, tei TEXT, enrollment TEXT, createdAt TEXT)",
-
-    // MGYSD helper + workflow tables
-    "CREATE TABLE IF NOT EXISTS mgysd_household_member (id TEXT PRIMARY KEY, householdTei TEXT, memberTei TEXT, memberRole TEXT, isPrimaryClient TEXT, syncStatus TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_initial_risk_assessment (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, assessmentDate TEXT, riskLevel TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_social_investigation (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, investigationDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_care_plan (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, planDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_referral (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, referralDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, monitoringDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-
-    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, serviceDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
 
     "CREATE TABLE IF NOT EXISTS current_user (id TEXT PRIMARY KEY, name TEXT, username TEXT, password TEXT , implementingPartner TEXT ,isLogin INTEGER, subImplementingPartner TEXT, phoneNumber TEXT, email TEXT, userRoles TEXT, userGroups TEXT, hasPreviousSuccessLogin TEXT)",
     "CREATE TABLE IF NOT EXISTS current_user_ou (id TEXT PRIMARY KEY, userId TEXT)",
@@ -54,18 +42,7 @@ class OfflineDbProvider {
     // Migrations to resolve the miss-added household categorization attribute for Caregiver/Household program
     "UPDATE tracked_entity_instance_attribute SET value = '' WHERE attribute = '${BeneficiaryIdentification.householdCategorization}' AND value = '{}'",
     "DELETE FROM tracked_entity_instance_attribute WHERE attribute = 'enrollmentDate'",
-
-    // MGYSD helper + workflow tables
-    "CREATE TABLE IF NOT EXISTS mgysd_household_member (id TEXT PRIMARY KEY, householdTei TEXT, memberTei TEXT, memberRole TEXT, isPrimaryClient TEXT, syncStatus TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_initial_risk_assessment (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, assessmentDate TEXT, riskLevel TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_social_investigation (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, investigationDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_care_plan (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, planDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_referral (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, referralDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_monitoring (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, monitoringDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-    "CREATE TABLE IF NOT EXISTS mgysd_case_closure (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, closureDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-
-    "CREATE TABLE IF NOT EXISTS mgysd_service_provision (id TEXT PRIMARY KEY, caseId TEXT, householdTei TEXT, serviceDate TEXT, status TEXT, payloadJson TEXT, updatedAt TEXT)",
-  ];
+ ];
 
   Future<Database?> get db async {
     if (_db != null) {
@@ -81,7 +58,7 @@ class OfflineDbProvider {
     return await openDatabase(
       path,
 
-      // bump version so new MGYSD migrations run on existing installs
+
       version: migrationQuery.length + 2,
 
       onUpgrade: onUpgrade,

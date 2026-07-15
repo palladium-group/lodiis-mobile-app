@@ -43,12 +43,6 @@ class InterventionSelectionHelper {
       }
     }
 
-    // ✅ NEW: MGYSD
-    if (currentUserState.canManageMgysd) {
-      interventionPrograms.addAll(interventionProgramList
-          .where((interventionProgram) => interventionProgram.id == 'mgysd')
-          .toList());
-    }
 
     return interventionPrograms;
   }

@@ -20,9 +20,6 @@ import 'package:kb_mobile_app/core/utils/app_util.dart';
 import 'package:kb_mobile_app/models/intervention_card.dart';
 import 'package:kb_mobile_app/modules/intervention_selection/components/intervention_selection_container.dart';
 
-// ✅ NEW: MGYSD list state
-import 'package:kb_mobile_app/app_state/mgysd_case_management_list_state/mgysd_case_management_list_state.dart';
-
 class InterventionSelection extends StatefulWidget {
   const InterventionSelection({Key? key}) : super(key: key);
 
@@ -75,10 +72,6 @@ class _InterventionSelectionState extends State<InterventionSelection> {
           .refreshEducationLbseNumber();
       Provider.of<EducationBursaryInterventionState>(context, listen: false)
           .refreshEducationBursaryNumber();
-
-      // ✅ NEW: refresh MGYSD cases count
-      Provider.of<MgysdCaseManagementListState>(context, listen: false)
-          .refreshMgysdCasesNumber();
 
       Provider.of<CurrentUserState>(context, listen: false)
           .setCurrentUserLocation();
@@ -164,15 +157,6 @@ class _InterventionSelectionState extends State<InterventionSelection> {
                                         bool isPpPrevListLoading =
                                             ppPrevInterventionState.isLoading;
 
-                                        // ✅ NEW: MGYSD consumer
-                                        return Consumer<MgysdCaseManagementListState>(
-                                          builder: (context,
-                                              mgysdCaseManagementListState,
-                                              child) {
-                                            bool isMgysdLoading =
-                                                mgysdCaseManagementListState.isLoading;
-                                            int numberOfMgysdCases =
-                                                mgysdCaseManagementListState.numberOfMgysdCases;
 
                                             return Container(
                                               child: isDreamsListLoading ||
@@ -180,8 +164,8 @@ class _InterventionSelectionState extends State<InterventionSelection> {
                                                   isEducationLbseListLoading ||
                                                   isPpPrevListLoading ||
                                                   isOvcListLoading ||
-                                                  isOgacListLoading ||
-                                                  isMgysdLoading
+                                                  isOgacListLoading
+
                                                   ? const CircularProcessLoader()
                                                   : InterventionSelectionContainer(
                                                 interventionPrograms:
@@ -201,10 +185,6 @@ class _InterventionSelectionState extends State<InterventionSelection> {
                                                 numberEducationLbse,
                                                 numberEducationBursary:
                                                 numberEducationBursary,
-
-                                                // ✅ NEW: pass MGYSD count
-                                                numberOfMgysdCases:
-                                                numberOfMgysdCases,
                                               ),
                                             );
                                           },
@@ -220,8 +200,6 @@ class _InterventionSelectionState extends State<InterventionSelection> {
                       },
                     );
                   },
-                );
-              },
             ),
           ],
         ),

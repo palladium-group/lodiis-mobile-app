@@ -481,6 +481,24 @@ mixin OvcCasePlanGapSkipLogic {
 
       }
 
+      if (inputFieldId == 'x4yAqv4z2Xv' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['eTDE6zroxBC'] = true;
+
+      }
+
+      if (inputFieldId == 'QrDmo9mOK41' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['e9Wiv8lfKi1'] = true;
+
+      }
+
+      if (inputFieldId == 'dr1Oa2hfJHK' && value != 'true') {
+        hiddenFields[inputFieldId] = true;
+        hiddenFields['TsSSQtbGBBE'] = true;
+
+      }
+
       if (inputFieldId == 'AM9oJCOHM7f' && value != 'true') {
         hiddenFields[inputFieldId] = true;
         hiddenFields['KzxrHSAQQa0'] = true;
