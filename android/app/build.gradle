@@ -48,7 +48,7 @@ android {
         applicationId "org.hisptanzania.kb_mobile_app"
         minSdkVersion 24
         multiDexEnabled true
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
