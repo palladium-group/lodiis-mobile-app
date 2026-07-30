@@ -4,32 +4,75 @@ import 'package:kb_mobile_app/models/form_section.dart';
 import 'package:kb_mobile_app/models/input_field.dart';
 
 class HouseholdGraduationReadinessForm {
+  static const String bm3SectionId = 'Bmk3Sec0001';
+  static const String bm3InstructionId = 'Bmk3Ins0001';
+  static const String bm3AdolescentId = 'Bmk3Ado0001';
+  static const String bm3RiskPromptId = 'Bmk3Rsk0001';
+  static const String bm3Question31Id = 'Bmk3Q310001';
+  static const String bm3PreventionPromptId = 'Bmk3Prv0001';
+  static const String bm3Question32Id = 'Bmk3Q320001';
+  static const String bm3JudgementInstructionId = 'Bmk3Jdg0001';
+  static const String bm3MetId = 'Bmk3Met0001';
+
+  static const String bm4SectionId = 'Bmk4Sec0001';
+  static const String bm4InstructionId = 'Bmk4Ins0001';
+  static const String bm4ChildUnderSixMonthsInstructionId = 'Bmk4Inf0001';
+  static const String bm4ChildId = 'Bmk4Chd0001';
+  static const String bm4MuacInstructionId = 'Bmk4Mua0001';
+  static const String bm4Question41Id = 'Bmk4Q410001';
+  static const String bm4Question42Id = 'Bmk4Q420001';
+  static const String bm4MetId = 'Bmk4Met0001';
+
+  static const String bm5SectionId = 'Bmk5Sec0001';
+  static const String bm5InstructionId = 'Bmk5Ins0001';
+  static const String bm5BeneficiaryId = 'Bmk5Ben0001';
+  static const String bm5Question51Id = 'Bmk5Q510001';
+  static const String bm5HivNegativeInstructionId = 'Bmk5Neg0001';
+  static const String bm5Question52Id = 'Bmk5Q520001';
+  static const String bm5DeliveredInstructionId = 'Bmk5Del0001';
+  static const String bm5Question53Id = 'Bmk5Q530001';
+  static const String bm5Question54Id = 'Bmk5Q540001';
+  static const String bm5NoteId = 'Bmk5Not0001';
+  static const String bm5MetId = 'Bmk5Met0001';
+
+  static const String cparaHasAdolescentAged10To17 =
+      'CPARA_HAS_ADOLESCENT_AGED_10_TO_17';
+  static const String cparaHasChildUnder5 = 'CPARA_HAS_CHILD_UNDER_5';
+  static const String cparaHasPmtctTarget = 'CPARA_HAS_PMTCT_TARGET';
+  static const String cparaSkipPmtctHivTestQuestion =
+      'CPARA_SKIP_PMTCT_HIV_TEST_QUESTION';
+
+  static InputField _instructionField({
+    required String id,
+    required String name,
+  }) {
+    return InputField(
+      id: id,
+      name: name,
+      valueType: 'TEXT',
+      isReadOnly: true,
+      hasLabelOnly: true,
+      inputColor: const Color(0xFF4D9E49),
+      labelColor: const Color(0xFF737373),
+    );
+  }
+
   static Map<String, String> getBenchMarkAchievementQuestions() {
     return {
-      "jZHYkQntXh9": 'wE7and4EnCR',
-      "lMG85SRv6nS": 'R71zksHtVNn',
-
-      // TODO: Replace with new DHIS2 section ID and benchmark achievement data element ID.
-      "NEW_ID_BENCHMARK_3_SECTION": 'NEW_ID_BENCHMARK_3_MET',
-
-      // TODO: Replace with new DHIS2 section ID and benchmark achievement data element ID.
-      "NEW_ID_BENCHMARK_4_SECTION": 'NEW_ID_BENCHMARK_4_MET',
-
-      // TODO: Replace with new DHIS2 section ID and benchmark achievement data element ID.
-      "NEW_ID_BENCHMARK_5_SECTION": 'NEW_ID_BENCHMARK_5_MET',
-
-      "wt4kydQK4OV": 'OcbE9kN8Dcp',
-      "f410nsa35Jw": 'YdqDLYSE4qr',
-      "Ol19OWE8uDF": 'obB7bvy6Nmh',
-      "BA3VEvk4tLo": 'iu8k78dy9VP',
-
-      // TODO: Replace with new DHIS2 section ID and benchmark achievement data element ID.
-      "NEW_ID_BENCHMARK_10_SECTION": 'NEW_ID_BENCHMARK_10_MET',
+      'jZHYkQntXh9': 'wE7and4EnCR',
+      'lMG85SRv6nS': 'R71zksHtVNn',
+      bm3SectionId: bm3MetId,
+      bm4SectionId: bm4MetId,
+      bm5SectionId: bm5MetId,
     };
   }
 
   static List<FormSection> getFormSections({
     required String firstDate,
+    bool hasAdolescentAged10To17 = true,
+    bool hasChildUnder5 = true,
+    bool hasPmtctTarget = true,
+    bool shouldSkipPmtctHivTestQuestion = true,
   }) {
     return [
       AppUtil.getServiceProvisionEventDateSection(
@@ -41,7 +84,7 @@ class HouseholdGraduationReadinessForm {
         firstDate: firstDate,
       ),
       FormSection(
-        id: "jZHYkQntXh9",
+        id: 'jZHYkQntXh9',
         name: 'Benchmark 1: Known HIV status',
         color: const Color(0xFF4D9E49),
         borderColor: const Color(0xFF4D9E49),
@@ -113,40 +156,62 @@ class HouseholdGraduationReadinessForm {
         ],
       ),
       FormSection(
-        // TODO: Replace this placeholder with the new DHIS2 section ID for Benchmark 3.
-        id: 'NEW_ID_BENCHMARK_3_SECTION',
+        id: bm3SectionId,
         name: 'Benchmark 3: Knowledgeable about HIV prevention',
         color: const Color(0xFF4D9E49),
         borderColor: const Color(0xFF4D9E49),
         inputFields: [
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B3_ADOLESCENT_ID',
-            name: 'Adolescent’s ID',
-            valueType: 'TEXT',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
+          _instructionField(
+            id: bm3InstructionId,
+            name: hasAdolescentAged10To17
+                ? 'Instruction: Ask the following questions of each adolescent aged 10–17 in the household. Each adolescent should be interviewed separately in a private location where no one else can hear. If the adolescent’s statements are not clear, request more information using probes such as, “I am not sure I understand. Can you tell me more about that?” Do not read the list of HIV risks or prevention strategies to the adolescent. Responses should be unprompted.'
+                : 'Instruction: There is no adolescent aged 10–17 in this household. This section is skipped and Benchmark 3 will automatically be marked Yes.',
           ),
+          if (hasAdolescentAged10To17) ...[
+            InputField(
+              id: bm3AdolescentId,
+              name: 'Adolescent’s ID',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            _instructionField(
+              id: bm3RiskPromptId,
+              name:
+              'Ask the adolescent: Can you tell me how a young person your age living in your community might become infected with HIV? The adolescent must describe two risks to meet Benchmark 3. If only one HIV risk is described, ask: “Can you tell me any other ways a young person in your community might become infected with HIV?” Examples include early sex, sex without a condom, sex with an older partner, being sexually abused or raped, sex with multiple partners, and sex for money or gifts/transactional sex/having a “sugar daddy”.',
+            ),
+            InputField(
+              id: bm3Question31Id,
+              name:
+              '3.1. Has the adolescent identified at least two HIV risks?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            _instructionField(
+              id: bm3PreventionPromptId,
+              name:
+              'Ask the adolescent: Can you tell me how a young person your age living in your community might help protect himself or herself from becoming infected with HIV? The adolescent must describe one prevention strategy to meet Benchmark 3. If no strategy is described, ask: “Can you tell me any other ways a young person might help protect himself or herself against HIV?” Examples include having one sexual partner, delaying sex or abstinence, using a condom, having a partner who does not have other sexual partners, and not having sex for money or gifts/transactional sex.',
+            ),
+            InputField(
+              id: bm3Question32Id,
+              name:
+              '3.2. Has the adolescent identified at least one HIV prevention strategy?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            _instructionField(
+              id: bm3JudgementInstructionId,
+              name:
+              'This section involves open-ended questions that require the case worker to make a judgment. The criterion is that the adolescent demonstrates an understanding of HIV risk and prevention, not that the adolescent gives an answer matching the questionnaire word for word.',
+            ),
+          ],
           InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B3_Q_3_1',
-            name: '3.1. Has the adolescent identified at least two HIV risks?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B3_Q_3_2',
-            name: '3.2. Has the adolescent identified at least one HIV prevention strategy?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_BENCHMARK_3_MET',
-            name: 'Has Benchmark 3 been met?',
+            id: bm3MetId,
+            name: hasAdolescentAged10To17
+                ? 'Has Benchmark 3 been met for this beneficiary?'
+                : '',
             valueType: 'BOOLEAN',
             isReadOnly: true,
             inputColor: const Color(0xFF4D9E49),
@@ -155,40 +220,55 @@ class HouseholdGraduationReadinessForm {
         ],
       ),
       FormSection(
-        // TODO: Replace this placeholder with the new DHIS2 section ID for Benchmark 4.
-        id: 'NEW_ID_BENCHMARK_4_SECTION',
+        id: bm4SectionId,
         name: 'Benchmark 4: Not undernourished',
         color: const Color(0xFF4D9E49),
         borderColor: const Color(0xFF4D9E49),
         inputFields: [
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B4_CHILD_ID',
-            name: 'Child’s ID',
-            valueType: 'TEXT',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
+          _instructionField(
+            id: bm4InstructionId,
+            name: hasChildUnder5
+                ? 'Instruction: Assess this benchmark for each child under 5 years of age in the household. If there are no children under 5 years of age in the household, this section is skipped and Benchmark 4 will automatically be marked Yes.'
+                : 'Instruction: There is no child under 5 years of age in this household. This section is skipped and Benchmark 4 will automatically be marked Yes.',
           ),
+          if (hasChildUnder5) ...[
+            _instructionField(
+              id: bm4ChildUnderSixMonthsInstructionId,
+              name:
+              'For a child under the age of 6 months, do not assess MUAC and bipedal edema. Visually assess any child under the age of 6 months. If the child looks undernourished according to your judgment, the child has not met Benchmark 4. The following assessment should be done for each child aged 6–59 months. Use additional pages if necessary.',
+            ),
+            InputField(
+              id: bm4ChildId,
+              name: 'Child’s ID',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            _instructionField(
+              id: bm4MuacInstructionId,
+              name:
+              'Assess the child’s MUAC and bipedal edema if you have been trained in how to conduct these assessments. If you have not received this training, request that MUAC be measured by a health worker or case management worker trained in assessing MUAC and bipedal edema.',
+            ),
+            InputField(
+              id: bm4Question41Id,
+              name: '4.1. Is the child’s MUAC more than 12.5 cm?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+              id: bm4Question42Id,
+              name: '4.2. Is the child free of any signs of bipedal edema?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+          ],
           InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B4_Q_4_1',
-            name: '4.1. Is the child’s MUAC more than 12.5 cm?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B4_Q_4_2',
-            name: '4.2. Is the child free of any signs of bipedal edema?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_BENCHMARK_4_MET',
-            name: 'Has Benchmark 4 been met?',
+            id: bm4MetId,
+            name: hasChildUnder5
+                ? 'Has Benchmark 4 been met for this beneficiary?'
+                : '',
             valueType: 'BOOLEAN',
             isReadOnly: true,
             inputColor: const Color(0xFF4D9E49),
@@ -197,56 +277,68 @@ class HouseholdGraduationReadinessForm {
         ],
       ),
       FormSection(
-        // TODO: Replace this placeholder with the new DHIS2 section ID for Benchmark 5.
-        id: 'NEW_ID_BENCHMARK_5_SECTION',
+        id: bm5SectionId,
         name: 'Benchmark 5: Prevention of Mother To Child Transmission',
         color: const Color(0xFF4D9E49),
         borderColor: const Color(0xFF4D9E49),
         inputFields: [
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B5_BENEFICIARY_ID',
-            name: 'Beneficiary’s ID',
-            valueType: 'TEXT',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
+          _instructionField(
+            id: bm5InstructionId,
+            name: hasPmtctTarget
+                ? 'Instruction: The HIV status of the pregnant adolescent or woman is already known, so Question 5.1 is skipped. Continue with the applicable PMTCT questions below.'
+                : 'Instruction: There is no pregnant adolescent, pregnant woman, or HEI in this household. This section is skipped and Benchmark 5 will automatically be marked Yes.',
           ),
+          if (hasPmtctTarget) ...[
+            InputField(
+              id: bm5BeneficiaryId,
+              name: 'Beneficiary’s ID',
+              valueType: 'TEXT',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            _instructionField(
+              id: bm5HivNegativeInstructionId,
+              name:
+              'Instruction: Question 5.1 is skipped because the HIV status of the pregnant adolescent or woman is already known. Continue with the applicable PMTCT questions and allow the benchmark status to auto-populate.',
+            ),
+            InputField(
+              id: bm5Question52Id,
+              name:
+              '5.2. Is the HIV positive pregnant woman or adolescent currently attending ANC services?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            _instructionField(
+              id: bm5DeliveredInstructionId,
+              name:
+              'If the woman/adolescent has already delivered, ask the infant testing questions below.',
+            ),
+            InputField(
+              id: bm5Question53Id,
+              name:
+              '5.3. Has the infant born from an HIV positive adolescent or woman in the household been tested for HIV at the appropriate age? Consider six weeks, six months, and eighteen months.',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            InputField(
+              id: bm5Question54Id,
+              name:
+              '5.4. If the infant has been tested for HIV, is the child HIV negative?',
+              valueType: 'BOOLEAN',
+              inputColor: const Color(0xFF4D9E49),
+              labelColor: const Color(0xFF737373),
+            ),
+            _instructionField(
+              id: bm5NoteId,
+              name:
+              'Note: The household of a pregnant adolescent or woman who tests positive for HIV should not be graduated. They should be monitored until delivery, and monitoring should continue until the HIV exposed infant outcome is determined. If the HEI is confirmed HIV positive, the child status should change to CLHIV and the household should continue benefitting from the KB Bokamoso OVC Project. If the child test is negative, the benchmark can be marked Yes.',
+            ),
+          ],
           InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B5_Q_5_1',
-            name: '5.1. Has the pregnant adolescent or woman in the household been tested for HIV?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B5_Q_5_2',
-            name: '5.2. Is the HIV positive pregnant woman or adolescent currently attending ANC services?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B5_Q_5_3',
-            name: '5.3. Has the infant born from an HIV positive adolescent or woman in the household been tested for HIV at the appropriate age?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_B5_Q_5_4',
-            name: '5.4. If the infant has been tested for HIV, is the child HIV negative?',
-            valueType: 'BOOLEAN',
-            inputColor: const Color(0xFF4D9E49),
-            labelColor: const Color(0xFF737373),
-          ),
-          InputField(
-            // TODO: Replace this placeholder with the new DHIS2 data element ID.
-            id: 'NEW_ID_BENCHMARK_5_MET',
-            name: 'Has Benchmark 5 been met?',
+            id: bm5MetId,
+            name: hasPmtctTarget ? 'Benchmark 5 outcome' : '',
             valueType: 'BOOLEAN',
             isReadOnly: true,
             inputColor: const Color(0xFF4D9E49),
@@ -263,7 +355,7 @@ class HouseholdGraduationReadinessForm {
           InputField(
             id: 'S5bMqu2LyKJ',
             name:
-            'Have all applicable benchmarks been met? (Benchmarks 1–10 ticked Yes or N/A)',
+            'Have all applicable benchmarks been met? (Benchmarks 1–5 marked Yes or N/A)',
             valueType: 'BOOLEAN',
             isReadOnly: true,
             inputColor: const Color(0xFF4D9E49),
