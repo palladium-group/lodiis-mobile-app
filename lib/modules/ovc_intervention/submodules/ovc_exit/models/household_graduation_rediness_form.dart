@@ -169,7 +169,7 @@ class HouseholdGraduationReadinessForm {
           ),
           if (hasAdolescentAged10To17) ...[
             InputField(
-              id: bm3AdolescentId,
+              id: 'PYOCrvbzCQQ',
               name: 'Adolescent’s ID',
               valueType: 'TEXT',
               inputColor: const Color(0xFF4D9E49),
@@ -181,7 +181,7 @@ class HouseholdGraduationReadinessForm {
               'Ask the adolescent: Can you tell me how a young person your age living in your community might become infected with HIV? The adolescent must describe two risks to meet Benchmark 3. If only one HIV risk is described, ask: “Can you tell me any other ways a young person in your community might become infected with HIV?” Examples include early sex, sex without a condom, sex with an older partner, being sexually abused or raped, sex with multiple partners, and sex for money or gifts/transactional sex/having a “sugar daddy”.',
             ),
             InputField(
-              id: bm3Question31Id,
+              id: 'iGKhiceO4IZ',
               name:
               '3.1. Has the adolescent identified at least two HIV risks?',
               valueType: 'BOOLEAN',
@@ -194,7 +194,7 @@ class HouseholdGraduationReadinessForm {
               'Ask the adolescent: Can you tell me how a young person your age living in your community might help protect himself or herself from becoming infected with HIV? The adolescent must describe one prevention strategy to meet Benchmark 3. If no strategy is described, ask: “Can you tell me any other ways a young person might help protect himself or herself against HIV?” Examples include having one sexual partner, delaying sex or abstinence, using a condom, having a partner who does not have other sexual partners, and not having sex for money or gifts/transactional sex.',
             ),
             InputField(
-              id: bm3Question32Id,
+              id: 'SyOgxus83Ux',
               name:
               '3.2. Has the adolescent identified at least one HIV prevention strategy?',
               valueType: 'BOOLEAN',
@@ -208,7 +208,7 @@ class HouseholdGraduationReadinessForm {
             ),
           ],
           InputField(
-            id: bm3MetId,
+            id: 'RgIqd4fvT1C',
             name: hasAdolescentAged10To17
                 ? 'Has Benchmark 3 been met for this beneficiary?'
                 : '',
@@ -250,14 +250,14 @@ class HouseholdGraduationReadinessForm {
               'Assess the child’s MUAC and bipedal edema if you have been trained in how to conduct these assessments. If you have not received this training, request that MUAC be measured by a health worker or case management worker trained in assessing MUAC and bipedal edema.',
             ),
             InputField(
-              id: bm4Question41Id,
+              id: 'htotfutRcVF',
               name: '4.1. Is the child’s MUAC more than 12.5 cm?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
             ),
             InputField(
-              id: bm4Question42Id,
+              id: 'F7HWBfHN6tQ',
               name: '4.2. Is the child free of any signs of bipedal edema?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4D9E49),
@@ -265,7 +265,7 @@ class HouseholdGraduationReadinessForm {
             ),
           ],
           InputField(
-            id: bm4MetId,
+            id: 'IdZyZAJ6GH2',
             name: hasChildUnder5
                 ? 'Has Benchmark 4 been met for this beneficiary?'
                 : '',
@@ -290,7 +290,7 @@ class HouseholdGraduationReadinessForm {
           ),
           if (hasPmtctTarget) ...[
             InputField(
-              id: bm5BeneficiaryId,
+              id: 'Yx7plSKvybh',
               name: 'Beneficiary’s ID',
               valueType: 'TEXT',
               inputColor: const Color(0xFF4D9E49),
@@ -302,7 +302,7 @@ class HouseholdGraduationReadinessForm {
               'Instruction: Question 5.1 is skipped because the HIV status of the pregnant adolescent or woman is already known. Continue with the applicable PMTCT questions and allow the benchmark status to auto-populate.',
             ),
             InputField(
-              id: bm5Question52Id,
+              id: 'X1bXtYz9jRC',
               name:
               '5.2. Is the HIV positive pregnant woman or adolescent currently attending ANC services?',
               valueType: 'BOOLEAN',
@@ -315,7 +315,7 @@ class HouseholdGraduationReadinessForm {
               'If the woman/adolescent has already delivered, ask the infant testing questions below.',
             ),
             InputField(
-              id: bm5Question53Id,
+              id:'sENV9jT7sWc',
               name:
               '5.3. Has the infant born from an HIV positive adolescent or woman in the household been tested for HIV at the appropriate age? Consider six weeks, six months, and eighteen months.',
               valueType: 'BOOLEAN',
@@ -337,7 +337,7 @@ class HouseholdGraduationReadinessForm {
             ),
           ],
           InputField(
-            id: bm5MetId,
+            id: 'aPcPm4f7Tt',
             name: hasPmtctTarget ? 'Benchmark 5 outcome' : '',
             valueType: 'BOOLEAN',
             isReadOnly: true,
