@@ -6,34 +6,34 @@ import 'package:kb_mobile_app/models/input_field.dart';
 class HouseholdGraduationReadinessForm {
   static const String bm3SectionId = 'Bmk3Sec0001';
   static const String bm3InstructionId = 'Bmk3Ins0001';
-  static const String bm3AdolescentId = 'Bmk3Ado0001';
+  static const String bm3AdolescentId = 'PYOCrvbzCQQ';
   static const String bm3RiskPromptId = 'Bmk3Rsk0001';
-  static const String bm3Question31Id = 'Bmk3Q310001';
+  static const String bm3Question31Id = 'iGKhiceO4IZ';
   static const String bm3PreventionPromptId = 'Bmk3Prv0001';
-  static const String bm3Question32Id = 'Bmk3Q320001';
+  static const String bm3Question32Id = 'SyOgxus83Ux';
   static const String bm3JudgementInstructionId = 'Bmk3Jdg0001';
-  static const String bm3MetId = 'Bmk3Met0001';
+  static const String bm3MetId = 'RgIqd4fvT1C';
 
   static const String bm4SectionId = 'Bmk4Sec0001';
   static const String bm4InstructionId = 'Bmk4Ins0001';
   static const String bm4ChildUnderSixMonthsInstructionId = 'Bmk4Inf0001';
   static const String bm4ChildId = 'Bmk4Chd0001';
   static const String bm4MuacInstructionId = 'Bmk4Mua0001';
-  static const String bm4Question41Id = 'Bmk4Q410001';
-  static const String bm4Question42Id = 'Bmk4Q420001';
-  static const String bm4MetId = 'Bmk4Met0001';
+  static const String bm4Question41Id = 'htotfutRcVF';
+  static const String bm4Question42Id = 'F7HWBfHN6tQ';
+  static const String bm4MetId = 'IdZyZAJ6GH2';
 
   static const String bm5SectionId = 'Bmk5Sec0001';
   static const String bm5InstructionId = 'Bmk5Ins0001';
-  static const String bm5BeneficiaryId = 'Bmk5Ben0001';
+  static const String bm5BeneficiaryId = 'Yx7plSKvybh';
   static const String bm5Question51Id = 'Bmk5Q510001';
   static const String bm5HivNegativeInstructionId = 'Bmk5Neg0001';
-  static const String bm5Question52Id = 'Bmk5Q520001';
+  static const String bm5Question52Id = 'X1bXtYz9jRC';
   static const String bm5DeliveredInstructionId = 'Bmk5Del0001';
-  static const String bm5Question53Id = 'Bmk5Q530001';
+  static const String bm5Question53Id = 'sENV9jT7sWc';
   static const String bm5Question54Id = 'Bmk5Q540001';
   static const String bm5NoteId = 'Bmk5Not0001';
-  static const String bm5MetId = 'Bmk5Met0001';
+  static const String bm5MetId = 'aPcPm4f7Tt';
 
   static const String cparaHasAdolescentAged10To17 =
       'CPARA_HAS_ADOLESCENT_AGED_10_TO_17';
@@ -72,7 +72,7 @@ class HouseholdGraduationReadinessForm {
     bool hasAdolescentAged10To17 = true,
     bool hasChildUnder5 = true,
     bool hasPmtctTarget = true,
-    bool shouldSkipPmtctHivTestQuestion = true,
+    bool shouldSkipPmtctHivTestQuestion = false,
   }) {
     return [
       AppUtil.getServiceProvisionEventDateSection(
@@ -169,7 +169,7 @@ class HouseholdGraduationReadinessForm {
           ),
           if (hasAdolescentAged10To17) ...[
             InputField(
-              id: 'PYOCrvbzCQQ',
+              id: bm3AdolescentId,
               name: 'Adolescent’s ID',
               valueType: 'TEXT',
               inputColor: const Color(0xFF4D9E49),
@@ -181,7 +181,7 @@ class HouseholdGraduationReadinessForm {
               'Ask the adolescent: Can you tell me how a young person your age living in your community might become infected with HIV? The adolescent must describe two risks to meet Benchmark 3. If only one HIV risk is described, ask: “Can you tell me any other ways a young person in your community might become infected with HIV?” Examples include early sex, sex without a condom, sex with an older partner, being sexually abused or raped, sex with multiple partners, and sex for money or gifts/transactional sex/having a “sugar daddy”.',
             ),
             InputField(
-              id: 'iGKhiceO4IZ',
+              id: bm3Question31Id,
               name:
               '3.1. Has the adolescent identified at least two HIV risks?',
               valueType: 'BOOLEAN',
@@ -194,7 +194,7 @@ class HouseholdGraduationReadinessForm {
               'Ask the adolescent: Can you tell me how a young person your age living in your community might help protect himself or herself from becoming infected with HIV? The adolescent must describe one prevention strategy to meet Benchmark 3. If no strategy is described, ask: “Can you tell me any other ways a young person might help protect himself or herself against HIV?” Examples include having one sexual partner, delaying sex or abstinence, using a condom, having a partner who does not have other sexual partners, and not having sex for money or gifts/transactional sex.',
             ),
             InputField(
-              id: 'SyOgxus83Ux',
+              id: bm3Question32Id,
               name:
               '3.2. Has the adolescent identified at least one HIV prevention strategy?',
               valueType: 'BOOLEAN',
@@ -208,7 +208,7 @@ class HouseholdGraduationReadinessForm {
             ),
           ],
           InputField(
-            id: 'RgIqd4fvT1C',
+            id: bm3MetId,
             name: hasAdolescentAged10To17
                 ? 'Has Benchmark 3 been met for this beneficiary?'
                 : '',
@@ -250,14 +250,14 @@ class HouseholdGraduationReadinessForm {
               'Assess the child’s MUAC and bipedal edema if you have been trained in how to conduct these assessments. If you have not received this training, request that MUAC be measured by a health worker or case management worker trained in assessing MUAC and bipedal edema.',
             ),
             InputField(
-              id: 'htotfutRcVF',
+              id: bm4Question41Id,
               name: '4.1. Is the child’s MUAC more than 12.5 cm?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
             ),
             InputField(
-              id: 'F7HWBfHN6tQ',
+              id: bm4Question42Id,
               name: '4.2. Is the child free of any signs of bipedal edema?',
               valueType: 'BOOLEAN',
               inputColor: const Color(0xFF4D9E49),
@@ -265,7 +265,7 @@ class HouseholdGraduationReadinessForm {
             ),
           ],
           InputField(
-            id: 'IdZyZAJ6GH2',
+            id: bm4MetId,
             name: hasChildUnder5
                 ? 'Has Benchmark 4 been met for this beneficiary?'
                 : '',
@@ -285,24 +285,40 @@ class HouseholdGraduationReadinessForm {
           _instructionField(
             id: bm5InstructionId,
             name: hasPmtctTarget
-                ? 'Instruction: The HIV status of the pregnant adolescent or woman is already known, so Question 5.1 is skipped. Continue with the applicable PMTCT questions below.'
+                ? 'Instruction: Is the adolescent or woman in the household pregnant? If none of the women or adolescents in the household are pregnant, skip the questions below and select Yes for “Has the household achieved this benchmark.”'
                 : 'Instruction: There is no pregnant adolescent, pregnant woman, or HEI in this household. This section is skipped and Benchmark 5 will automatically be marked Yes.',
           ),
           if (hasPmtctTarget) ...[
             InputField(
-              id: 'Yx7plSKvybh',
+              id: bm5BeneficiaryId,
               name: 'Beneficiary’s ID',
               valueType: 'TEXT',
               inputColor: const Color(0xFF4D9E49),
               labelColor: const Color(0xFF737373),
             ),
-            _instructionField(
-              id: bm5HivNegativeInstructionId,
-              name:
-              'Instruction: Question 5.1 is skipped because the HIV status of the pregnant adolescent or woman is already known. Continue with the applicable PMTCT questions and allow the benchmark status to auto-populate.',
-            ),
+            if (!shouldSkipPmtctHivTestQuestion)
+              InputField(
+                id: bm5Question51Id,
+                name:
+                '5.1. Has the pregnant adolescent or woman in the household been tested for HIV?',
+                valueType: 'BOOLEAN',
+                inputColor: const Color(0xFF4D9E49),
+                labelColor: const Color(0xFF737373),
+              ),
+            if (shouldSkipPmtctHivTestQuestion)
+              _instructionField(
+                id: bm5HivNegativeInstructionId,
+                name:
+                'Instruction: Question 5.1 is skipped for adolescent mothers and caregivers who are mothers of HEI. Continue with the applicable PMTCT questions and allow the benchmark status to auto-populate.',
+              )
+            else
+              _instructionField(
+                id: bm5HivNegativeInstructionId,
+                name:
+                'If the woman or adolescent tested HIV negative, skip the remaining PMTCT questions and select Yes for “Has the household achieved this benchmark.” If the woman or adolescent girl tested HIV positive, ask all the questions below.',
+              ),
             InputField(
-              id: 'X1bXtYz9jRC',
+              id: bm5Question52Id,
               name:
               '5.2. Is the HIV positive pregnant woman or adolescent currently attending ANC services?',
               valueType: 'BOOLEAN',
@@ -315,7 +331,7 @@ class HouseholdGraduationReadinessForm {
               'If the woman/adolescent has already delivered, ask the infant testing questions below.',
             ),
             InputField(
-              id:'sENV9jT7sWc',
+              id: bm5Question53Id,
               name:
               '5.3. Has the infant born from an HIV positive adolescent or woman in the household been tested for HIV at the appropriate age? Consider six weeks, six months, and eighteen months.',
               valueType: 'BOOLEAN',
@@ -337,8 +353,12 @@ class HouseholdGraduationReadinessForm {
             ),
           ],
           InputField(
-            id: 'aPcPm4f7Tt',
-            name: hasPmtctTarget ? 'Benchmark 5 outcome' : '',
+            id: bm5MetId,
+            name: !hasPmtctTarget
+                ? ''
+                : shouldSkipPmtctHivTestQuestion
+                ? 'Has Benchmark 5 been met for this household?'
+                : 'Has Benchmark 5 been met for this household?',
             valueType: 'BOOLEAN',
             isReadOnly: true,
             inputColor: const Color(0xFF4D9E49),
